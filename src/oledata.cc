@@ -22,7 +22,7 @@ static BSTR
 obj2bstr (lisp obj)
 {
   int l = i2wl (obj);
-  BSTR bstr = SysAllocStringLen (0, l);
+  BSTR bstr = SysAllocStringLen (0, l - 1);
   if (!bstr)
     FEstorage_error ();
   i2w (obj, bstr);
