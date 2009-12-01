@@ -2397,6 +2397,7 @@ Format::fixed_format (wStream &stream)
   if (!param_is_given (0) && !param_is_given (1))
     {
       print_control pc (10);
+      if (atsign && f.sign > 0) stream.add('+');
       print_flonum (stream, pc, lnumber);
       return;
     }
