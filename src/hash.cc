@@ -445,8 +445,8 @@ Fsi_puthash (lisp key, lisp hash_table, lisp value)
   if (xhash_table_used (hash_table) > xhash_table_size (hash_table) * 8 / 10)
     {
       int inc = xhash_table_rehash_size (hash_table);
-      if (inc < 10)
-        inc = min (max (xhash_table_size (hash_table) * 2 / 10, 10), 100);
+      if (inc < xhash_table_size (hash_table) / 2)
+        inc = xhash_table_size (hash_table) / 2;
       hash_table_rehash (hash_table, inc);
     }
   add_hash_entry (key, value, (lhash_table *)hash_table);
