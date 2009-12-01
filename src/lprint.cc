@@ -2661,8 +2661,13 @@ Format::general_format (wStream &stream)
       param[1].type = FMT_INT;
       param[1].value = dd;
       param[2].type = FMT_NIL;
-      param[3].type = FMT_CHAR;
-      param[3].value = overflow;
+      if (param_is_given (4))
+        {
+          param[3].type = FMT_CHAR;
+          param[3].value = overflow;
+        }
+      else
+        param[3].type = FMT_NIL;
       param[4].type = FMT_CHAR;
       param[4].value = padchar;
       nparams = 5;
