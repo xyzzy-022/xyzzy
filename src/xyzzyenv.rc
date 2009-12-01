@@ -1,0 +1,31 @@
+
+1 ICON res\xyzzy3.ico
+
+1 VERSIONINFO
+  FILEVERSION 1,0,0,0
+  PRODUCTVERSION 1,0,0,0
+  FILEFLAGSMASK 0x3fL
+  FILEFLAGS 0x0L
+  FILEOS 0x40004L
+  FILETYPE 0x1L
+  FILESUBTYPE 0x0L
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "041104b0"
+    BEGIN
+      VALUE "CompanyName", " \0"
+      VALUE "FileDescription", "xyzzy env\0"
+      VALUE "FileVersion", "1, 0, 0, 0\0"
+      VALUE "InternalName", "xyzzy env\0"
+      VALUE "LegalCopyright", "Copyright (C) 1996-2005 T.Kamei\0"
+      VALUE "OriginalFilename", "xyzzyenv.exe\0"
+      VALUE "ProductName", "xyzzyenv\0"
+      VALUE "ProductVersion", "1, 0, 0, 0\0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x411, 1200
+  END
+END

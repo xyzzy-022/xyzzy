@@ -1,0 +1,42 @@
+#include "xyzzycli.h"
+#include <ddeml.h>
+
+1 ICON res\xyzzy3.ico
+
+STRINGTABLE DISCARDABLE
+BEGIN
+  IDS_CALL_PROCESS, "コマンドが見つかりません"
+  IDS_NO_MEMORY, "メモリがありません"
+  IDS_CREATE_THREAD, "スレッドが作成できません"
+  IDS_CONNECT_FAILED, "xyzzyに接続できません"
+  IDS_READ_FAILED, "xyzzyとの通信でエラーが発生しました"
+END
+
+1 VERSIONINFO
+  FILEVERSION 0,1,0,1021
+  PRODUCTVERSION 0,1,0,1021
+  FILEFLAGSMASK 0x3fL
+  FILEFLAGS 0x0L
+  FILEOS 0x40004L
+  FILETYPE 0x1L
+  FILESUBTYPE 0x0L
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "041104b0"
+    BEGIN
+      VALUE "CompanyName", " \0"
+      VALUE "FileDescription", "xyzzy client\0"
+      VALUE "FileVersion", "0, 1, 0, 1021\0"
+      VALUE "InternalName", "xyzzy client\0"
+      VALUE "LegalCopyright", "Copyright (C) 1996-2005 T.Kamei\0"
+      VALUE "OriginalFilename", "xyzzycli.exe\0"
+      VALUE "ProductName", "xyzzy-client\0"
+      VALUE "ProductVersion", "0, 1, 0, 1021\0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x411, 1200
+  END
+END
