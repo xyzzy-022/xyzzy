@@ -4,7 +4,7 @@
 class dyn_handle
 {
 private:
-  operator = (const dyn_handle &);
+  void operator = (const dyn_handle &);
 protected:
   HANDLE h;
 public:

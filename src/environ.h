@@ -37,7 +37,7 @@ Registry::~Registry ()
     RegCloseKey (hkey);
 }
 
-inline
+inline int
 Registry::fail () const
 {
   return !hkey;

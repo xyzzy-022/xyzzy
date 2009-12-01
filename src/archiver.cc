@@ -77,7 +77,7 @@ has_trail_slash (const char *b)
 static char *
 copy_path (char *b, const char *o, const char *d, int dirp = 0)
 {
-  char *spc = strchr (d, ' ');
+  const char *spc = strchr (d, ' ');
   if (spc)
     *b++ = '"';
   b = stpcpy (b, o);

@@ -95,7 +95,7 @@ class maybe_symbol_string
 public:
   maybe_symbol_string (lisp pkg) : package (pkg), pkge (0) {}
   lisp current_package () const {return package;}
-  void parse (const Char *&b, int &l);
+  void parse (Char *&b, int &l);
   const Char *pkg_end () const {return pkge;}
 };
 
