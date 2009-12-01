@@ -2078,7 +2078,7 @@ Format::s_exp (wStream &stream, Char c)
 void
 Format::integer (wStream &stream, lisp linteger, int base, int istart)
 {
-  max_param (4);
+  max_param (4 + istart);
   int mincol = integer_param_min (istart, 0, 0);
   Char padchar = char_param (istart + 1, ' ');
   Char commachar = char_param (istart + 2, ',');
