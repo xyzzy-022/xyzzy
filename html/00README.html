@@ -1,0 +1,147 @@
+<!doctype html public "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+    <link rev="made" href="mailto:kamei@jsdlab.co.jp">
+    <title>xyzzyの役に立たないReadme</title>
+  </head>
+  <body text="#000000" bgcolor="#ffffff" link="#000080" vlink="#8000ff" alink="#800000">
+    <blockquote>
+      <h1>xyzzy release note</h1>
+      <br>
+      <h2>概要</h2>
+      <p>xyzzyはWindows NT 4.0、Windows 2000、Windows XP、Windows 95、Windows 98、Windows Me(たぶん。見たこともないけど)、およびWindows NT 3.51(一部機能に制限あり。最近試してないので動くかどうか不明)で動作する日本語テキストエディタのようなものです。以下のような特徴があります。</p>
+      <ul>
+	<li>テキストファイルを読んだり書いたりできる</li>
+	<li>文字を入力したり削除したりできる</li>
+	<li>回数制限のあるUndo/Redo</li>
+	<li>Windowsの標準を無視したユーザインターフェース</li>
+	<li>Visual Basicアンライクな拡張言語</li>
+	<li>物覚えが悪いと使えないファイラを装備(かといって物覚えがよければ使えるってわけでもない)</li>
+	<li>ややインテリマウス対応(かも)</li>
+	<li>その他、作者が使ったこともない機能の数々</li>
+      </ul>
+      <br>
+
+      <h2>インストール</h2>
+      <p>アーカイブを<b>ディレクトリつきで</b>展開すればできあがりです。インストーラなどという気の利いたものはないので、ショートカットとかファイルの関連付けなどをしたい場合は自分でやってください。</p>
+      <br>
+
+      <h2>アンインストール</h2>
+      <p>当然のことながらアンインストーラはないので、以下のものを手で削除してください。</p>
+      <ul>
+	<li>アーカイブを展開したディレクトリを丸ごと</li>
+	<li>ショートカットやファイルの関連付けなど</li>
+      </ul>
+      <br>
+
+      <h2>操作方法など</h2>
+      <p>普通のテキストエディタとして使う分には、これといって特殊な操作は必要ありません。
+      <br>
+
+      <h2>コマンドラインオプション</h2>
+      <p>起動時の引数は以下の形式を受け付けます。</p>
+      <p><b>xyzzy</b>
+	[<b>-image</b> <var>dump-file</var>]
+	[<b>-config</b> <var>config-directory</var>]
+	[<b>-ini</b> <var>ini-file</var>]
+	[<b>-q</b>|<b>-no-init-file</b>]
+	(<var>other-option</var>|<var>file</var>)*</p>
+      <p><b>-image</b>、<b>-config</b>または<b>-ini</b>を指定する場合は、それ以外のオプションより前になければなりません。また、<b>-q</b>または<b>-no-init-file</b>を指定する場合は<b>-image</b>、<b>-config</b>および<b>-ini</b>以外のオプションの先頭になければなりません。</p>
+      <p>それぞれのオプションの詳細は以下の通りです。</p>
+      <dl>
+	<dt><b>-image</b> <var>dump-file</var></dt>
+	<dd><p>ダンプイメージのファイル名を<var>dump-file</var>に変更します。指定されない場合、実行ファイルの拡張子を.wnt(Windows NT)、.w2k(Windows 2000)、.w95(Windows 95)、.w98(Windows 98)または.wme(Windows Me)に変更したファイル名を使用します。</p></dd>
+
+	<dt><b>-config</b> <var>config-directory</var></dt>
+	<dd><p>自動的に作成される設定ファイルを置くディレクトリを<var>config-directory</var>に変更します。指定されない場合、$XYZZY/usr/<var>username</var>/<var>os</var>/に置かれます。環境変数XYZZYCONFIGPATHで指定することも可能です。</p></dd>
+
+	<dt><b>-ini</b> <var>ini-file</var></dt>
+	<dd><p>自動的に作成される設定ファイルのファイル名を<var>ini-file</var>に変更します。指定されない場合はxyzzy.iniとなります。</p></dd>
+
+	<dt><b>-q</b></dt>
+	<dt><b>-no-init-file</b></dt>
+	<dd><p>ユーザ初期化ファイルをロードしません。</p></dd>
+
+	<dt><b>-l</b> <var>file</var></dt>
+	<dt><b>-load</b> <var>file</var></dt>
+	<dd><p><var>file</var>を<b>load</b>します。</p></dd>
+
+	<dt><b>-f</b> <var>fn</var></dt>
+	<dt><b>-funcall</b> <var>fn</var></dt>
+	<dd><p><var>fn</var>を<b>funcall</b>します。</p></dd>
+
+	<dt><b>-e</b> <var>sexp</var></dt>
+	<dt><b>-eval</b> <var>sexp</var></dt>
+	<dd><p><var>sexp</var>を評価します。</p></dd>
+
+	<dt><b>-g</b> <var>linenum</var></dt>
+	<dt><b>-go</b> <var>linenum</var></dt>
+	<dd><p>直前に指定したファイルの<var>linenum</var>行目に移動します。</p></dd>
+
+	<dt><b>-c</b> <var>column</var></dt>
+	<dt><b>-column</b> <var>column</var></dt>
+	<dd><p>直前に指定したファイルの<var>column</var>桁に移動します。</p></dd>
+
+	<dt><b>-p</b> <var>filename</var></dt>
+	<dd><p><var>filename</var>を印刷して終了します。</p>
+
+	<dt><b>-s</b> <var>session-file</var></dt>
+	<dd><p><var>session-file</var>をセッションファイルとして読み込み、セッションの自動保存を有効にします。</p>
+
+	<dt><b>-S</b> <var>session-file</var></dt>
+	<dd><p><var>session-file</var>をセッションファイルとして読み込み、セッションの自動保存を無効にします。</p>
+
+	<dt><b>-m</b> <var>mode</var></dt>
+	<dt><b>-mode</b> <var>mode</var></dt>
+	<dd><p>以降に指定された<var>file</var>のモードを<var>mode</var>にします。</p></dd>
+
+	<dt><b>-ro</b></dt>
+	<dd><p>以降に指定された<var>file</var>を書込み禁止モードで読み込みます。</p></dd>
+
+	<dt><b>-rw</b></dt>
+	<dd><p>以降に指定された<var>file</var>を書込み可能モードで読み込みます(<b>-ro</b>を取り消します)。</p></dd>
+
+	<dt><b>-mailto</b> <var>mailto</var></dt>
+        <dd><p><var>mailto</var>を引数にして*command-line-mailto-hook*を呼びます。</p></dd>
+
+	<dt><var>file</var></dt>
+	<dd><p><var>file</var>を読み込みます。</p></dd>
+      </dl>
+      <br>
+
+      <h3>xyzzycliについて</h3>
+      <p>xyzzycliは、すでに動作しているxyzzyにファイルを読ませたり読ませなかったりということができます。xyzzyが動作していない場合は勝手に起動します。起動時の引数は以下の形式を受け付けます。</p>
+      <p><b>xyzzycli</b>
+	[<b>-image</b> <var>dump-file</var>]
+	[<b>-config</b> <var>config-directory</var>]
+	[<b>-ini</b> <var>ini-file</var>]
+	[<b>-q</b>|<b>-no-init-file</b>]
+	[<b>-wait</b>]
+	(<var>other-option</var>|<var>file</var>)*</p>
+      <p><b>-image</b>、<b>-config</b>、<b>-ini</b>、<b>-q</b>および<b>-no-init-file</b>を除くコマンドラインの先頭に<b>-wait</b>を指定すると、以降に指定したファイルのバッファが削除されるのを待ちます。その他のコマンドラインオプションは、xyzzyのオプションと同じものを指定することができます。xyzzyがすでに動作している場合、<b>-image</b>、<b>-config</b>、<b>-ini</b>、<b>-q</b>および<b>-no-init-file</b>は無視されます。なお、MS-DOSプロンプトまたはコマンドプロンプト上で<b>-wait</b>を指定する場合、"start /wait xyzzycli -wait ..."のように起動する必要があります。</p>
+      <br>
+
+      <h2>使用条件など</h2>
+      <p><a href="LICENSE.html">LICENSE.html</a>を参照してください。</p>
+      <br>
+
+      <h2><a name="ml">メーリングリストのご案内</a></h2>
+      <p>サポートは基本的にメーリングリストで行います。
+	入会方法は、メールの本文に</p>
+      <samp>
+	<b>subscribe</b> <var>あなたの名前</var>
+      </samp>
+      <p>とだけ書いて、<a href="mailto:xyzzy-ctl@jsdlab.co.jp">xyzzy-ctl@jsdlab.co.jp</a>宛に送信してください。<var>あなたの名前</var>には、いわゆる全角文字は使用しないでください。詳しくは、<a href="http://www.jsdlab.co.jp/%7Ekei/">赤塚さんのページ</a>をご覧ください。</p>
+      <br>
+
+      <h2>連絡先</h2>
+      <p><a href="mailto:kamei@jsdlab.co.jp">kamei@jsdlab.co.jp (亀井哲弥)</a>まで電子メールでお願いします。</p>
+      <br>
+
+      <h2>履歴</h2>
+      <p>履歴を<a href="ChangeLog.html">見る</a>。</p>
+
+    </blockquote>
+  </body>
+</html>

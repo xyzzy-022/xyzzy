@@ -1,0 +1,2807 @@
+;*-
+;*+HTML1.0
+<key
+</key
+;*-
+;*+HTML3.0
+<abbrev
+</abbrev
+<above
+</above
+<array
+</array
+<atop
+<au
+</au
+<banner
+</banner
+<bar
+</bar
+<below
+</below
+<bodytext
+</bodytext
+<box
+</box
+<bq
+</bq
+<bt
+</bt
+<choose
+<credit
+</credit
+<ddot
+</ddot
+<dot
+</dot
+<fig
+</fig
+<figtext
+</figtext
+<fn
+</fn
+<hat
+</hat
+<item
+</item
+<lang
+</lang
+<left
+<lh
+</lh
+<math
+</math
+<note
+</note
+<of
+</of
+<over
+<overlay
+<person
+</person
+<range
+<right
+<root
+</root
+<row
+</row
+<spot
+<sqrt
+</sqrt
+<t
+</t
+<tilde
+</tilde
+<vec
+</vec
+;*-
+;*+ISO/IEC 15445 Preparation
+<div1
+</div1
+<div2
+</div2
+<div3
+</div3
+<div4
+</div4
+<div5
+</div5
+<div6
+</div6
+<pre-html
+</pre-html
+;*-
+;*+MSIE3.0beta
+<entity
+</entity
+<textflow
+</textflow
+;*-
+;*+MSIE4.0
+<htmlarea
+</htmlarea
+;*-
+;*+Mozilla4.0
+<ilayer
+</ilayer
+<layer
+</layer
+<nolayer
+</nolayer
+;*-
+;*+WebExplorer1.1
+<animate
+</animate
+<h7
+</h7
+<image
+<quote
+</quote
+;*-
+;*+XHTML1.0 Frameset
+</frame
+;*-
+;*+XHTML1.1
+<rbc
+</rbc
+<rtc
+</rtc
+;*-
+;*+MSIE5.0
+;*+MSIE5.5
+<xml
+</xml
+;*-
+;*+Mozilla3.0
+;*+Mozilla4.0
+<keygen
+<spacer
+;*-
+;*+HTML3.0
+;*+WebExplorer1.1
+<tab
+;*-
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+</isindex
+;*-
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+<hype
+<multicol
+</multicol
+<server
+</server
+;*-
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.1
+<rb
+</rb
+<rp
+</rp
+<rt
+</rt
+<ruby
+</ruby
+;*-
+;*+MSIE3.0
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+<comment
+</comment
+;*-
+;*+MSIE3.0beta
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+<noembed
+</noembed
+;*-
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+</area
+</col
+</hr
+;*-
+;*+HTML1.0
+;*+HTML2.0
+;*+HTML2.x
+;*+HTML3.0
+;*+MSIE3.0beta
+<nextid
+;*-
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+</base
+</br
+</img
+</input
+</link
+</meta
+</param
+;*-
+;*+J-SkyWeb Station
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+<bgsound
+;*-
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+WebExplorer1.1
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+</basefont
+;*-
+;*+MSIE3.0
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+</nobr
+;*-
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+</embed
+<nobr
+<wbr
+;*-
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+doti1.0
+<embed
+;*-
+;*+J-SkyWeb
+;*+J-SkyWeb Station
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+doti1.0
+;*+iMode2.0
+;*+iMode3.0
+<marquee
+</marquee
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+</iframe
+;*-
+;*+J-SkyWeb
+;*+J-SkyWeb Station
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+doti1.0
+;*+iMode2.0
+;*+iMode3.0
+<blink
+</blink
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.01 Frameset
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+<frameset
+</frameset
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+<iframe
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.01 Frameset
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+WebExplorer1.1
+;*+XHTML1.0 Frameset
+<frame
+;*-
+;*+HTML1.0
+;*+HTML2.0
+;*+HTML2.x
+;*+HTML3.2
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+WebExplorer1.1
+<listing
+</listing
+<xmp
+</xmp
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+<optgroup
+</optgroup
+;*-
+;*+HTML3.2
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+<strike
+</strike
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+<noframes
+</noframes
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+<abbr
+</abbr
+;*-
+;*+HTML3.2
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+<applet
+</applet
+;*-
+;*+HTML3.0
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+WebExplorer1.1
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+<s
+</s
+;*-
+;*+HTML2.0
+;*+HTML2.x
+;*+HTML3.2
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+WebExplorer1.1
+;*+doti1.0
+;*+iMode1.0
+;*+iMode2.0
+;*+iMode3.0
+</plaintext
+;*-
+;*+HTML3.2
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+WebExplorer1.1
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+<basefont
+;*-
+;*+HTML2.x
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+<bdo
+</bdo
+;*-
+;*+HTML3.0
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+<del
+</del
+<ins
+</ins
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+<button
+</button
+<fieldset
+</fieldset
+<legend
+</legend
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+<noscript
+</noscript
+;*-
+;*+HTML1.0
+;*+HTML2.0
+;*+HTML2.x
+;*+HTML3.2
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+WebExplorer1.1
+;*+doti1.0
+;*+iMode1.0
+;*+iMode2.0
+;*+iMode3.0
+<plaintext
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+<col
+<colgroup
+</colgroup
+<tbody
+</tbody
+<tfoot
+</tfoot
+<thead
+</thead
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+<label
+</label
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-MSIE3.0
+;*-MSIE3.0beta
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-Mozilla4.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<acronym
+</acronym
+;*+
+;*-Compact HTML
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-Mozilla2.0
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<u
+</u
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML4.0 Mobile
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<script
+</script
+;*+
+;*-Compact HTML
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<isindex
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML4.0 Mobile
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<big
+</big
+<small
+</small
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-MSIE3.0
+;*-MSIE3.0beta
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-Mozilla4.0
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<q
+</q
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+;*-iMode1.0
+<font
+</font
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<style
+</style
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML3.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<span
+</span
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+<object
+</object
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<area
+<map
+</map
+;*+
+;*-Compact HTML
+;*-HTML2.0
+;*-HTML2.x
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-Mozilla4.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<dfn
+</dfn
+;*+
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+<center
+</center
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML4.0 Mobile
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<sub
+</sub
+<sup
+</sup
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<param
+;*+
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+<dir
+</dir
+<menu
+</menu
+;*+
+;*-Compact HTML
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<link
+;*+
+;*-Compact HTML
+;*-HTML4.0 Mobile
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-XHTML Basic
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<tt
+</tt
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML4.0 Mobile
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<caption
+</caption
+<table
+</table
+<td
+</td
+<th
+</th
+<tr
+</tr
+;*+
+;*-Compact HTML
+;*-HTML4.0 Mobile
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-XHTML Basic
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<b
+</b
+<i
+</i
+;*+
+;*-Compact HTML
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<kbd
+</kbd
+<samp
+</samp
+<var
+</var
+;*+
+;*-Compact HTML
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+<address
+</address
+<cite
+</cite
+<code
+</code
+<em
+</em
+<strong
+</strong
+;*+
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-WebExplorer1.1
+<div
+</div
+;*+
+;*-HTML1.0
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+</p
+;*+
+;*-HTML1.0
+;*-WebExplorer1.1
+;*-iMode1.0
+<meta
+;*+
+;*-HTML4.0 Mobile
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+<base
+;*+
+;*-HTML1.0
+;*-XHTML Basic
+<hr
+;*+
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+<blockquote
+</blockquote
+;*6
+<h1
+<h2
+<h3
+<h4
+<h5
+<h6
+;*0
+</h1
+</h2
+</h3
+</h4
+</h5
+</h6
+;*+
+;*-ISO/IEC 15445 Preparation
+<html
+</html
+;*+
+;*-HTML1.0
+<br
+</dd
+</dt
+<form
+</form
+<input
+</li
+<option
+</option
+<select
+</select
+<textarea
+</textarea
+;*+
+<a
+</a
+<body
+</body
+<dd
+<dl
+</dl
+<dt
+<head
+</head
+<img
+<li
+<ol
+</ol
+<p
+<pre
+</pre
+<title
+</title
+<ul
+</ul
+;*+
+;*1
+;*-
+;*+HTML3.0
+coldef
+colspec
+continue
+dingbat
+dp
+error
+from
+imagemap
+indent
+labels
+ldelim
+max
+md
+min
+noflow
+notation
+plain
+rdelim
+script
+seqnum
+skip
+sym
+until
+x
+y
+;*-
+;*+J-SkyWeb Station
+mailbody
+nonumber
+soundstart
+viblength
+vibration
+;*-
+;*+MSIE3.0
+download
+notab
+;*-
+;*+MSIE3.0beta
+controls
+layout
+vrml
+;*-
+;*+MSIE5.5
+atomicselection
+unselectable
+;*-
+;*+Mozilla4.0
+above
+below
+clip
+left
+nosave
+pagex
+pagey
+point-size
+suppress
+top
+visibility
+weight
+z-index
+;*-
+;*+XHTML1.1
+rbspan
+;*-
+;*+doti1.0
+astyle
+;*-
+;*+iMode3.0
+body
+email
+ijam
+kana
+subject
+telbook
+utn
+;*-
+;*+J-SkyWeb
+;*+J-SkyWeb Station
+directkey
+flash
+memoryname
+mode
+motion
+;*-
+;*+HTML3.0
+;*+MSIE3.0beta
+axes
+;*-
+;*+MSIE3.0
+;*+MSIE3.0beta
+param
+shapes
+;*-
+;*+MSIE3.0
+;*+MSIE4.0
+url
+;*-
+;*+MSIE5.0
+;*+MSIE5.5
+application
+autocomplete
+balance
+ns
+onafterprint
+onbeforeeditfocus
+onbeforeprint
+oncontextmenu
+prefix
+vcard_name
+xmlns:
+;*-
+;*+Mozilla3.0
+;*+Mozilla4.0
+challenge
+mayscript
+;*-
+;*+HTML3.0
+;*+WebExplorer1.1
+to
+;*-
+;*+iMode2.0
+;*+iMode3.0
+cti
+istyle
+;*-
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+bottommargin
+datafld
+dataformatas
+datasrc
+onafterupdate
+onbeforecopy
+onbeforecut
+onbeforepaste
+onbeforeunload
+onbeforeupdate
+onbounce
+oncellchange
+oncopy
+oncut
+ondataavailable
+ondatasetchanged
+ondatasetcomplete
+ondrag
+ondragend
+ondragenter
+ondragleave
+ondragover
+ondragstart
+ondrop
+onerrorupdate
+onfilterchange
+onfinish
+onhelp
+onlosecapture
+onpaste
+onpropertychange
+onreadystatechange
+onresize
+onrowenter
+onrowexit
+onrowsdelete
+onrowsinserted
+onscroll
+onselectstart
+onstart
+rightmargin
+scroll
+truespeed
+;*-
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+gutter
+hidden
+pluginurl
+;*-
+;*+J-SkyWeb Station
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+volume
+;*-
+;*+MSIE3.0
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+palette
+;*-
+;*+HTML1.0
+;*+HTML2.0
+;*+HTML2.x
+;*+HTML3.0
+;*+MSIE3.0beta
+n
+;*-
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+bgproperties
+bordercolordark
+bordercolorlight
+dynsrc
+framespacing
+leftmargin
+scrollamount
+scrolldelay
+topmargin
+;*-
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+pluginspage
+;*-
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+xml:lang
+xml:space
+xmlns
+;*-
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+lowsrc
+onabort
+onerror
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+object
+;*-
+;*+HTML1.0
+;*+HTML2.0
+;*+HTML2.x
+;*+HTML3.0
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+methods
+urn
+;*-
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla3.0
+;*+Mozilla4.0
+bordercolor
+;*-
+;*+HTML3.0
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+wrap
+;*-
+;*+HTML3.0
+;*+MSIE3.0
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+units
+;*-
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+doti1.0
+;*+iMode2.0
+;*+iMode3.0
+behavior
+;*-
+;*+J-SkyWeb Station
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+doti1.0
+;*+iMode2.0
+;*+iMode3.0
+loop
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+datapagesize
+event
+;*-
+;*+J-SkyWeb
+;*+J-SkyWeb Station
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+doti1.0
+;*+iMode2.0
+;*+iMode3.0
+direction
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.01 Frameset
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+noresize
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+MSIE3.0beta
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+char
+charoff
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+profile
+;*-
+;*+Compact HTML
+;*+HTML2.0
+;*+HTML2.x
+;*+HTML3.0
+;*+HTML3.2
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0beta
+;*+XHTML Basic
+;*+XHTML1.1
+version
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+datetime
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+face
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+label
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+defer
+ondblclick
+onkeydown
+onkeypress
+onkeyup
+onmousedown
+onmousemove
+onmouseup
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+abbr
+headers
+scope
+summary
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+archive
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+frameborder
+language
+marginheight
+marginwidth
+scrolling
+target
+;*-
+;*+HTML2.x
+;*+HTML3.0
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+accept
+;*-
+;*+HTML2.x
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+accept-charset
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+cite
+hreflang
+longdesc
+scheme
+;*-
+;*+HTML3.2
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+code
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+readonly
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+frame
+rules
+;*-
+;*+HTML3.0
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE3.0beta
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+axis
+;*-
+;*+HTML3.0
+;*+HTML3.2
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+prompt
+;*-
+;*+HTML3.2
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+WebExplorer1.1
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+vlink
+;*-
+;*+HTML2.x
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+dir
+;*-
+;*+HTML3.0
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+disabled
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+style
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+onload
+onmouseout
+onreset
+onunload
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+standby
+valuetype
+;*-
+;*+HTML3.2
+;*+HTML4.0 Frameset
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+WebExplorer1.1
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Transitional
+;*+doti1.0
+alink
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+span
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+MSIE3.0
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+Mozilla2.0
+;*+Mozilla3.0
+;*+Mozilla4.0
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+onblur
+onchange
+onclick
+onfocus
+onmouseover
+onselect
+onsubmit
+;*-
+;*+HTML2.x
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+charset
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+for
+media
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE3.0
+;*+MSIE3.0beta
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+;*+iMode3.0
+declare
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+;*-iMode1.0
+start
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+nowrap
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+background
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-MSIE4.0
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-Mozilla4.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+codetype
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-MSIE3.0beta
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-Mozilla4.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+tabindex
+;*+
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+noshade
+;*+
+;*-Compact HTML
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-MSIE3.0
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+compact
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+;*-iMode1.0
+color
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-MSIE3.0
+;*-Mozilla2.0
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-XHTML1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+lang
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML4.0 Mobile
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-XHTML Basic
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+cellpadding
+cellspacing
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+classid
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+;*-iMode1.0
+bgcolor
+link
+text
+;*+
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+hspace
+vspace
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+data
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-MSIE3.0
+;*-MSIE3.0beta
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-Mozilla4.0
+;*-WebExplorer1.1
+accesskey
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+coords
+nohref
+usemap
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML4.0 Mobile
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+valign
+;*+
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML4.0 Mobile
+;*-HTML4.0 Strict
+;*-HTML4.01 Strict
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-XHTML1.0 Strict
+;*-XHTML1.1
+clear
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+;*-XHTML Basic
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+shape
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML3.0
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+codebase
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+class
+;*+
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML4.0 Mobile
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-XHTML Basic
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+border
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML4.0 Mobile
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-XHTML Basic
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+ismap
+;*+
+;*-Compact HTML
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+rel
+rev
+;*+
+;*-Compact HTML
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-Mozilla4.0
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+title
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-Mozilla2.0
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+id
+;*+
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML4.0 Mobile
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-WebExplorer1.1
+height
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML2.x
+;*-HTML4.0 Mobile
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+colspan
+rowspan
+;*+
+;*-HTML1.0
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-MSIE3.0
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+enctype
+;*+
+;*-HTML4.0 Mobile
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+width
+;*+
+;*-HTML1.0
+;*-HTML4.0 Mobile
+;*-ISO/IEC 15445
+;*-ISO/IEC 15445 Preparation
+align
+;*+
+;*-HTML1.0
+;*-WebExplorer1.1
+;*-iMode1.0
+content
+http-equiv
+;*+
+;*-HTML1.0
+;*-MSIE3.0
+;*-iMode1.0
+multiple
+;*+
+;*-HTML1.0
+action
+alt
+checked
+cols
+maxlength
+method
+rows
+selected
+size
+type
+value
+;*+
+href
+name
+src
+;*+
+;*&
+;*2
+;*-
+;*+HTML3.0
+&REF1
+&REF2
+&REF3
+&REF4
+&REF5
+&REF6
+;*-
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+&apos
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+&Alpha
+&Beta
+&Chi
+&Delta
+&Epsilon
+&Eta
+&Gamma
+&Iota
+&Kappa
+&Lambda
+&Mu
+&Nu
+&Omega
+&Omicron
+&Phi
+&Pi
+&Prime
+&Psi
+&Rho
+&Sigma
+&Tau
+&Theta
+&Upsilon
+&Xi
+&Zeta
+&alefsym
+&alpha
+&and
+&ang
+&asymp
+&beta
+&bull
+&cap
+&chi
+&clubs
+&cong
+&crarr
+&cup
+&dArr
+&darr
+&delta
+&diams
+&empty
+&epsilon
+&equiv
+&eta
+&exist
+&fnof
+&forall
+&frasl
+&gamma
+&ge
+&hArr
+&harr
+&hearts
+&hellip
+&image
+&infin
+&int
+&iota
+&isin
+&kappa
+&lArr
+&lambda
+&lang
+&larr
+&lceil
+&le
+&lfloor
+&lowast
+&loz
+&minus
+&mu
+&nabla
+&ne
+&ni
+&notin
+&nsub
+&nu
+&oline
+&omega
+&omicron
+&oplus
+&or
+&otimes
+&part
+&perp
+&phi
+&pi
+&piv
+&prime
+&prod
+&prop
+&psi
+&rArr
+&radic
+&rang
+&rarr
+&rceil
+&real
+&rfloor
+&rho
+&sdot
+&sigma
+&sigmaf
+&sim
+&spades
+&sub
+&sube
+&sum
+&sup
+&supe
+&tau
+&there4
+&theta
+&thetasym
+&trade
+&uArr
+&uarr
+&upsih
+&upsilon
+&weierp
+&xi
+&zeta
+;*-
+;*+HTML4.0 Frameset
+;*+HTML4.0 Mobile
+;*+HTML4.0 Strict
+;*+HTML4.0 Transitional
+;*+HTML4.01 Frameset
+;*+HTML4.01 Strict
+;*+HTML4.01 Transitional
+;*+ISO/IEC 15445
+;*+ISO/IEC 15445 Preparation
+;*+MSIE4.0
+;*+MSIE5.0
+;*+MSIE5.5
+;*+XHTML Basic
+;*+XHTML1.0 Frameset
+;*+XHTML1.0 Strict
+;*+XHTML1.0 Transitional
+;*+XHTML1.1
+&Dagger
+&OElig
+&Scaron
+&Yuml
+&bdquo
+&circ
+&dagger
+&emsp
+&ensp
+&euro
+&ldquo
+&lsaquo
+&lsquo
+&mdash
+&ndash
+&oelig
+&permil
+&rdquo
+&rsaquo
+&rsquo
+&sbquo
+&scaron
+&thinsp
+&tilde
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML2.0
+;*-HTML3.0
+;*-HTML3.2
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-MSIE3.0
+;*-MSIE3.0beta
+;*-Mozilla2.0
+;*-Mozilla3.0
+;*-Mozilla4.0
+;*-WebExplorer1.1
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+&lrm
+&rlm
+&zwj
+&zwnj
+;*+
+;*-HTML1.0
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+&acute
+&brvbar
+&cedil
+&cent
+&curren
+&deg
+&divide
+&frac12
+&frac14
+&frac34
+&iexcl
+&iquest
+&laquo
+&macr
+&micro
+&middot
+&not
+&ordf
+&ordm
+&para
+&plusmn
+&pound
+&raquo
+&sect
+&shy
+&sup1
+&sup2
+&sup3
+&times
+&uml
+&yen
+;*+
+;*-J-SkyWeb
+;*-J-SkyWeb Station
+;*-doti1.0
+;*-iMode1.0
+;*-iMode2.0
+;*-iMode3.0
+&AElig
+&Aacute
+&Acirc
+&Agrave
+&Aring
+&Atilde
+&Auml
+&Ccedil
+&ETH
+&Eacute
+&Ecirc
+&Egrave
+&Euml
+&Iacute
+&Icirc
+&Igrave
+&Iuml
+&Ntilde
+&Oacute
+&Ocirc
+&Ograve
+&Oslash
+&Otilde
+&Ouml
+&THORN
+&Uacute
+&Ucirc
+&Ugrave
+&Uuml
+&Yacute
+&aacute
+&acirc
+&aelig
+&agrave
+&aring
+&atilde
+&auml
+&ccedil
+&eacute
+&ecirc
+&egrave
+&eth
+&euml
+&iacute
+&icirc
+&igrave
+&iuml
+&ntilde
+&oacute
+&ocirc
+&ograve
+&oslash
+&otilde
+&ouml
+&szlig
+&thorn
+&uacute
+&ucirc
+&ugrave
+&uuml
+&yacute
+&yuml
+;*+
+;*-Compact HTML
+;*-HTML1.0
+;*-HTML3.0
+&quot
+;*+
+;*-HTML1.0
+;*-doti1.0
+&copy
+&nbsp
+&reg
+;*+
+;*-HTML3.0
+&amp
+&gt
+&lt

@@ -1,0 +1,541 @@
+<!doctype html public "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<link rev="made" href="mailto:kamei@jsdlab.co.jp">
+<title>OOChangeLog</title>
+</head>
+<body text="#000000" bgcolor="#ffffff" link="#000080" vlink="#8000ff" alink="#800000">
+<blockquote>
+<h4>Mon Dec 27 1999 0.1.1.116</h4>
+<ul>
+<li>キーワードのいんちきボールド表示。9: 単なるボールド。a～i: 0～8と同じ色でボールド。
+<li>キーワードファイルの読み込み時に*keyword-load-path*を見るようにした。言うまでもなくカスタマイズ用。*keyword-load-path*に見つからない場合は従来通りetc-pathから。
+<li>isearchでのyank。
+<li>dynamic abbrevで日本語も対象にするようにした。
+</ul>
+<h4>Mon Dec 20 1999 Version 0.1.1.115</h4>
+<ul>
+<li>正規表現のアンマッチでめちゃ遅いパターンがあったのでそれなりに対処。
+<li>gethashが2番目の値を返していなかったのを修正。
+<li>使いもしないのにbasic-modeを書き直し。めちゃめちゃ頭が良くなったが、お節介過ぎるかも(^^; *basic-auto-～*をnilにすればまとも(?)になる。
+<li>これまた使いもしないのにIMEの再変換に対応してみたり。かなり自信なし。win98+msimeでしかテストしてない(nt4+atok12でも動くらしい)。
+<li>isearchでバッファの先頭にマッチしなかったのを修正。
+</ul>
+<h4>Wed Dec 08 1999 Version 0.1.1.114</h4>
+<ul>
+<li>折り返しありでResumeすると、無限ループにはまる場合があったのを修正。
+<li>変数*inhibit-reverse-keywords*がnon-nilの場合、キーワードの反転をしないようにした。
+</ul>
+<h4>Mon Dec 06 1999 Version 0.1.1.113</h4>
+<ul>
+<li>delete-text-attributesで余計なものまで削除していたのを修正。
+<li>NT以外でEnvironment系のAPIをがしがし呼ぶとカーネルが落ちるみたいなので、使わんようにした。
+<li>スペルチェッカ風のなにか。インターフェースがいまいちかな。
+<li>den8-recover(R)
+<li>ファイラで拡張子のソート。
+</ul>
+<h4>Mon Nov 22 1999 Version 0.1.1.112</h4>
+<ul>
+<li>折り返しありで横スクロールしている場合、表示がメロメロになることがあったのを修正。
+<li>syntax-quote-pを寝ぼけて書いていたので、ちゃんと起きて書いた。
+<li>共通設定ダイアログで辞書ディレクトリの設定を潰すようにエンバグしていたのを修正。
+<li>以下の関数を実装。
+<ul>
+<li type="square">filer-modify-column-width <var>n d</var> &optional <var>secondary-window-p</var>
+</ul>
+<li>ファイラからアーカイブ内のファイルを読めるようにした(かなりへなちょこ)。とりあえずできないよりはマシってことで。だたし、ISHは未実装。ARJは未テスト。
+<li>コマンドラインでの空白を含むファイル名の補完。
+<li>first-errorでのウィンドウの幅(*error-window-size*)。
+<li>以下の関数に引数を追加。
+<ul>
+<li type="square">extract-archive <var>archive-file to-directory</var> &rest <var>files</var>
+<li> make-temp-file-name &optional <var>prefix suffix directory directory-p</var>
+</ul>
+<li>.Z/.gz/.bz2を正しい位置に解凍できるようにしたつもり。
+</ul>
+<h4>Fri Nov 19 1999 Version 0.1.1.111</h4>
+<ul>
+<li>折り返す設定のとき、死んでしまう場合があったのを修正。
+<li>C-gをコマンド実行中のみ効くようにした。いまいち自信なし。念のためBreakキーでもquitできるようにしておいた。
+<li>make-tags-file を書き直し。C/C++用はそこそこ速くなる予定。なおインターフェースが変わったので、心当たりのある方は対応してください。m(_ _)m
+<li>filer-send-toの送り先のソート。
+<li>バイトコンパイラのdefconstantの不具合を修正。っていうか、元に戻した。
+<li>*filer-send-to-list*。
+</ul>
+<h4>Mon Nov 15 1999 Version 0.1.0.110</h4>
+<ul>
+<li>shell-executeの引数にparamsを追加。
+<li>罫線モードで他のバッファに切り替えたときの挙動がおかしかったのを修正。ただし、罫線モードをグローバルに効くようにしただけ。
+<li>私(誰?)の期待している方のウィンドウの幅で折り返す。
+<li>ファイラでショートカットのリンク先を追うようにした。気に入らん場合は*filer-follow-links*をnilに。
+<li>filer-send-to。勘で作ってみたけどこんなんでいいんかね?(^^;
+<li>ListView上のC-mでデフォルトボタンを押すようにした。
+<li>以下の関数を実装(たぶん動く)。
+<ul>
+<li type="square">map-utf-7-to-internal <var>input-string-or-stream</var> &optional <var>output-stream  imap4-mailbox-name-p</var>
+<li>map-ucs-2-to-internal <var>input-string-or-stream</var> &optional <var>output-stream big-endian-p</var>
+<li>map-internal-to-utf-7 <var>input-string-or-stream</var> &optional <var>output-stream</var> (<var>direct-encode-white</var> t) (<var>direct-encode-set-o</var> t) <var>imap4-mailbox-name-p</var>
+<li>map-internal-to-ucs-2 <var>input-string-or-stream</var> &optional <var>output-stream add-bom-p</var>
+<li>clear-undo-boundary &optional <var>buffer</var>
+</ul>
+<li>以下のコマンドをC-u付きで呼んだ場合、漢字コードを指定できるようにした。
+<ul>
+<li type="square">find-file
+<li>find-other-file
+<li>find-file-other-window
+<li>read-file
+<li>insert-file
+<li>revert-buffer
+</ul>
+<li>*dabbrevs-no-undo*がnon-nilの場合、dabbrev-expandでのundoの履歴を(見かけ上)残さないようにした。
+<li>map-internal-to-utf-8でたまに変なコードを吐いていたのを修正。
+</ul>
+<h4>Wed Nov 10 1999 Version 0.1.0.109</h4>
+<ul>
+<li>1引数の/の挙動が間違っていたのを修正。
+<li>substitute-stringの戻り値に置換回数を追加。
+<li>grepの結果に対するタグジャンプの挙動をちびっと変更(サイトウモード)。気に入らん場合は*highlight-error*をnil(従来通り)に。またはt以外(須田モード)に。
+<li>grepの結果の見栄えをちょい変更。若干(5%ぐらい?)遅くなった。気に入らん場合は*grep-highlight-match*をnilに。
+<li>漢字コードの自動判定でSJISかEUCかを勘で選ぶ際に、全角英数字・記号類も考慮するようにしてみた。
+<li>CSSモードを逸見さんから。
+<li>非アクティブ時にクリックしたときの挙動がいまいち気に入らなかったので変えてみた。
+</ul>
+<h4>Thu Oct 28 1999 Version 0.1.0.108.1</h4>
+<ul>
+<li>FPU がない場合、または Windows の浮動小数点エミュレータを使う場合、ダンプまで辿り着けなかったのを修正。<strong>たぶん 99.75% の人はアップデートする必要ありません。</strong>
+</ul>
+<h4>Mon Oct 25 1999 Version 0.1.0.108</h4>
+<ul>
+<li>*brackets-is-wildcard-character*がnilの場合、`[]'をワイルドカード文字でなくした。
+<li>プレビュー画面でスクロールできない場合はスクロールできないようにしたつもり(いみふめ)。
+<li>ページ指定印刷(ちょい自信なし)。
+</ul>
+<h4>Mon Oct 18 1999 Version 0.1.0.107</h4>
+<ul>
+<li>xyzzy.BUGの内容をもう少し詳しく。
+<li>isearchを書き直し。喜多さんからisearch-yank-wordをぱくった。
+<li>変換中のみC-gを無効にするってのはかなり面倒だったので、こんなのでごまかしてみる。
+<ul>
+<li type="square">set-quit-char <var>char</var>
+<li>quit-char
+</ul>
+<li>文字列のsubstitution。ちょっと自信なし。
+<ul>
+<li type="square">substitute-string <var>string pattern replacement</var> &key :case-fold :start :end :skip :count
+</ul>
+<li>(set-mark t)の場合、マークをクリアするようにした。
+<li>関数markに引数を追加。マークが設定されていないとき(mark &optional <var>force</var>)で<var>force</var>がnon-nilの場合、nilを返すようにした。
+</ul>
+<h4>Fri Oct 08 1999 Version 0.1.0.106</h4>
+<ul>
+<li>ちゃんと反転できていなかったのを修正。
+<li>死んだときのstack dumpが変だったのを修正。
+</ul>
+<h4>Mon Oct 04 1999 Version 0.1.0.105</h4>
+<ul>
+<li>行カーソルがアンダーラインを消してまうのを修正。
+<li>行末のいんちきボールドが画面にゴミを撒き散らしていたのを修正(たぶん)。
+<li>ウィンドウの位置とサイズの保存・復元を独立して指定できるようにした。
+<li>95/98で番号なしのバックアップファイルが作れない場合があったのを修正。
+<li>新規ファイルで排他ありでバックアップファイルを常に作る場合、ファイルがセーブできなかったのを修正。
+</ul>
+<h4>Fri Sep 24 1999 Version 0.1.0.104</h4>
+<ul>
+<li>OLEのシャットダウンのタイミングが早すぎたのを修正。
+<li>いんちきbold。ついでにset-text-attributeの仕様をまた変えた。
+<ul>
+<li type="square">set-text-attribute <var>from to tag</var> &key :foreground :background :bold :underline :strike-out :prefix :extend
+<li>modify-text-attributes <var>tag</var> &key :foreground :background :bold :underline :strike-out :prefix :extend :start :end :test :test-not :key
+</ul>
+</ul>
+<h4>Wed Sep 22 1999 Version 0.1.0.103</h4>
+<ul>
+<li>Ullrich復活!?
+<li>95/98でサブプロセスが殺せるかも。ぶっさいくだけど。
+<li>ごめん、以下の関数の仕様を変えた。
+<ul>
+<li type="square">set-text-attribute <var>from to</var> &optional <var>tag</var> &key :foreground :background :underline :strike-out :prefix :extend
+<li>modify-text-attributes <var>tag</var> &key :foreground :background :underline :strike-out :prefix :extend :start :end :test :test-not :key
+</ul>
+<li>calcを少し変更。
+<li>buffer-selectorのC-p/C-n。
+</ul>
+<h4>Thu Sep 16 1999 Version 0.1.0.102.1</h4>
+<ul>
+<li>xyzzycliを我慢強くした。
+</ul>
+<h4>Mon Sep 13 1999 Version 0.1.0.102</h4>
+<ul>
+<li>xyzzycliでDDEを使うのをやめた(95/98のDDEが根性なしなため)。
+<li>ウィンドウのサイズが変更されたとき、描画が変になる場合があったのを修正。
+<li>変数の補完で定数も候補にするよう変更。
+<li>以下の関数を実装。
+<ul>
+<li type="square">sleep-for <var>timeout</var>
+<li>set-end-of-file <var>file-stream</var>
+<li>file-position <var>file-stream</var> &optional <var>position</var>
+</ul>
+<li>以下の関数の引数をちょっと変更。
+<ul>
+<li type="square">sit-for <var>timeout</var> &optional <var>no-redraw</var>
+<li>read-into <var>string</var> &optional <var>input-stream</var> <var>eof-error-p</var> <var>eof-value</var> <var>max-length</var>
+<li>read-line-into <var>string</var> &optional <var>input-stream</var> <var>eof-error-p</var> <var>eof-value</var>
+<li>directory <var>pathname</var> &key :absolute :recursive :wild :depth :file-only :show-dots :count :directory-only :callback
+</ul>
+</ul>
+<h4>Tue Sep 07 1999 Version 0.1.0.101.1</h4>
+<ul>
+<li>印刷範囲が行番号または選択部分のとき、運がいい場合以外は印刷が終わらなかったのを修正(たぶん)。
+<li>あと何かやったような気がするけど忘れた(^^;
+</ul>
+<h4>Fri Sep 03 1999 Version 0.1.0.101</h4>
+<ul>
+<li>以下の関数を実装。
+<ul>
+<li type="square">make-listen-socket &optional <var>address port</var> &key :backlog :reuseaddr
+<li>accept-connection <var>stream</var> &key :encoding
+<li>socket-stream-send-oob-data <var>stream data</var>
+<li>socket-stream-set-oob-inline <var>stream on</var>
+<li>kinsoku-goto-column <var>column</var>
+<li>set-process-filter <var>process filter</var>
+<li>process-filter <var>process</var>
+<li>set-process-sentinel <var>process sentinel</var>
+<li>process-sentinel <var>process</var>
+<li>read-line-into <var>string</var> &optional <var>input-stream eof-error-p eof-value recursive-p</var>
+<li>read-into <var>string</var> &optional <var>input-stream eof-error-p eof-value recursive-p</var>
+</ul>
+<li>do-auto-fill、fill-region-as-paragraphを書き直し。
+<li>process-terminate-hookをやめた。
+<li>ためしにftpみたいなのを作ってみた。まだ途中。
+</ul>
+<h4>Fri Aug 27 1999 Version 0.0.0.100</h4>
+<ul>
+<li>「次のxyzzy」の処理を変更。ターゲットがbusyの場合にフォーカスを持っていかれないようにした。
+<li>ダイアログの正規表現のニーモニックをEに統一。
+<li>二発目のxyzzycli -waitが固まるのを修正。
+<li>win98でxyzzycliからの読み込みのとき、前面に出てこないのを修正。
+</ul>
+<h4>Thu Aug 26 1999 Version 0.0.0.99.3(こっそり公開)</h4>
+<ul>
+<li>飽きたとかいいつつ正規表現に\`,\'をつけた。
+<li>replace-dialogのニーモニックが重複していたのを修正。
+<li>write-regionのプロンプトが変になっていたのを修正。
+<li>popup-stringがリソースリークしていたのを修正。
+<li>resolverClassをchild windowにした。
+<li>「次のxyzzy」の処理を変更。ターゲットがbusyの場合に巻き添えを食わないように(たぶん)。
+</ul>
+<h4>Web Aug 25 1999 Version 0.0.0.99.2(こっそり公開)</h4>
+<ul>
+<li>interactiveの'b'がmust-matchになっていなかったのを修正。
+<li>正規表現のマッチングを最左最長にしてみた(その2)。
+</ul>
+<h4>Mon Aug 23 1999 Version 0.0.0.99.1(こっそり公開)</h4>
+<ul>
+<li>正規表現のマッチングを最左最長にしてみた。
+</ul>
+<h4>Thu Aug 19 1999 Version 0.0.0.99</h4>
+<ul>
+<li>意地の悪い正規表現に対しての耐性が若干アップ。でも限界はある。
+</ul>
+<h4>Web Aug 18 1999 Version 0.0.0.98.2(こっそり公開)</h4>
+<ul>
+<li>正規表現のマッチングで状態数がめっさ増えてしまう場合があったのを修正。
+</ul>
+<h4>Tue Aug 17 1999 Version 0.0.0.98.1(こっそり公開)</h4>
+<ul>
+<li>正規表現でマッチすべきものにマッチしなかったのを修正。遅くなった?
+<li>マウスカーソルが変更できるのを思い出したのでUIをつけた。
+</ul>
+<h4>Fri Aug 13 1999 Version 0.0.0.98</h4>
+<ul>
+<li>案の定、折り返し処理が致命的にバグっていたのを修正。
+<li>processとnetwork-streamの改行コード。
+<ul>
+<li type="square">make-process <i>command-line</i> &key :environ :output :exec-directory :incode :outcode :newline-code
+<li>open-network-stream <i>buffer hostname service</i> &key :incode :outcode :newline-code
+<li>process-newline-code <i>process</i>
+<li>set-process-newline-code <i>process code</i>
+</ul>
+<li>streamのencodingを作成時以外でも指定可能に。
+<ul>
+<li type="square">stream-encoding <i>stream</i>
+<li>set-stream-encoding <i>stream encoding</i>
+</ul>
+<li>知らん間にfiler-viewerが変になっていたのを修正。
+<li>DDEのタイムアウトを指定できるようにした。変数*dde-timeout*にミリ秒単位で。
+<li>describe-variable(へなちょこ)。
+</ul>
+<h4>Mon Aug 09 1999 Version 0.0.0.97(こっそり公開)</h4>
+<ul>
+<li>TCP/IPのサポート。ただしまだ中途半端かも。
+<ul>
+<li type="square">open-network-stream <i>buffer hostname service</i> &key :incode :outcode
+<li>connect <i>hostname service</i> &key :encoding (stream系)
+</ul>
+<li>processとnetwork-streamの入出力漢字コード。
+<ul>
+<li type="square">make-process <i>command-line</i> &key :environ :output :exec-directory :incode :outcode
+<li>process-incode <i>process</i>
+<li>process-outcode <i>process</i>
+<li>set-process-incode <i>process code</i>
+<li>set-process-outcode <i>process code</i>
+</ul>
+<li>processの入出力、漢字コード変換、encode/decodeルーチンを丸ごと書き直し。たぶん動くと思う。
+<li>Win98で前/後のxyzzyがちゃんと動くように。
+<li>built-in関数の引数リスト。書いてる途中で脳がとろけてきたので絶対どこか間違ってるはず。
+<li>switch-to-buffer-other-windowを修正。
+<li>とりあえずdescribe-function(へなちょこ)。
+</ul>
+<h4>Mon Aug 02 1999 Version 0.0.0.96</h4>
+<ul>
+<li>禁則処理。かなり自信なし。折り返しの処理を丸ごと書き換えたのでバグってたらすまん。
+<li>以下の関数を実装。引数は<i>input-string-or-stream</i> &optional <i>output-stream</i>。<i>output-stream</i>が与えられないかnilの場合は文字列を返す。
+<ul>
+<li type="square">map-internal-to-sjis
+<li>map-internal-to-jis
+<li>map-internal-to-euc
+<li>map-internal-to-utf-8
+</ul>
+<li>以下の関数の名前と引数を変更。引数は上と同じ。古いのもとりあえず残してあるが、そのうちなくすかも。
+<ul>
+<li type="square">map-sjis-to-internal(旧map-to-sjis)
+<li>map-jis-to-internal(旧map-jis-to-sjis)
+<li>map-euc-to-internal(旧map-euc-to-sjis)
+<li>map-utf-8-to-internal(旧map-utf-8-to-sjis)
+</ul>
+<li>以下の関数の引数を変更。引数は上と同じ。
+<ul>
+<li type="square">system:base64-decode
+<li>system:base64-encode
+<li>system:uuencode
+<li>system:uudecode
+<li>system:quoted-printable-decode
+</ul>
+<li>detect-kanji-codeの引数を<i>input-string-or-stream</i>に変更。
+<li>documentationとか。仕組みだけなのは言うまでもない。
+</ul>
+<h4>Fri Jul 23 1999 Version 0.0.0.95</h4>
+<ul>
+<li>全然差が縮まらん。縮まるどころか広がってどうする。もう無理だな(;_;)。
+<li>C-_などが2個入ってしまう件。ちょい自信なし。
+<li>特定列(というかN文字目)が空白でない場合にコメントとして認識する。COBOL/FORTRAN用。かなり自信なし。
+<pre>
+  (<b>set-syntax-comment-column</b> <i>syntax-table</i> <i>column</i>)
+  (<b>set-syntax-end-comment</b> <i>syntax-table</i> #\LFD nil t)
+</pre>
+<li>set-window-configurationでreverse-regionがなくなってしまうのを修正。
+<li>ファイラが眩しくて溶けてしまわないように。
+<li>xyzzycliに-waitオプションをつけた。
+<li>process-exit-code。
+<li>色設定のUIを変えてみた。
+<li>キーワード4～6は反転、7～9は一行まるごと反転。表示色は1～3と同じ。
+<li>ネットワークドライブへのパスワード入力をキャンセルした場合、そのドライブにアクセスできなかったのを大体修正。
+<li>visible-bellの描き方を若干変更。見た目はほとんど変わってないけど。
+</ul>
+<h4>Fri Jul 16 1999 Version 0.0.0.94</h4>
+<ul>
+<li>Virenque・・・だめじゃん。ていうかArmstrong強すぎ。
+<li>正規表現の置換時にメタ文字`\U'`\L'`\u'`\l'`\E'を使えるようにした。動作はviと一緒。
+<li>visible-bellとか作ってみたり。背景色によっては情けないかも。
+<li>ネットワークドライブへのパスワード入力。たぶん動く。
+<li>buffer-selectorのIMEを無効に。
+<li>バックアップファイルが削除できない場合のエラーメッセージをましに。
+<li>以下の関数を実装。
+<ul>
+<li type="square">deleted-buffer-p
+<li>list-servers
+<li>list-server-resources
+</ul>
+<li>関数message-boxをlispパッケージからeditorパッケージへ。
+</ul>
+<h4>Wed Jul 07 1999 Version 0.0.0.93</h4>
+<ul>
+<li>結局Virenqueは走ってる(^^)/
+<li>罫線モードを実装してキーバインドをCtrl+カーソルに変更。
+<li>誰かが勝手にファイルを書き換えた場合の確認方法。
+<li>undefine-keyがお話にならなかったのを修正。
+<li>テキストのD&D時のメモリリークを修正。たぶんリークしてなかったけど。
+<li>なんでAltでメニューが開かん?の動作を若干変更。メニューのニーモニックでないキーは素通しするようにした。call-menuは用なし?
+<li>message-boxのボタンのキャプションを変更可能に。
+<li>キーボードマクロを再帰的に定義した場合、スタックを食いつぶして死ぬのを修正。
+<li>y-or-n-pを作るのを忘れてた。
+</ul>
+<h4>Mon Jun 28 1999 Version 0.0.0.92</h4>
+<ul>
+<li>undoがごくたまに怪しい動きをする場合があったのを修正。
+<li>罫線描画コマンドを実装(ちと変かも)。
+<li>以下の関数を実装。あまりテストしてない。set-text-colorとclear-all-text-colorsはobsoleteってことで。
+<ul>
+<li type="square">set-text-attribute
+<li>clear-all-text-attributes
+<li>delete-text-attributes
+<li>find-text-attribute
+<li>modify-text-attributes
+</ul>
+<li>メッセージボックスとeval-last-sexpのprint時に*print-circle*をnon-nilにbindするようにした。
+<li>too-many-arguments、too-few-argumentsのエラーメッセージを少し親切に。
+</ul>
+<h4>Mon Jun 21 1999 Version 0.0.0.91</h4>
+<ul>
+<li>VirenqueもPantaniもUllrichも出ないんかー(T^T)。
+<li>特定のフォントで行カーソルが'_'を消してしまうのを修正(あいかわらずしょぼい修正だが)。
+<li>*.lnkも実行ファイル名補完の対象に。
+<li>read-tableの削除時にやばいことをしていたのを修正。
+<li>ちょっとだけダイエット。
+</ul>
+<h4>Wed Jun 16 1999 Version 0.0.0.90</h4>
+<ul>
+<li>signalの初期化で大ボケをかましていたのを修正。致命的なやつなので0.0.0.88と0.0.0.89はとっとと破棄するように。すまんす。
+<li>find-other-fileを0.0.0.87?以前の処理に戻した(節操なし)。今まで(0.0.0.87?～0.0.0.89)と同じにするには*find-other-file-requires-file-name*をnon-nilに。
+</ul>
+<h4>Mon Jun 14 1999 Version 0.0.0.89</h4>
+<ul>
+<li>C++のmake-tags-fileが変なタグを吐くようになっていたのを修正。
+<li>calc-c-indentで開き括弧が行末にある場合のインデントをちょっと変更。
+<li>xyzzy.bugの出力項目を増やした。
+<li>NT以外で番号なしのバックアップファイルの作成に失敗する場合があったのを多分修正。
+</ul>
+<h4>Mon Jun 07 1999 Version 0.0.0.88</h4>
+<ul>
+<li>Marco Pantani失格?
+<li>undoの挙動をほんのちょっとだけ変更。
+<li>perl-modeを服部さんから盗みーの。
+<li>basic-modeを逸見さんから盗みーの。
+<li>buffer-streamが異常に遅かったのをマシにした。
+<li>重大でないエラーの表示をメッセージボックスを使わないように。
+</ul>
+<h4>Wed May 26 1999 Version 0.0.0.87</h4>
+<ul>
+<li>set-window-configurationでお亡くなりになる場合があったのを今度こそ修正。
+</ul>
+<h4>Tue May 25 1999 Version 0.0.0.86</h4>
+<ul>
+<li>set-window-configurationでお亡くなりになる場合があったのを修正したつもり(直った?)。
+</ul>
+<h4>Mon May 24 1999 Version 0.0.0.85</h4>
+<ul>
+<li>universal-argumentで選択状態が解除されるのを修正。
+<li>*delete-buffer-hook*の呼び出し中にまずいことが起こる場合があったのを修正。
+</ul>
+<h4>Mon May 17 1999 Version 0.0.0.84</h4>
+<ul>
+<li>ホイールを回したときにフォーカスがなくなってしまうらしいのを修正したつもり。直ったかどうかは知らん。
+<li>ファイラのShift/Ctrl+Spaceのデフォルトの動作を効かなくした。
+<li>モーダルファイラのBackspaceが変になっていたのを修正。
+<li>Numeric Argumentsの処理を若干変更。
+<li>call-menuを実装。
+<li>parentheses-hash-tableを作ってみた。
+</ul>
+<h4>Mon May 10 1999 Version 0.0.0.83</h4>
+<ul>
+<li>ファイラ関連をいろいろ。
+</ul>
+<h4>Mon Apr 26 1999 Version 0.0.0.82</h4>
+<ul>
+<li>以下の関数を実装。
+<ul>
+<li type="square">current-window-configuration
+<li>set-window-configuration
+<li>window-coordinate
+</ul>
+</ul>
+<h4>Thu Apr 22 1999 Version 0.0.0.81</h4>
+<ul>
+<li>正規表現の置換で空文字列にマッチしたときの挙動を変更。
+</ul>
+<h4>Mon Apr 12 1999 Version 0.0.0.80</h4>
+<ul>
+<li>ちょっとだけダイエット。
+<li>symbol-functionのsetfに特殊形式を受け付けないようにした。
+<li>ウィンドウをリサイズしたときの挙動を若干変更。いまいち自信なし(^^;
+</ul>
+<h4>Fri Apr 02 1999 Version 0.0.0.79</h4>
+<ul>
+<li>plugin(?)関連のバグフィックス2件。
+<li>enlarge-window-horizontallyのバグフィックス。
+</ul>
+<h4>Mon Mar 29 1999 Version 0.0.0.78</h4>
+<ul>
+<li>以下の関数を実装。
+<ul>
+<li type="square">read-preserving-whitespace
+<li>copy-readtable
+<li>set-syntax-from-char
+<li>set-macro-character
+<li>get-macro-character
+<li>make-dispatch-macro-character
+<li>set-dispatch-macro-character
+<li>get-dispatch-macro-character
+<li>read-delimited-list
+<li>readtable-case
+<li>readtablep
+</ul>
+リーダを完全に書き換えたので不具合があるかも。バグってたらすまん。
+</ul>
+<h4>Tue Mar 23 1999 Version 0.0.0.77</h4>
+<ul>
+<li>コマンドラインで指定された相対パスの解釈。
+<li>hide-ifdef。
+<li>autoload関数のrepeat-complex-command。
+<li>ファイラのその場でコピー。
+<li>URLを開くを若干変更。
+<li>ローカルキーマップを優先するようにしてみた。
+<li>plugin(?)のサポート?
+</ul>
+<h4>Mon Mar 08 1999 Version 0.0.0.76</h4>
+<ul>
+<li>読み込み改行コード指定がCRの場合でもCRLFを認識するようにした。
+<li>キャレットの色指定(ただし画面モードが256色の場合は、設定した色にならない場合が多い)。
+<li>キーワード色よりset-text-colorを優先するようにした。
+<li>mode-line-formatのパラメータに%i(IMEの状態)を追加。
+<li>関数get-ime-mode、フック変数*ime-mode-hook*を追加。
+<li>format-dateに%p(午前/午後)を追加。
+<li>bury-buffer直った?
+</ul>
+<h4>Mon Mar 01 1999 Version 0.0.0.75</h4>
+<ul>
+<li>行末がCRのファイルの読み書き。
+<li>repeat-complex-commandを実装。
+<li>あと何やったっけ?(^^;
+</ul>
+<h4>Mon Feb 15 1999 Version 0.0.0.74</h4>
+<ul>
+<li>WindowBlindsの枠付きのSkinで、タイトルバーが出なくなる件に対応(したつもり)。
+<li>WindowBlinds+ウィンドウサイズ保存でガンガンでかくなってしまう件に対応。
+<li>OLE Automationとか(全然テストしてないけど)。
+</ul>
+<h4>Tue Feb 09 1999 Version 0.0.0.73(その2)</h4>
+<ul>
+<li>den8util.dllが95/98で動かんらしいので元に戻した。
+</ul>
+<h4>Mon Feb 08 1999 Version 0.0.0.73</h4>
+<ul>
+<li>モードレスファイラでTABが効かなかったのを修正。
+<li>リストボックスでの先頭文字のサーチとか。
+<li>モードレスファイラでファイルを読んだときにタイトルバーが更新されなかったのを修正。
+<li>den8util.dllを書き直し。
+<li>unzip32.dllの新しいやつに対応。
+</ul>
+<h4>Mon Jan 25 1999 Version 0.0.0.72.1</h4>
+<ul>
+<li>ちゃんと反転できるようにした。
+<li>電八モードで受信した後アクティブに。
+</ul>
+<h4>Mon Jan 11 1999 Version 0.0.0.72</h4>
+<ul>
+<li>remove系の一時オブジェクトがgcされていたのを修正。
+</ul>
+<h4>Tue Jan 05 1999 Version 0.0.0.71</h4>
+<ul>
+<li>印刷時の一行の文字数の指定。
+<li>プロパティページ全般が話にならんぐらい致命的にバグっていたのを修正。
+<li>置換ダイアログでバッファ全体を指定できるようにした。
+<li>ファイラのマスクを覚えられるようにした。
+<li>バックアップファイルの番号を999まで使うようにした。
+<li>番号付きバックアップファイルが作れないとき、番号を詰められるようにした。
+</ul>
+<p><a href="OOOChangeLog.html">さらに昔のChangeLog</a></p>
+</blockquote>
+</body>
+</html>

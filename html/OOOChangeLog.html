@@ -1,0 +1,486 @@
+<!doctype html public "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<link rev="made" href="mailto:kamei@jsdlab.co.jp">
+<title>OOOChangeLog</title>
+</head>
+<body text="#000000" bgcolor="#ffffff" link="#000080" vlink="#8000ff" alink="#800000">
+<blockquote>
+<h4>Mon Dec 21 1998 Version 0.0.0.70.1</h4>
+<ul>
+<li>C-^, C-_ が入力できなかったのを修正。
+<li>バッファごとに表示フラグを指定できるようにした。
+<li>popup-stringにタイムアウトを指定できるようにした。
+</ul>
+<h4>Mon Dec 14 1998 Version 0.0.0.70</h4>
+<ul>
+<li>タグファイルが階層を追えるようになった。
+<li>マークした行番号の反転。
+</ul>
+<h4>Mon Dec 07 1998 Version 0.0.0.69.2</h4>
+<ul>
+<li>画面モードがTrue colorのとき色の作成ができなかったのを修正。
+<li>ダブルバイト文字の2バイト目がNULのとき表示がずれるのを修正。
+</ul>
+<h4>Tue Dec 01 1998 Version 0.0.0.69.1</h4>
+<ul>
+<li>popup-stringで文字列が巨大なときマヌケなことをしていたのを修正(Thanks to 工藤)。
+<li>辞書引きモードで活用も見るようにした(標準では見つからないときだけ。Ctrlを押しながらで常に)。
+</ul>
+<h4>Mon Nov 30 1998 Version 0.0.0.69</h4>
+<ul>
+<li>最後に変更した行へ移動(goto-last-modified-line)。
+<li>キャレット形状の指定。
+<li>同時に作成可能なメニュー項目数を大幅に減らし、文字数も制限するようにした。これでも95で目一杯作ると落ちるかも(^^;
+<li>辞書引きモードとか。
+<li>popup-stringを実装。
+<li>gendicのメモリ食わないバージョン。
+<li>カレントバッファのモードラインの色を指定できるようにした。
+<li>電八モードの引用行の色分け。
+<li>isearchでヒストリを使えるようにしてみた。が、なんかいまいち(^^;
+</ul>
+<h4>Tue Nov 24 1998 Version 0.0.0.68(その2)</h4>
+<ul>
+<li>do-symbols/do-external-symbolsがバグっていたのを修正(Thanks to 須田)。
+</ul>
+<h4>Tue Nov 24 1998 Version 0.0.0.68</h4>
+<ul>
+<li>存在しないファイルに排他をかけたときファイルが残ってしまうのを修正。
+<li>yank-popを実装。
+<li>Mule-UCSのUTF-8をもう少し大目に見るようにした。
+<li>その他細かいところをちびちび変更。
+</ul>
+<h4>Fri Nov 20 1998 Version 0.0.0.67</h4>
+<ul>
+<li>Windows風キーバインドファイル(Gates.l)をおまけに付けた。
+<li>アプリケーションキーを使用できるようにしたつもり(関藤)。指定は#\Apps。代わりに#\Snapshotは廃止。ミ田キーはやっぱり出来なかった(^^;
+<li>*this-command*/*last-command*がそこそこ正しい値を持つようにしたつもり。
+<li>選択時や反転時はキーワード等を無視するようにした(工藤)。
+<li>たぶんUTF-8の読み書きをサポート(やまぐち＠あわぐも)。<br>
+ただしマルチリンガルを扱えるわけではないのであまり期待しないように。日本語以外で書かれたファイルを読んで書くと中身が壊れる(^^;
+<li>char-after/char-beforeを実装。
+<li>*load-path*のデフォルトを変更。
+</ul>
+<h4>Mon Nov 09 1998 Version 0.0.0.66</h4>
+<ul>
+<li>他のxyzzyとちびっと連携できるようにした(関藤)。
+<li>HTMLのコメントの色付けを少し変更。
+<li>shellモードでun*x系のshellもそこそこ使えるようにした。
+<li>バックタグジャンプを実装(たけばやし＠リムネット)。
+</ul>
+<h4>Wed Nov 04 1998 Version 0.0.0.65.1</h4>
+<ul>
+<li>モードレスのファイラが設定を忘れてしまうのを修正。でもいまいち。
+<li>NT以外でshell-modeが動かなかったのを修正(Thanks to suda)。
+<li>TABの幅の設定を忘れてしまうのを修正(Thanks to shinobu.t)。
+</ul>
+<h4>Mon Nov 02 1998 Version 0.0.0.65</h4>
+<ul>
+<li>ファイラをモードレスにできるようにしてみた。*filer-modal*がnilの場合。
+<li>へなちょこshellモードを実装。
+<li>javaモードのexportし忘れを修正(Thanks to 木寅)。
+</ul>
+<h4>Mon Oct 26 1998 Version 0.0.0.64.1</h4>
+<ul>
+<li>バッファをセーブしたときのアンドゥ情報を覚えておくようにしてみた(Mii)。が、なんかいまいち、っていうか変?
+<li>タグジャンプのリストをでかくして横スクロールバーをつけた(kei)。
+</ul>
+<h4>Mon Oct 19 1998 Version 0.0.0.64</h4>
+<ul>
+<li>実行ファイルサイズが再び900KBを突破(^^;
+<li>F5/S-F5で正規表現もサーチできるよう変更。
+<li>単語の末尾が[ー゛゜]のときbackward-wordが正しく動かなかったのを修正。
+<li>ファイラにビューワみたいなのをつけた。キーはとりあえずW。そこそこ動くはず(須田)。
+<li>ファイルのプロパティを表示できるようにした。
+</ul>
+<h4>Thu Oct 08 1998 Version 0.0.0.63.6</h4>
+<ul>
+<li>execute-shell-commandが文句たれるのを修正(Thanks to suda)。
+<li>diffを若干変更。
+<li>set-text-colorに行末まで色をつけるオプションを追加(kei)。
+<li>*post-command-hook*を追加(kei)。
+</ul>
+<h4>Mon Sep 28 1998 Version 0.0.0.63.5</h4>
+<ul>
+<li>f?grepに数引数が与えられた場合、カレントバッファからのみサーチするよう変更(kei)。
+<li>completing-readを実装。
+</ul>
+<h4>Mon Sep 21 1998 Version 0.0.0.63.4</h4>
+<ul>
+<li>den8viewのサーチをフォルダのメールすべてを対象にするよう変更。
+<li>xyzzycliのコマンドラインオプションを増やした。
+<li>95でDDEのエラーコード(特にno_conv_established)を正しく取得できない場合があったのを修正したつもり。NTだと動くのにね(^^;
+<li>Win98のときに不具合が出るようにエンバグしていたのを修正(Thanks to shoda T.)。
+</ul>
+<h4>Mon Sep 14 1998 Version 0.0.0.63.3</h4>
+<ul>
+<li>気がついたら<i>Vuelta d'Espana </i>が始まってた。
+<li>バッファごとのIMEの状態をたまに忘れることがあったのを修正。
+<li>95のMS-IMEの辞書登録のバグ対策(たぶん)。
+</ul>
+<h4>Fri Sep 11 1998 Version 0.0.0.63.2</h4>
+<ul>
+<li>複数キーストロークのIME制御とバッファごとのIME状態の記憶がともにONのとき、IMEの制御がいまいちの場合があったのを修正。
+</ul>
+<h4>Mon Sep 07 1998 Version 0.0.0.63.1</h4>
+<ul>
+<li>ダイアログ全般が致命的にバグっていたのを修正(Thanks to suda)。m(_ _)m
+</ul>
+<h4>Fri Sep 04 1998 Version 0.0.0.63 - Festina なんてこったい(;_;)</h4>
+<ul>
+<li>ファイラで先頭(&lt;)と最後(&gt;)に飛べるようにした(kei)。
+<li>バッファごとにIMEの状態を覚えられるようにした(kei)。
+<li>折り返す設定で、hide-restricted-regionがnon-nilのとき、narrowの外側の折り返しマークが表示されていたのを修正。
+</ul>
+<h4>Wed Aug 26 1998 Version 0.0.0.62.3</h4>
+<ul>
+<li>フォント幅が奇数のとき、描画位置が間違っていたを修正(Thanks to 木寅)。
+</ul>
+<h4>Mon Aug 24 1998 Version 0.0.0.62.2</h4>
+<ul>
+<li>右側にちびっと隙間をあけた(木寅)。
+</ul>
+<h4>Thu Aug 20 1998 Version 0.0.0.62.1</h4>
+<ul>
+<li>*kbd-translate-table*を実装(henmi)。
+<li>D&Dでドロップされたウィンドウをアクティブにするようにした(shoda T.)。
+<li>ミニバッファにドロップされた場合、パス名を挿入するようにした(shoda T.)。
+</ul>
+<h4>Sun Aug 16 1998 Version 0.0.0.62</h4>
+<ul>
+<li>カーソル行に下線をつけられるようにした(suda)。
+<li>キャレットを点滅しないオプションをつけた(suda)。
+<li>gendicを以前ほどはメモリを食わないように作り直した、が…(^^;
+</ul>
+<h4>Mon Aug 10 1998 Version 0.0.0.61</h4>
+<ul>
+<li>Escキーを再定義できるようにした(henmi)。
+<li>diffに色をつけてみた(henmi)。今のところほとんどテスト版みたいなもんで実用性はなし(^^;
+<li>任意のテキストに色をつけられるようにした(henmi)。今のところ15色固定。あまり大量に設定すると遅くなる(せいぜい数100個程度)。
+<li>文字列とコメント内にあるコントロールコードの色を変えた(というか、変えないようにしたというか)。
+<li>マウスボタンを押していなくてもtrack-popup-menuを呼べるようにした(henmi)。
+<li>backward-delete-char-untabify-or-selection(長いな)を実装(木寅)。
+</ul>
+<h4>Tue Aug 04 1998 Version 0.0.0.60</h4>
+<ul>
+<li>対応する括弧が画面の外にある時、メッセージを出すようにした(henmi)。
+<li>電八君のキャッシュをフラッシュする努力をするようにした。
+<li>バッファごとにタブの幅を指定できるようにした(henmi)。でもUIはない。
+<p><b>set-tab-columns</b> <i>columns</i> <b>&amp;optional</b> <i>buffer</i><br>
+<b>tab-columns</b> <b>&amp;optional</b> <i>buffer</i></p>
+<li>find-fileにショートファイル名が与えられた場合、完全なロングファイル名に変換するようにした。
+</ul>
+<h4>Tue Jul 28 1998 Version 0.0.0.59.1</h4>
+<ul>
+<li>自己解凍アーカイブが変な場所にできてしまうのを多分修正(thanks to henmi)。
+<li>自動セーブファイルをバックアップディレクトリに作成できるようにした(みやた)。*auto-save-to-backup-directory*で指定する。詳しくはbackup.lのコメントを参照のこと。
+</ul>
+<h4>Mon Jul 27 1998 Version 0.0.0.59</h4>
+<ul>
+<li>自己解凍アーカイブを作成できるようにした(henmi)。LHAのみで、圧縮時にアーカイブファイルの拡張子を.EXEにすればできる。変換前の.LZHが残るのは、とりあえず仕様。
+<li>マークをちょっと便利に(kei)。
+<li>折り返す設定のとき、折り返し位置の文字をマウスで選択できないのを修正。
+<li>ZIPのリストの時刻がずれていたのを修正。
+<li>backup.lのいいかげんな説明に抜けがあったのを修正。
+</ul>
+<h4>Sun Jul 19 1998 Version 0.0.0.58</h4>
+<ul>
+<li>コマンドラインオプションを追加。
+<li>Viewモードを貰った(Thanks to henmi)。
+<li>SQLモードを貰った(Thanks to henmi)。
+<li>バックアップファイルの作成先を指定できるようにした(みやた)。詳しくはbackup.lのコメントを参照のこと。
+<li>filer-shell-executeで一行下に移動するようにした(kei)。
+<li>filer-extract-archiveで選択されていない場合は何もしないようにした(kei)。
+<li>filer-list-archiveで選択されている場合は、選択ファイルをリストするようにした。
+</ul>
+<h4>Fri Jul 17 1998 お知らせ</h4>
+<ul>
+<li><a href="00README.html#ml">メーリングリスト</a>ができたらしいぞ。
+</ul>
+<h4>Fri Jul 17 1998 Version 0.0.0.57.5 - Le Tour de France 開幕記念(^^)/</h4>
+<ul>
+<li>自己解凍型のzipも判定するようにした。
+<li>zipのリストを出せるようにした。
+<li>リードオンリなバッファへのテキストのドロップをはなからできないようにした。
+<li>知らん間にマイナーモードの一部がモードラインに表示されなくなっていたのを修正。
+<li>コマンドラインオプションを追加。
+<li>モードライン描画時のちらつきをちーとだけ抑えた。
+</ul>
+<h4>Fri Jul 10 1998 Version 0.0.0.57.4</h4>
+<ul>
+<li>電八の返信時にjdateを使えるようにした。多分動くはず(^^;
+<li>make-temp-file-nameの仕様を若干変更。
+<li>最大表示でウィンドウ位置を保存すると妙な動きになるのを修正(thanks to zxr)。
+<li>クリップボードにコピーしたとき選択範囲をクリアしないオプションをつけた(shoda T.)。
+</ul>
+<h4>Tue Jul 07 1998 Version 0.0.0.57.3</h4>
+<ul>
+<li>HTMLの色分けでコメント終了の判定がおかしかったのを修正。
+</ul>
+<h4>Mon Jul 06 1998 Version 0.0.0.57.2</h4>
+<ul>
+<li>*filer-chdir-hook*を追加(henmi)。
+<li>折り返す設定のとき、カーソルの動きがおかしい場合があったのを修正できたかも
+<li>品のないHTMLモードの色分けを実装(^-^;)。
+<ul>
+<li type="square">タグ自体の色を指定できるようにした。
+<li>タグの外では色をつけないようになった。
+<li>一応コメントを認識できるようになった。ただし、あいかわらず手抜きなので、&quot;&lt;!-&quot;だけでコメント開始にしてしまう。
+</ul>
+<li>マヌケなことに「゜」および「￣」を半角に変換できなかったのを修正。
+<li>ワイルドカードにNOTを追加(henmi)。記号は`|'(`!'に似てるから?)。
+</ul>
+<h4>Thu Jul 02 1998 Version 0.0.0.57.1</h4>
+<ul>
+<li>でかいファイルだと色分けが致命的に遅かったのを修正(キャッシュがまともに働いてなかった)。
+<li>それなりのサイズのスタック領域をあらかじめ確保しておくようにした。
+<li>`#'とcpp-directiveが離れてるのもありにした。
+<li>ミニバッファでは色分けをしないようにした。
+</ul>
+<h4>Mon Jun 29 1998 Version 0.0.0.57</h4>
+<ul>
+<li>折り返す設定でnarrowしている場合、ちょっとやばいことが起こる可能性があったのを修正。
+<li>文字の印字時にエスケープが甘かったのを修正。
+<li>Ctrl+[!&quot;#$%&amp;'()*+,---./0123456789:;&lt;=&gt;`{|}~?]にコマンドを割り当てられるようにした(ゆっぴぃ☆)。[&quot;'(),;`\|]を指定する場合はエスケープすること。
+<li>narrowの外に行けてしまう場合があったのを修正。
+<li>文字列とコメントに色をつけた。うるさい場合は文字色と同じ色にしてね。以下はとりあえず仕様(手抜きとも言う)。
+<ul>
+<li type="square">一行コメントが次行に継続していても認識しない。
+<li>閉じていない文字列の行末がエスケープされていなくても、次行に継続する。
+<li>Common Lispのようなコメントがネストできる言語でも、ネストは認識しない。
+<li>HTMLのコメントを認識できない。
+<li>HTMLのタグの外でも色をつけてまう。
+<li>遅いマシンだと遅い。
+</ul>
+<li>Javaモードを実装(C++モードと同じだけど)。
+</ul>
+<h4>Thu Jun 25 1998 Version 0.0.0.56.2</h4>
+<ul>
+<li>95でファイラのインクリメンタルサーチをすると、ListViewの中身をぶち壊すのを修正(Thanks to henmi)。LVM_GETITEMTEXTが間違っているのをコロっと忘れていた。
+<li>電八モードでReplyできるようにした(手抜きバージョン)。
+<li>置換を高速化。ただし、タグ付きは除く。
+<li>シンタックステーブルのデフォルト値を変更。
+<li>キーワードファイルの読み込む仕組みを変更。キーワードファイルはetc/の下へ。特定のモードでだけ色分けをしたくない場合は、以下のいらんもんをnilにすればおっけ。
+<ul>
+<li type="square">ed::*c-keyword-file*
+<li>ed::*c++-keyword-file*
+<li>ed::*html-keyword-file*
+<li>ed::*LaTeX-keyword-file*
+<li>ed::*pascal-keyword-file*
+<li>ed::*java-keyword-file*
+</ul>
+</ul>
+<h4>Thu Jun 18 1998 Version 0.0.0.56.1</h4>
+<ul>
+<li>右クリックでURLがオープンできるかも。
+<li>xyzzycliのDDEエラー時のメッセージを親切にした(つもり)。
+<li>折り返す設定のとき、行単位の貼り付けがバグっていたのを修正。
+<li>TeXのキーワードを山のように追加(Thanks to みやた)。
+</ul>
+<h4>Mon Jun 15 1998 Version 0.0.0.56</h4>
+<ul>
+<li>へなちょこLaTeXモードを実装。期待しないよーに。
+<li>ちょっとした都合で、仮想画面のサイズが2倍になってしもた。おそらくバグってないと思うが。
+<li>htmlモードで、タグが2行に跨るとき色分けがおかしかったのを修正。
+<li>へなちょこPascalモードを実装(みやた)。期待しないよーに。
+<li>scan-bufferから:word-searchキーワードを削除。代わりに:left-bound, :right-boundを追加。
+</ul>
+<h4>Thu Jun 11 1998 Version 0.0.0.55 - COUPE DU MONDE 開幕記念(^^)/</h4>
+<ul>
+<li>dynamic addrev(C-x /)を実装。
+<li>abbrev modeを実装。
+<li>display-bufferを実装(てけとーバージョン)。
+<li>get-buffer-createを実装。
+<li>表示行末にあるタブの上にいるとき、カーソルが変な位置に表示されるのを修正。
+<li>define-dll-entryで定義した関数のロードを呼び出し時まで遅延するようにした。
+</ul>
+<h4>Mon Jun 08 1998 Version 0.0.0.54</h4>
+<ul>
+<li>折り返す設定のとき、変換系のコマンドで若干不具合があったのを修正。
+<li>hookの呼び方が不自然で効率が悪かったのをちょっと修正。
+<li>cua-modeもどきを実装(関藤)。winkeyをロードすれば使えるようになる。<br>
+何するもんかっちゅーと、C-x/C-cを押したとき、テキストが選択されていればカット/コピーして、選択されていなければ従来通りプレフィックスになるというもん。ついでにC-z/C-vでアンドゥ/ペースト、C-M-x/C-M-cにプレフィックスを割り当てた。
+<li>ホームディレクトリを決める際、環境変数XYZZYHOMEを優先するようにした(shoda T.)。
+<li>pos-not-visible-in-window-pが、たまにいいかげんな値を返すことがあったのを修正。
+</ul>
+<h4>Mon Jun 01 1998 Version 0.0.0.53.1</h4>
+<ul>
+<li>案の定、矩形がバグっていたので(情けないことに折り返さない場合のみ)修正。
+<li>印刷ルーチンをそこそこ動くよう修正。
+<li>スクロールバーでの横スクロールが不細工だったのを少しましにした(あいかわらず不細工だが)。
+<li>unicodeのバイトオーダーがどっちでも読み書きできるようにした(とりあえずIとMで区別しているが、Unicodeにおける正式な名称ってのはあるんだろか?)。
+<li>設定のプロパティページをちょいといじった。
+<li>折り返す設定のとき折り返し幅またはタブ幅を変更してもスクロールバーの位置が更新されないのを修正。
+</ul>
+<h4>Fri May 29 1998 Version 0.0.0.53</h4>
+<ul>
+<li>95でunicodeの自動判定が出来なかったのを修正。95ではIsTextUnicodeがないのでごく単純な判定コードを入れた(Thanks to きとら)。
+<li>やらないとか言っておきながら長い行の折り返しをできるようにした(梅田くん@tut)。パフォーマンスも思ったほど悪くない気がするのだがどない? 基本的には表示時に小細工しているだけなので致命的な問題はないと思うがあまり自信はない。細かい修正漏れがあるような気がする(特定のコマンドで動きがおかしいとか)。ちなみに矩形の操作はあまりテストしていない。印刷はそのうちやる。何か気が付いたらレポートくれ。ところで、C-a/C-eでどう動いたらいい? それから、もうちょいマシな関数名も募集。
+</ul>
+<h4>Fri May 22 1998 Version 0.0.0.52.1</h4>
+<ul>
+<li>正規表現の文字クラスが特定の範囲の場合、マッチすべきでない文字にまでマッチしていたのを修正(なんで今までばれなかったかな? しかし、この分だとまだまだバグってそうだな・・・)。0.0.0.52を持ってった人ごめんね～(^_^;)。
+</ul>
+<h4>Thu May 21 1998 Version 0.0.0.52</h4>
+<ul>
+<li>正規表現が、いわゆる半角カナから始まるテキストにマッチすべきパターンのとき、まともに動作しなかったのを修正(情けな～)。
+<li>CDM_SETCONTROLTEXTてなメッセージがあるのを初めて知った(^-^;)。
+<li>使いもしないのにUnicodeの読み書きをサポート。読み込み時に自動判定するのはBOMがある場合のみ。
+<li>漢字コードの自動判定ルーチンをまるごと書き直し。ちょっとだけ高速になったはず。また、SJISとEUCJPの認識率が若干良くなったと思うのだが、もし従来判定できていたファイルが判定できなくなっていたら教えて。
+</ul>
+<h4>Mon May 11 1998 Version 0.0.0.51.1</h4>
+<ul>
+<li>色分けのためだけにHTMLモードを実装。
+<li>オートセーブのタイミングをちょっと変えた。
+<li>ちょいとダイエットしたら実行ファイルのサイズが900KBを切った。
+<li>電八読みモードから*den8-timezone-diff*を削除。環境変数TZが正しく設定されていれば問題ない。
+</ul>
+<h4>Mon Apr 20 1998 Version 0.0.0.51</h4>
+<ul>
+<li>使いもしないのにキーワードに色を付けられるようにしてみた。本当は正規表現で指定したかったのだが、しゃれにならんぐらい遅かったのでやめ。
+<li>.tar.bz2形式に2秒で対応。
+<li>ポイントが「ー」の上にあるときforward-wordで動く範囲が変だったのを修正。
+</ul>
+<h4>Mon Apr 13 1998 Version 0.0.0.50.3</h4>
+<ul>
+<li>キーを押しっぱなしにしている場合は、キーを離すまでオートセーブを保留するようにしたつもり。
+<li>知らない間にdrag&amp;drop編集の設定が出来なくなっていたのを修正。
+</ul>
+<h4>Fri Apr 10 1998 Version 0.0.0.50.2</h4>
+<ul>
+<li>そろそろバージョンアップのネタが無くなってきたので、ネタ募集。
+<li>ウィンドウ位置を保存したとき上にずり上がっていく場合があるのを修正。0.0.0.48で修正したつもりだったけどNTではたまたま直ったように見えてただけ。今度こそ直った?(thanks to shoda T.)
+<li>ウィンドウ位置を保存したとき、無条件にウィンドウサイズも保存されていたのを修正。
+<li>listviewの描画ルーチンを若干変更。まだちょっと気に入らんとこがあるけど、この辺で勘弁しといてやる。
+</ul>
+<h4>Mon Mar 30 1998 Version 0.0.0.50.1</h4>
+<ul>
+<li>削除バッファとクリップボードを同期するオプションを付けた(だいたい動くはず)。
+<li>クリップボード操作で効率の悪かった処理を修正。
+</ul>
+<h4>Mon Mar 23 1998 Version 0.0.0.50</h4>
+<ul>
+<li>ファイラウィンドウでIMEを無効にするようにした。
+<li>Cモードで、以下のケースでのwhileが正しくインデントされなかったのを修正。
+<pre>
+  do
+    do
+      {
+      }
+    while (COND);
+</pre>
+他の場所のインデントに影響が出たらすまん(^^;
+<li>Cモードで、以下のケースでのelseが正しくインデントされなかったのを修正。
+<pre>
+  if (COND)
+    do
+      if (COND)
+        ;
+    while (COND);
+  else
+</pre>
+他の場所のインデントに影響が出たらすまん(^^;
+<li>電八読みモードの一覧の時刻がずれるのが実は直っていなかった。プログラムで判定するのは無理っぽいので(^^; *den8-timezone-diff*を手で設定するようにした(den8view.lを参照)。
+<li>compare-file(cmp(1)と同じ)、filer-compare-fileを実装。
+<li>count-matchesで空文字列にマッチした場合無限ループになるのを修正。
+</ul>
+<h4>Fri Mar 13 1998 Version 0.0.0.48.1</h4>
+<ul>
+<li>ウィンドウサイズ/位置を保存しないときに情けない状態になっていたのを修正(thanks to ume)
+</ul>
+<h4>Fri Mar 13 1998 Version 0.0.0.48(一瞬公開)</h4>
+<ul>
+<li>電八読みモードのUIをちょろっと変更。
+<li>Archiver DLLを必要なときだけロードするよう変更。
+<li>電八読みモードで時刻がずれるのを直した。
+<li>unrar32.dllに対応(^^;
+<li>ウィンドウ位置を保存したとき上にずり上がっていく場合があるのを修正。
+</ul>
+<h4>Mon Mar 02 1998 Version 0.0.0.47.1</h4>
+<ul>
+<li>ファイラの時刻表示のフォーマットをちょっと変えてみた。
+<li>gcの際に未使用ヒープも開放するようにしてみた。
+<li>read-onlyなバッファにテキストをドロップできてしまっていたのを修正。
+<li>電八読みモードがそこそこ使えるようになった(はず)。
+<li>filer-search-name(いいかげんな名前)を5秒で実装(kei)。
+<li>formatの~Aのmincolの処理が変だったのを修正。
+<li>WM_PASTEに反応するようにした(電八用)。
+</ul>
+<h4>Mon Feb 23 1998 Version 0.0.0.47</h4>
+<ul>
+<li>ファイル名を変更したときにウィンドウキャプションが更新されないバグを修正。
+<li>get-window-lineが、たまにいいかげんな値を返すことがあったのを修正。
+<li>make-backup-file-alwaysを覚えておくようにした。
+<li>95の場合、番号なしのバックアップファイルがめったに作れなかったのを修正(thanks to shoda T.)。
+<li>以下のコマンドを貰った(thanks to shoda T.)。
+<ul>
+<li type="square">selection-end-of-line
+<li>selection-beginning-of-line
+<li>selection-forward-word
+<li>selection-backward-word
+<li>selection-next-page
+<li>selection-previous-page
+</ul>
+<li>ZIP32J.DLL、CAB32.DLLに対応。ファイラで圧縮するときはアーカイブ名を拡張子込み(lzh/zip/cab/tar/tar.gz/tgz/tar.Z/taz)で指定すればその形式で圧縮する。指定されなければlhaで圧縮するのは今まで通り。
+<li>文字オブジェクトの文字コードが特定の範囲のとき、読み戻せない形で印字していたのを修正。#\oooおよび#\xhhを認識するようにした。
+</ul>
+<h4>Mon Feb 16 1998 Version 0.0.0.46.1</h4>
+<ul>
+<li>filer-execute-applicationで実行ディレクトリをファイラのディレクトリにするよう変更。
+<li>英和辞書を引くときに活用を類推するようにした(結構hit率が上がったはず)。
+<li>change-newline-code, change-default-newline-codeを実装。
+<li>バッファの改行コードを変えたときにモード行に反映されなかったのを修正。
+<li>decode-mime-headerを実装。
+<li>read-onlyなバッファでrevert-bufferができなかったのを修正。
+</ul>
+<h4>Tue Feb 10 1998 Version 0.0.0.46</h4>
+<ul>
+<li>si:*stream-line-numberを実装(henmi)。
+<li>メニューが出ているときにC-gを押すと、それ以降メニューが出てこなくなるバグを修正(thanks to doi)。
+<li>kill-ringが空のときにyankするとエラーになるのを修正(yankを書き直したときにエンバグした)。
+<li>アーカイブファイルを展開したとき、キーボードの状態が変になる場合があるのを修正。
+<li>gresreg-dialogで*case-fold-search*が効いていなかったのを修正。
+<li>forward-line, backward-lineをinteractiveにした(henmi)。
+<li>write-regionのinteractive文字がfだったのをFに修正。
+<li>*filer-guide-text*のexportし忘れを修正。
+<li>*enable-meta-key*がnon-nilのときでもF10は素通しするよう変更(henmi)。
+</ul>
+<h4>Tue Feb 03 1998 Version 0.0.0.45.1</h4>
+<ul>
+<li>execute-region(リージョンをバッチファイルとして実行)を実装。
+<li>process-send-y, process-send-nを実装。
+<li>make-temp-file-nameで拡張子を指定できるよう変更。
+<li>テンポラリファイル名作成のアルゴリズムを変更。
+<li>insertの仕様を従来のアッパーコンパチで、Emacsのinsertともだいたい同じになるように変更(henmi)。
+<li>yankを新しいinsertを使うように変更。
+<li>get-window-handleを実装(henmi)。
+</ul>
+<h4>Mon Jan 26 1998 Version 0.0.0.45</h4>
+<ul>
+<li>ドライブごとのカレントディレクトリをだいたい覚えておくようにした(zxr)。
+<li>ファイラの&quot;..&quot;の位置でスペースが押されたときに下に移動するよう変更(zxr)。
+<li>filer-scroll-(left|right)の戻り値を、実際にスクロールしたかどうかを返すよう変更。
+<li>filer-scroll-or-left-window-or-upでシングルウィンドウモードの場合、スクロールできなかったら上のディレクトリに移動するよう変更(zxr)。
+<li>yank-to-clipboardを実装(zxr)。
+</ul>
+<h4>Wed Jan 14 1998 Version 0.0.0.44.5</h4>
+<ul>
+<li>文字色のデフォルトがウィンドウ背景色になってしまっていたのを修正。
+<li>複素数の大小の比較がコンパイル後のコードで実行できてしまっていたのを修正。
+<li>マクロのlambdaリストのトップレベルに現われた&amp;wholeに対するbindが間違っているような気がしたので正しいと思われるように修正。
+</ul>
+<h4>Mon Jan 05 1998 Version 0.0.0.44.4</h4>
+<ul>
+<li>ダンプの確認時にウィンドウを手前に出すようにした。
+<li>with-open-stream, with-open-fileがcloseの戻り値を返していたのを正しい値を返すように修正。
+<li>関数compileを実装(emacsのM-x compileとは違う)。
+<li>functionへのcoerceを実装。
+<li>copy-fileでエラーが起きたときにコピー途中のファイルの残骸が残るバグを修正。ディスクフルに対しては、あらかじめファイルサイズ分の領域を確保してからコピーするようにした (コピー先に同じ名前のファイルがあっても大丈夫! ただしディスクフルの場合のみに限る)。大幅に書き換えたので不具合があるかも。バグってたらすまん。
+<li>関数`/'が1引数のとき型チェックをしていなかったのを修正。
+<li>キーボードマクロをファイルへ保存できるようにした(kei)。
+</ul>
+<p><a href="OOOOChangeLog.html">かなり昔のChangeLog</a></p>
+</blockquote>
+</body>
+</html>

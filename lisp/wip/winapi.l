@@ -1,0 +1,253 @@
+;;; -*- Mode: Lisp; Package: WINAPI -*-
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (require "foreign"))
+
+(provide "wip/winapi")
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (unless (find-package "winapi")
+    (defpackage "winapi" (:use "lisp" "foreign")))
+  (unless (find-package "win-user")
+    (defpackage "win-user" (:use "lisp" "foreign" "winapi"))))
+
+(in-package "winapi")
+
+(*define-c-macro DWORD (x) `(logand ,x #xffffffff))
+(*define-c-macro WORD (x) `(logand ,x #xffff))
+
+;; windef.h
+(*define-c-type u_long ULONG)
+(*define-c-type u_short USHORT)
+(*define-c-type u_char UCHAR)
+(*define-c-type (char *) PSZ)
+(*define-c-type u_long DWORD)
+(*define-c-type int BOOL)
+(*define-c-type u_char BYTE)
+(*define-c-type u_short WORD)
+(*define-c-type float FLOAT)
+(*define-c-type (void *) LPVOID)
+(*define-c-type int INT)
+(*define-c-type u_int UINT)
+
+;; winnt.h
+(*define-c-type (void *) PVOID)
+(*define-c-type char CHAR)
+(*define-c-type short SHORT)
+(*define-c-type long LONG)
+(*define-c-type wchar_t WCHAR)
+(*define-c-type (char *) LPSTR)
+(*define-c-type (char *) PSTR)
+(*define-c-type (char *) LPCSTR)
+(*define-c-type (char *) PCSTR)
+(*define-c-type (void *) HANDLE)
+(*define-c-type DWORD LCID)
+(*define-c-type WORD LANGID)
+(*define-c-type double LONGLONG)
+(*define-c-type double DWORDLONG)
+(*define-c-type BYTE BOOLEAN)
+
+;; windef.h
+(*define-c-type UINT WPARAM)
+(*define-c-type LONG LPARAM)
+(*define-c-type LONG LRESULT)
+(*define-c-type HANDLE HWND)
+(*define-c-type HANDLE HHOOK)
+(*define-c-type WORD ATOM)
+(*define-c-type HANDLE HGLOBAL)
+(*define-c-type HANDLE HLOCAL)
+(*define-c-type HANDLE GLOBALHANDLE)
+(*define-c-type HANDLE LOCALHANDLE)
+(*define-c-type (void *) FARPROC)
+(*define-c-type HANDLE HGDIOBJ)
+(*define-c-type HANDLE HACCEL)
+(*define-c-type HANDLE HBITMAP)
+(*define-c-type HANDLE HBRUSH)
+(*define-c-type HANDLE HCOLORSPACE)
+(*define-c-type HANDLE HDC)
+(*define-c-type HANDLE HGLRC)
+(*define-c-type HANDLE HDESK)
+(*define-c-type HANDLE HENHMETAFILE)
+(*define-c-type HANDLE HFONT)
+(*define-c-type HANDLE HICON)
+(*define-c-type HANDLE HMENU)
+(*define-c-type HANDLE HMETAFILE)
+(*define-c-type HANDLE HINSTANCE)
+(*define-c-type HINSTANCE HMODULE)
+(*define-c-type HANDLE HPALETTE)
+(*define-c-type HANDLE HPEN)
+(*define-c-type HANDLE HRGN)
+(*define-c-type HANDLE HRSRC)
+(*define-c-type HANDLE HSTR)
+(*define-c-type HANDLE HTASK)
+(*define-c-type HANDLE HWINSTA)
+(*define-c-type HANDLE HKL)
+(*define-c-type int HFILE)
+(*define-c-type HICON HCURSOR)
+(*define-c-type DWORD COLORREF)
+
+;; winuser.h
+(*define-c-type FARPROC WNDPROC)
+(*define-c-type FARPROC DLGPROC)
+
+(*define-c-struct POINT
+  (LONG x)
+  (LONG y))
+
+(*define-c-struct SIZE
+  (LONG cx)
+  (LONG cy))
+
+(*define-c-struct RECT
+  (LONG left)
+  (LONG top)
+  (LONG right)
+  (LONG bottom))
+
+(*define CS_VREDRAW #x0001)
+(*define CS_HREDRAW #x0002)
+
+(*define-c-struct WNDCLASS
+  (UINT style)
+  (WNDPROC lpfnWndProc)
+  (int cbClsExtra)
+  (int cbWndExtra)
+  (HINSTANCE hInstance)
+  (HICON hIcon)
+  (HCURSOR hCursor)
+  (HBRUSH hbrBackground)
+  (LPCSTR lpszMenuName)
+  (LPCSTR lpszClassName))
+
+(*define-c-struct MSG
+  (HWND hwnd)
+  (UINT message)
+  (WPARAM wParam)
+  (LPARAM lParam)
+  (DWORD time)
+  (POINT pt))
+
+(*define-c-struct PAINTSTRUCT
+  (HDC hdc)
+  (BOOL fErase)
+  (RECT rcPaint)
+  (BOOL fRestore)
+  (BOOL fIncUpdate)
+  (BYTE rgbReserved 32))
+
+(*define SHIFTJIS_CHARSET 128)
+(*define LF_FACESIZE 32)
+(*define-c-struct LOGFONT
+  (LONG lfHeight)
+  (LONG lfWidth)
+  (LONG lfEscapement)
+  (LONG lfOrientation)
+  (LONG lfWeight)
+  (BYTE lfItalic)
+  (BYTE lfUnderline)
+  (BYTE lfStrikeOut)
+  (BYTE lfCharSet)
+  (BYTE lfOutPrecision)
+  (BYTE lfClipPrecision)
+  (BYTE lfQuality)
+  (BYTE lfPitchAndFamily)
+  (CHAR lfFaceName LF_FACESIZE))
+
+(*define-dll-entry HMODULE GetModuleHandle (LPCSTR) "kernel32" "GetModuleHandleA")
+(*define-dll-entry HICON LoadIcon (HINSTANCE LPCSTR) "user32" "LoadIconA")
+(*define-c-macro MAKEINTRESOURCE (i) i)
+(*define IDI_APPLICATION 32512)
+(*define-dll-entry HCURSOR LoadCursor (HINSTANCE LPCSTR) "user32" "LoadCursorA")
+(*define IDC_ARROW 32512)
+(*define COLOR_WINDOW 5)
+(*define-dll-entry ATOM RegisterClass ((WNDCLASS *)) "user32" "RegisterClassA")
+(*define-dll-entry HWND CreateWindowEx (DWORD LPCSTR LPCSTR DWORD
+					int int int int
+					HWND HMENU HINSTANCE LPVOID)
+  "user32" "CreateWindowExA")
+(*define-c-macro CreateWindow (lpClassName lpWindowName dwStyle x y
+			       nWidth nHeight hWndParent hMenu hInstance lpParam)
+  `(CreateWindowEx 0 ,lpClassName ,lpWindowName ,dwStyle ,x ,y
+		   ,nWidth ,nHeight ,hWndParent ,hMenu ,hInstance ,lpParam))
+(*define WM_NCDESTROY #x0082)
+(*define WM_PAINT #x000F)
+(*define-dll-entry LRESULT DefWindowProc (HWND UINT WPARAM LPARAM)
+  "user32" "DefWindowProcA")
+(*define-dll-entry BOOL ShowWindow (HWND int) "user32")
+(*define-dll-entry BOOL UpdateWindow (HWND) "user32")
+(*define-dll-entry BOOL GetMessage ((MSG *) HWND UINT UINT)
+  "user32" "GetMessageA")
+(*define-dll-entry BOOL TranslateMessage ((MSG *)) "user32")
+(*define-dll-entry LONG DispatchMessage ((MSG *)) "user32" "DispatchMessageA")
+(*define-dll-entry int GetClientRect (HWND (RECT *)) "user32")
+(*define-dll-entry BOOL GetTextExtentPoint32 (HDC LPCSTR int (POINT *))
+  "gdi32" "GetTextExtentPoint32A")
+(*define-dll-entry BOOL ExtTextOut (HDC int int UINT (RECT *) LPCSTR UINT (INT *))
+  "gdi32" "ExtTextOutA")
+(*define-dll-entry HDC BeginPaint (HWND (PAINTSTRUCT *)) "user32")
+(*define-dll-entry BOOL EndPaint (HWND (PAINTSTRUCT *)) "user32")
+(*define-dll-entry HFONT CreateFontIndirect ((LOGFONT *))
+  "gdi32" "CreateFontIndirectA")
+(*define-dll-entry HGDIOBJ SelectObject (HDC HGDIOBJ) "gdi32")
+(*define-dll-entry BOOL DeleteObject (HGDIOBJ) "gdi32")
+(*define-dll-entry BOOL MoveToEx (HDC int int (POINT *)) "gdi32")
+(*define-dll-entry BOOL LineTo (HDC int int) "gdi32")
+(*define-dll-entry HBITMAP CreateBitmap (int int UINT UINT (void *)) "gdi32")
+(*define-dll-entry BOOL BitBlt (HDC int int int int HDC int int DWORD) "gdi32")
+(*define-dll-entry BOOL PatBlt (HDC int int int int DWORD) "gdi32")
+(*define-dll-entry HDC CreateCompatibleDC (HDC) "gdi32")
+(*define-dll-entry HDC GetDC (HWND) "user32")
+(*define-dll-entry int ReleaseDC (HWND HDC) "user32")
+(*define-dll-entry BOOL InvalidateRect (HWND (RECT *) BOOL) "user32")
+
+(*define SRCCOPY #x00cc0020)
+(*define WHITENESS #x00ff0062)
+
+(*define WS_OVERLAPPED       #x00000000)
+(*define WS_POPUP            #x80000000)
+(*define WS_CHILD            #x40000000)
+(*define WS_MINIMIZE         #x20000000)
+(*define WS_VISIBLE          #x10000000)
+(*define WS_DISABLED         #x08000000)
+(*define WS_CLIPSIBLINGS     #x04000000)
+(*define WS_CLIPCHILDREN     #x02000000)
+(*define WS_MAXIMIZE         #x01000000)
+(*define WS_CAPTION          #x00C00000)     ; WS_BORDER | WS_DLGFRAME
+(*define WS_BORDER           #x00800000)
+(*define WS_DLGFRAME         #x00400000)
+(*define WS_VSCROLL          #x00200000)
+(*define WS_HSCROLL          #x00100000)
+(*define WS_SYSMENU          #x00080000)
+(*define WS_THICKFRAME       #x00040000)
+(*define WS_GROUP            #x00020000)
+(*define WS_TABSTOP          #x00010000)
+
+(*define WS_MINIMIZEBOX      #x00020000)
+(*define WS_MAXIMIZEBOX      #x00010000)
+
+;; Common Window Styles
+(*define WS_OVERLAPPEDWINDOW (logior WS_OVERLAPPED
+				     WS_CAPTION
+				     WS_SYSMENU
+				     WS_THICKFRAME
+				     WS_MINIMIZEBOX
+				     WS_MAXIMIZEBOX))
+(*define WS_POPUPWINDOW (logior WS_POPUP WS_BORDER WS_SYSMENU))
+(*define WS_CHILDWINDOW WS_CHILD)
+
+(*define WS_TILED            WS_OVERLAPPED)
+(*define WS_ICONIC           WS_MINIMIZE)
+(*define WS_SIZEBOX          WS_THICKFRAME)
+(*define WS_TILEDWINDOW      WS_OVERLAPPEDWINDOW)
+
+(*define CW_USEDEFAULT #x80000000)
+(*define SW_SHOW 5)
+
+(*define-dll-entry LONG MoveWindow (HWND LONG LONG LONG LONG LONG) "user32")
+(*define-dll-entry int GetSystemMetrics (int) "user32")
+(*define SM_CXSCREEN 0)
+(*define SM_CYSCREEN 1)
+
+(*define-dll-entry LRESULT SendMessage (HWND UINT WPARAM LPARAM)
+  "user32" "SendMessageA")
+(*define-dll-entry HWND FindWindow (LPCSTR LPCSTR) "user32" "FindWindowA")

@@ -1,0 +1,460 @@
+<!doctype html public "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<link rev="made" href="mailto:kamei@jsdlab.co.jp">
+<title>OOOOChangeLog</title>
+</head>
+<body text="#000000" bgcolor="#ffffff" link="#000080" vlink="#8000ff" alink="#800000">
+<blockquote>
+<h4>Mon Dec 22 1997 Version 0.0.0.44.3</h4>
+<ul>
+<li>コンパイル時に定数の畳み込みをやるようにした(既存のコードにはあまり適用されないが)。
+<li>si:quoted-printable-decodeを実装(とくに意味なし)。
+<li>menuマクロの展開時に文字列の型チェックをしないように変更。
+<li>ファイラでのファイル名変更を変更(kei)
+<ul>
+<li type="square">マークファイルがない場合は今まで通り。
+<li>マークファイルが一つの場合はマークファイルを対象にする。
+<li>マークファイルが複数の場合は正規表現でパターンを指定。
+</ul>
+<li>string-replace-matchを実装。
+<li>浮動小数点数の印字時にやばい所を壊していたのを修正。
+<li>count-matchesで*case-fold-search*が効いていなかったのを修正。
+</ul>
+<h4>Thu Dec 18 1997 Version 0.0.0.44.2(ごく一部で公開)</h4>
+<ul>
+<li>子プロセスの終了を待つときにCPUを若干無駄遣いしていたのを修正。
+<li>いままでは手を抜いて#'&lt;SYMBOL&gt;を'&lt;SYMBOL&gt;と同じコードにコンパイルしていたが、(symbol-function '&lt;SYMBOL&gt;)と同等の作用を期待しているコードの場合にうまくいかないことが分かったのでまじめに処理するよう修正。
+<li>*init-app-menus-hook*を寝ぼけた呼び方をしていたのを修正(thanks to henmi)。
+<li>ファイラでファイル名を変えたときに、変更先のファイルに移動するようにした(kei)。←これでも不満らしいのでもうひとひねりする予定。
+<li>(and)がnilを返していたのがばれたので修正(thanks to henmi)。
+</ul>
+<h4>Tue Dec 09 1997 Version 0.0.0.44.1</h4>
+<ul>
+<li>浮動小数点数の指数マーカが(井田先生に騙されて^^;)間違っていたのを修正(thanks to henmi)。
+</ul>
+<h4>Mon Dec 08 1997 Version 0.0.0.44</h4>
+<ul>
+<li>キーボードマクロ実行中は、wrap-searchを無効にできるようにした。
+<li>書き込み禁止ファイルを有無を言わさず消せるようにした(kei)。
+<li>auto-modeの処理をちょっと変更。
+<li>シンボルの補完時にバッファのパッケージを意識するよう変更。
+<li>95でカレントディレクトリがUNCのとき、まともに動かないのを修正(だいたい動くはず)。
+<li>95でセパレータが'/'のUNCを指定した場合にエラーとなるAPIに分かっている範囲で対応。
+<li>実行ファイルのサイズが900KBを突破。
+<li>shift-selection, unshift-selectionを実装(henmi)。
+<li>Tab, Backspace, EnterをそれぞれC-i, C-h, C-mと別もんにした。また、Shift, Ctrl, Alt(Tab以外)と組み合わせられるようにした。keyboard.lを参照のこと(henmi)。
+<li>画面がパレットベースの場合、表示色設定ダイアログでその他ボタンを押せないようにした。
+<li>file-name-dialogに:title引数が与えられた場合は、IDOKのボタンのキャプションを&quot;OK&quot;に変更するようにした。なんでGetSaveFileNameは素直に変えさせてくれんのやろ?
+<li>grepdおよびgresregdでダイアログを開く前に、それぞれ*grep-directory-name-hook*, *gresreg-directory-name-hook*をfuncallするようにした(henmi)。hookの戻り値はディレクトリを初期化する文字列。
+<li>grepd, gresregdの物覚えをよくした(henmi)。
+<li>define-history-variableマクロ(defvar+register-history-variable)を実装。
+<li>register-history-variableの引数にシンボルのリストも受け入れるよう変更。
+<li>app-menuを設定するときに*init-app-menus-hook*をrun-hooksするようにした(henmi)。
+<li>ディレクトリ指定のダイアログが95で不安定だったのが直ったかも。
+<li>ファイルを開く、名前をつけて保存等で漢字コードと改行コードを指定可能にした(henmi)。
+<li>メニューのアクセラレータ表示を現在のキーマップから動的に取ってくるよう変更。
+</ul>
+<h4>Tue Dec 02 1997 Version 0.0.0.43.2(未公開)</h4>
+<ul>
+<li>appendの最後以外の引数にnil以外のアトムかドット対が与えられた場合のエラーチェックを厳しくした(thanks to henmi)。
+</ul>
+<h4>Mon Dec 01 1997 Version 0.0.0.43.1(一部で公開)</h4>
+<ul>
+<li>キーボードマクロの保存と読み込みを実装(kei)。保存先は今んとこレジストリ。
+<li>表示色の設定方法を変更。システムカラーと任意の色を指定できるようにした(あまりテストしてないからバグってるかも)。
+<li>タブと全角スペースを表示できるよう変更(タブのデザインがいまいち)。
+<li>ファイラ上で右ボタンでファイルを選択したときにマーク情報が更新されなかったのを修正。
+</ul>
+<h4>Tue Nov 25 1997 Version 0.0.0.43</h4>
+<ul>
+<li>LVM_GETITEMTEXTがNTと95で仕様が異なるのに対処。
+<li>検索でマッチした文字列の表示を反転と選択から選べるようにした。
+<li>共通設定に[いろいろ2]のタブを追加。
+<li>反転(風)表示ができるようにした。
+<li>filer-sort-items(とりあえずF6)を実装。
+<li>バッファリストおよびファイラでどの項目でソートされているか分かるようにした。
+<li>カレントバッファのディレクトリが無くなったときにファイラが開かなくなるバグを修正。
+<li>アイコンを変更(渡辺義則氏デザイン)。
+<li>&quot;について&quot;ダイアログを変更。
+<li>メッセージボックスを表示したときに音が出ない場合があったのを修正。
+<li>共通設定に&quot;ファイラ&quot;のタブを追加。
+<li>D&amp;D編集を実装。
+<li>dde-requestにオプション引数を追加し以下の形式に変更。<br>
+<blockquote>
+<b>dde-request</b> <var>chan</var> <var>topic</var> <b>&amp;optional</b> (<var>type</var> <b>:text</b>)
+</blockquote>
+<p><var>type</var>は戻り値の解釈方法を指定する。</p>
+<dl>
+<dt><b>:text</b>
+<dd>文字列
+<dt><b>:binary</b>
+<dd>漢字などを解釈しないで返ってきたデータをそのまま文字列で返す。
+<dt><b>:int8</b>
+<dt><b>:int16</b>
+<dt><b>:int32</b>
+<dd>データをそれぞれ8, 16, 32ビット整数の配列とみなして整数のリストで返す。配列の要素が1のときは整数を返す。
+</dl>
+<li>DDEの引数で長さ0の文字列がエラーになっていたのをベタな方法で修正。
+<li>ちょっと作ってみたかったのでファイラのdrag&amp;dropを実装(まるでWindowsのアプリみたいだ)。ドラッグの開始は右ボタンのみ。なんでNT4だとExplorerへmoveしたときにDROPEFFECT_MOVEが返ってこない?
+<li>ファイラでファイルタイプに応じたアイコンを表示できるようにした(*filer-retrieve-icon*がnon-nilのとき)。遅いマシンだと遅いかも。
+<li>get-special-folder-locationでSTRRETの開放漏れを修正。
+</ul>
+<h4>Tue Nov 10 1997 Version 0.0.0.41</h4>
+<ul>
+<li>get-special-folder-locationでITEMIDLISTの開放漏れを修正。
+<li>load-libraryをsystem:*load-libraryに変更。lisp:load-libraryをコマンドとして実装。
+<li>load-fileを実装。
+<li>interactiveの引数が文字列以外のときの評価のコードがバグっていたのを修正。
+<li>*print-circle*がnon-nilの場合のオブジェクトのprintのコードを書き直した(バッファを動的にとるようにした)。
+<li>VC5でコンパイルできるように何個所か変更(最適化のバグを回避できるコードに書き直した)。
+<li>バイトコードの実行ルーチンを若干最適化。
+<li>64bit整数演算関数を若干最適化(prologue/epilogueを取っただけ)。
+<li>64bit整数の負数をbignumに変換するコードが思いっきりバグっていたのを修正。
+<li>時計をつけてみた。
+<li>2画面ファイラからボタンを取った。
+<li>ファイラのサイズを小さくしたときにガイドのテキストの残骸が残ってしまうバグを修正(しょぼい修正方法だが)。
+<li>list-archive, filer-list-archiveを実装。やっとアーカイブの中身が見れるようになった(ファイル名が見えるだけだけど)。
+<li>filer-load-fileを実装。
+</ul>
+<h4>Tue Nov 04 1997 Version 0.0.0.40</h4>
+<ul>
+<li>2画面ファイラのファイル名入力をなくし、代わりにfiler-input-file-nameを実装。
+<li>関数openに:encodingキーワードを追加。
+<dl>
+<dt><b>:canonical</b>
+<dt><b>:text</b>
+<dd>CR-LFをLFに変換。漢字を認識。
+<dt><b>:raw</b>
+<dd>漢字を認識。CR-LFはCR-LF。
+<dt><b>:binary</b>
+<dd>なにもしない。1オクテットが1文字。
+</dl>
+<li>si:base64-encode, si:base64-decode, si:uuencode, si:uudecodeを実装(ちょっと作ってみたかっただけ)。
+<li>補完候補リストのバッファ上でEnterで選択できるようにした(henmi)。
+<li>フォントサイズを小さくしたときに、ミニバッファウィンドウの高さがフォントサイズより小さくなる場合があるのを修正。
+<li>ファイラにガイドのテキストを表示できるようにした(henmi)。変数*filer-guide-text*に文字列を設定すると表示することができる。複数行(最大5行)を指定する場合は文字列のリストを設定する(設定方法がいまいち)。
+<li>画面の解像度がVGAのとき、ファイル選択ダイアログを画面に収まるように小さくした(henmi)。
+<li>ファンクションキーの表示をサポート(henmi)。
+<li>lisp-electric-closeを実装。
+<li>Lispモードで`)'が行頭にある時のインデントが変だったのを修正(henmi)。
+<li>filer-jumpのリストにカレントディレクトリを追加したのが意図と違っていた。カレントバッファのディレクトリを追加するように修正。
+</ul>
+<h4>Tue Oct 28 1997 Version 0.0.0.39</h4>
+<ul>
+<li>DLLコールのためのプリミティブ関数を実装(サポートマクロは実装中)。
+<li>chunk型を実装。
+<li>lookup-symbolをパッケージマーカを認識するよう変更。
+<li>perform-replaceで正規表現の置換をする場合、*case-fold-search*の状態が効いていなかったのを修正。
+<li>make-buffer-streamにeob引数を追加。eval-regionで、指定範囲をはみ出してエバっていたのを修正(henmi)。
+<li>レジストリにSettings\SystemRootを書くよう変更(henmi)。
+<li>si:system-rootを実装(henmi)。
+<li>copy-menu-itemsのソースとディスティネーションが同一のとき、メニューの中身を壊してしまうバグを修正。
+<li>integer-lengthを実装。
+<li>cmu_loop.lの改行コードがLFだったのをCR-LFに変更(henmi)。
+</ul>
+<h4>Sun Oct 19 1997 Version 0.0.0.38.2</h4>
+<ul>
+<li>bignumのdumpが話にならんくらいバグっていたのを修正。
+<li>date/timeのformatを実装。ついでに日付と時刻の挿入その他を実装。
+<li>Cモードでの/**/内のインデントが変だったのを修正(まだちょっと変かも)。
+<li>いままで使っていたプリンタが無くなったときに印刷できなくなっていたバグを修正(したつもり)。
+<li>shiftを押しながら起動した場合はdump imageを読まないよう変更。
+<li>filer-jumpのリストにカレントディレクトリを追加。
+<li>ファイラを開くときにIMEをOFFにするようにした。
+<li>ime-push-composition-string(IMEが入ってないときの入力を変換バッファに突っ込む)を実装(doi)。
+<li>eval-last-sexpで範囲選択されている場合は、範囲内をエバるよう変更(henmi)。
+</ul>
+<h4>Sat Oct 11 1997 Version 0.0.0.38.1</h4>
+<ul>
+<li>siteinit.lc?をロードするよう変更。
+<li>shadowで新たに作られたシンボルのパッケージが設定されていなかったのを修正。
+<li>正規表現のパーサで'\n'とかを認識するのをやめた。
+<li>closure-variable, si:closure-function, si:closure-frame, si:closure-body, si:*closurepを実装(henmi)。
+<li>ヒストリの保存をfletを使うよう書き直し。
+<li>NTでない場合にヒストリを分割してレジストリに保存するよう変更。
+<li>0バイトのREG_BINARYを読むときにエラーになっていたのを修正。
+<li>registryのスペルが間違っていたのを修正。
+<li>import, shadow, shadowing-importをCLtL2に近づけた(つもり)。
+<li>シンボル`compile'をlispパッケージに追加。
+<li>マウスでのスクロール時にマウス位置によって速度を変えるよう変更。
+<li>proclaim, declaimをてきとーに実装(例によってspecialのみ)。
+<li>shadowで新しいシンボルが作成されないバグを修正。
+</ul>
+<h4>Mon Oct 6 1997 Version 0.0.0.38</h4>
+<ul>
+<li>eval-whenの引数にcompile, eval, loadを認めるよう変更。
+<li>maphash, with-hash-table-iteratorを実装。
+<li>si:*enum-hash-tableを実装。
+<li>環境変数HOMEが設定されている場合は、その値をホームディレクトリとするよう変更。
+<li>backquoteをリーダで展開するよう変更(henmi)。
+<li>IMEがオープンしているときにウィンドウを移動すると変換ウィンドウがその場に取り残されるのを修正。
+<li>gentempでpackage引数を参照していなかったのを修正。
+<li>MessageBoxのテキストが&amp;を処理していたのを修正。
+<li>unread-charを呼んだ直後のbuffer-stream-pointが1文字先を指している場合があるのを修正。
+<li>filer-goto-fileを実装(zxr)。
+<li>改行コードの形式がLFのときのモードラインの表示が間違っていたのを修正。
+<li>NT4でスペシャルファイルの判定が出来ていなかったのを修正(ただし、CONの判定はできない。なんで？)
+</ul>
+<h4>Sun Jul 13 1997 Version 0.0.0.37</h4>
+<ul>
+<li>filer-searchのダイアログでコンボボックスがソートされていたのを修正。
+<li>filer-searchのディレクトリとパターンのヒストリを覚えるよう変更(zxr)。
+<li>移動したディレクトリの履歴を取るように変更。
+<li>Windows 95で、NTFS上のGetFileTimeとFindFirstFileの時刻の精度が異なるのに対応(ume)。
+<li>マウスでファイルを選択したときにマークの情報が更新されないバグを修正(zxr)。
+</ul>
+<h4>Thu May 22 1997 Version 0.0.0.36</h4>
+<ul>
+<li>sub-directory-pがまともに動かない場合があるのを修正。
+<li>lispレベルではなるべくstack overflowを起こさないようにした。
+<li>resolve-shortcutを実装。
+<li>format-driveを実装(zxr)。
+<li>ファイル検索後に選択されたファイルのディレクトリに移動するよう変更(zxr)。
+<li>フォルダへのショートカットを正しく作れるよう修正。
+</ul>
+<h4>Mon May 12 1997 Version 0.0.0.35</h4>
+<ul>
+<li>filer-create-shortcut-to-desktop, filer-create-shortcutを実装。
+<li>create-shortcut, create-shortcut-to-desktopを実装。
+<li>*create-shortcut, get-special-folder-locationを実装。
+<li>filer-searchを実装(zxr)。
+<li>filer-calc-directory-size, filer-calc-directory-byte-sizeを実装。
+<li>get-disk-usageの戻り値を変更。
+<li>directoryに:wildキーワードを追加。
+<li>キャプションの表示内容の順序を指定できるよう変更(zxr)。
+<li>ime-register-word-dialogを実装。
+<li>map-to-(half|full)-width-stringを実装。
+<li>delete-last-ime-conposition, rewind-ime-compositionを実装。
+<li>selected-bufferを削除したときにウィンドウキャプションが更新されないバグを修正(zxr)。
+</ul>
+<h4>Mon May 5 1997 Version 0.0.0.34</h4>
+<ul>
+<li>IME関連をちょっと強化。以下の関数を実装。
+<ul>
+<li type="square">get-ime-composition-string
+<li>pop-ime-composition-string
+<li>set-ime-read-string
+<li>*ime-register-word-dialog
+</ul>
+<li>eval-regionがリージョンをはみ出してエバっていたのを修正。
+<li>arithmetic-errorのときに:operationと:operandsを正しく入れるよう変更。
+<li>stack traceの中身をgcするように変更。
+<li>funargな関数からfuncallするときにstack traceをとるよう変更。
+<li>浮動小数点演算のエラーチェックをそこそこ行うよう変更。
+<li>キーボードバッファをクリアしたときにview-lossageの内容が変になるのを修正。
+<li>(most|least)-(positive|negative)-(long|double|single|short)-floatの値が間違っていたのを修正。
+<li>bignum/fixnum(除算)を高速化。
+<li>コンディションシステムをstructureを使うように再実装。
+<li>structure型を実装。
+</ul>
+<h4>Tue Apr 29 1997 Version 0.0.0.33(未公開)</h4>
+<ul>
+<li>比較関数に1引数だけ与えられたときに型チェックをしていなかったのを修正。
+<li>with-package-iteratorを実装。
+<li>共有配列をdumpしたとき、共有されなくなってしまうバグを修正。
+<li>flet, labels, macroletを実装。
+</ul>
+<h4>Mon Apr 21 1997 Version 0.0.0.32</h4>
+<ul>
+<li>キーボードマクロで空文字列が定義された場合は未定義とするよう変更。
+<li>英辞郎の辞書を読めるよう変更。
+<li>declareのスキップがうまくいかない場合があるのを修正。
+<li>map-intoでベクタのフィルポインタを更新するタイミングを間違っていたのを修正。
+<li>psetf, shiftf, rotatefを実装。
+<li>型指定子を結構まともに指定できるように変更。
+<li>循環リストのprintが間違っていたのを修正。
+<li>concatenateをsequence.lへ移動。
+<li>map, every, some, notany, noteveryをsequence.lへ移動。
+<li>*condition-handlers*をlispパッケージからsystemパッケージへ移動。
+<li>parse-integerが空文字列に対してエラーを出さなかったのを修正。
+<li>電卓で0.xxxの浮動小数点数が正しくパースできなかったのを修正。
+<li>比較時に値がオーバーフローする場合があったのを修正。
+<li>member, find等の:test-notがまともに動いていなかったのを修正。
+</ul>
+<h4>Tue Apr 15 1997 Version 0.0.0.31(未公開)</h4>
+<ul>
+<li>コンスのequal、equalpで余計な処理をしていたのを修正。
+<li>一般ベクタのequalpがバグっていたを修正。
+<li>applyのsetf methodを追加。
+<li>arefのsetf methodの引数の順序を変更。
+<li>n次元配列を実装。
+</ul>
+<h4>Mon Apr 7 1997 Version 0.0.0.30</h4>
+<ul>
+<li>タグの値をbitからサブタイプが取れるよう定義方法を変更。
+<li>虚数でない場合にexptの精度が確保できるよう変更。
+<li>電卓に定数[e]、演算子[!]、および以下の関数を追加。
+<blockquote>
+complex, phase, cis, min, max, conjugate, signum(sign),realpart(real), imagpart(imag), numerator(num), denominator(den),ash(shift), random(rand), fibonacci(fib), fact, log10, atan2
+</blockquote>
+<li>Lisp readerの行番号が間違っていたのを修正。
+<li>sinh, cosh, tanhをnumber.lへ移動。
+<li>complex型を実装。
+</ul>
+<h4>Sat Apr 5 1997 Version 0.0.0.29(未公開)</h4>
+<ul>
+<li>testがequal, equalpのとき正しいhash値を計算しない場合があったのを修正。
+<li>calc::floatをdouble-floatを返すよう変更。
+<li>電卓でread-eval-printの間、*read-default-float-format*をdouble-floatにbindするよう変更。
+<li>single-float型を実装。従来のfloat型はdouble-float型に変更。
+<li>1引数のときのffloor等の戻り値の型を間違っていたのを修正。
+<li>分数としてのrational型をfraction型に変更。rational型は有理数として定義した(内部的に)。
+<li>*print-circle*がnon-nilのとき余計なものまでサークルバッファに突っ込んでいたのを修正。
+<li>最後のバッファがdelete-bufferされた場合はバッファ名を*scratch*に変更するように変更(zxr)。
+<li>バッファを作成したときにバッファ表示リストに正しくリンクされていなかったのを修正(zxr)。
+</ul>
+<h4>Sun Mar 30 1997 Version 0.0.0.28</h4>
+<ul>
+<li>参照中のウィンドウがGCされる場合があったのを修正。
+<li>rational型を実装
+<li>整数除算でオーバーフローする場合があったのを修正(LONG_MIN/-1のとき)。
+<li>lzhファイルの判定に完全チェックモードを使用していたのを簡易モードに変更。
+<li>equalにimmediate値を渡したときに死ぬようにエンバグしていたのを修正。
+<li>1文字削除したときにメモリがなかった場合、変なことになってたのを修正。
+<li>ダンプイメージを読み込む時、リードの排他をかけていたのを修正。
+</ul>
+<h4>Mon Mar 24 1997 Version 0.0.0.27</h4>
+<ul>
+<li>bignumを実装。
+<li>演算関数を大幅に変更。
+<li>比較関数を大幅に変更。
+<li>知らん間にソースがEUCになっていたのを直した。
+<li>logcountがバグっていたのを修正。
+</ul>
+<h4>Sun Mar 16 1997 Version 0.0.0.26</h4>
+<ul>
+<li>ファイラでウィンドウの枚数によってソート/カラム位置/マスク/ディレクトリを別々に保存するよう変更。
+<li>gentempのカウンタを外部に見せないように変更。
+<li>ファイルの更新時刻のチェックにGetFileTimeからFindFirstFileを使うように変更(排他の関係)。
+<li>電卓にべき乗を追加。
+</ul>
+<h4>Sat Mar 8 1997 Version 0.0.0.25</h4>
+<ul>
+<li>電卓を実装。
+<li>マークファイルの情報を表示するよう変更(zxr)。
+<li>同一ファイルをshort nameでfind-fileしたときに新しいバッファができてしまうのを修正。
+<li>同一ディレクトリで複数回表示色の設定をした場合、新しい条件が設定されなかったのを修正(ume)。
+</ul>
+<h4>Mon Feb 17 1997 Version 0.0.0.24</h4>
+<ul>
+<li>バッファリストをバッファの作成順でソートできるように変更(zxr)。
+<li>`閉じて開く'を削除。メニューの構成を若干変更。
+<li>表示色をバッファごとに保持するよう変更(ume)。
+<li>辞書ファイルの指定方法を変更。
+<li>アーカイブの作成で基準ディレクトリを指定できるよう変更。
+<li>ファイルのリネームを実装。
+<li>open-filerを実装。
+<li>辞書のパスを指定できるよう変更。
+<li>moveしたときに移動元ディレクトリをリロードしていなかったのを修正。
+<li>ファイラでC-gを押したときにファイラが閉じてしまうのを修正。
+</ul>
+<h4>Thu Feb 13 1997 Version 0.0.0.23.1</h4>
+<ul>
+<li>filer-extract-archive-to-currentを実装(zxr)。
+<li>空文字列を実行したとき無限ループにはまる場合があったのを修正(ume)。
+<li>calendarを実装(zxr)。
+<li>decode-universal-timeがバグっていたのを修正。
+</ul>
+<h4>Wed Feb 12 1997 Version 0.0.0.23</h4>
+<ul>
+<li>IMEのオープン中にキャレットが移動した場合、同時にIMEのキャレット位置を移動するよう変更(zxr)。
+<li>ファイラでコピー/移動/削除中にエラーが発生したとき継続できるように変更。
+<li>ファイラで2画面表示の場合の初期表示が変になる場合があるのを修正。
+<li>ファイラでディスク容量を表示するよう変更(zxr)。
+<li>ファイラがdualの場合ウィンドウサイズと位置を保存するよう変更。
+<li>ファイラのprimary windowとsecondary windowのカラム位置、ソートを別々に保存するよう変更。
+<li>GetFileInformationByHandleがファイルシステムとOSによってaccess deniedになる場合があるため、それなりに対処。
+</ul>
+<h4>Mon Feb 10 1997 Version 0.0.0.22</h4>
+<ul>
+<li>ダイアログにアイコンをつけた。
+<li>アイコンを変更。
+<li>ヘルプ検索ダイアログを中央寄せに変更。
+<li>filer-subscribe-to-reloadを実装。
+<li>ファイラのファイルマスクを保存するように変更。
+<li>ファイルの属性が変更できなくなっていたのを修正。
+<li>MessageBoxを実装(音がうるさいから)。
+<li>キーボードマクロのセーブがいまいちバグっていたのを修正。
+<li>zap-to-charを実装。
+<li>テキスト描画時に横スクロールが発生したときの無効領域のvalidateの範囲が間違っていたのを修正(ume)。
+</ul>
+<h4>Wed Feb 5 1997 Version 0.0.0.21</h4>
+<ul>
+<li>辞書のパスの設定をpaths.lへ移動。
+<li>jump-tag-other-windowをfind-file-other-windowを使うように変更。
+<li>find-file-other-windowを実装。
+<li>switch-to-buffer-other-windowを実装。
+<li>view-lossageを実装。
+<li>get-recent-keysを実装。
+<li>jump-tag-other-windowを実装(zxr)。
+<li>pop-to-bufferを若干変更。
+<li>アーカイブファイルの圧縮をとりあえず実装。
+<li>get-buffer-windowにオプション引数を追加。
+<li>アーカイブファイルの展開をとりあえず実装。
+<li>ハンドルされていないコンディションのうちwarningのsubtypeだけメッセージを出力するように変更。
+<li>バッファが変更されているとき終了できなくなっていたのを修正。*query-kill-xyzzy-hook*をrun-hooksで評価していたためにnilを返していた。
+<li>同一ヘッダが2回クリックされたら逆順にソートするよう変更。
+<li>属性ヘッダをクリックしたとき更新日時でソートされていたのを修正。
+<li>warnを実装した。
+<li>ハンドルされていないコンディションのメッセージを出力するようにした。
+<li>conditionタイプとしてwarn, simple-warnを定義した。
+</ul>
+<h4>Tue Jan 28 1997 Version 0.0.0.20.1</h4>
+<ul>
+<li>call-processの:waitパラメータの最大値を5分に、DDEのタイムアウトを3分に伸ばした(特に意味はない)。
+<li>StatusWindowに出力可能な文字数が127バイトのようなのでバッファサイズを減らした。
+<li>ステータスウィンドウに長い文字列を出力しようとすると無限ループにはまるバグを修正。 
+<li>ステータスウィンドウへTAB, コントロールコードを出力するとき展開するようにした。また、マルチバイトの2バイト目がNULのときは&quot;・&quot;に変換するようにした。
+<li>FDを抜いてリロードするとカレントディレクトリが変わってしまうバグを修正。
+<li>コンディションがfile-error, network-error, reader-errorであるときに特殊なメッセージの出力を行っていたが、それぞれのsubtypeであるときも同様の処理を行うようにした。
+<li>shell-executeで関連付けがされていないファイルを実行しようとしたときのエラーメッセージをまともにした。
+<li>辞書の作成で日本語文字列のハッシュ値の計算が間違っていたのを修正。
+</ul>
+<h4>Mon Jan 27 1997 Version 0.0.0.20</h4>
+<ul>
+<li>バックアップファイルのバックアップファイル名が正しく作成されない(foo.1~のバックアップファイルがfoo.1~.2~になってしまう)バグを修正。FindFirstFileの仕様を勘違いしていた。
+<li>filer-modify-attributesで属性を変更しない場合に更新日付を変更できなかったのを修正。
+<li>スタックオーバーフローのとき何も言わずに死んでしまうバグを修正。
+<li>フックの呼び方を若干変更。アクティブ時に*activate-hook*、終了時に*kill-xyzzy-hook*、終了確認時に*query-kill-xyzzy-hook*をそれぞれ呼ぶようにした。
+<li>&quot;文字列にして挿入&quot;メニューのキー割り当ての表示が間違っていたのを修正。
+<li>grep-dialogのタイトルを&quot;grep&quot;から&quot;Grep&quot;へ変更。
+<li>&quot;grep&quot;メニューを&quot;Grep&quot;に変更。
+<li>&quot;Gresreg&quot;メニュー、&quot;辞書&quot;メニューを追加。
+<li>copy-treeが正しく動作しないのを修正。
+<li>copy-keymapを実装。
+<li>perform-replaceを変更
+<ul>
+<li type="square">undo-boundaryをinteractive-pのときだけでなくquery時も呼ぶように変更。
+<li>query-keymapにthrowを追加。
+<li>戻り値をtから置換した個数を返すよう変更。
+</ul>
+<li>gresreg(g/RE/s//RE/g)を実装。
+<li>fill-regionが&quot;^ +$&quot;のテキストがあるとループにはまってしまうのを修正。
+<li>lookup-...-dictionaryを実装。
+<li>lookup-dictionaryを実装。
+<li>get-disk-usageを実装。
+<li>rename-fileでCreateFileの戻り値のチェックが間違っていたのを修正。
+<li>filer-copy-1でコピー先ディレクトリがコピー元ディレクトリの子孫かどうかの判定が逆だったのを修正。
+<li>filer-modify-attributesでマークファイルがない場合はカレントファイルを対象とするよう変更(zxr)。
+<li>filer-create-directoryを実装。
+<li>ファイラのキー割り当てを変更(zxr)。
+<ul>
+<li type="square">カーソル左右をfiler-scroll-or-left(right)-window-or-upへ
+<li>C-f, C-bをfiler-scroll-or-left(right)-window-or-upへ
+</ul>
+<li>filer-scroll-or-left(right)-window-or-upを実装(zxr)。
+<li>複数キーストロークのとき、選択範囲がクリアされてしまうのを修正。
+<li>ハッシュテーブルから削除したオブジェクトがGCされなかったバグを修正。
+<li>ハッシュテーブルが正しく初期化されていなかったバグを修正。
+<li>filer-shell-executeを実装。
+<li>shell-executeを実装。
+<li>正規表現の後方参照時にEOFを超えてバッファにアクセスしていたバグを修正。
+<li>JIS-&gt;SJIS変換のコード範囲が間違っていたのを修正。
+<li>dialog-boxの初期化でGROUPBOXに文字列が与えられた場合にウィンドウテキストを設定するように変更。
+</ul>
+<p>これ以前は不明</p>
+</blockquote>
+</body>
+</html>

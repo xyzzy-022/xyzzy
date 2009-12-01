@@ -1,0 +1,778 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+  <link rev="made" href="mailto:kamei@jsdlab.co.jp">
+  <title>ChangeLog</title>
+ </head>
+ <body text="#000000" bgcolor="#ffffff" link="#000080" vlink="#8000ff" alink="#800000">
+  <blockquote>
+   <h4>Wed Dec 07 2005 Version 0.2.2.235</h4>
+   <ul>
+    <li>なんとなくライセンスなどを。
+   </ul>
+   <h4>Thu Mar 17 2005 Version 0.2.2.234</h4>
+   <ul>
+    <li>なんかいろいろ
+   </ul>
+   <h4>Mon Feb 03 2003 Version 0.2.2.233</h4>
+   <ul>
+    <li>*before-save-buffer-hook*を呼んだ後で保存するエンコーディングをあれこれするようにした。
+    <li>simpleでないarrayのdumpが間違っていたのを修正。
+    <li>関数get-next-bufferの第一引数に:topと:bottomを受け付けるようにした。
+   </ul>
+   <h4>Thu Jan 09 2003 Version 0.2.2.232(その2)</h4>
+   <ul>
+    <li>コマンドラインで指定したファイルのパラメータが無視されるのを修正。
+   </ul>
+   <h4>Tue Jan 07 2003 Version 0.2.2.232</h4>
+   <ul>
+    <li>Cのmaketagsでtypedefも対象とするようにした。
+    <li>セッションでマイナーモードも保存するようにした。
+    <li>コマンドラインの処理を若干変更。
+    <li>bignumのisqrtがバグっていたのを修正。
+    <li>C#のattributesのインデント。
+   </ul>
+   <h4>Tue Oct 01 2002 Version 0.2.2.231</h4>
+   <ul>
+    <li>S式の移動で無限ループに嵌るパターンがあったのを修正。
+    <li>calenderの休日をそれなりに。
+   </ul>
+   <h4>Wed Sep 11 2002 Version 0.2.2.230</h4>
+   <ul>
+    <li>C++-modeのインデントを若干変更。
+    <li>lisp-modeのインデントを若干変更。
+    <li>Win2000でATOK14の再変換が死ぬらしいのが直ったらしい。
+    <li>変数inverse-cursor-lineがnon-nilなら、行カーソルをXORで描くようにした。
+   </ul>
+   <h4>Mon Aug 12 2002 Version 0.2.2.229</h4>
+   <ul>
+    <li>HtmlHelpサポート。
+    <li>7-Zipサポート。
+    <li>lisp-modeのインデントを若干変更。
+    <li>kill-all-buffers。
+    <li>buffer-menu-unmarkでread-onlyマークが消えるのを修正。
+   </ul>
+   <h4>Wed Jul 03 2002 Version 0.2.2.228</h4>
+   <ul>
+    <li>印刷ダイアログで行番号のチェックが甘かったのを修正。
+    <li>ヒストリの保存で、パッケージの扱いを多少マシにした。
+   </ul>
+   <h4>Mon Jun 03 2002 Version 0.2.2.227</h4>
+   <ul>
+    <li>知らん間にunlha32.dllの仕様が変わっていたのに対応。
+    <li>select-bufferダイアログをリサイズ可能にした。
+    <li>ListViewの*std-control-(prior|next)-char*が逆だったのを修正。
+   </ul>
+   <h4>Mon Apr 15 2002 Version 0.2.2.226</h4>
+   <ul>
+    <li>Samba上でのワイルドカードのマッチングが期待した動きにならない場合があるので、自力で比較するようにした。
+    <li>プレビューの拡大縮小時にクリック位置をキープするようにした(計算誤差で結構ずれるかも)。
+    <li>eval-whenをコンパイルすると、ロードできないコードを吐いていたのを修正。
+    <li>Lispモードで変なインデントをするのを修正。
+    <li>pushマクロで一時変数が作れていなかったのを修正。
+   </ul>
+   <h4>Wed Mar 13 2002 Version 0.2.2.225</h4>
+   <ul>
+    <li>念のため、zlibのバージョンを1.1.4に上げた。
+    <li>や、見落としてない、とか。
+   </ul>
+   <h4>Mon Mar 11 2002 Version 0.2.2.224</h4>
+   <ul>
+    <li>NT系でCDのファイルが全部リストできないらしいのが直ったかも。
+    <li>スタックトレースの表示をちょっと変えてみた。
+    <li>ハッシュテーブルから削除すると、追加できなくなっていたのを修正。
+    <li>nconcの結果が循環するような引数のとき、帰ってこなかったのを修正。
+    <li>富豪な正規表現の検索で死ぬ場合があったのを修正。
+    <li>数値のequalの仕様を勘違いしていたのを修正。
+    <li>リストのstable-sortが全然stableじゃなかったのを修正。
+    <li>eval-regionのprint内容を若干変えてみた。
+    <li>ldiffが変だったのを修正。
+    <li>ミニバッファでファイル名を入力する場合、C-jを効かないようにした。
+    <li>isearchの処理を変な感じに変更。
+    <li>その他細かい修正。
+   </ul>
+   <h4>Mon Jan 28 2002 Version 0.2.2.223</h4>
+   <ul>
+    <li>ミニバッファからファイラを立ち上げると落ちる場合があったのを修正。
+   </ul>
+   <h4>Tue Jan 15 2002 Version 0.2.2.222</h4>
+   <ul>
+    <li>正規表現キーワードがタグの中で効かなかったのを修正。実はまだアレだけど、まあ問題ないだろう…。
+    <li>set-syntax-start-column-comment <var>syntax-table char</var> &amp;optional <var>parse-sexp-ignore-comment-p</var>
+    <li>syntax-start-column-comment-p <var>char</var> &amp;optional <var>syntax-table</var>
+    <li>リーダの #+, #- の not が間違っていたのを修正。
+    <li>その他こまかい修正。
+   </ul>
+   <h4>Fri Dec 28 2001 Version 0.2.2.221</h4>
+   <ul>
+    <li>エンコーディングの自動判定で、UTF8をSJISと間違う場合があったのを修正。
+    <li>分数の余りの出し方がダメダメだったのを修正。
+   </ul>
+   <h4>Fri Dec 14 2001 Version 0.2.2.220</h4>
+   <ul>
+    <li>ファイラでタイトルバーが変更されるような操作をすると死ぬ場合があったのを修正。
+    <li>copy-alistが正しく動作しないケースがあったのを修正。
+    <li>formatの~eで指数マーカが間違っていたのを修正。
+    <li>2引数の:test-notが正しく動作しなかったのを修正。
+    <li>calenderで、31日が日曜日のときに色がつかなかったのを修正。
+   </ul>
+   <h4>Thu Nov 29 2001 Version 0.2.2.219</h4>
+   <ul>
+    <li>情けないことに、bignumの加算で符号を間違う場合があったのを修正。
+    <li>bignumの比較で符号が考慮されない場合があったのを修正。
+    <li>引数に0が含まれるlcmが間違っていたのを修正。
+    <li>分数の整数化が間違っていたのを修正。
+    <li>single-floatのrationalizeの精度が変だったのを修正。
+    <li>負数のrationalizeが間違っていたのを修正。
+   </ul>
+   <h4>Mon Nov 26 2001 Version 0.2.2.218</h4>
+   <ul>
+    <li>共有配列のgcがバグってるっぽかったのを修正。
+    <li>UTF-16の自動判定で、U+0000は勘弁してやることにした。
+    <li>基数が10以外の分数が読めなかったのを修正。
+    <li>C/C++のタグジャンプが正しい位置に飛べなくなっていたのを修正。
+   </ul>
+   <h4>Fri Nov 09 2001 Version 0.2.2.217</h4>
+   <ul>
+    <li>OSまたは環境または日頃の行いによっては、固まってしまうのを修正(たぶん)。
+   </ul>
+   <h4>Mon Nov 05 2001 Version 0.2.2.216</h4>
+   <ul>
+    <li>gcを保守的にしてみた。場合によってはgcがめちゃ遅くなるかも。
+    <li>C系のタグファイルの作成で、構造体・クラスも対象とするようにした。
+   </ul>
+   <h4>Mon Oct 29 2001 Version 0.2.2.215</h4>
+   <ul>
+    <li>変数*filer-mark-file-size-unit*に#\B, #\K, #\M, #\G, #\Tを設定して、ファイラのマークファイルの合計サイズの単位を指定できるようにした。ただし、例えば#\Kが設定されたとき、サイズが1K未満ならバイト単位になる。
+    <li>ラテン系の文字の文字名を理解できるようにしてみた。ユニコード名の' ', '-'を'_'に置き換え、小文字にしたもの。
+    <li>アーカイブがFDに入らなくなった。
+    <li>改行、タブの表示に使う文字を指定できるようにした。それぞれdisplay-newline-char, display-first-tab-char, display-rest-tab-charに表示したい文字を指定する(いわゆる半角文字のみ)。nilなら空白、それ以外なら従来のものを表示する。たとえばこんな感じ。
+    <pre>
+(setq-default display-newline-char #\downwards_arrow_with_tip_leftwards)
+(setq-default display-first-tab-char #\rightwards_arrow_to_bar)
+(setq-default display-rest-tab-char nil)
+    </pre>
+   </ul>
+   <h4>Mon Oct 22 2001 Version 0.2.2.214</h4>
+   <ul>
+    <li>MouseMoveの処理をちょこっと変更。
+    <li>compiled-regexp-source <var>regexp</var>
+    <li>compiled-regexp-case-fold-p <var>regexp</var>
+    <li>死んだときのデバッグ用の情報を少し増やした。
+    <li>abbreviate-display-string <var>string column</var> &amp;optional <var>pathnamep</var>
+    <li>ワードラップの処理で、いわゆる半角カナを除くいわゆる半角文字の途中では折り返さないようにしてみた。
+    <li>filter-bufferでもundoできるようにした。
+   </ul>
+   <h4>Mon Oct 15 2001 Version 0.2.2.213</h4>
+   <ul>
+    <li>selection-keymapの仕組みを変更。選択されている場合、変数selection-keymapのキーマップを最優先で見るようにした。
+    <li>関数require-mouse-moveはダミーになった。現在のキーマップでMouseMoveが有効かどうかを見るようにした。
+    <li>辞書引きモードをバッファローカルに変更。
+    <li>カレンダを作り直してみた。
+   </ul>
+   <h4>Thu Sep 27 2001 Version 0.2.2.212</h4>
+   <ul>
+    <li>折り返しありのとき、popup-string/popup-listで変なpointが指定されると死ぬのを修正。
+   </ul>
+   <h4>Tue Sep 25 2001 Version 0.2.2.211</h4>
+   <ul>
+    <li>正規表現キーワードと普通のキーワードがバッティングした場合、表示が変だったのを修正。
+    <li>popup-list <var>list callback</var> &amp;optional <var>point</var>
+    <li>dabbrev-popupとか(C-x \)。
+    <li>補完の候補をポップアップしたりしなかったり。変数*popup-completion-list-default*が:alwaysならポップアップする。:neverなら従来通り。機能ごとに変えたい場合は、変数*minibuffer-popup-completion-list*や*lisp-popup-completion-list*などで指定する。:alwaysか:never
+なら、*popup-completion-list-default*の値に関わらず、指定した通りの動きをする。それ以外の場合、*popup-completion-list-default*が:alwaysでも:neverでもなければ、指定した動きをする。
+   </ul>
+   <h4>Wed Sep 05 2001 Version 0.2.2.210</h4>
+   <ul>
+    <li>行頭行末禁則とワードラップを判定する順序を逆にしてみた。
+    <li>変数*print-option-show-dialog*がnilの場合は、-pオプションでダイアログを表示しないようにした。プリンタ持ってないので、ちゃんと印刷できるかどうかは知らん。
+    <li>print-buffer &amp;optional <var>buffer</var>
+    <li>si:inflate-stream <var>input-string-or-stream</var> &amp;optional </var>output-stream</var> (zlib使用)。
+   </ul>
+   <h4>Mon Aug 27 2001 Version 0.2.2.209</h4>
+   <ul>
+    <li>たまにミニバッファが前に出てきてしまう場合があったのを修正。
+    <li>FixedSys等のフォントの場合、カーソルラインが元の字を消していたのを修正。
+    <li>ワイルドカードのマッチングでパターンの最後が`.'の場合、`*'と`?'を`.'にマッチしないようにした。
+    <li>正規表現の\(?:\)がバグっていたのを修正。
+    <li>kill-bufferで*scratch*が削除できないのが一部で評判悪いみたいなので、変数*kill-buffer-kills-scratch*がnon-nilの場合は削除できるようにした。
+    <li>タグジャンプの候補選択のリストの表示をちょい変更。
+    <li>gresregdで置換したバッファを勝手にセーブできるようにした。
+   </ul>
+   <h4>Mon Aug 13 2001 Version 0.2.2.208</h4>
+   <ul>
+    <li>正規表現のキーワード色分けの、グループごとの色指定。<var>color</var>の部分を、(<var>グループ番号</var> . <var>color</var>)のリストで指定する。マッチした全体はグループ番号0。<var>color</var>がnilなら、同一範囲にマッチした若いグループ番号の色。tなら元の色。
+    <li>文字シンタックスsymbol-prefixの扱いをちょっと変えてみた。次の文字がopenまたはcloseの場合は、prefixとして動作しないようにした。
+    <li>その他、こまいとこ。
+   </ul>
+   <h4>Mon Jul 30 2001 Version 0.2.2.207</h4>
+   <ul>
+    <li>最後のバッファが削除されたときにread-onlyを落とすようにした。
+    <li>HTMLの実体参照の色分けをできるようにした。ただし、処理の都合上、大文字小文字の区別はしない。
+    <li>GC関連のバグ追跡の手がかりを吐くようにしてみた(役に立つかどうかは知らん)。
+    <li>*scratch*がkill-bufferされた場合はerase-bufferするようにした。
+    <li>Lispモードのインデントをちょっと変更。
+    <li>Javaモード、C#モードで':'をelectric-insertするようにした。
+    <li>タグジャンプの候補をソートするようにした。
+    <li>キーワードファイルに条件を指定できるようにした。<var>condition</var>はload-keyword-fileの引数で与える。
+     <dl>
+      <dt><strong>;*+</strong>
+      <dd><var>condition</var>に関わらず、以降を有効にする。
+      <dt><strong>;*-</strong>
+      <dd><var>condition</var>に関わらず、以降を無効にする。
+      <dt><strong>;*+</strong><var>item</var>
+      <dd><var>item</var>が<var>condition</var>に一致した場合、以降を有効にする。
+      <dt><strong>;*-</strong><var>item</var>
+      <dd><var>item</var>が<var>condition</var>に一致した場合、以降を無効にする。
+      <dt><strong>;*&</strong>
+      <dd>以降は、HTMLのタグ以外でも有効なキーワードとなる。
+      <dt><strong>;*&lt;</strong>
+      <dd>以降は、HTMLのタグでのみ有効なキーワードとなる。
+     </dl>
+    </li>
+    <li>HTMLのキーワードをAnother HTML-lintからパクってみた。
+   </ul>
+   <h4>Mon Jul 23 2001 Version 0.2.2.206 ふぉなみさんYellow獲得記念</h4>
+   <ul>
+    <li>list-functionで、バッファが変更されていても認識できない場合があったのを修正。
+    <li>buffer-modified-count &amp;optional <var>buffer</var>
+    <li>正規表現のキーワードが識別子の一部にマッチすると、通常のキーワードが識別子の途中でもマッチしてしまうのを修正。</li>
+    <li>排他が&quot;しない&quot;以外でbackup-by-copyingがnon-nilのとき、新規ファイルが保存できなかったのを修正。
+    <li>メニュー・ツールバーから正規表現での前次検索ができなかったのを修正。
+    <li>数引数つきのeval-last-sexpが変なことになっていたのを修正。
+    <li><p>ISO-2022系(EUC含む)でのいわゆる外字/IBM 拡張文字/NEC選定IBM拡張文字の扱いを若干変更。これらの形式は規格化されているわけではないので、相手によっては読めない可能性がある。ベンダ定義文字・ユーザ定義文字は注意して使用すること。</p>
+     <dl>
+      <dt><strong>eucjp-open</strong>
+      <dt><strong>iso-8bit-jp-open</strong>
+      <dt><strong>jis-open</strong>
+      <dt><strong>iso2022jp2-open</strong>
+      <dd><p>OSF/JVC推奨の形式。保存時は、NEC選定IBM拡張文字をIBM拡張文字へ、IBM拡張文字を、JIS X0208/JIS X0212に対応する文字が存在する場合はその文字へ、存在しない場合はG3 83～84区へ、95～104区をG1 85～94区へ、105～114区をG3 85～94区へ、それぞれマッピングする。読み込み時は、G1 85～94区を95～104区へ、G3 85～94区を105～114区へ、G3 83～84区をIBM拡張文字へ、JIS X0212のうちIBM拡張文字に対応する文字が存在する場合はその文字へ、それぞれマッピングする。</p>
+<p>簡単に言うと、いわゆる外字を保存可能だが、IBM拡張文字とNEC選定IBM拡張文字の区別はなくなり、いわゆる外字領域を除く予約領域の文字は保存できない。読み込み側がOSF/JVC推奨形式に対応していなければ、バケバケになる。</p>
+      <dt><strong>eucjp-ibmext</strong>
+      <dt><strong>iso-8bit-jp-ibmext</strong>
+      <dt><strong>jis-ibmext</strong>
+      <dt><strong>iso2022jp2-ibmext</strong>
+      <dd><p>保存時は、IBM拡張文字のみOSF/JVC推奨の形式と同様にマッピングし、95～114区は'?'へマッピングする。読み込み時は、G3 83～84区をIBM拡張文字へ、JIS X0212のうちIBM拡張文字に対応する文字が存在する場合はその文字へ、それぞれマッピングする。</p>
+<p>つまり、IBM拡張文字とNEC選定IBM拡張文字の区別が可能だが、いわゆる外字領域を含む予約領域の文字は保存できない。読み込み側がOSF/JVC推奨形式に対応していなければ、バケバケになる。</p>
+      <dt><strong>eucjp-necext</strong>
+      <dt><strong>iso-8bit-jp-necext</strong>
+      <dt><strong>jis-necext</strong>
+      <dt><strong>iso2022jp2-necext</strong>
+      <dd><p>おそらく最も無難な形式。保存時は、IBM拡張文字を対応するNEC選定IBM拡張文字にマッピングし、95～114区は'?'へマッピングする。読み込み時は何もしない。</p>
+<p>IBM拡張文字とNEC選定IBM拡張文字の区別はなくなり、いわゆる外字は保存できないが、読み込み側が何も考えていなくても、それなりに読める(はず)。</p>
+      <dt><strong>eucjp</strong>
+      <dt><strong>iso-8bit-jp</strong>
+      <dt><strong>jis</strong>
+      <dt><strong>iso2022jp2</strong>
+      <dd><p>変数*vender-depend-code-mapping*が:osfjvcなら<strong>～-open</strong>と同様、:ibmextなら<strong>～-ibmext</strong>と同様、:necextまたはそれ以外なら<strong>～-necext</strong>と同様にマッピングする。デフォルトはnil。</p>
+     </dl>
+     <p>てことで、下記の関数を変更。</p>
+     <dl>
+      <dd>make-iso2022-encoding <var>name display-name</var> &amp;key :g0 :g1 :g2 :g3 :ascii-eol :ascii-control :7bits :locking-shift :short-form :no-escape :cjk :use-cns11643 :vender
+      <dd>iso-char-code char &amp;optional <var>vender-depend-code-mapping</var>
+      <dd>iso-char-charset char &amp;optional <var>vender-depend-code-mapping</var>
+      <dd>iso-code-char code &amp;optional <var>vender-depend-code-mapping</var>
+     </dl>
+    </li>
+   </ul>
+   <h4>Mon Jul 16 2001 Version 0.2.2.205</h4>
+   <ul>
+    <li>+35'19&quot;て…。
+    <li>変数*unicode-to-half-width*がnilなら、JIS X0208に存在する文字をUnicodeから内部コードに変換する際、日本語の文字として扱うようにした。
+    <li>CP932でのクリップボードへのコピー時に、CP932に変換可能な文字をちゃんと変換するようにした。
+    <li>0.2.2.203で、サーバ名・共有名が補完できなくなっていたのを修正。
+    <li>0.2.2.203でのファイル名の補完はなんか違和感があったので、&quot;..&quot;だけ特別扱いするようにしてみた。
+    <li>eval-print-last-sexpで多値を考慮するようにした。
+   </ul>
+   <h4>Tue Jul 10 2001 Version 0.2.2.204</h4>
+   <ul>
+    <li>コネクションが確立していないソケットのクローズがエラーになっていたのを修正。
+   </ul>
+   <h4>Mon Jul 09 2001 Version 0.2.2.203</h4>
+   <ul>
+    <li>バッファを切り替えたときにタイトルバーが書き換わらない場合があったのを修正。
+    <li>バッファを削除する前に*before-delete-buffer-hook*をwhile-successで呼ぶようにした。
+    <li>auto-fillが変だったのを修正。
+    <li>変数verify-visited-file-modtimeがnilの場合、そのバッファの更新時刻チェックをしないようにした。:autoの場合は勝手に読み直すようにした。
+    <li>ファイル名の補完でディレクトリが変わる場合は、補完可能であってもしないようにした。
+    <li>空白を含む文字列の補完をそれっぽく動くようにしたつもり。
+    <li>tail-fとか。
+    <li>その他、細かいところをいろいろと。
+   </ul>
+   <h4>Mon Jul 02 2001 Version 0.2.2.202</h4>
+   <ul>
+    <li>印刷の余白の設定を、ヘッダ/フッタに関係なく用紙端と本文の長さにした。
+    <li>正規表現に以下のメタ文字を追加。
+     <dl compact>
+      <dt>\_&lt;</dt>
+      <dd>シンボルの開始位置にマッチ
+      <dt>\_&gt;</dt>
+      <dd>シンボルの終了位置にマッチ
+      <dt>\_b</dt>
+      <dd>シンボルの境界にマッチ
+      <dt>\_B</dt>
+      <dd>シンボルの境界以外にマッチ
+      <dt>\_s</dt>
+      <dd>シンボル文字にマッチ
+      <dt>\_S</dt>
+      <dd>シンボル文字以外にマッチ
+     </dl>
+    <li>印刷ダイアログに変なもんをつけてみた。
+    <li>c-modeのコメントのインデントで、コメントがネストしていると無限ループにはまるのを修正。
+    <li>試しに正規表現のキーワード色分けを作ってみたり(たぶんバグってる。チャレンジャイ向け)。変数regexp-keyword-listにそれなりの形式のリストを設定すれば色分けできる。速度に関してはあまり考えていないので遅いかも。くれぐれも無茶な正規表現を指定しないように。キーワード長は最大256文字程度ということにしてみた。<br>例えばCの数値に色をつける場合はこんな感じ(色の設定はめっさてきとー)。
+     <pre>
+(defvar *c-number-formats*
+  (compile-regexp-keyword-list
+   '((&quot;\\(^\\|\\_S\\)\\(?:[0-9]+\\.[0-9]*\\|\\.[0-9]+\\)\\(?:e[-+]?[0-9]+\\)?[fl]?\\($\\|\\_S\\)&quot;
+      t (:keyword 0 :bold) nil -1 -2)
+     (&quot;\\_&lt;[0-9]+e[-+]?[0-9]+[fl]?\\_&gt;&quot; t 1)
+     (&quot;\\_&lt;\\([1-9][0-9]*\\|0[0-7]*\\|0x[0-9a-f]+\\)\\(u?l\\|l?u\\|u?i64\\)?\\_&gt;&quot;
+      t (:color 1 2 :underline)))))
+
+(make-local-variable 'regexp-keyword-list)
+(setq regexp-keyword-list *c-number-formats*)
+     </pre>
+     <p>compile-regexp-keyword-listの引数は、下記の形式のリストのリスト。</p>
+     <p>(<var>regexp case-fold color</var> [ <var>context</var> [ <var>begin</var> [ <var>end</var> ] ] ] )</p>
+     <dl>
+      <dt><var>regexp</var></dt>
+      <dd>正規表現。</dd>
+      <dt><var>case-fold</var></dt>
+      <dd>non-nilなら、正規表現のマッチングで大文字小文字を区別しない。</dd>
+      <dt><var>color</var></dt>
+      <dd>表示色など。下記のどれかの形式で指定。</dd>
+      <dl>
+       <dt><var>keyword-color</var></dt>
+       <dd>キーワード色指定。
+        <dl compact>
+         <dt>0～2</dt>
+         <dd>キーワード1～3の色</dd>
+         <dt>3～5</dt>
+         <dd>キーワード1～3の色でそのキーワードだけ反転</dd>
+         <dt>6～8</dt>
+         <dd>キーワード1～3の色でその行の端から端まで反転</dd>
+         <dt>9</dt>
+         <dd>単なるbold</dd>
+         <dt>10～18</dt>
+         <dd>0～8と同じ色でbold</dd>
+         <dt><b>:string</b></dt>
+         <dd>文字列の色</dd>
+         <dt><b>:comment</b></dt>
+         <dd>コメントの色</dd>
+         <dt><b>:tag</b></dt>
+         <dd>タグの色</dd>
+        </dl>
+       </dd>
+       <dt>(<b>:keyword</b> <var>keyword-color</var> [<var>attributes</var>])</dt>
+       <dd>キーワード色で属性を指定したりしなかったり。<var>attributes</var>は下記のシンボルの組み合わせ。
+        <dl>
+         <dt><b>:bold</b></dt>
+         <dd>ボールド</dd>
+         <dt><b>:underline</b></dt>
+         <dd>アンダーライン</dd>
+         <dt><b>:strike-out</b></dt>
+         <dd>取り消し線</dd>
+         <dt><b>:line</b></dt>
+         <dd>一行まるごと</dd>
+        </dl>
+       </dd>
+       <dt>(<b>:color</b> <var>foreground</var> [<var>background</var> [<var>attributes</var>]])</dt>
+       <dd>前景色・背景色指定。
+        <dl>
+         <dt><var>foreground</var></dt>
+         <dd>0～15で前景色を指定。
+         <dt><var>background</var></dt>
+         <dd>0～15で背景色を指定。指定しないかnilの場合は0。
+        </dl>
+       </dd>
+      </dl>
+      <dt><var>context</var>
+      <dd>キーワードが有効な文脈。下記のシンボルまたはシンボルのリストを指定。指定しない場合はnilと同じ。</dd>
+       <dl>
+        <dt><b>:string</b></dt>
+        <dd>文字列内部で有効。</dd>
+        <dt><b>:tag</b></dt>
+        <dd>タグ内部で有効。</dd>
+        <dt><b>:comment</b></dt>
+        <dd>コメント内部で有効。</dd>
+        <dt><b>nil</b></dt>
+        <dd>上記以外で有効。</dd>
+        <dt><b>t</b></dt>
+        <dd>すべての文脈で有効。</dd>
+       </dl>
+      <dt><var>begin</var>
+      <dd>マッチしたテキストの、色をつける部分の開始位置を指定。0～9なら(match-beginning <var>begin</var>)の位置。-1～-9なら(match-end (- <var>begin</var>))の位置。指定しないかnilの場合は(match-beginning 0)の位置。</dd>
+      <dt><var>end</var></dt>
+      <dd>マッチしたテキストの、色をつける部分の終了位置を指定。0～9なら(match-end <var>end</var>)の位置。-1～-9なら(match-beginning (- <var>end</var>))の位置。指定しないかnilの場合は(match-end 0)の位置。</dd>
+     </dl>
+    <li>関数digit-charで、基数36を指定できなかったのを修正。
+   </ul>
+   <h4>Thu Jun 21 2001 Version 0.2.1.201</h4>
+   <ul>
+    <li>めっさやばいコードがあったのを修正。
+    <li>変数*shell-execute-disregards-shift-key*がnon-nilの場合、shell-executeの実行時にShiftキーが押されていない状態にしてみた。*shell-execute-waits-for-shift-key-release*はやめ。
+   </ul>
+   <h4>Tue Jun 19 2001 Version 0.2.1.200</h4>
+   <ul>
+    <li>*keyboard-layout-list*のthirdがnilの場合は、Unicodeということにしてみた。ただし、デッドキーの処理はてきとー。
+    <li>IMEがUnicodeバージョンのとき、未サポートの文字を'?'に変換しないようにした。
+    <li>C/C++のタグファイルを作るときにコメントを削るようにした。
+    <li>グルジア語をサポート。
+    <li>印刷のヘッダ/フッタのヒストリ。
+    <li>変数*use-shell-execute-ex*がnilのときは、shell-executeでShellExecuteExではなくShellExecuteを使うようにした。
+    <li>変数*shell-execute-waits-for-shift-key-release*がnon-nulの場合、shell-executeの実行前にShiftキーが離されるのを待つようにした。
+   </ul>
+   <h4>Wed Jun 13 2001 Version 0.2.1.199</h4>
+   <ul>
+    <li>IMEがUnicodeバージョンのとき、日本語として入力できない文字があったのを修正。
+    <li>キーワードに色を付けるとき、めちゃめちゃ長い単語があると遅かったのを修正。
+   </ul>
+   <h4>Sat Jun 09 2001 Version 0.2.1.198</h4>
+   <ul>
+    <li>*scroll-margin*が設定されているときのマウスクリックが変だったのを修正(へなちょこ)。
+    <li>共有を出しているディレクトリに手をつけた。
+    <li>ScrollLockとPauseを使えるようにした。指定は#\Scroll、#\Pause。代わりに#\Selectと#\Executeはやめ。
+    <li>IMEがUnicodeバージョンの場合は、IMEの入力をUnicodeで受けるようにした。いまいち自信がないので、変数*unicode-ime*がnilの場合のみ。tならばUnicodeのみで受け、tでもnilでもなければANSIのみで受けるようにした。
+    <li>DNSのルックアップ中に予期しないメッセージループがまわると、止まってしまうのを修正。
+    <li>xyzzycliにデフォルトの引数を指定できるようにした。INIファイルのprecedingOptions、followingOptionsで指定。
+    <li>xyzzycliのINIファイルのmultipleInstancesを1にすると、既存のxyzzyを無視して新たにxyzzyを起動するようにした。
+   </ul>
+   <h4>Mon May 28 2001 Version 0.2.1.197</h4>
+   <ul>
+    <li>整数の丸めがバグっていたのを修正。
+    <li>マウスカーソルがモードラインに乗っているとき、ポップアップがすぐに消えてまうのを修正。
+    <li>selection-keymapを矩形選択でも対象にした。
+    <li>ShellExecuteをやめてShellExecuteExを使うようにした。
+    <li>substringに負数を受け付けるようにした。
+    <li>xyzzycliのコマンドラインの解釈で、notepad互換を指定できるようにした。xyzzycli.exeのINIファイルの、[xyzzy]のcompatNotepadに0か1で指定。
+    <li>変数*default-load-path*で、siteinitから*load-path*を設定できるようにした。
+    <li>置換ダイアログのニーモニックがめちゃめちゃダブっていたのを修正。
+   </ul>
+   <h4>Mon May 21 2001 Version 0.2.1.196 (ズボ師匠来るん?)</h4>
+   <ul>
+    <li>クリップボードでUTF-16の言語指定が効いていなかったのを修正。
+    <li>ウィンドウサイズをまじめに計算するようにした。
+    <li>set-text-color/clear-all-text-colorsを外に追い出した。
+    <li>キーボードレイアウトのリスト/指定。
+    <dl>
+     <dd>list-kbd-layout
+     <dd>select-kbd-layout <var>layout</var>
+    </dl>
+    <li>Shift_JIS以外のLispコードのサポート(あまりテストしてない)
+    <dl>
+     <dd>mc-load-file
+     <dd>mc-load-library
+     <dd>mc-require
+     <dd>mc-byte-compile-file
+     <dd>mc-byte-recompile-directory
+     <dd>mc-compile-file
+     <dd>mc-autoload
+    </dl>
+    <li>find-load-path <var>filename</var>
+   </ul>
+   <h4>Tue May 15 2001 Version 0.2.1.195.1</h4>
+   <ul>
+    <li>MSIMEの変換ウィンドウ、ATOKの候補ウィンドウがめっさ不細工なことになっていたのを修正。
+   </ul>
+   <h4>Mon May 14 2001 Version 0.2.1.195 (World Tour 終了記念)</h4>
+   <ul>
+    <li>Unicode-&gt;内部コードの変換で、CJKの優先順位を指定できるようにした。
+    <li>ビットマップで印刷できるようにしてみた(プリンタ持ってないので動くかどうかは知らん)。
+    <li>環境によってはFAT32のアロケーションユニットサイズが取得できない場合があったのを修正したつもり。
+    <li>行カーソルが残る場合があったのを修正(たぶん)。
+    <li>*status-bar-format*に&quot;T&quot;(曜日付きの日付)を追加。
+   </ul>
+   <h4>Mon May 07 2001 Version 0.2.1.194</h4>
+   <ul>
+    <li>FAT32のディスクの空き容量が変だったのを修正。
+    <li>変数*no-input-language-change-notification*がnon-nilの場合、入力ごとに現在の入力言語を取得するようにした(日中之星の試用版ではこれで動く)。
+    <li>ウィンドウの一番上に表示されているテキストを削除したときの、表示位置の計算方法をちょっと変えてみた。違和感がある場合は、変数*old-relocation-method*をnon-nilに。
+    <li>変数*minibuffer-save-ime-status*がnilの場合、ミニバッファのIME状態を保存しないようにした。
+    <li>無駄にルーラを描画する場合があったのを修正。
+    <li>モーダルファイラでC-SPCが効かなかったのを修正。
+    <li>変数*show-cursor-line-always*がnon-nilのとき、カレントでないウィンドウでもカーソルラインを表示するようにした。
+    <li>折り返しありのとき、オートスクロールが動かない場合があったのを修正。
+    <li>スクロールバーのページスクロールでも*next-screen-context-lines*を見るようにした。
+    <li>~/.abbrev_defsを読み込んだ場合は、勝手に保存するようにした。
+    <li>拡張コピーのメニューだけは出るようにしてみたが、たぶんやり方が間違ってる(つーか、するべき処理が足りてない)ので、ちゃんと動かないような気がしたり。
+    <li>モーダルファイラからのアーカイブ内のファイルの読み込みを、動かないことはないとは言えないこともない、程度には動くようにした。
+    <li>copy-region-as-killの後のkill系のコマンドは、新規でキルリングに入れるようにした。
+   </ul>
+   <h4>Thu Apr 26 2001 Version 0.2.1.193</h4>
+   <ul>
+    <li>ネットワークパスの補完時に落ちる場合があったのを修正。
+    <li>タイミングによって、画面が真っ白になる場合があったのを修正。
+    <li>ネットワークリソースのコメントを取れるようにしてみた。
+    <dl>
+     <dd>list-servers &amp;optional <var>comment-p</var>
+     <dd>list-server-resources <var>server-name</var> &amp;optional <var>comment-p</var>
+    </dl>
+   </ul>
+   <h4>Wed Apr 18 2001 Version 0.2.1.192</h4>
+   <ul>
+    <li>ファイル名が`~'のみのファイルがあると、かなりやばいことになる場合があることに気がついたので、暫定的に対処。
+    <li>特殊形式をdefmacroで置き換えるコードがコンパイルできそうになっていたのを修正。
+   </ul>
+   <h4>Mon Apr 16 2001 Version 0.2.1.191</h4>
+   <ul>
+    <li>セッションのバッファ保存順をタブの順に。
+    <dl>
+     <dd>buffer-list &amp;key :buffer-bar-order
+    </dl>
+    <li>ファイラにドロップしたときにハイライトが消えなかったのを修正。
+    <li>ルーラとか付けてみたり。もしかしたら描画でゴミが出るかもだ。
+    <li>copy-fileで、ノーガードで書き込みオープンしているファイルもコピーできるようにしてみたが、以下略。
+    <li>Cモードで、typedefの後のインデントが変だったのを修正。
+   </ul>
+   <h4>Mon Apr 09 2001 Version 0.2.1.190</h4>
+   <ul>
+    <li>フォントサイズをピクセルでも指定できるように。
+    <li>タブの順序の変更。
+    <li>テキストのD&amp;D時に、バッファバーに持っていくとバッファを開くようにしてみた。ただし、ドラッグ元のバッファが裏にまわった場合、コピーしかできない。
+    <li>list-archiveで秒の代わりに何か別のものを返していたのを修正。
+    <li>delete-fileに:recycleキーワードを追加。
+    <li>変数*filer-use-recycle-bin*がnon-nilの場合、ファイラで削除したときゴミ箱に入れるようにした。
+    <li>IMEがATOKのとき、フォントの設定によってはバッファの一行目での変換中の表示がされないらしいのに対応したつもり。
+    <li>apps-popupで、カーソル位置が変だったのを修正。
+    <li>pascalにはエスケープがないらしい。
+   </ul>
+   <h4>Tue Mar 27 2001 Version 0.2.1.189</h4>
+   <ul>
+    <li>やばそうな個所を片っ端から対処してみたが、やばくなくなったかどうかは分からん。
+    <li>関数filer-goto-fileを変更。<br>
+filer-goto-file <var>string</var> &amp;optional <var>start reverse wild-p</var><br>
+<var>start</var>がnilなら先頭から探し始める。tなら現在位置から。tでもnilでもなければ現在位置の次から。<var>reverse</var>がnon-nilなら逆向きに。<var>wild-p</var>がnon-nilならワイルドカード使用可。さらにtでなければ先頭一致(末尾に`*'を補う)。
+    <li>関数filer-read-char。とりあえずファイラ上でキー入力を取れるようにした。が、作りがいい加減なので日本語とかは入力できない。
+    <li>AltGrがAlt+Ctrlになるタイプのキーボードレイアウトに対応。
+    <li>java-modeで、ラベルの後のインデントがおもろいことになっていたのを修正(別のところに影響が出るかも)。
+    <li>filer-isearch-(for|back)ward。
+    <li>複数の偽フレームに表示されているバッファを削除したとき、セッションが保存できなかったのを修正。
+   </ul>
+   <h4>Fri Mar 23 2001 Version 0.2.1.188</h4>
+   <ul>
+    <li>ポップアップがマウスカーソル位置に出る場合、消えないようにした(めっさへな)。
+    <li>scroll-window-horizontallyがちゃんと動かない場合があるのを修正したつもり(今度こそ)。
+    <li>コンボボックスでもキーを割り当てられるようにしてみた。というわけで、変数を以下のように変更。
+     <dl>
+      <dd>*list-box-up-char* -&gt; *std-control-up-char*
+      <dd>*list-box-down-char* -&gt; *std-control-down-char*
+      <dd>*list-box-def-char* -&gt; *std-control-default-char*
+      <dd>*list-box-pageup-char* -&gt; *std-control-prior-char*
+      <dd>*list-box-pagedown-char* -&gt; *std-control-next-char*
+     </dl>
+    <li>関数message-boxに:no-wrapキーワードを追加。
+    <li>折り返しありで横スクロールしたとき、アンダーラインカーソルの残骸が残る場合があったのを修正。
+    <li>補完の候補リストがシングルカラムのとき、completion-list-copyがまともに動かなかったのを修正。
+    <li>text-modeのtab-to-tab-stopがいまいち評判悪げなのでやめてみた。
+   </ul>
+   <h4>Mon Mar 19 2001 Version 0.2.1.187</h4>
+   <ul>
+    <li>direct-tag-jumpが正しく動作しなかったのを修正。
+    <li>印刷の部数指定が効かなくなっていたのを修正したつもり(プリンタ持ってないので、ちゃんと指定部数出てくるかは知らん)。
+    <li>折り返し位置を変えたとき、アンダーラインカーソルの残骸が残る場合があったのを修正。
+    <li>ファイルに排他がかかっている場合、get-file-attributesが動かなかったのを修正。
+    <li>変数*filer-click-toggle-marks-always*(変な名前)がnilなら、ファイラで左クリックしたとき、その位置にフォーカスがある場合のみマークを反転するようにした。
+    <li>以下の関数を実装。
+    <ul>
+     <li>get-file-info <var>pathname</var><br>ファイルの属性をまとめてGet。戻り値は、属性・更新日時・サイズ・短い名前 のリスト。
+     <li>current-menu &amp;optional <var>buffer</var><br>現在のメニューを返す。引数なしなら現在表示されているメニュー。<var>buffer</var>がnilなら、デフォルト(グローバル)メニュー。
+    </ul>
+    <li>関数directoryに:file-infoキーワードを追加。nilでなければ、ファイル名・属性・更新日時・サイズ・短い名前 のリストのリストを返す。
+    <li>起動時に(ショートカットのプロパティ等で)最大化・最小化が指定されている場合は、ウィンドウサイズを復元しないようにしてみた。
+    <li>HHK liteで特に設定しなくても&quot;`~&quot;が入力できるようにした(今度こそ)。
+    <li>scroll-window-horizontallyがちゃんと動かない場合があるのを修正したつもり。
+    <li>変数*show-matched-parenthesis*がnilなら、対応する括弧を表示しないようにした。
+    <li>gresregで、リードオンリなバッファはスキップするようにした。
+    <li>でかいAAとかを見れるようにしてみたり。
+   </ul>
+   <h4>Mon Mar 12 2001 Version 0.2.1.186</h4>
+   <ul>
+    <li>ミニバッファの入力結果がGCされてしまう場合があったのを修正。
+    <li>post-buffer-modified-hookとか。<var>buffer operation from to undo-p</var>の5引数で呼ばれる。<var>operation</var>は :insert :delete :modify のどれか。<var>from to</var>は変更のあったリージョン。<var>operation</var>が:deleteなら<var>from to</var>は同じ値。<var>undo-p</var>は nil undo redo のどれか。enable-post-buffer-modified-hookでフックを有効にしないと呼ばれない。フックの中でウィンドウ・バッファを削除したり、戻るときにウィンドウ・バッファが切り替わってたりすると、きっと良くないことが起こるので、あまり無茶なことはしないように。
+    <ul>
+     <li>enable-post-buffer-modified-hook <var>enable</var> &amp;optional <var>buffer</var>
+     <li>post-buffer-modified-hook-enabled-p &amp;optional <var>buffer</var>
+    </ul>
+    <li>HHK liteで特に設定しなくても&quot;`~&quot;が入力できるようにしたつもり。
+    <li>空白と改行のぶら下げの動きを若干変更。
+    <li>string-match, string-matchpの後のmatch-stringでマッチした文字列を取れるようにした。
+    <li>正規表現の ??、*?、+?、\{\}?、\(?:\) をperlからパクってみた。
+   </ul>
+   <h4>Mon Mar 05 2001 Version 0.2.1.185</h4>
+   <ul>
+    <li>セッションの保存で、カーソル位置が保存されない場合があったのを修正。
+    <li>9x系でカレントディレクトリが深いとき、command.comが何もしないで終わってしまうっぽいのを強引に修正(もうちょいマシな解決方法募集)。
+   </ul>
+   <h4>Fri Mar 02 2001 Version 0.2.1.184 (こっそり)</h4>
+   <ul>
+    <li>文句付けられたので印刷ルーチンを丸ごと書き直し。
+   </ul>
+   <h4>Mon Feb 26 2001 Version 0.2.1.183</h4>
+   <ul>
+    <li>c-brace-offsetが効かないケースがあったのを修正。
+    <li>ついでなので、使ったこともないのにC#モードとか作ってみたり。
+    <li>C系のインデント用の変数を言語ごとに別にしてみた。
+    <table border="1">
+     <tr><th>C<th>C++<th>Java<th>C#
+     <tr><td>c-indent-level<td>c++-indent-level<td>java-indent-level<td>csharp-indent-level
+     <tr><td>c-continued-statement-offset<td>c++-continued-statement-offset<td>java-continued-statement-offset<td>csharp-continued-statement-offset
+     <tr><td>c-argdecl-indent<td>c++-argdecl-indent<td>java-argdecl-indent<td>csharp-argdecl-indent
+     <tr><td>c-brace-offset<td>c++-brace-offset<td>java-brace-offset<td>csharp-brace-offset
+     <tr><td>c-brace-imaginary-offset<td>c++-brace-imaginary-offset<td>java-brace-imaginary-offset<td>csharp-brace-imaginary-offset
+     <tr><td>c-label-offset<td>c++-label-offset<td>java-label-offset<td>csharp-label-offset
+     <tr><td>c-comment-indent<td>c++-comment-indent<td>java-comment-indent<td>csharp-comment-indent
+    </table>
+    わざわざ表にするまでもなく、結局、従来のc-～をそれぞれc++～、java-～、csharp-～に変えただけ。
+    <li>環境によってはツールバーの残骸が残るらしいのを対処してみたけど、多分直ってない。
+    <li>フォーカスを切り替えたりすると、IMEの状態がグダグダになるのを修正。
+    <li>Javaのタグジャンプ。文法をよく知らんので、もしかしたら変かも。
+    <li>非選択モードラインの表示色を指定できるようにした。
+    <li>同一ウィンドウ上でD&Dしたときのアンドゥの動作を変更。
+    <li>印刷時に狙ったフォントがロードできなかった場合は、ASCIIと同じフォントを使用するようにした。
+    <li>parse-point-syntaxの引数をオプションにした。
+    <ul>
+     <li>parse-point-syntax &amp;optional <var>point</var>
+    </ul>
+   </ul>
+   <h4>Fri Feb 23 2001 Version 0.2.1.182 (こっそり)</h4>
+   <ul>
+    <li>throwsのインデントがかなりいまいちだったのを修正。
+    <li>ツールバーが透けるのをもうちょい塗ってみた。
+    <li>98/2000でcopy-menu-itemsすると、正しくコピーできない項目があったのを修正。
+    <li>印刷プレビューのスクロールサイズをそこそこまじめに計算するようにした。
+   </ul>
+   <h4>Thu Feb 22 2001 Version 0.2.1.181 (こっそり)</h4>
+   <ul>
+    <li>ListView のインクリメンタルサーチのタイミングを変更。
+    <li>ドライブ選択ダイアログの反応を速くした。
+    <li>環境によってはツールバーが透けるらしいので塗ってみた。
+    <li>list-servers/list-server-resources を C-g で止められるようにした(つもり)。
+    <li>C/C++/Java のインデントを変更(かなり自信なし)。
+    <li>ISO 8601 形式の日付。
+    <li>stable-sort。
+    <li>sort のアルゴリズムを quick から merge に変更(比較回数が少ない分、merge の方が速いっぽい)。結果、stable-sort と同じになった(が、依存しないように)。従来は<strong>たまたま</strong>(eq <var>list</var> (sort <var>list</var>)) だったが、そうではなくなったので注意すること。
+   </ul>
+   <h4>Fri Feb 16 2001 Version 0.2.1.180</h4>
+   <ul>
+    <li>filer-send-toをexplorerの動作に似せた。
+    <li>メニューにクローズボックス。95/NT4ではいんちきな手段を使っているので、もしかしたら動かないかも。使い方はこんな感じ。
+     <pre>
+(add-hook '*init-app-menus-hook*
+          #'(lambda ()
+              (add-menu-item *app-menu* 'close-box :close-box
+                             #'kill-selected-buffer)))
+     </pre>
+    <li>印刷時に固定ピッチフォントでもプロポーショナルフォント用のコードを通っていたのを修正。
+   </ul>
+   <h4>Tue Feb 13 2001 Version 0.2.1.179</h4>
+   <ul>
+    <li>file-name-dialogで:multipleがnon-nilのとき、変なファイル名を返していたのを修正。
+    <li>XBtn[12](Down|Up|Move)にバインドできるようにしてみた<font size="1" color="gray">(動くかどうかは知らない。そんなにいっぱいボタンがあるマウス持ってないし)</font>。
+    <li>キャレットを点滅しないとき、ATOKの動作がいまいちだったのを修正。
+    <li>中ボタンでの自動スクロール。それなりには動くがそれなり。
+    <ul>
+     <li>begin-auto-scroll
+    </ul>
+    <li>勘でファイラから一風変わった送り先へ送れるようにしてみた。普通の送り先への送り方も変えたので、もしかしたらものによってはちょっとナニかも。
+    <ul>
+     <li>ole-drop-files <var>path clsid-string directory files</var>
+    </ul>
+    <li>バッファバーにコンテキストメニューをつけた。が、中に入れるものを思いつかないので見た目がしょぼい。
+    <li>とりあえずタブバーにもコンテキストメニュー。
+    <ul>
+     <li>tab-bar-add-item <var>bar item string</var> &amp;optional <var>tooltip menu</var> &amp;key :first :last :before :after
+     <li>tab-bar-modify-item <var>bar item</var> &amp;optional <var>string tooltip menu</var>
+    </ul>
+    <li>Bga32.dll/Yz1.dll/UnGCA32.dllに対応したところで気力が尽きた。<font size="1" color="gray">Yz1で圧縮したとき、勝手にディレクトリができたりできなかったりするのはそーゆーもんなんだろーか?</font>
+    <li>ホイールが回ったときに、変数mouse-wheel-handlerの値を呼ぶようにした。
+    <li>印刷にプロポーショナルフォントを選べるようにしてみた。
+    <li>アーカイバDLL関連の関数をまとめた。
+    <ul>
+     <li>archiver-dll-version <var>dll</var>
+     <li>archiver-dll-config-dialog <var>dll</var> &amp;optional <var>mode</var>
+    </ul>
+    <li>Cモードのインデント関連の変数のspecial宣言をやめた。
+    <li>name-last-kbd-macro、insert-kbd-macro。
+    <li>バッファごとのIMEモードの設定。バッファごとのIME状態保存がオンの場合のみ。
+    <ul>
+     <li>buffer-ime-mode &amp;optional <var>buffer</var>
+     <li>set-buffer-ime-mode <var>mode</var> &amp;optional <var>buffer</var>
+    </ul>
+    <li>バッファごとのIME状態保存がオンのとき、ミニバッファのIME状態も保存するようにした。
+    <li>その他、細かいとこ。
+   </ul>
+   <h4>Mon Feb 05 2001 Version 0.2.1.178</h4>
+   <ul>
+    <li>入出力ルーチンを置き換え可能なストリームを作ってみた。
+    <ul>
+     <li>make-general-input-stream <var>input-fn</var> &amp;optional <var>close-fn listen-fn</var>
+     <li>make-general-output-stream <var>output-fn</var> &amp;optional <var>close-fn flush-fn</var>
+     <li>general-input-stream-p <var>stream</var>
+     <li>general-output-stream-p <var>stream</var>
+    </ul>
+    <li>*scratch*で*standard-input*をそこそこ使えるようにした。
+    <li>以下の関数を実装
+    <ul>
+     <li>si:dump-image-path
+     <li>prepend-to-register
+     <li>view-register
+    </ul>
+    <li>勘でホイールに対応してみた。動作または非動作報告求む。
+    <li>その他、どーでもいいとこ。
+   </ul>
+   <h4>Fri Jan 26 2001 Version 0.2.1.177</h4>
+   <ul>
+    <li>タブバーの描画がまだ変だったのを修正。
+    <li>正規表現の文字クラスの補集合で、マッチすべきASCII以外の文字がマッチしない場合があったのを修正。
+    <li>9x系でのメディアのイジェクト。<font size="1" color="gray">あまりテストしてないので、もしかしてハードディスク上でイジェクトしたら、ガコーンて出て来ちゃうかも。</font>NT系も処理をちょっと変えた。
+    <li><font size="1" color="gray">抵抗を180kΩに，その隣のコンデンサを0.22μFにそれぞれ変更。</font>
+   </ul>
+   <h4>Tue Jan 23 2001 Version 0.2.1.0xB0</h4>
+   <ul>
+    <li>タブバーの描画がしおしおだったのを修正。
+   </ul>
+   <h4><s>Mon Jan 22 2001 Version 0.2.1.175</s></h4>
+   <ul>
+    <li>変数*filer-eat-esc*がnilなら、モードレスファイラでESCを食わないようにした。
+    <li>モードレスファイラでTABの再定義を可能にした。
+    <ul>
+     <li>filer-swap-windows
+    </ul>
+    <li>ファイラでC-gを定義できるようにした。
+    <li>read-onlyなファイルをrevert-bufferした場合、バッファをread-onlyにするようにした。
+    <li>クリップボードからのペーストで、単独のCRは潰さないようにした。
+    <li>ダンプするかどうかを聞かないようにしてみた。
+    <li>GatesのHome/Endのバインドを修正。
+    <li>タブがちらつくのを少しましにした。
+   </ul>
+   <h4>Tue Jan 09 2001 Version 0.2.1.174</h4>
+   <ul>
+    <li>ファイラの表示方法を若干変更。速くなったかどうかは知らん。
+    <li>diffをちょっと変えてみた。また、diff.lの場所をlisp/wipからlispへ移動。
+    <li>空のリージョンに対してtext-attributeをつけられるようにした。
+    <ul>
+     <li>delete-text-attributes-if <var>test</var> &amp;key :key
+     <li>delete-text-attributes-if-not <var>test</var> &amp;key :key
+     <li>find-text-attribute-if <var>test</var> &amp;key :start :end :from-end :key
+     <li>find-text-attribute-if-not <var>test</var> &amp;key :start :end :from-end :key
+     <li>modify-text-attributes-if <var>test</var> &amp;key :foreground :background :bold :underline :strike-out :prefix :extend :start :end :key
+     <li>modify-text-attributes-if-not <var>test</var> &amp;key :foreground :background :bold :underline :strike-out :prefix :extend :start :end :key
+    </ul>
+    <li>xyzzycliから呼ばれたときに、マウス・メニューが効かなくなるのを修正。
+    <li>xyzzycliから呼ばれたときに、streamがgcされる場合があったのを修正。
+    <li>コマンドラインの処理中にquitすると、終わってしまうのを修正。
+    <li>IMEの再変換が正しく動作しない場合があるのを多少マシにしてみた。
+    <li>formatの~*が正しく動作しない場合があるのを修正。
+    <li>xyzzycliのプロトコルを変更。古いバージョンとは通信できなくなった。
+    <li>xyzzycliの動きを若干変更。xyzzycli.exeと同じディレクトリに、.exeを.iniに変えたファイル(xyzzycli.exeならxyzzycli.ini、notepad.exeならnotepad.ini)が存在する場合は、そこからxyzzy.exeの場所を取ってくるようにした。.iniの書き方はこんな感じ。
+      <pre>
+[xyzzy]
+path=c:\program files\xyzzy\xyzzy.exe
+      </pre>
+      さらに、実行ファイル名がnotepad.exeの場合は、コマンドラインにファイルをひとつしか指定できないようにした。
+   </ul>
+   <p><a href="OChangeLog.html">昔のChangeLog</a></p>
+  </blockquote>
+ </body>
+</html>
