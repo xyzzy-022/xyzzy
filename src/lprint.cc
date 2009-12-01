@@ -2529,18 +2529,11 @@ Format::exp_format (wStream &stream)
       return;
     }
 
-  if (!param_is_given (0) && !param_is_given (1) && !param_is_given (2))
-    {
-      print_control pc (10);
-      print_flonum (stream, pc, lnumber);
-      return;
-    }
-
   if (!param_is_given (2))
     e = exp_width (f.exp - k + 1);
 
   if (!param_is_given (1))
-    d = f.be - f.b0;
+    d = f.be - f.b0 - 1;
   if (k > 0)
     d = max (d, k - 1);
   else if (k < 0)
