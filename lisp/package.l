@@ -155,7 +155,7 @@
       (and intern
 	   (push `(mapc #'(lambda (x) (intern x package)) ',intern) forms))
       (and export
-	   (push `(export ',export package) forms))
+	   (push `(export (mapcar #'(lambda (x) (intern x package)) ',export) package) forms))
       (if forms
 	  `(eval-when (:compile-toplevel :load-toplevel :execute)
 	     (let* ((package (or (find-package ,package-name)
