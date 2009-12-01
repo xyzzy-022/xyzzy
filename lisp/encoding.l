@@ -3,7 +3,7 @@
 ;;; This file is part of xyzzy.
 ;;;
 
-(provide "abbrev")
+(provide "encoding")
 
 (in-package "editor")
 
