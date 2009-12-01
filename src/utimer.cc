@@ -99,9 +99,8 @@ utimer::timer ()
       timer_entry *entry = t_defers.remove_head ();
       if (entry->te_flags & timer_entry::TE_NEW)
         entry->te_flags &= ~timer_entry::TE_NEW;
-      else
-        entry->te_time = t + (entry->te_interval
-                              * utime_t (timer_entry::UNITS_PER_SEC / 1000));
+      entry->te_time = t + (entry->te_interval
+                            * utime_t (timer_entry::UNITS_PER_SEC / 1000));
       insert (entry);
     }
 
