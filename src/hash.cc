@@ -411,8 +411,8 @@ add_hash_entry (lisp key, lisp value, lhash_table *table)
   return 0;
 }
 
-static void
-hash_table_rehash (lisp hash_table, int inc = 0)
+void
+hash_table_rehash (lisp hash_table, int inc)
 {
   assert (hash_table_p (hash_table));
   int old_size = xhash_table_size (hash_table);

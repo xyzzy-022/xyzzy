@@ -2853,3 +2853,24 @@ output_funcall_mark (FILE *fp)
 }
 #endif /* DEBUG_GC */
 
+void
+rehash_all_hash_tables ()
+{
+  int n = ldata <lhash_table, Thash_table>::count_reps ();
+  ldata_rep **r = (ldata_rep **)alloca (sizeof *r * n);
+  ldata <lhash_table, Thash_table>::get_reps (r);
+  ldata_iter <lhash_table, Thash_table> tables (r, n);
+  lhash_table **h = new lhash_table*[n * LDATA_NOBJS (lhash_table)];
+  int count = 0;
+  for (int i = 0; i < n; i++)
+    {
+      lhash_table *d = tables.next ();
+      for (lhash_table *de = d + LDATA_NOBJS (lhash_table); d < de; d++)
+        if (bitisset (used_place (d), bit_index (d)))
+          h[count++] = d;
+    }
+  for (int j = 0; j < count; j++)
+    hash_table_rehash (h[j], 0);
+
+  delete[] h;
+}

@@ -590,7 +590,10 @@ init_lisp_objects ()
       init_dump_path ();
       if ((ac < __argc || !check_dump_key ())
           && rdump_xyzzy ())
-        combine_syms ();
+        {
+          combine_syms ();
+          rehash_all_hash_tables ();
+        }
       else
         {
           init_syms ();
