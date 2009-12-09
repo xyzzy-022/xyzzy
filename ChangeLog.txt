@@ -1,0 +1,92 @@
+2009-12-09  NANRI Masaoki  <southly@gmail.com>
+
+	* src : add "*brackets-is-wildcard-character*" to history-variable.
+	共通設定の「[...]はワイルドカード」の設定が保存されないので、対応す
+	る変数をヒストリに追加。
+
+	* src : fix dump hash-table.
+	シンボルがキーのハッシュテーブルをダンプファイルに入れた場合、
+	gethashで値がとれない問題があった。ただし、maphashで全要素を取得す
+	ることはできた。
+	---- $XYZZY/site-lisp/siteinit.l の内容
+	(defparameter *hash* (make-hash-table))
+	(dolist (i '((aaa . abab) (bbb . bcbc) (ccc . cdcd)))
+	  (setf (gethash (car i) *hash*) (cdr i)))
+	---- ダンプファイルをロードしたあとに評価
+	(gethash 'aaa *hash*)
+	=>nil ; 本来は abab
+	=>nil ;        t
+
+	(maphash #'(lambda (key val) (format t "~S: ~S~%" key val)) *hash*)
+	aaa: abab
+	bbb: bcbc
+	ccc: cdcd
+	=>nil
+	----
+	シンボルのハッシュ値はオブジェクトのアドレスを元に計算しているが、
+	ダンプファイル作成時とダンプファイルロード後ではシンボルオブジェク
+	トのアドレスが異なり、同一のハッシュ値にならないのが原因。
+
+	ダンプファイルをロードしたあとにrehashするように修正。
+
+	* lisp : fix defpackage.
+	defpackageマクロで:exportオプションを指定できない不具合を修正。
+	[xyzzy:09241]
+
+	* lisp : fix shell-alternate-send-input.
+	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F15
+
+	* lisp : fix calendar.
+	カレンダーの祝日を現行法にあわせる。
+	[xyzzy:09224]
+
+	* lisp : fix typo in lisp/timestmp.l.
+	コメントのtypoを修正。
+	[xyzzy:09158]
+
+	* lisp : fix typo in lisp/encoding.l.
+	provideのtypoを修正。
+	[xyzzy:09158]
+
+	* lisp : fix typo in lisp/css-mode.l.
+	provideのtypoを修正。
+	[xyzzy:09158]
+
+	* lisp : fix typo in lisp/builtin.l.
+	主に引数のtypoを修正。
+	[xyzzy:09158]
+
+	* src : fix hash-table rehash size.
+	ハッシュテーブルの要素数が80000を越える辺りから、ハッシュテーブルの
+	サイズの増加量が100に固定される。そのため頻繁にrehashされパフォーマ
+	ンスが低下していた。
+	rehashするときは最低でも前のサイズの1.5倍になるようにした。
+
+	* src : fix ole-method.
+	ole-method で文字列を渡すと余計な 0x00 が付く問題
+	via http://fixdap.com/p/xyzzy/8379/
+	via http://d.hatena.ne.jp/miyamuko/20080304/xyzzy_ole_method_bug
+
+	* src : fix for FFI.
+	戻り値が double, float の C 関数を呼ぶとクラッシュする
+	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F25
+	via http://d.hatena.ne.jp/miyamuko/20070509/p1
+
+	* src : fix start-timer.
+	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F21
+
+	* src : fix format "~G".
+	[xyzzy:09204]
+
+	* src : fix format "~E".
+	[xyzzy:09204]
+
+	* src : fix format "~F".
+	[xyzzy:09204]
+
+	* src : fix format "~R".
+	[xyzzy:09198]
+
+	* src : fix for VC2005.
+	Microsoft Visual C++ 2005 でビルドできるように、こまごまと修正。
+	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F13
