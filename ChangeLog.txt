@@ -1,5 +1,15 @@
 2009-12-16  NANRI Masaoki  <southly@gmail.com>
 
+	* src : support IMR_DOCUMENTFEED.
+	via http://fixdap.com/p/xyzzy/7376/
+	以下で動作を確認。
+	さいた　　　　　あたたかい
+	布を　　　　　　牛乳
+	花が　　　　　　春
+	時間を　　　　　
+
+2009-12-16  NANRI Masaoki  <southly@gmail.com>
+
 	* src : fix set-buffer-modified-p.
 	(set-buffer-modified-p nil) をした時に以前更新なし状態だった点が更
 	新無し状態のままなのを修正。

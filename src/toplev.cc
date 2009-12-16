@@ -1073,6 +1073,8 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_IME_REQUEST:
       if (wparam == IMR_RECONVERTSTRING)
         return app.kbdq.reconvert ((RECONVERTSTRING *)lparam, 0);
+      if (wparam == IMR_DOCUMENTFEED)
+        return app.kbdq.documentfeed ((RECONVERTSTRING *)lparam, 0);
       break;
 
     case WM_DRAWITEM:
@@ -1092,6 +1094,8 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
           if ((msg == msime || msg == atok)
               && wparam == IMR_RECONVERTSTRING)
             return app.kbdq.reconvert ((RECONVERTSTRING *)lparam, 1);
+          if (wparam == IMR_DOCUMENTFEED)
+            return app.kbdq.documentfeed ((RECONVERTSTRING *)lparam, 1);
         }
 
       wheel_info wi;

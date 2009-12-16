@@ -2313,6 +2313,7 @@ static symbols ed[] =
   DEFVAR2 (*deactivate-hook*),
   DEFVAR2 (*save-buffer-ime-mode*),
   DEFVAR2 (*ime-reconvert-helper*),
+  DEFVAR2 (*ime-documentfeed-helper*),
   DEFVAR2 (*keyboard-layout-list*),
   DEFVAR (*ime-does-not-process-C-\\*, Vime_does_not_process_control_backslach),
   DEFVAR2 (*no-input-language-change-notification*),
