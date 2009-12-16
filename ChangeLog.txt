@@ -1,5 +1,11 @@
 2009-12-16  NANRI Masaoki  <southly@gmail.com>
 
+	* src : fix set-buffer-modified-p.
+	(set-buffer-modified-p nil) をした時に以前更新なし状態だった点が更
+	新無し状態のままなのを修正。
+
+2009-12-16  NANRI Masaoki  <southly@gmail.com>
+
 	* src : fix inverse-cursor-line.
 	(setq inverse-cursor-line t)
 	の状態にすると行カーソルと折り返し線の交点が反転したまま残ってしま

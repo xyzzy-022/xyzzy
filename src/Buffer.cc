@@ -744,6 +744,8 @@ Fset_buffer_modified_p (lisp flag, lisp buffer)
   bp->b_modified = bp->b_need_auto_save = flag != Qnil;
   bp->modify_mode_line ();
   Buffer::maybe_modify_buffer_bar ();
+  if (!bp->b_modified)
+    bp->save_modtime_undo (bp->b_modtime);
   if (!bp->b_modified && symbol_value (Slock_file, bp) == Kedit)
     bp->unlock_file ();
   return Qt;
