@@ -1,3 +1,10 @@
+2009-12-16  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix inverse-cursor-line.
+	(setq inverse-cursor-line t)
+	の状態にすると行カーソルと折り返し線の交点が反転したまま残ってしま
+	うのを修正。
+
 2009-12-09  NANRI Masaoki  <southly@gmail.com>
 
 	* src : add "*brackets-is-wildcard-character*" to history-variable.
