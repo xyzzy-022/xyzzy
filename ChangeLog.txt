@@ -1,3 +1,9 @@
+2009-12-17  NANRI Masaoki  <southly@gmail.com>
+
+	* src : add key parameter ":show" to make-process.
+	make-processにキーパラメータ :show を追加する。
+	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F12
+
 2009-12-16  NANRI Masaoki  <southly@gmail.com>
 
 	* src : support IMR_DOCUMENTFEED.

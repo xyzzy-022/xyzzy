@@ -750,7 +750,7 @@ public:
       if (!WriteFile (p_out, s, l, &nwrite, 0))
         file_error (GetLastError ());
     }
-  void create (lisp, lisp, const char *);
+  void create (lisp, lisp, int, const char *);
   virtual int readin (u_char *, int);
 };
 
@@ -858,7 +858,7 @@ NormalProcess::signal_win95 ()
 }
 
 void
-NormalProcess::create (lisp command, lisp execdir, const char *env)
+NormalProcess::create (lisp command, lisp execdir, int show, const char *env)
 {
   char dir[PATH_MAX + 1];
   pathname2cstr (execdir, dir);
@@ -910,7 +910,7 @@ NormalProcess::create (lisp command, lisp execdir, const char *env)
   bzero (&si, sizeof si);
   si.cb = sizeof si;
   si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-  si.wShowWindow = SW_SHOWMINNOACTIVE;
+  si.wShowWindow = show;
   si.hStdInput = ipipe_r;
   si.hStdOutput = opipe_w;
   si.hStdError = opipe_w;
@@ -973,6 +973,21 @@ Fmake_process (lisp command, lisp keys)
 {
   check_string (command);
 
+  int show;
+  lisp lshow = find_keyword (Kshow, keys);
+  if (lshow == Kshow)
+    show = SW_SHOWNORMAL;
+  else if (lshow == Kno_active)
+    show = SW_SHOWNA;
+  else if (lshow == Kmaximize)
+    show = SW_SHOWMAXIMIZED;
+  else if (lshow == Khide)
+    show = SW_HIDE;
+  else if (lshow == Kminimize)
+    show = SW_SHOWMINNOACTIVE;
+  else
+    show = SW_SHOWMINNOACTIVE;
+
   lisp execdir = find_keyword (Kexec_directory, keys);
   if (execdir == Qnil)
     execdir = selected_buffer ()->ldirectory;
@@ -1003,7 +1018,7 @@ Fmake_process (lisp command, lisp keys)
   NormalProcess *pr = new NormalProcess (bp, process, Process::make_process_marker (bp));
   try
     {
-      pr->create (command, execdir, env.str ());
+      pr->create (command, execdir, show, env.str ());
     }
   catch (nonlocal_jump &)
     {

@@ -1073,7 +1073,7 @@
 (si::defun-builtin get-short-path-name (pathname))
 (si::defun-builtin get-file-info (pathname))
 (si::defun-builtin call-process (command-line &key :environ :no-std-handles :input :output :error :exec-directory :show :wait))
-(si::defun-builtin make-process (command-line &key :environ :output :exec-directory :incode :outcode :eol-code))
+(si::defun-builtin make-process (command-line &key :environ :output :exec-directory :incode :outcode :eol-code :show))
 (si::defun-builtin open-network-stream (buffer hostname service &key :incode :outcode :eol-code))
 (si::defun-builtin buffer-process (buffer))
 (si::defun-builtin process-buffer (process))
