@@ -106,7 +106,11 @@
   (interactive)
   (multiple-value-bind (result data)
       (dialog-box *make-tags-file-dialog-template*
-		  (list (cons 'src (default-directory))
+		  (list (cons 'src (or (and (file-exist-p (merge-pathnames *tags-file-name* (default-directory)))
+					    (with-open-file (s (merge-pathnames *tags-file-name* (default-directory)))
+					      (when (string-matchp "#USE \\(\\(../\\)+\\)$" (read-line s))
+						(append-trail-slash (merge-pathnames (match-string 1) (default-directory))))))
+				       (default-directory)))
 			(cons 'subdir *make-tags-file-subdir*)
 			(cons 'depthspin
 			      (if *make-tags-file-subdir*

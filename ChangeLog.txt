@@ -415,6 +415,10 @@
 
 2009-12-17  NANRI Masaoki  <southly@gmail.com>
 
+	* lisp : modify make-tags-file-dialog.
+	タグファイル作成ダイアログのソースディレクトリのデフォルトにXTAGSフ
+	ァイルの内容を反映するように修正。
+
 	* src : add key parameter ":show" to make-process.
 	make-processにキーパラメータ :show を追加する。
 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F12
