@@ -1,3 +1,8 @@
+2009-12-26  NANRI Masaoki  <southly@gmail.com>
+
+	* src : update zlib.
+	zlibをバージョン1.2.3にアップデート。
+
 2009-12-17  NANRI Masaoki  <southly@gmail.com>
 
 	* src : add key parameter ":show" to make-process.
