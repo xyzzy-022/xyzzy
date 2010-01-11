@@ -1549,8 +1549,17 @@ Fsave_restriction (lisp arg, lex_env &lex)
 lisp
 Fsave_window_excursion (lisp arg, lex_env &lex)
 {
-  WindowConfiguration wc;
-  return Fprogn (arg, lex);
+  WindowConfiguration *wc = new WindowConfiguration;
+  lisp x = Fprogn (arg, lex);
+  multiple_value::value (0) = x;
+  multiple_value_data save;
+  save.count = multiple_value::count ();
+  bcopy (multiple_value::data ()->values, save.values, save.count);
+  protect_gc gcpro (save.values, save.count);
+  delete wc;
+  bcopy (save.values, multiple_value::data ()->values, save.count);
+  multiple_value::count () = save.count;
+  return x;
 }
 
 lisp

@@ -1,5 +1,16 @@
 2010-01-11  NANRI Masaoki  <southly@gmail.com>
 
+	* src : fix save-window-excursion.
+	(save-window-excursion (values 1 2 3))
+	で正しく多値が返らない場合があるのを修正。
+	xyzzy Part11 8
+
+	WindowConfigurationのデストラクタ内でLispのコードが実行されるので、
+	WindowConfigurationのデストラクタを実行したあとで、多値を元の値に戻
+	す必要がある。
+
+2010-01-11  NANRI Masaoki  <southly@gmail.com>
+
 	* lisp : fix long-operation.
 	long-operationの戻り値がprog1相当になっているのをprogn相当になるよ
 	うに修正。
