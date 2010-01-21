@@ -1,3 +1,9 @@
+2010-01-22  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix listen.
+	EOFのときにnilを返すように修正。
+	分かる範囲ということでstring-streamとfile-streamだけ。
+
 2010-01-11  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix save-window-excursion.
