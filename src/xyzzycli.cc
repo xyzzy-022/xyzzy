@@ -134,7 +134,7 @@ create_sexp (xyzzysrv &sv, int ac, char **av)
 static HANDLE
 dup_handle (HANDLE hsrc, DWORD pid)
 {
-  HANDLE hproc = OpenProcess (PROCESS_ALL_ACCESS, 0, pid);
+  HANDLE hproc = OpenProcess (PROCESS_DUP_HANDLE, 0, pid);
   if (!hproc)
     return 0;
   HANDLE hdst;
