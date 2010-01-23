@@ -1,3 +1,9 @@
+2010-01-23  NANRI Masaoki  <southly@gmail.com>
+
+	* src : add get-buffer-colors.
+	関数get-buffer-colorsを追加。
+	set-buffer-colorsと対となる現在のバッファの色設定を取得する関数。
+
 2010-01-22  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix listen.

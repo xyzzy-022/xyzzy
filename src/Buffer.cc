@@ -1382,6 +1382,24 @@ Fset_buffer_colors (lisp lcolors, lisp lbuffer)
   return Qt;
 }
 
+lisp
+Fget_buffer_colors (lisp lbuffer)
+{
+  lisp v = make_vector (USER_DEFINABLE_COLORS, Qnil);
+  Buffer *bp = Buffer::coerce_to_buffer (lbuffer);
+  if (bp->b_colors_enable)
+    {
+      for (int i = 0; i < USER_DEFINABLE_COLORS; i++)
+        xvector_contents (v) [i] = make_fixnum (bp->b_colors[i]);
+    }
+  else
+    {
+      for (int i = 0; i < USER_DEFINABLE_COLORS; i++)
+        xvector_contents (v) [i] = make_fixnum (Window::default_xcolors[i]);
+    }
+  return v;
+}
+
 void
 change_local_colors (const XCOLORREF *cc, int dir, int subdir)
 {

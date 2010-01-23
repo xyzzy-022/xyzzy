@@ -1671,6 +1671,7 @@ static symbols ed[] =
   DEFUN3 (file-locked-p, 0, 1, 0),
   MAKE_SYMBOL2 (exclusive-lock-file),
   DEFUN3 (set-buffer-colors, 1, 1, 0),
+  DEFUN3 (get-buffer-colors, 0, 1, 0),
   DEFVAR2 (*change-buffer-colors-hook*),
   DEFVAR2 (*sort-buffer-list-by-created-order*),
   DEFVAR2 (*title-bar-text-order*),
