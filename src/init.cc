@@ -526,6 +526,7 @@ init_symbol_value ()
   xsymbol_value (Vreader_in_backquote) = Qnil;
   xsymbol_value (Vreader_preserve_white) = Qnil;
   xsymbol_value (Vread_suppress) = Qnil;
+  xsymbol_value (Vread_eval) = Qt;
   xsymbol_value (Vreader_label_alist) = Qnil;
 
   xsymbol_value (Vclipboard_newer_than_kill_ring_p) = Qnil;

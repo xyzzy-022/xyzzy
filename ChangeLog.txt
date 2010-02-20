@@ -1,3 +1,11 @@
+2010-02-21  NANRI Masaoki  <southly@gmail.com>
+
+	* src : add "*read-eval*".
+	スペシャル変数*read-eval*が機能するようにした。
+	*read-eval*の出力への影響の理解が怪しい。
+	*read-eval*がnilの場合はencodingをunreadable-objectとして出力するようし
+	ているが、自信なし。
+
 2010-01-23  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix for VC2008.

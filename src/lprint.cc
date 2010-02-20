@@ -1578,7 +1578,7 @@ print_wait_object (wStream &stream, const print_control &, lisp object)
 static void
 print_char_encoding (wStream &stream, const print_control &pc, lisp object)
 {
-  if (pc.readably || pc.escape)
+  if ((pc.readably || pc.escape) && xsymbol_value (Vread_eval) != Qnil)
     {
       stream.add ("#.");
       object = make_char_encoding_constructor (object);

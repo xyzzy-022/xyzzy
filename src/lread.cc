@@ -317,6 +317,12 @@ read_suppress_p ()
   return xsymbol_value (Vread_suppress) != Qnil;
 }
 
+static inline int
+read_eval_p ()
+{
+  return xsymbol_value (Vread_eval) != Qnil;
+}
+
 static void
 multiple_escape (lisp stream, Token &token, lisp readtab)
 {
@@ -999,6 +1005,8 @@ number_colon_reader (lisp stream, Char, dispmacro_param &param)
 static lisp
 number_dot_reader (lisp stream, Char, dispmacro_param &param)
 {
+  if (!read_eval_p ())
+    reader_error (stream, Enot_allow_evaluation);
   if (!read_suppress_p () && param.present)
     reader_error (stream, Einvalid_midfix_parameter);
   lisp object = lisp_parser (stream);

@@ -625,6 +625,7 @@ static symbols lsp[] =
   DEFVAR2 (*read-default-float-format*),
   DEFVAR2 (*readtable*),
   DEFVAR2 (*read-suppress*),
+  DEFVAR2 (*read-eval*),
 
   /* package.cc */
   DEFUN3 (make-package, 1, 0, FFneed_rest),
