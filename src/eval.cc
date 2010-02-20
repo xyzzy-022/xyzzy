@@ -626,7 +626,7 @@ eval (lisp arg, lex_env &lex)
 
       trace.set (stack_trace::eval_args, real_name, Qnil);
       arglist = eval_args (arglist, lex);
-      if (call_applyhook (real_name, arglist, r))
+      if (call_applyhook (f, arglist, r))
         return r;
       trace.set (stack_trace::apply, real_name, arglist);
       return funcall_builtin (f, arglist);
@@ -636,7 +636,7 @@ eval (lisp arg, lex_env &lex)
     {
       trace.set (stack_trace::eval_args, real_name, Qnil);
       arglist = eval_args (arglist, lex);
-      if (call_applyhook (real_name, arglist, r))
+      if (call_applyhook (f, arglist, r))
         return r;
       lex_env nlex (xclosure_vars (f), xclosure_fns (f), xclosure_frame (f));
       trace.set (stack_trace::apply, real_name, arglist);
@@ -647,7 +647,7 @@ eval (lisp arg, lex_env &lex)
     {
       trace.set (stack_trace::eval_args, real_name, Qnil);
       arglist = eval_args (arglist, lex);
-      if (call_applyhook (real_name, arglist, r))
+      if (call_applyhook (f, arglist, r))
         return r;
       trace.set (stack_trace::apply, real_name, arglist);
       return funcall_dll (f, arglist);
@@ -657,7 +657,7 @@ eval (lisp arg, lex_env &lex)
     {
       trace.set (stack_trace::eval_args, real_name, Qnil);
       arglist = eval_args (arglist, lex);
-      if (call_applyhook (real_name, arglist, r))
+      if (call_applyhook (f, arglist, r))
         return r;
       trace.set (stack_trace::apply, real_name, arglist);
       return funcall_c_callable (f, arglist);
@@ -669,7 +669,7 @@ eval (lisp arg, lex_env &lex)
         {
           trace.set (stack_trace::eval_args, real_name, Qnil);
           arglist = eval_args (arglist, lex);
-          if (call_applyhook (real_name, arglist, r))
+          if (call_applyhook (f, arglist, r))
             return r;
           trace.set (stack_trace::apply, real_name, arglist);
           return funcall_lambda (f, arglist, lex);

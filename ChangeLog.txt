@@ -1,5 +1,11 @@
 2010-02-21  NANRI Masaoki  <southly@gmail.com>
 
+	* src : fix applyhook.
+	applyhook, *applyhook* をローカル関数に対応させた。
+	call_applyhookの第一引数にクロージャを渡すように変更した。
+
+2010-02-21  NANRI Masaoki  <southly@gmail.com>
+
 	* src : add "*read-eval*".
 	スペシャル変数*read-eval*が機能するようにした。
 	*read-eval*の出力への影響の理解が怪しい。
