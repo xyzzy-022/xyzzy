@@ -1,5 +1,11 @@
 2010-03-01  NANRI Masaoki  <southly@gmail.com>
 
+	* src : fix "*load-pathname*" initialization.
+	ダンプ作成時にロードしたファイル名がそのままダンプファイルに保存される
+	ようなので、起動時にも初期化するように修正。
+
+2010-03-01  NANRI Masaoki  <southly@gmail.com>
+
 	* src : fix format "~F".
 	formatの"~F"の第一パラメータwを指定しないと第三パラメータkが機能しない
 	のを修正。

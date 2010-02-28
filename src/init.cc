@@ -368,7 +368,6 @@ init_symbol_value_once ()
 
   xsymbol_value (Vload_verbose) = Qt;
   xsymbol_value (Vload_print) = Qnil;
-  xsymbol_value (Vload_pathname) = Qnil;
 
   xsymbol_value (Vrandom_state) = Fmake_random_state (Qt);
   xsymbol_value (Vdefault_random_state) = xsymbol_value (Vrandom_state);
@@ -528,6 +527,7 @@ init_symbol_value ()
   xsymbol_value (Vread_suppress) = Qnil;
   xsymbol_value (Vread_eval) = Qt;
   xsymbol_value (Vreader_label_alist) = Qnil;
+  xsymbol_value (Vload_pathname) = Qnil;
 
   xsymbol_value (Vclipboard_newer_than_kill_ring_p) = Qnil;
   xsymbol_value (Vkill_ring_newer_than_clipboard_p) = Qnil;
