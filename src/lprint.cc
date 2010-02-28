@@ -2394,7 +2394,7 @@ Format::fixed_format (wStream &stream)
       return;
     }
 
-  if (!param_is_given (0) && !param_is_given (1))
+  if (!param_is_given (0) && !param_is_given (1) && !param_is_given(2))
     {
       print_control pc (10);
       if (atsign && f.sign > 0) stream.add('+');
@@ -2413,7 +2413,19 @@ Format::fixed_format (wStream &stream)
           exp_format (stream);
           return;
         }
-      w = fixed_fmt_width (f.sign, atsign, f.exp, d);
+      if (param_is_given (1))
+        w = fixed_fmt_width (f.sign, atsign, f.exp, d);
+      else
+        {
+          int n = 0;
+          if (f.sign < 0 || atsign)
+            n++;
+          if (f.exp < 0)
+            n += 1 - f.exp + max (f.be - f.b0, 1);
+          else
+            n += 1 + max (f.exp, f.be - f.b0);
+          w = n;
+        }
     }
 
   if (param_is_given (1))
