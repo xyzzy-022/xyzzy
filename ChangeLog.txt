@@ -1,5 +1,10 @@
 2010-07-14  NANRI Masaoki  <southly@gmail.com>
 
+	* src : fox format "~VT" in the case of being provided '() as a prefix parameter.
+	Vに引数としてnilを渡したときの動作を修正。
+
+2010-07-14  NANRI Masaoki  <southly@gmail.com>
+
 	* src : fix for VC2010.
 	Microsoft Visual C++ 2010 でのビルド用に修正。
 	Makefileの修正のみ。

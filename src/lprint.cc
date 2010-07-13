@@ -3362,6 +3362,12 @@ Format::prefix_parameters ()
                     param[nparams].value = xchar_code (x);
                     nparams++;
                   }
+                else if (x == Qnil)
+                  {
+                    param[nparams].type = FMT_NIL;
+                    param[nparams].value = 0;
+                    nparams++;
+                  }
                 else
                   error (Eillegal_fmt_V_parameter);
               }
