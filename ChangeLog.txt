@@ -1,3 +1,9 @@
+2010-07-14  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix for VC2010.
+	Microsoft Visual C++ 2010 でのビルド用に修正。
+	Makefileの修正のみ。
+
 2010-03-01  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix "*load-pathname*" initialization.
