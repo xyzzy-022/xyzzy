@@ -10,6 +10,8 @@
 
 	* src : fox format "~VT" in the case of being provided '() as a prefix parameter.
 	Vに引数としてnilを渡したときの動作を修正。
+	(format t "~VA" nil 'x)
+	== (format t "~A" 'x)
 
 2010-07-14  NANRI Masaoki  <southly@gmail.com>
 
