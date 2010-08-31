@@ -1,3 +1,9 @@
+2010-08-31  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix call-process.
+	call-processの標準入力・標準出力等の指定がうまく設定されない現象がおき
+	ていたのを修正。
+
 2010-07-14  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix format "~T".

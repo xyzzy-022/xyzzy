@@ -243,11 +243,11 @@ Fcall_process (lisp cmd, lisp keys)
   if (!no_std_handles)
     {
       si.dwFlags |= STARTF_USESTDHANDLES;
-      si.hStdInput = hin.valid () ? hin : GetStdHandle (STD_INPUT_HANDLE);
-      si.hStdOutput = hout.valid () ? hout : GetStdHandle (STD_OUTPUT_HANDLE);
+      si.hStdInput = hin.valid () ? (HANDLE)hin : GetStdHandle (STD_INPUT_HANDLE);
+      si.hStdOutput = hout.valid () ? (HANDLE)hout : GetStdHandle (STD_OUTPUT_HANDLE);
       si.hStdError = (lstdout != lstderr
-                      ? herr.valid () ? herr : GetStdHandle (STD_ERROR_HANDLE)
-                      : hout.valid () ? hout : GetStdHandle (STD_ERROR_HANDLE));
+                      ? herr.valid () ? (HANDLE)herr : GetStdHandle (STD_ERROR_HANDLE)
+                      : hout.valid () ? (HANDLE)hout : GetStdHandle (STD_ERROR_HANDLE));
     }
 
   WINFS::SetCurrentDirectory (dir);
