@@ -1,3 +1,9 @@
+2010-09-11  NANRI Masaoki  <southly@gmail.com>
+
+	* src : add si:putenv.
+	si:putenv を追加。
+	via http://d.hatena.ne.jp/miyamuko/20100910/xyzzy_putenv
+
 2010-08-31  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix call-process.

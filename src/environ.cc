@@ -851,6 +851,16 @@ Fsi_getenv (lisp var)
 }
 
 lisp
+Fsi_putenv (lisp var)
+{
+  check_string (var);
+  char *v = (char *)alloca (xstring_length (var) * 2 + 1);
+  w2s (v, var);
+  int r = _putenv (v);
+  return r == 0 ? Qt : Qnil;
+}
+
+lisp
 Fsi_system_root ()
 {
   return xsymbol_value (Qmodule_dir);

@@ -900,6 +900,7 @@ static symbols sys[] =
   /* environ.cc */
   SI_DEFUN3 (system-root, 0, 0, 0),
   SI_DEFUN3 (getenv, 1, 0, 0),
+  SI_DEFUN3 (putenv, 1, 0, 0),
   SI_DEFUN3 (delete-registry-tree, 0, 0, 0),
   SI_DEFUN3 (performance-counter, 0, 0, 0),
   SI_DEFUN3 (dump-image-path, 0, 0, 0),
