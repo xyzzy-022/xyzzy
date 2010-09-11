@@ -4,6 +4,7 @@
 #define REQ_RANGE_MIN 0x0080
 #define REQ_RANGE_MAX 0x33ff
 
+#if defined(_MSC_VER) && (_MSC_VER < 1600)
 typedef struct tagWCRANGE {
   WCHAR  wcLow;
   USHORT cGlyphs;
@@ -16,6 +17,7 @@ typedef struct tagGLYPHSET {
   DWORD    cRanges;
   WCRANGE  ranges[1];
 } GLYPHSET, *PGLYPHSET;
+#endif
 
 /*
 DWORD GetFontUnicodeRanges(
