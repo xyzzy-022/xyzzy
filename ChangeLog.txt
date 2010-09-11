@@ -1,5 +1,12 @@
 2010-09-11  NANRI Masaoki  <southly@gmail.com>
 
+	* src : remove pragma optimize.
+	「internal compiler error」対策とのコメントがあるが、Microsoft Visual
+	C++ 2010 ではエラーが発生しないので削除。
+	とりあえずVC2010でのみ削除。
+
+2010-09-11  NANRI Masaoki  <southly@gmail.com>
+
 	* src : add si:putenv.
 	si:putenv を追加。
 	via http://d.hatena.ne.jp/miyamuko/20100910/xyzzy_putenv

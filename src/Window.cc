@@ -495,9 +495,11 @@ Window::Window (const Window &src)
   init (0, 0);
 }
 
+#if defined(_MSC_VER) && (_MSC_VER < 1600)
 /* なんか知らんがinternal compiler error が出るようになってしまったので
    てきとーに対処。*/
 #pragma optimize("g", off)
+#endif
 
 Window::Window (int minibufp, int temporary)
 {
@@ -532,7 +534,9 @@ Window::Window (int minibufp, int temporary)
 
   init (minibufp, temporary);
 }
+#if defined(_MSC_VER) && (_MSC_VER < 1600)
 #pragma optimize("", on)
+#endif
 
 Window::~Window ()
 {
