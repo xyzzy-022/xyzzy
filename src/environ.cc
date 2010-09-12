@@ -851,13 +851,27 @@ Fsi_getenv (lisp var)
 }
 
 lisp
-Fsi_putenv (lisp var)
+Fsi_putenv (lisp var, lisp val)
 {
   check_string (var);
-  char *v = (char *)alloca (xstring_length (var) * 2 + 1);
-  w2s (v, var);
-  int r = _putenv (v);
-  return r == 0 ? Qt : Qnil;
+  int l = xstring_length (var) * 2 + 1 + 1;
+  if (val && val != Qnil)
+    {
+      check_string (val);
+      l += xstring_length (val) * 2;
+    }
+
+  char *v = (char *)alloca (l);
+  char *b = v;
+  v = w2s (v, var);
+  *v++ = '=';
+  if (val && val != Qnil)
+    w2s (v, val);
+  else
+    *v++ = 0;
+
+  int r = _putenv (b);
+  return (r < 0 || !val) ? Qnil : val;
 }
 
 lisp

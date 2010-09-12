@@ -1,3 +1,17 @@
+2010-09-12  MIYAMUKO Katsuyuki  <miyamuko@gmail.com>
+
+	* src : add optional value parameter to si:putenv.
+	引数を環境変数名とオプショナルな値をとるように変更。
+	値を省略した場合や nil を指定した場合は環境変数を削除する。
+	戻り値は環境変数の設定に成功した場合は設定した値を返し、
+	環境変数を削除した場合または設定に失敗した場合は nil を返すように変更。
+	(si:putenv "FOO" "bar")
+	=> "bar"
+	(si:putenv "FOO")
+	=> nil
+	(si:putenv "=FOO" "bar")
+	=> nil
+
 2010-09-11  NANRI Masaoki  <southly@gmail.com>
 
 	* src : remove redefinition.
