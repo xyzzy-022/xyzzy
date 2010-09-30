@@ -1949,6 +1949,7 @@ static symbols ed[] =
   DEFCMD3 (split-window, 0, 2, 0, "p"),
   DEFCMD3 (delete-other-windows, 0, 0, 0, ""),
   DEFCMD3 (delete-window, 0, 0, 0, ""),
+  DEFUN3 (deleted-window-p, 1, 0, 0),
   DEFUN3 (selected-window, 0, 0, 0),
   DEFUN3 (minibuffer-window, 0, 0, 0),
   DEFUN3 (minibuffer-window-p, 1, 0, 0),

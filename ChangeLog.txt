@@ -1,3 +1,10 @@
+2010-09-30  MIYAMUKO Katsuyuki  <miyamuko@gmail.com>
+
+	* src : add deleted-window-p
+	削除された Window なら t を返す。
+	deleted-buffer-p の Window バージョン。
+	http://twitter.com/bowbow99/status/25935896653
+
 2010-09-12  MIYAMUKO Katsuyuki  <miyamuko@gmail.com>
 
 	* src : add optional value parameter to si:putenv.
