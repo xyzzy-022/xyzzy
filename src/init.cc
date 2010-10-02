@@ -289,7 +289,8 @@ init_math_symbols ()
 
   xsymbol_value (Qmost_positive_single_float) = make_single_float (FLT_MAX);
   xsymbol_value (Qmost_negative_single_float) = make_single_float (-FLT_MAX);
-  for (float fl = 1.0F, fe = 1.1F; fl && fe > fl; fe = fl, fl /= 2.0F)
+  float fl, fe;
+  for (fl = 1.0F, fe = 1.1F; fl && fe > fl; fe = fl, fl /= 2.0F)
     ;
   xsymbol_value (Qleast_positive_single_float) = make_single_float (fe);
   xsymbol_value (Qleast_negative_single_float) = make_single_float (-fe);
@@ -317,7 +318,8 @@ init_math_symbols ()
 
   xsymbol_value (Qmost_positive_double_float) = make_double_float (DBL_MAX);
   xsymbol_value (Qmost_negative_double_float) = make_double_float (-DBL_MAX);
-  for (double dl = 1.0, de = 1.1; dl && de > dl; de = dl, dl /= 2.0)
+  double dl, de;
+  for (dl = 1.0, de = 1.1; dl && de > dl; de = dl, dl /= 2.0)
     ;
   xsymbol_value (Qleast_positive_double_float) = make_double_float (de);
   xsymbol_value (Qleast_negative_double_float) = make_double_float (-de);
@@ -573,7 +575,8 @@ init_lisp_objects ()
   const char *config_path = 0, *ini_file = 0;
   *app.dump_image = 0;
 
-  for (int ac = 1; ac < __argc - 1; ac += 2)
+  int ac;
+  for (ac = 1; ac < __argc - 1; ac += 2)
     if (!strcmp (__argv[ac], "-image"))
       {
         char *tem;

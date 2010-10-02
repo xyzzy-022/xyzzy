@@ -57,8 +57,8 @@ load_misc_colors ()
 {
   load_default ();
 
-  int c;
-  for (int i = MC_FILER_FG; i <= MC_FILER_CURSOR; i++)
+  int i, c;
+  for (i = MC_FILER_FG; i <= MC_FILER_CURSOR; i++)
     if (read_conf (cfgFiler, xnames[i].name, c))
       xcolors[i] = c;
 
@@ -73,7 +73,8 @@ modify_misc_colors (const XCOLORREF *colors, int save)
   memcpy (xcolors, colors, sizeof xcolors);
   if (save)
     {
-      for (int i = MC_FILER_FG; i <= MC_FILER_CURSOR; i++)
+      int i;
+      for (i = MC_FILER_FG; i <= MC_FILER_CURSOR; i++)
         write_conf (cfgFiler, xnames[i].name, xcolors[i].rgb, 1);
       for (; i < MC_NCOLORS; i++)
         write_conf (cfgColors, xnames[i].name, xcolors[i].rgb, 1);

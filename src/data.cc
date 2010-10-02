@@ -733,7 +733,8 @@ gc_mark (lintr *p)
 static lisp
 gc_mark_list (lisp list)
 {
-  for (lisp ol = list, nl = Qnil, cdr; consp (ol); ol = cdr)
+  lisp ol, nl, cdr;
+  for (ol = list, nl = Qnil; consp (ol); ol = cdr)
     {
       cdr = xcdr (ol);
       lisp x = xcar (ol);
@@ -852,9 +853,9 @@ gc_mark_object ()
 
   for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
     gc_mark_object (wp->lwp);
-  for (wp = app.active_frame.reserved; wp; wp = wp->w_next)
+  for (Window *wp = app.active_frame.reserved; wp; wp = wp->w_next)
     gc_mark_object (wp->lwp);
-  for (wp = app.active_frame.deleted; wp; wp = wp->w_next)
+  for (Window *wp = app.active_frame.deleted; wp; wp = wp->w_next)
     gc_mark_object (wp->lwp);
 
   for (Buffer *bp = Buffer::b_blist; bp; bp = bp->b_next)
@@ -872,7 +873,7 @@ gc_mark_object ()
 
   gc_mark_in_stack ();
 
-  for (bp = Buffer::b_blist; bp; bp = bp->b_next)
+  for (Buffer *bp = Buffer::b_blist; bp; bp = bp->b_next)
     bp->lmarkers = gc_mark_list (bp->lmarkers);
 
   xsymbol_value (Vdll_module_list) =
@@ -2760,7 +2761,8 @@ rdump_xyzzy (FILE *fp)
 
   int counts[nobject_type];
   readf (fp, counts, sizeof counts);
-  for (int i = 0, n = 0; i < nobject_type; i++)
+  int i, n;
+  for (i = 0, n = 0; i < nobject_type; i++)
     n += counts[i];
   if (n != head.nreps)
     return 0;

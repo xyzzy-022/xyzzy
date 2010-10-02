@@ -142,8 +142,9 @@ public:
           r->a_next = a_reps;
           a_reps = r;
           a_free = r + 1;
-          for (arep *p = a_free, *pe = (arep *)((T *)p + ((a_heap.size () - sizeof *p)
-                                                          / sizeof (T) - 1));
+          arep *p, *pe;
+          for (p = a_free, pe = (arep *)((T *)p + ((a_heap.size () - sizeof *p)
+                                                   / sizeof (T) - 1));
                p < pe; p = (arep *)((T *)p + 1))
             p->a_next = (arep *)((T *)p + 1);
           p->a_next = 0;

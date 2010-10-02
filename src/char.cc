@@ -124,7 +124,7 @@ Fchar_not_eql (lisp args)
       return boole (xchar_code (xcar (args)) != xchar_code (xcar (xcdr (args))));
 
     default:
-      for (p = args; consp (p); p = xcdr (p))
+      for (lisp p = args; consp (p); p = xcdr (p))
         for (lisp q = args; consp (q); q = xcdr (q))
           if (p != q && xchar_code (xcar (p)) == xchar_code (xcar (q)))
             return Qnil;
@@ -238,7 +238,7 @@ Fchar_not_equal (lisp args)
                     != char_upcase (xchar_code (xcar (xcdr (args)))));
 
     default:
-      for (p = args; consp (p); p = xcdr (p))
+      for (lisp p = args; consp (p); p = xcdr (p))
         for (lisp q = args; consp (q); q = xcdr (q))
           if (p != q
               && (char_upcase (xchar_code (xcar (p)))

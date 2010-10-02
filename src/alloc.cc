@@ -127,8 +127,8 @@ alloc_page::free (void *p)
       u_long mask = ~(ap_block_size - 1);
       base &= mask;
 
-      alloc_page_rep *prev = 0;
-      for (alloc_page_rep *r = ap_rep; r; prev = r, r = r->next)
+      alloc_page_rep *r, *prev = 0;
+      for (r = ap_rep; r; prev = r, r = r->next)
         if ((pointer_t (r) & mask) == base)
           {
             u_long d = (pointer_t (p) - base) / ap_unit_size;
@@ -223,7 +223,7 @@ fixed_heap::free (void *p)
 
   if (count < fh_heap_per_page)
     {
-      h = (fixed_heap_rep *)p;
+      fixed_heap_rep *h = (fixed_heap_rep *)p;
       h->next = fh_heap;
       fh_heap = h;
     }
@@ -231,7 +231,7 @@ fixed_heap::free (void *p)
     {
       fixed_heap_rep *nheap = 0;
       fixed_heap_rep *next;
-      for (h = fh_heap; h; h = next)
+      for (fixed_heap_rep *h = fh_heap; h; h = next)
         {
           next = h->next;
           if ((pointer_t (h) & mask) != base)

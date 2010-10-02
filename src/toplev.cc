@@ -348,7 +348,8 @@ set_ime_caret ()
         {
           GetClientRect (app.active_frame.has_caret, &r);
 
-          for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
+          Window *wp;
+          for (wp = app.active_frame.windows; wp; wp = wp->w_next)
             if (wp->w_hwnd == app.active_frame.has_caret)
               break;
           r.left += app.text_font.cell ().cx / 2;

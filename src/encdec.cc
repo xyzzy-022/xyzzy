@@ -89,7 +89,7 @@ Fsi_www_url_encode (lisp input, lisp output, lisp literal_chars)
     {
       for (int i = '0'; i <= '9'; i++)
         lc[i] = 1;
-      for (i = 'A'; i <= 'Z'; i++)
+      for (int i = 'A'; i <= 'Z'; i++)
         lc[i] = lc[i + ('a' - 'A')] = 1;
       for (const char *p = "$-_.+!*'(|),"; *p; p++)
         lc[*p] = 1;

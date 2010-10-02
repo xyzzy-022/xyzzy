@@ -85,7 +85,8 @@ jindex (const char *p, int c)
 char *
 jrindex (const char *p, int c)
 {
-  for (const u_char *save = 0, *s = (const u_char *)p; *s;)
+  const u_char *save, *s;
+  for (save = 0, s = (const u_char *)p; *s;)
     {
       if (SJISP (*s) && s[1])
         s += 2;
@@ -119,7 +120,8 @@ find_slash (const char *p)
 char *
 find_last_slash (const char *p)
 {
-  for (u_char *save = 0, *s = (u_char *)p; *s;)
+  u_char *save, *s;
+  for (save = 0, s = (u_char *)p; *s;)
     {
       if (SJISP (*s) && s[1])
         s += 2;
@@ -136,7 +138,8 @@ find_last_slash (const char *p)
 long
 log2 (u_long x)
 {
-  for (long l = 0; x; x >>= 1, l++)
+  long l;
+  for (l = 0; x; x >>= 1, l++)
     ;
   return l;
 }

@@ -513,7 +513,7 @@ reg2ini_colors ()
 
   COLORREF c[16];
   if (r.get ("CustColors", c, sizeof c) == sizeof c)
-    for (i = 0; i < 16; i++)
+    for (int i = 0; i < 16; i++)
       {
         sprintf (name, "%s%d", cfgCustColor, i);
         write_conf (cfgColors, name, long (c[i]), 1);

@@ -238,7 +238,7 @@ br_copy (bignum_rep *old, large_int li)
   for (u_long x = li.lo; x; x = down (x))
     *d++ = lowpart (x);
   d = r->br_data + SHORT_PER_LONG;
-  for (x = li.hi; x; x = down (x))
+  for (u_long x = li.hi; x; x = down (x))
     *d++ += lowpart (x);
   r->br_len = d - r->br_data;
   return r;
@@ -909,7 +909,8 @@ bignum_rep::howlong () const
   int x = br_data[br_len - 1];
   if (minusp ())
     {
-      for (int i = br_len - 2; i >= 0; i--)
+      int i;
+      for (i = br_len - 2; i >= 0; i--)
         if (br_data[i])
           break;
       if (i < 0)
@@ -1081,7 +1082,7 @@ found:
     {
       long sft = 0;
       int tl = t->br_len;
-      for (i = 0; i < tl; i++)
+      for (int i = 0; i < tl; i++)
         {
           u_long tt = t->br_data[i];
           for (int j = 1; j < BR_RADIX; j <<= 1, sft--)
@@ -1216,7 +1217,7 @@ logope (bignum_rep *&r, logope_code ope,
       return;
     }
 
-  for (i = 0; i < rl; i++)
+  for (int i = 0; i < rl; i++)
     r->br_data[i] = ~r->br_data[i];
 
   safe_bignum_rep rr (r);

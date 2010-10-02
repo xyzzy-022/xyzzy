@@ -94,17 +94,17 @@ EnvStrings::setup (lisp lenv)
   e_buf = (char *)xmalloc (l + sizeof (char **) * n);
   char **nb = (char **)(e_buf + l);
   char **ne = nb;
-  for (e = environ; *e; e++, ne++)
+  for (char **e = environ; *e; e++, ne++)
     *ne = *e;
 
   char *b = e_buf;
-  for (le = lenv; consp (le); le = xcdr (le))
+  for (lisp le = lenv; consp (le); le = xcdr (le))
     {
       lisp x = xcar (le);
       b = set (nb, ne, b, xcar (x), xcdr (x));
     }
 
-  for (d = 0; d < 26; d++)
+  for (int d = 0; d < 26; d++)
     {
       const char *dir = get_device_dir (d);
       int x = strlen (dir);
@@ -125,7 +125,7 @@ EnvStrings::setup (lisp lenv)
 
   e_env = (char *)xmalloc (l);
   char *p = e_env;
-  for (np = nb; np < ne; np++)
+  for (char **np = nb; np < ne; np++)
     if (**np)
       p = stpcpy (p, *np) + 1;
   *p = 0;
@@ -613,8 +613,8 @@ class process_input_stream: public byte_input_stream
             {
             case eol_crlf:
               {
-                for (u_char *d = p_buf, *s = p_buf, *const se = s + l;
-                     s < se; s++)
+                u_char *d = p_buf, *s = p_buf, *const se = s + l;
+                for (; s < se; s++)
                   if (*s != '\r')
                     *d++ = *s;
                 l = d - p_buf;

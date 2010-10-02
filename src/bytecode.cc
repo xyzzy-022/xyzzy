@@ -506,7 +506,7 @@ restart:
       if (nld->type == Qtagbody && nld->id == frame)
         {
           set_pc (frame_pc);
-          for (i = 0; i < ntags; i++)
+          for (int i = 0; i < ntags; i++)
             {
               int next_pc = fetch ();
               if (Feql (nld->tag, constant (fetch ())) != Qnil)
@@ -569,7 +569,8 @@ ByteCode::xspecial (lex_env &lex)
   int nargs = fetch ();
   char *oflags = (char *)alloca (nargs + sizeof (lisp) * 2 * nargs);
   lisp *save = (lisp *)(oflags + nargs);
-  for (int i = 0, j = 0; i < nargs; i++)
+  int i, j;
+  for (i = 0, j = 0; i < nargs; i++)
     {
       lisp var = constant (fetch ());
       assert (symbolp (var));
@@ -1600,7 +1601,8 @@ Fsi_byte_code (lisp arg, lex_env &lex)
   assert (nargs <= nstack_frame);
 
   lisp e = lex.lex_var;
-  for (int i = 0; i < nargs; i++, e = xcdr (e))
+  int i;
+  for (i = 0; i < nargs; i++, e = xcdr (e))
     {
       assert (consp (e));
       if (!consp (e))

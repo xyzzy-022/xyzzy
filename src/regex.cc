@@ -88,12 +88,15 @@ charclass::count_size (cc &f) const
   for (int h = 0; h < 256; h++)
     if (isset (hi, h))
       {
-        for (int l = 0; l < 256 / NBITS && !lo[h][l]; l++)
+        int l;
+        for (l = 0; l < 256 / NBITS && !lo[h][l]; l++)
           ;
-        for (int u = 256 / NBITS - 1; u > l && !lo[h][u]; u--)
+        int u;
+        for (u = 256 / NBITS - 1; u > l && !lo[h][u]; u--)
           ;
         u++;
-        for (int i = l; i < u; i++)
+        int i;
+        for (i = l; i < u; i++)
           if (lo[h][i] != Char (-1))
             break;
         size += 2;
@@ -1835,7 +1838,8 @@ state_buf::test (u_long x) const
 inline int
 Regexp::compare_regs (const sregs &r1, const sregs &r2)
 {
-  for (int i = 1; i <= r1.nregs; i++)
+  int i;
+  for (i = 1; i <= r1.nregs; i++)
     {
       if (i > r2.nregs)
         return 1;
@@ -1910,7 +1914,7 @@ Regexp::closure_backtrack (re_point &point, const Char *p, const Char *pe,
       match_void = 0;
       tstack->clear ();
 
-      for (i = 0; i < fstack->b_used; i++)
+      for (int i = 0; i < fstack->b_used; i++)
         if (!fstack->b_stack[i].match_void)
           {
             point = fstack->b_stack[i].point;

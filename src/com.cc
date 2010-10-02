@@ -243,7 +243,8 @@ Fole_drop_files (lisp lpath, lisp lclsid, lisp ldir, lisp lfiles)
   int maxl = strlen (dir);
 
   lisp f = lfiles;
-  for (int nfiles = 0; consp (f); f = xcdr (f), nfiles++)
+  int nfiles;
+  for (nfiles = 0; consp (f); f = xcdr (f), nfiles++)
     {
       check_string (xcar (f));
       maxl = max (maxl, xstring_length (xcar (f)));
@@ -277,7 +278,8 @@ Fole_drop_files (lisp lpath, lisp lclsid, lisp ldir, lisp lfiles)
   safe_vidl (ialloc, idls, nfiles);
 
   f = lfiles;
-  for (int i = 0; i < nfiles && consp (f); i++, f = xcdr (f))
+  int i;
+  for (i = 0; i < nfiles && consp (f); i++, f = xcdr (f))
     {
       i2w (xcar (f), wbuf);
       ole_error (sf->ParseDisplayName (0, 0, wbuf, &eaten, &idls[i], 0));

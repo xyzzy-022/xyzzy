@@ -36,7 +36,8 @@ copy_regs0 (Regexp::sregs &d, const Regexp::sregs &s)
 static void
 check_regs ()
 {
-  for (int i = 0; i <= re_regs.nregs; i++)
+  int i;
+  for (i = 0; i <= re_regs.nregs; i++)
     {
       if (re_regs.start[i] < 0)
         re_regs.end[i] = -1;
@@ -86,7 +87,7 @@ bm_compilef (int *BM, const Char *pattern, int patlen, int case_fold)
   for (int i = 0; i < 256; i++)
     BM[i] = patlen;
 
-  for (i = patlen - 1; i >= 0; i--)
+  for (int i = patlen - 1; i >= 0; i--)
     {
       Char cc = *pattern++;
       int c = DBCP (cc) ? cc >> 8 : cc;
@@ -99,7 +100,8 @@ bm_compilef (int *BM, const Char *pattern, int patlen, int case_fold)
 static void
 bm_compileb (int *BM, const Char *pattern, int patlen, int case_fold)
 {
-  for (int i = 0; i < 256; i++)
+  int i;
+  for (i = 0; i < 256; i++)
     BM[i] = patlen;
 
   for (i = patlen - 1, pattern += patlen; i >= 0; i--)

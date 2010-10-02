@@ -81,7 +81,7 @@ make_random_state (lisp keys)
     FEprogram_error (Einvalid_random_state_initializer, v);
   lrandom_state *p = make_random_state ();
   p->object.index = n;
-  for (i = 0; i < Random::INDEX_MAX; i++, x++)
+  for (int i = 0; i < Random::INDEX_MAX; i++, x++)
     p->object.X[i] = fixnum_value (*x);
   return p;
 }

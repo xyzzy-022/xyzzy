@@ -527,7 +527,7 @@ print_engine::init_font (HDC hdc)
 
   pe_fixed_pitch = 1;
 
-  for (i = 0; i < FONT_MAX; i++)
+  for (int i = 0; i < FONT_MAX; i++)
     {
       SelectObject (hdc, pe_hfonts[i]);
       GetTextMetrics (hdc, &tm);
@@ -540,6 +540,7 @@ print_engine::init_font (HDC hdc)
 
   if (!pe_fixed_pitch)
     {
+      int i;
       for (i = 0; i < FONT_MAX; i++)
         pe_offset[i].x = pe_offset2x[i] = 0;
 
@@ -1396,8 +1397,9 @@ print_engine::fmt_filename_short (char *b, char *be)
       && !stringp (name = pe_bp->lalternate_file_name))
     return fmt_buffer_name (b, be);
 
-  for (const Char *p0 = xstring_contents (name),
-       *pe = p0 + xstring_length (name), *p = pe;
+  const Char *p0, *pe, *p;
+  for (p0 = xstring_contents (name),
+       pe = p0 + xstring_length (name), p = pe;
        p > p0 && p[-1] != '/' && p[-1] != '\\';
        p--)
     ;

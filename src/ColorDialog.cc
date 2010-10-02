@@ -693,16 +693,16 @@ ChooseFontPage::init_page (PropSheet *sheet, int page_no, PROPSHEETPAGE *psp)
   cfp_font.cf_fg = Window::default_xcolors[WCOLOR_TEXT];
   cfp_font.cf_bg = Window::default_xcolors[WCOLOR_BACK];
 
-  for (i = 0; i < USER_DEFINABLE_COLORS; i++)
+  for (int i = 0; i < USER_DEFINABLE_COLORS; i++)
     ccp_cc[i] = Window::default_xcolors[i];
   ccp_cc[MODELINE_FG_OFFSET] = Window::modeline_xcolors[Window::MLCI_FOREGROUND];
   ccp_cc[MODELINE_BG_OFFSET] = Window::modeline_xcolors[Window::MLCI_BACKGROUND];
-  for (i = 0; i < NPROPS; i++)
+  for (int i = 0; i < NPROPS; i++)
     {
       ccp_cc[PROP_FG_OFFSET + i] = Window::w_textprop_xforecolor[i + 1];
       ccp_cc[PROP_BG_OFFSET + i] = Window::w_textprop_xbackcolor[i + 1];
     }
-  for (i = 0; i < NMISCS; i++)
+  for (int i = 0; i < NMISCS; i++)
     ccp_cc[MISC_OFFSET + i] = get_misc_color (i);
 
   memcpy (ccp_curcc, ccp_cc, sizeof ccp_cc);

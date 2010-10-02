@@ -92,11 +92,13 @@ FontSet::paint_newline_bitmap (HDC hdc)
   int h = fs_size.cy / 2;
   int y0 = fs_size.cy - 2;
   int ox = fs_cell.cx * newline + 2;
-  for (int y = 0; y < h; y++)
+  int y;
+  for (y = 0; y < h; y++)
     SetPixel (hdc, ox, y0 - y, RGB (0, 0, 0));
   for (y = 0; y < h / 2 - 1; y++)
     SetPixel (hdc, ox + y, y0 - y, RGB (0, 0, 0));
-  for (int w = (y + 1) / 2, x = y; x >= w; x--)
+  int w, x;
+  for (w = (y + 1) / 2, x = y; x >= w; x--)
     SetPixel (hdc, ox + x, y0 - y, RGB (0, 0, 0));
   for (x++; y < h; y++)
     SetPixel (hdc, ox + x, y0 - y, RGB (0, 0, 0));
@@ -227,7 +229,7 @@ FontSet::paint_fold_bitmap (HDC hdc)
       SetPixel (hdc, s0, y, RGB (0, 0, 0));
       SetPixel (hdc, m0, y, RGB (0, 0, 0));
     }
-  for (y = fs_cell.cy & 1; y < fs_cell.cy; y += 2)
+  for (int y = fs_cell.cy & 1; y < fs_cell.cy; y += 2)
     {
       SetPixel (hdc, s1, y, RGB (0, 0, 0));
       SetPixel (hdc, m1, y, RGB (0, 0, 0));
@@ -275,7 +277,7 @@ FontSet::create (const FontSetParam &param)
       for (int i = 0; i < FONT_MAX; i++)
         fs_font[i].create (param.fs_logfont[i]);
 
-      for (i = 0; i < FONT_MAX; i++)
+      for (int i = 0; i < FONT_MAX; i++)
         fs_font[i].get_metrics (hdc, ex[i][0], ex[i][1]);
     }
   else
@@ -317,7 +319,7 @@ FontSet::create (const FontSetParam &param)
     fs_line_width = 1;
 
   fs_need_pad = 0;
-  for (i = 0; i < FONT_MAX; i++)
+  for (int i = 0; i < FONT_MAX; i++)
     {
       fs_font[i].calc_offset (fs_size);
       if (fs_font[i].size ().cx != fs_size.cx
@@ -373,7 +375,7 @@ FontSet::load_params (FontSetParam &param)
     if (!read_conf (cfgFont, regent (i), param.fs_logfont[i]))
       *param.fs_logfont[i].lfFaceName = 0;
 
-  for (i = 0; i < FONT_MAX; i++)
+  for (int i = 0; i < FONT_MAX; i++)
     {
       if (!*param.fs_logfont[i].lfFaceName)
         {
