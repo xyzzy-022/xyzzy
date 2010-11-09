@@ -1,3 +1,36 @@
+2010-11-09  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix single-float-epsilon, single-float-negative-epsilon.
+	http://twitter.com/TwilightClover/status/26251344464
+	http://gist.github.com/608561
+	http://gist.github.com/608467
+	(dolist (sym '((double-float-epsilon t)
+	               (double-float-negative-epsilon nil)
+	               (long-float-epsilon t)
+	               (long-float-negative-epsilon nil)
+	               (short-float-epsilon t)
+	               (short-float-negative-epsilon nil)
+	               (single-float-epsilon t)
+	               (single-float-negative-epsilon nil)))
+	  (let ((epsilon (symbol-value (car sym)))
+	        (positive (cadr sym)))
+	    (format t "~30S = ~@30S, test = ~S~%"
+	            (car sym)
+	            epsilon
+	            (if positive
+	                (not (= (float 1 epsilon) (+ (float 1 epsilon) epsilon)))
+	              (not (= (float 1 epsilon) (- (float 1 epsilon) epsilon)))))
+	    ))
+	double-float-epsilon           =          2.220446049250313d-16, test = t
+	double-float-negative-epsilon  =          1.110223024625157d-16, test = t
+	long-float-epsilon             =          2.220446049250313d-16, test = t
+	long-float-negative-epsilon    =          1.110223024625157d-16, test = t
+	short-float-epsilon            =                    1.192093e-7, test = t
+	short-float-negative-epsilon   =                    5.960464e-8, test = t
+	single-float-epsilon           =                    1.192093e-7, test = t
+	single-float-negative-epsilon  =                    5.960464e-8, test = t
+	nil
+
 2010-09-30  MIYAMUKO Katsuyuki  <miyamuko@gmail.com>
 
 	* src : add deleted-window-p

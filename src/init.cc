@@ -296,10 +296,10 @@ init_math_symbols ()
     make_single_float (FLT_MIN);
   xsymbol_value (Qleast_negative_normalized_single_float) =
     make_single_float (-FLT_MIN);
-  for (fl = 1.0F, fe = 1.1F; 1.0F + fl != 1.0F && fe > fl; fe = fl, fl /= 2.0F)
+  for (fl = 1.0F, fe = 1.1F; (float)(1.0F + fl) != 1.0F && fe > fl; fe = fl, fl /= 2.0F)
     ;
   xsymbol_value (Qsingle_float_epsilon) = make_single_float (fe);
-  for (fl = 1.0F, fe = 1.1F; 1.0F - fl != 1.0F && fe > fl; fe = fl, fl /= 2.0F)
+  for (fl = 1.0F, fe = 1.1F; (float)(1.0F - fl) != 1.0F && fe > fl; fe = fl, fl /= 2.0F)
     ;
   xsymbol_value (Qsingle_float_negative_epsilon) = make_single_float (fe);
 
