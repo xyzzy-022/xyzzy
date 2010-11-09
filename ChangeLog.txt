@@ -1,5 +1,19 @@
 2010-11-09  NANRI Masaoki  <southly@gmail.com>
 
+	* src : fix nthcdr given dotted list.
+	http://twitter.com/bowbow99/status/1746294087352320
+	(nthcdr 0 '()) => nil
+	(nthcdr 3 '()) => nil
+	(nthcdr 0 '(a b c)) => (a b c)
+	(nthcdr 2 '(a b c)) => (c)
+	(nthcdr 4 '(a b c)) => nil
+	(nthcdr 1 '(0 . 1)) => 1
+	(nthcdr 3 '(0 . 1)) => nil
+
+	最後のケースはエラーにすべきだけど、とりあえずそのまま。
+
+2010-11-09  NANRI Masaoki  <southly@gmail.com>
+
 	* src : fix single-float-epsilon, single-float-negative-epsilon.
 	http://twitter.com/TwilightClover/status/26251344464
 	http://gist.github.com/608561

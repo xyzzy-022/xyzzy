@@ -199,12 +199,13 @@ Fnthcdr (lisp n, lisp list)
     return list;
   check_cons (list);
 
-  while (nth-- > 0)
+  while (nth > 0)
     {
-      list = xcdr (list);
       if (!consp (list))
         return Qnil;
       QUIT;
+      nth--;
+      list = xcdr (list);
     }
   return list;
 }
