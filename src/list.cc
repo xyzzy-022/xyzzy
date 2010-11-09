@@ -169,13 +169,18 @@ Fendp (lisp object)
 lisp
 Flist_length (lisp list)
 {
+  if (list == Qnil)
+    return make_fixnum (0);
+  if (!consp (list))
+    FEtype_error (list, Qlist);
+
   int n = 0;
   for (lisp fast = list, slow = list;;
        n += 2, fast = Fcddr (fast), slow = Fcdr (slow))
     {
-      if (!consp (fast))
+      if (Fendp (fast) != Qnil)
         return make_fixnum (n);
-      if (!consp (Fcdr (fast)))
+      if (Fendp (Fcdr (fast)) != Qnil)
         return make_fixnum (n + 1);
       if (n && fast == slow)
         return Qnil;

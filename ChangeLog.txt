@@ -1,5 +1,17 @@
 2010-11-09  NANRI Masaoki  <southly@gmail.com>
 
+	* src : fix type-check in list-length.
+	http://twitter.com/bowbow99/status/1742537278623744
+	(list-length :foo)
+	-> 不正なデータ型です: :foo: list
+	(list-length '(a . b))
+	-> 不正なデータ型です: b: list
+
+	引数にdotted listを渡したときのエラーメッセージがいまいちだが、
+	とりあえずそのまま。
+
+2010-11-09  NANRI Masaoki  <southly@gmail.com>
+
 	* src : fix nthcdr given dotted list.
 	http://twitter.com/bowbow99/status/1746294087352320
 	(nthcdr 0 '()) => nil
