@@ -1,3 +1,9 @@
+2010-12-01  NANRI Masaoki  <southly@gmail.com>
+
+	* src : add "listp" Macro.
+	オブジェクトが cons である、又は nil であるかどうか調べる listp マクロ
+	を追加。
+
 2010-11-09  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix type-check in list-length.
