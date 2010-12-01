@@ -1,5 +1,17 @@
 2010-12-01  NANRI Masaoki  <southly@gmail.com>
 
+	* src : fix flet, labels, macrolet.
+	http://twitter.com/bowbow99/status/8011887295856640
+	引数のチェックがおかしかったのを修正。
+	(flet () 3)     => 3
+	(flet ())       => nil
+	(labels () 3)   => 3
+	(labels ())     => nil
+	(macrolet () 3) => 3
+	(macrolet ())   => nil
+
+2010-12-01  NANRI Masaoki  <southly@gmail.com>
+
 	* src : add "listp" Macro.
 	オブジェクトが cons である、又は nil であるかどうか調べる listp マクロ
 	を追加。

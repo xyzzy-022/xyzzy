@@ -1295,7 +1295,7 @@ Fsi_set_function_name (lisp closure, lisp name)
 static lisp
 flet (lisp arg, lex_env &olex, lex_env &nlex, int macrop)
 {
-  if (!consp (arg) || !consp (xcar (arg)) || !consp (xcdr (arg)))
+  if (!consp (arg) || !listp (xcar (arg)) || !listp (xcdr (arg)))
     FEtoo_few_arguments ();
   lisp ofns = nlex.lex_fns;
   for (lisp defs = xcar (arg); consp (defs); defs = xcdr (defs))
