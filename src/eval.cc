@@ -1523,10 +1523,15 @@ lisp
 Fmacroexpand (lisp arg, lisp env)
 {
   protect_gc gcpro (arg);
-  do
-    arg = Fmacroexpand_1 (arg, env);
-  while (multiple_value::value (1) != Qnil);
-  multiple_value::clear ();
+  int n = 0;
+  while (1)
+    {
+      arg = Fmacroexpand_1 (arg, env);
+      if (multiple_value::value (1) == Qnil) break;
+      n++;
+    }
+  multiple_value::count () = 2;
+  multiple_value::value (1) = n > 0 ? Qt : Qnil;
   return arg;
 }
 

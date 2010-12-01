@@ -1,5 +1,17 @@
 2010-12-01  NANRI Masaoki  <southly@gmail.com>
 
+	* src : fix macroexpand.
+	http://twitter.com/bowbow99/status/9887141152694272
+	二番目の戻り値が返っていなかったのを修正。
+	(macroexpand '(push 1 x))
+	=> (setq x (cons 1 x))
+	=> t
+	(macroexpand '(setq x (cons 1 x)))
+	=> (setq x (cons 1 x))
+	=> nil
+
+2010-12-01  NANRI Masaoki  <southly@gmail.com>
+
 	* src : fix flet, labels, macrolet.
 	http://twitter.com/bowbow99/status/8011887295856640
 	引数のチェックがおかしかったのを修正。
