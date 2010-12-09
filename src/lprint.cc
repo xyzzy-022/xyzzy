@@ -149,13 +149,13 @@ class print_circle
 
   void remove_reps ();
   void setup1 (lisp object);
-  circle_object *lookup (lisp object) const;
   void add_object (lisp object);
 public:
   void reinit ();
   print_circle ();
   ~print_circle ();
   void setup (lisp object);
+  circle_object *lookup (lisp object) const;
   int find (wStream &stream, lisp object, int need_dot) const;
 };
 
@@ -459,6 +459,8 @@ print_list_pretty (wStream &stream, const print_control &pc, lisp object, int le
   lisp x = xcar (object);
   object = xcdr (object);
   if (!consp (object) || xcdr (object) != Qnil)
+    return 0;
+  if (pc.circle && pc.pr_circle->lookup (object))
     return 0;
   if (x == Qquote)
     stream.add ('\'');

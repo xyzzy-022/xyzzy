@@ -1,3 +1,14 @@
+2010-12-10  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix (cdr '#1='#1#) printing.
+	http://blog.bugyo.tk/lyrical/archives/610
+	http://blog.practical-scheme.net/gauche/20100609-curious-circular-list
+	「(cdr '#1='#1#)」の評価結果の印字でスタックオーバーフローするのを修正。
+	'#1='#1#              => #1='#1#
+	(cdr '#1='#1#)        => #1=((quote . #1#))
+	(cdr '#1=(quote #1#)) => #1=((quote . #1#))
+	(cdr '#1=(q #1#))     => #1=((q . #1#))
+
 2010-12-01  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix macroexpand.
