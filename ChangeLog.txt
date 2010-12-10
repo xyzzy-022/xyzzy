@@ -1,3 +1,14 @@
+2010-12-11  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix hash-table.
+	rehash 時に不要なハッシュオブジェクトのエントリーを NULL に設定している
+	ので、サイズも 0 に設定する。hash-table のマークフェーズ(data.ccの613行
+	目あたり)で NULL を参照するのを防止する。
+	以下のような hash-table が rehash した後の GC のタイミングで落ちる現象
+	がおそらく解消すると思われる。
+	http://twitter.com/miyamuko/status/14229437114
+	http://d.hatena.ne.jp/knenet/20091223/1261578863
+
 2010-12-10  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix (cdr '#1='#1#) printing.

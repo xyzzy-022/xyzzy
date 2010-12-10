@@ -435,6 +435,7 @@ hash_table_rehash (lisp hash_table, int inc)
   xhash_table_entry (hash_table) = new_entry;
   xhash_table_size (hash_table) = new_size;
 
+  xhash_table_size (new_hash_table) = 0;
   xhash_table_entry (new_hash_table) = 0;
 }
 
