@@ -1,5 +1,10 @@
 2010-12-12  NANRI Masaoki  <southly@gmail.com>
 
+	* src : update zlib(version 1.2.5).
+	zlibをバージョン1.2.5にアップデート。
+
+2010-12-12  NANRI Masaoki  <southly@gmail.com>
+
 	* lisp : support lzma and xz in filer.
 	lzma および xz の圧縮と展開をファイラから利用できるように修正。
 
