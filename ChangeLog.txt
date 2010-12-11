@@ -1,3 +1,9 @@
+2010-12-12  NANRI Masaoki  <southly@gmail.com>
+
+	* src : support lzma and xz.
+	tar32.dll Ver2.35 から利用できるようになった lzma および xz の圧縮と展
+	開に対応。
+
 2010-12-11  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix hash-table.

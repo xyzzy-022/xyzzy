@@ -408,7 +408,7 @@ Ish::extract (HWND hwnd, const char *path,
 }
 
 const char *const Tar::suffixes[] =
-{".tgz", ".taz", ".gz", ".Z", ".tar", ".bz2", 0};
+{".tgz", ".taz", ".gz", ".Z", ".tar", ".bz2", ".lzma", ".xz", 0};
 
 int
 Tar::extract (HWND hwnd, const char *path,
@@ -420,6 +420,8 @@ Tar::extract (HWND hwnd, const char *path,
     case ARCHIVETYPE_GZ:
     case ARCHIVETYPE_Z:
     case ARCHIVETYPE_BZ2:
+    case ARCHIVETYPE_LZMA:
+    case ARCHIVETYPE_XZ:
       {
         char *dest = (char *)alloca (strlen (path) + 16);
         docopy (dest, path);
@@ -431,11 +433,16 @@ Tar::extract (HWND hwnd, const char *path,
                       || !_stricmp (dest + l - 2, "_Z")))
           dest[l - 2] = 0;
         else if (l > 3 && (!_stricmp (dest + l - 3, ".gz")
-                           || !_stricmp (dest + l - 3, "_gz")))
+                           || !_stricmp (dest + l - 3, "_gz")
+                           || !_stricmp (dest + l - 3, ".xz")
+                           || !_stricmp (dest + l - 3, "_xz")))
           dest[l - 3] = 0;
         else if (l > 4 && (!_stricmp (dest + l - 4, ".bz2")
                            || !_stricmp (dest + l - 4, "_bz2")))
           dest[l - 4] = 0;
+        else if (l > 5 && (!_stricmp (dest + l - 5, ".lzma")
+                           || !_stricmp (dest + l - 5, "_lzma")))
+          dest[l - 5] = 0;
         else
           strcat (dest, ".extracted");
         x = ArchiverP::extract (hwnd, path, destdir, "", "xfo", "", dest);
@@ -465,12 +472,20 @@ Tar::create (HWND hwnd, const char *path, const char *respfile) const
     cmd = "cfZ";
   else if (EQ (".tar.bz2"))
     cmd = "cfB";
+  else if (EQ (".tar.lzma"))
+    cmd = "-c --lzma --";
+  else if (EQ (".tar.xz"))
+    cmd = "cfJ";
   else if (EQ (".gz"))
     cmd = "cfzG";
   else if (EQ (".bz2"))
     cmd = "cfBG";
   else if (EQ (".Z"))
     cmd = "cfZG";
+  else if (EQ (".lzma"))
+    cmd = "-c --lzma -G --";
+  else if (EQ (".xz"))
+    cmd = "cfJG";
   else
     cmd = "cf";
 #undef EQ
