@@ -1,3 +1,13 @@
+2010-12-13  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix DLL loading.
+	JVNVU#707943: Windows プログラムの DLL 読み込みに脆弱性
+	http://jvn.jp/cert/JVNVU707943/index.html
+	の修正。
+	統合アーカイバの DLL と WSOCK32.DLL と ctl3d32.dll が対象。
+	foreign:define-dll-entry (si:load-dll-module) で指定する DLL も対象だが、
+	こちらはフルパスで指定するのが望ましいだろう。
+
 2010-12-12  NANRI Masaoki  <southly@gmail.com>
 
 	* src : update zlib(version 1.2.5).
