@@ -1,5 +1,14 @@
 2010-12-13  NANRI Masaoki  <southly@gmail.com>
 
+	* src : fix DLL loading (hhctrl.ocx).
+	JVNVU#707943: Windows プログラムの DLL 読み込みに脆弱性
+	http://jvn.jp/cert/JVNVU707943/index.html
+	の修正の続き。
+	hhctrl.ocx のロードは静的変数の初期化時に行われるため、先の修正の効果が
+	及ばない。よって、ロードのタイミングを関数 html-help 呼び出し時に変更。
+
+2010-12-13  NANRI Masaoki  <southly@gmail.com>
+
 	* src : fix DLL loading.
 	JVNVU#707943: Windows プログラムの DLL 読み込みに脆弱性
 	http://jvn.jp/cert/JVNVU707943/index.html
