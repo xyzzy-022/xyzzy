@@ -759,7 +759,7 @@ Buffer::insert_file_contents (Window *wp, lisp filename, lisp visit,
 
   if (visit != Qnil)
     {
-      b_eol_code = exact_eol_code (rfc.r_eol_code);
+      b_eol_code = exact_eol_code (rfc.r_eol_code, b_eol_code);
       lchar_encoding = rfc.r_char_encoding;
       b_modified = 0;
       b_need_auto_save = 0;

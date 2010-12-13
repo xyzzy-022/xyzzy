@@ -1,3 +1,11 @@
+2010-12-14  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix eol-code of zero size file.
+	ファイルサイズが 0 のときの (正確には改行がないファイルのときの) 改行コー
+	ドが常に CRLF になるのを修正し *default-eol-code* に基づいた改行コード
+	になるようにする。
+	xyzzy Part16 577
+
 2010-12-13  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix DLL loading (hhctrl.ocx).
