@@ -1,3 +1,20 @@
+2011-01-04  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix special variables restore at the end of let, let*.
+	http://d.hatena.ne.jp/bowbow99/20101127/1290818576
+	let や let* で同一のスペシャル変数に対して複数回の束縛を作ると、スコー
+	プが外れたときに値が書き換わってしまうのを修正。
+	(progn
+	  (defparameter *special* :global)
+	  (let ((*special* :local-1)
+	        (*special* :local-2))
+	    *special*)
+	  *special*)
+	=> :global
+
+	値を保存するとき(src/eval.cc 347行目辺り)と逆順に値をリストアするように
+	した。
+
 2010-12-14  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix eol-code of zero size file.

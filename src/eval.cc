@@ -274,7 +274,7 @@ special_bind::special_bind (lisp *v, char *f, int nv)
 inline
 special_bind::~special_bind ()
 {
-  for (int i = 0, j = 0; i < n; i += 2, j++)
+  for (int i = n - 2, j = n/2 - 1; i >= 0; i -= 2, j--)
     {
       assert (consp (vec[i]));
       assert (symbolp (xcar (vec[i])));
