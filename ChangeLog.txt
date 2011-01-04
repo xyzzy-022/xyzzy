@@ -1,3 +1,10 @@
+2011-01-05  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix let, let*.
+	http://d.hatena.ne.jp/bowbow99/20101127/1290818576
+	コンパイルしたときは値が変わることはないが、インタプリタと同様に逆順で
+	値をリストアするように修正。
+
 2011-01-04  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix special variables restore at the end of let, let*.

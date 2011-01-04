@@ -551,7 +551,7 @@ byte_special_bind::byte_special_bind (lisp *p, char *f, int i)
 inline
 byte_special_bind::~byte_special_bind ()
 {
-  for (int i = 0, j = 0; i < n; i += 2, j++)
+  for (int i = n - 2, j = n/2 - 1; i >= 0; i -= 2, j--)
     {
       assert (symbolp (save[i]));
       if (!flags[j])
