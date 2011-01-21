@@ -85,7 +85,7 @@
 
 (defun pipe-command (cmd)
   (interactive "e@ " :history0 'execute)
-  (execute-shell-command cmd t "*Shell output*"))
+  (execute-shell-command cmd nil "*Shell output*"))
 
 #|
 (defun filter-buffer (cmd)

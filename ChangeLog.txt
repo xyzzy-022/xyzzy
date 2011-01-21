@@ -1,5 +1,15 @@
 2011-01-21  NANRI Masaoki  <southly@gmail.com>
 
+	* lisp : fix pipe-command.
+	「plink name@example.jp ls」と plink を利用しようとすると
+	「Unable to read from standard input: ハンドルが無効です。」
+	というエラーになるのを修正。
+
+	execute-shell-command の第二引数に文字列・nil以外の引数を渡すとファイル
+	名が空のファイルを開こうとするので、エラーになっていた模様。
+
+2011-01-21  NANRI Masaoki  <southly@gmail.com>
+
 	* src : fix multiple binding of special variables in let, let*.
 	http://d.hatena.ne.jp/bowbow99/20101127/1290818576
 	let や let* で同一のスペシャル変数に対して複数回の束縛を作ったときの値
