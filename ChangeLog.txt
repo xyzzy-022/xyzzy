@@ -1,3 +1,20 @@
+2011-01-21  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix multiple binding of special variables in let, let*.
+	http://d.hatena.ne.jp/bowbow99/20101127/1290818576
+	let や let* で同一のスペシャル変数に対して複数回の束縛を作ったときの値
+	がおかしいのを修正。
+	コンパイルしたときの動作は修正できていない。
+	(progn
+	  (defparameter *special* :global)
+	  (let ((*special* :local-1)
+	        (*special* :local-2))
+	    *special*))
+	=> :local-2
+
+	レキシカルな環境には逆順に登録されるので、スペシャル変数に値を設定する
+	前に順序を元に戻している。
+
 2011-01-05  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix let, let*.

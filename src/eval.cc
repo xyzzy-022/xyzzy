@@ -341,21 +341,26 @@ declare_progn (lisp body, lex_env &lex, int can_doc)
   int i = 0, j = 0;
 
   if (nspecials)
-    for (e = lex.lex_var; e != lex.lex_ltail; e = xcdr (e))
-      {
-        lisp x = xcar (e);
-        if (consp (x) && symbolp (xcar (x))
-            && specialp (xcar (x)) && xcdr (x) != Qunbound)
-          {
-            lisp sym = xcar (x);
-            oflags[j++] = xsymbol_flags (sym) & SFdynamic_bind;
-            xsymbol_flags (sym) |= SFdynamic_bind;
-            save[i++] = x;
-            save[i++] = xsymbol_value (sym);
-            xsymbol_value (sym) = xcdr (x);
-            xcdr (x) = Qunbound;
-          }
-      }
+    {
+      lisp var = Qnil;
+      for (e = lex.lex_var; e != lex.lex_ltail; e = xcdr (e))
+        var = xcons (xcar (e), var);
+      for (e = var; consp (e); e = xcdr (e))
+        {
+          lisp x = xcar (e);
+          if (consp (x) && symbolp (xcar (x))
+              && specialp (xcar (x)) && xcdr (x) != Qunbound)
+            {
+              lisp sym = xcar (x);
+              oflags[j++] = xsymbol_flags (sym) & SFdynamic_bind;
+              xsymbol_flags (sym) |= SFdynamic_bind;
+              save[i++] = x;
+              save[i++] = xsymbol_value (sym);
+              xsymbol_value (sym) = xcdr (x);
+              xcdr (x) = Qunbound;
+            }
+        }
+    }
 
   if (nvars)
     {
