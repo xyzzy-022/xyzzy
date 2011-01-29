@@ -1,3 +1,17 @@
+2011-01-30  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix abbreviate-display-string.
+	abbreviate-display-string で必要以上に文字列が省略されることがあるのを
+	修正。以下のようになる場合があった。
+	(abbreviate-display-string "D:/src/cmigemo-1.3c-MIT/src/wordlist.h" 40 t)
+	=> "D:/..."
+
+	string.cc の 1109 行目、以下のようになっていた。
+	  strcpy (le, "...");
+	  strcpy (le + 3, rb);
+	はじめの strcpy で '\0' が書き込まれ、その位置がちょうど rb と一致した
+	ときに発生した。
+
 2011-01-21  NANRI Masaoki  <southly@gmail.com>
 
 	* lisp : fix pipe-command.
