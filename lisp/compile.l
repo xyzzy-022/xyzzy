@@ -1465,7 +1465,7 @@
   (setf (get 'sixth 'optimize-form) #'(lambda (x) `(nth 5 ,(cadr x))))
   (setf (get 'seventh 'optimize-form) #'(lambda (x) `(nth 6 ,(cadr x))))
   (setf (get 'eighth 'optimize-form) #'(lambda (x) `(nth 7 ,(cadr x))))
-  (setf (get 'nineth 'optimize-form) #'(lambda (x) `(nth 8 ,(cadr x))))
+  (setf (get 'ninth 'optimize-form) #'(lambda (x) `(nth 8 ,(cadr x))))
   (setf (get 'tenth 'optimize-form) #'(lambda (x) `(nth 9 ,(cadr x)))))
 
 (let ((fn #'(lambda (x)
