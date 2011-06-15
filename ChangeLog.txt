@@ -1,3 +1,11 @@
+2011-06-15  NANRI Masaoki  <southly@gmail.com>
+
+	* lisp : fix compiling lambda form.
+	lambda form をコンパイルするとレキシカル変数を参照できなくなっていた問
+	題を修正。
+	https://gist.github.com/998414
+	https://gist.github.com/1000096
+
 2011-06-14  NANRI Masaoki  <southly@gmail.com>
 
 	* lisp : fix typo in lisp/compile.l.
