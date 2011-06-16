@@ -500,7 +500,7 @@ Fhash_table_test (lisp hash_table)
 lisp
 Fsxhash (lisp object)
 {
-  return make_fixnum (sxhash (object, 0));
+  return make_fixnum (sxhash_equal (object, 0));
 }
 
 int

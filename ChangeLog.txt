@@ -1,3 +1,10 @@
+2011-06-17  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix sxhash.
+	sxhash の値が equalp 用の値になっているが equal 用の値になるように修正。
+	(= (sxhash (list "ABC")) (sxhash (list "ABC"))) => t
+	(= (sxhash (list "abc")) (sxhash (list "ABC"))) => nil
+
 2011-06-15  NANRI Masaoki  <southly@gmail.com>
 
 	* lisp : fix compiling lambda form.
