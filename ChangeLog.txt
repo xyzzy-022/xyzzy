@@ -1,3 +1,9 @@
+2011-12-20  NANRI Masaoki  <southly@gmail.com>
+
+	* src : fix equalp for hash-table.
+	equalp に hash-table を渡すと多値が返ってくる問題を修正。
+	https://gist.github.com/1480046
+
 2011-06-17  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix sxhash.

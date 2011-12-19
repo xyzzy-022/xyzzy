@@ -526,8 +526,8 @@ equalp (lhash_table *x, lhash_table *y)
   for (i = 0; i < size; i++, entry++)
     if (entry->key != Qunbound && entry->key != Qdeleted)
       {
-        lisp t = Fgethash (entry->key, y, Qnil);
-        if (Fequalp (entry->value, t) == Qnil)
+        hash_entry *t = find_hash_entry (entry->key, y);
+        if (Fequalp (entry->value, t->value) == Qnil)
           return 0;
       }
 
