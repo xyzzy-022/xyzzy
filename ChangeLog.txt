@@ -1,5 +1,19 @@
 2011-12-21  NANRI Masaoki  <southly@gmail.com>
 
+	* lisp : fix saving session file.
+	ヒストリファイルと同様にセッションファイルも書き込み時に *print-length*
+	などの影響を受けないよう修正。
+
+	(progn
+	  (ed::write-session-file "0ssn.l")
+	  (let ((*print-circle* t)
+	        (*print-pretty* nil)
+	        (*print-length* 1)
+	        (*print-level* 1))
+	    (ed::write-session-file "1ssn.l")))
+
+2011-12-21  NANRI Masaoki  <southly@gmail.com>
+
 	* lisp : fix saving history-file.
 	ヒストリファイル書き込み時に *print-length* などの影響を受けるのを修正。
 

@@ -120,9 +120,9 @@
 	(binfo (list-buffer-info)))
     (princ ";;; xyzzy session file.
 ;;; This file is generated automatically. do not edit.\n" s)
-    (write `(in-package ,(package-name *package*)) :stream s :escape t)
+    (write `(in-package ,(package-name *package*)) :stream s :escape t :pretty t :readably t)
     (terpri s)
-    (write `(restore-session ',binfo ',finfo) :stream s :escape t)
+    (write `(restore-session ',binfo ',finfo) :stream s :escape t :pretty t :readably t)
     (terpri s)))
 
 (defun write-session-file (filename)
@@ -273,10 +273,10 @@
     (let ((conf (winconf-to-readable-winconf
 		 (current-window-configuration)))
 	  (info (list-buffer-info)))
-      (write `(in-package ,(package-name *package*)) :stream s :escape t)
+      (write `(in-package ,(package-name *package*)) :stream s :escape t :pretty t :readably t)
       (terpri s)
       (write `(ignore-errors (restore-resume-info ',info ',conf))
-	     :stream s :escape t)
+	     :stream s :escape t :pretty t :readably t)
       (terpri s))))
 
 (define-key ctl-x-6-map #\f 'load-session)
