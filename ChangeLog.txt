@@ -1,3 +1,18 @@
+2011-12-21  NANRI Masaoki  <southly@gmail.com>
+
+	* lisp : fix saving history-file.
+	ヒストリファイル書き込み時に *print-length* などの影響を受けるのを修正。
+
+	(progn
+	  (let ((*history-file-name* "0hist.l"))
+	    (ed::save-history-file))
+	  (let ((*history-file-name* "1hist.l")
+	        (*print-circle* t)
+	        (*print-pretty* nil)
+	        (*print-length* 1)
+	        (*print-level* 1))
+	    (ed::save-history-file)))
+
 2011-12-20  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix equalp for hash-table.
