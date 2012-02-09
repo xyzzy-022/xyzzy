@@ -2751,7 +2751,7 @@ check_dup (symbols *p, int n, const char *pkg)
 
   qsort (buf, n, sizeof *buf, compare);
   int f = 0;
-  for (i = 1; i < n; i++)
+  for (int i = 1; i < n; i++)
     if (!strcmp (buf[i - 1], buf[i]))
       {
         fprintf (stderr, "package %s: duplicate definition: %s \n", pkg, buf[i]);
@@ -2872,7 +2872,8 @@ static void
 process_interactive ()
 {
   const char **intr = (const char **)alloca (sizeof (char *) * numberof (ed));
-  for (int i = 0, j = 0; i < numberof (ed); i++)
+  int j = 0;
+  for (int i = 0; i < numberof (ed); i++)
     if (ed[i].interactive)
       intr[j++] = ed[i].interactive;
   if (!j)
@@ -2883,12 +2884,13 @@ process_interactive ()
   int n = j;
   qsort (intr, n, sizeof *intr, compare);
 
-  for (i = 1, j = 1; i < n; i++)
+  j = 1;
+  for (int i = 1; i < n; i++)
     if (strcmp (intr[i], intr[j - 1]))
       intr[j++] = intr[i];
   n = j;
 
-  for (i = 0; i < numberof (ed); i++)
+  for (int i = 0; i < numberof (ed); i++)
     if (ed[i].interactive)
       {
         for (j = 0; j < n; j++)
@@ -2905,7 +2907,7 @@ process_interactive ()
       }
 
   printf ("lintr intrs[] =\n{\n");
-  for (i = 0; i < n; i++)
+  for (int i = 0; i < n; i++)
     {
       printf ("  {");
       putq (intr[i]);

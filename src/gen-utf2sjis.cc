@@ -16,7 +16,8 @@ buildhash (const int *from, const int *to, int len, const char *name)
   for (int size = len; size < sizeof buf; size++)
     {
       memset (buf, 0, size);
-      for (int i = 0; i < len; i++)
+      int i;
+      for (i = 0; i < len; i++)
         {
           int n = from[i] % size;
           if (buf[n])
