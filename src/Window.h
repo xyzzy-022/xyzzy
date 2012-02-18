@@ -261,7 +261,74 @@ public:
   ScrollInfo () : sb_seen (undef) {cbSize = sizeof (SCROLLINFO);}
 };
 
-class mode_line_point_painter
+class mode_line_painter
+{
+public:
+  virtual void no_format_specifier() = 0;
+  virtual int first_paint(HDC hdc, int start_px) = 0;
+  virtual int update_paint(HDC hdc) = 0;
+  virtual bool need_repaint_all() = 0;
+
+  char* get_posp() { return posp; }
+  void set_posp(char* p) { posp = p; }
+
+private:
+  char* posp;
+};
+
+class mode_line_percent_painter: public mode_line_painter
+{
+public:
+
+  virtual void no_format_specifier() {
+	  m_point_pixel = -1;
+  }
+  virtual int first_paint(HDC hdc, int start_px) {
+	  m_point_pixel = start_px;
+      m_last_percent = -1;
+	  return paint_percent(hdc);
+  }
+  virtual int update_paint(HDC hdc) {
+	  return paint_percent(hdc);
+  }
+
+  virtual bool need_repaint_all();
+  // end of commmon interface.
+
+  mode_line_percent_painter() {
+	  m_modeline_paramp = 0;
+
+	  m_point_pixel = -1;
+
+	  m_percent = -1;
+	  m_last_width = -1;
+
+	  m_ml_size.cx = 0xdeadbeef;
+	  m_ml_size.cy = 0xdeadbeef;
+  }
+
+  inline void setup_paint(ModelineParam *param, int percent, const SIZE& winsize) {
+	  m_modeline_paramp = param;
+	  m_percent = percent;
+	  m_ml_size.cx = winsize.cx;
+	  m_ml_size.cy = winsize.cy;
+  }
+
+  static int calc_percent(Buffer *bufp, point_t point);
+
+private:
+  int paint_percent (HDC hdc);
+  int m_point_pixel;
+  int m_percent;
+  SIZE m_ml_size;
+  ModelineParam *m_modeline_paramp;
+
+
+  int m_last_percent;
+  int m_last_width;
+};
+
+class mode_line_point_painter : public mode_line_painter
 {
 public :
   int m_column;
@@ -292,21 +359,20 @@ public :
 	  m_ml_size.cx = 0xdeadbeef;
 	  m_ml_size.cy = 0xdeadbeef;
   }
-  inline void no_format_specifier() {
+  virtual void no_format_specifier() {
 	  m_point_pixel = -1;
   }
-  int first_paint(HDC hdc, int start_px) {
+  virtual int first_paint(HDC hdc, int start_px) {
 	  m_point_pixel = start_px;
       m_last_ml_column = m_last_ml_linenum = -1;
-	  return paint_mode_line_point(hdc);
+	  return paint_point(hdc);
   }
-  int update_paint(HDC hdc) {
-	  return paint_mode_line_point(hdc);
+  virtual int update_paint(HDC hdc) {
+	  return paint_point(hdc);
   }
 
-  bool need_repaint_all();
+  virtual bool need_repaint_all();
 
-  int paint_mode_line_point (HDC hdc);
   inline void setup_paint(ModelineParam *param, int column, int plinenum, const SIZE& winsize) {
 	  m_modeline_paramp = param;
 	  m_column = column;
@@ -315,6 +381,8 @@ public :
 	  m_ml_size.cy = winsize.cy;
   }
 
+private:
+  int paint_point (HDC hdc);
 };
 
 struct wheel_info;
@@ -375,6 +443,7 @@ struct Window
   static int w_hjump_columns;
 
   mode_line_point_painter w_point_painter;
+  mode_line_percent_painter w_percent_painter;
   SIZE w_ml_size;
 
   int w_last_percentage;
