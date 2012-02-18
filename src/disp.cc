@@ -3248,45 +3248,52 @@ calc_point_width (int l, int c)
   return e - b;
 }
 
-int
-Window::paint_mode_line_point (HDC hdc)
+bool
+mode_line_point_painter::need_repaint_all()
 {
-  if (w_point_pixel < 0)
+	return m_point_pixel >= 0 && calc_point_width (m_plinenum, m_column) != m_last_ml_point_width;
+}
+
+int
+mode_line_point_painter::paint_mode_line_point (HDC hdc)
+{
+
+  if (m_point_pixel < 0)
     return 0;
-  if (w_column == w_last_ml_column && w_plinenum == w_last_ml_linenum)
+  if (m_column == m_last_ml_column && m_plinenum == m_last_ml_linenum)
     return 0;
 
   RECT r;
   r.top = 1;
-  r.bottom = w_ml_size.cy - 1;
+  r.bottom = m_ml_size.cy - 1;
 
   char nb[32];
-  format_point (nb, w_plinenum, w_column);
+  format_point (nb, m_plinenum, m_column);
   const char *b, *e;
   point_from_end (nb, b, e);
-  w_last_ml_point_width = e - b;
+  m_last_ml_point_width = e - b;
 
-  int x0 = (w_point_pixel + app.modeline_param.m_exts[1]
-            - app.modeline_param.m_exts[b - nb]);
-  int right = (x0 + app.modeline_param.m_exts[e - nb]
-               + app.modeline_param.m_exts[1]);
+  int x0 = (m_point_pixel + m_modeline_paramp->m_exts[1]
+            - m_modeline_paramp->m_exts[b - nb]);
+  int right = (x0 + m_modeline_paramp->m_exts[e - nb]
+               + m_modeline_paramp->m_exts[1]);
 
-  if (w_last_ml_linenum < 0)
+  if (m_last_ml_linenum < 0)
     {
-      r.left = w_point_pixel;
-      r.right = min (right, int (w_ml_size.cx - 1));
+      r.left = m_point_pixel;
+      r.right = min (right, int (m_ml_size.cx - 1));
     }
   else
     {
       char ob[32];
-      format_point (ob, w_last_ml_linenum, w_last_ml_column);
+      format_point (ob, m_last_ml_linenum, m_last_ml_column);
       int ib = b - nb, ie = e - nb;
       for (; ib < ie && ob[ib] == nb[ib]; ib++)
         ;
       for (; ie > ib && ob[ie - 1] == nb[ie - 1]; ie--)
         ;
-      r.left = x0 + app.modeline_param.m_exts[ib];
-      r.right = min (x0 + app.modeline_param.m_exts[ie], int (w_ml_size.cx - 1));
+      r.left = x0 + m_modeline_paramp->m_exts[ib];
+      r.right = min (x0 + m_modeline_paramp->m_exts[ie], int (m_ml_size.cx - 1));
       b = nb + ib;
       e = nb + ie;
     }
@@ -3297,13 +3304,14 @@ Window::paint_mode_line_point (HDC hdc)
     ;
 
   ExtTextOut (hdc,
-              x0 + app.modeline_param.m_exts[b - nb],
-              1 + app.modeline_param.m_exlead,
+              x0 + m_modeline_paramp->m_exts[b - nb],
+              1 + m_modeline_paramp->m_exlead,
               ETO_OPAQUE | ETO_CLIPPED, &r, b, e - b, 0);
-  w_last_ml_column = w_column;
-  w_last_ml_linenum = w_plinenum;
+  m_last_ml_column = m_column;
+  m_last_ml_linenum = m_plinenum;
   return right;
 }
+
 
 void
 Window::paint_mode_line (HDC hdc)
@@ -3354,7 +3362,7 @@ Window::paint_mode_line (HDC hdc)
 
   if (!posp)
     {
-      w_point_pixel = -1;
+	  w_point_painter.no_format_specifier();
       ExtTextOut (hdc, 1, 1 + app.modeline_param.m_exlead,
                   ETO_OPAQUE | ETO_CLIPPED, &r, b0, b - b0, 0);
     }
@@ -3362,16 +3370,22 @@ Window::paint_mode_line (HDC hdc)
     {
       SIZE size;
       GetTextExtentPoint32 (hdc, b0, posp - b0, &size);
-      w_point_pixel = 1 + size.cx;
-      r.right = min (w_point_pixel, int (r.right));
+
+      int point_start_px = 1 + size.cx;
+
+      r.right = min (point_start_px, int (r.right));
       ExtTextOut (hdc, 1, 1 + app.modeline_param.m_exlead,
                   ETO_OPAQUE | ETO_CLIPPED, &r, b0, posp - b0, 0);
-      w_last_ml_column = w_last_ml_linenum = -1;
-      r.left = paint_mode_line_point (hdc);
+
+	  w_point_painter.setup_paint(&app.modeline_param, w_column, w_plinenum, w_ml_size);
+	  r.left = w_point_painter.first_paint(hdc, point_start_px);
+
       r.right = w_ml_size.cx - 1;
       ExtTextOut (hdc, r.left, 1 + app.modeline_param.m_exlead,
                   ETO_OPAQUE | ETO_CLIPPED, &r, posp, b - posp, 0);
     }
+
+
 
   SelectObject (hdc, of);
   SetTextColor (hdc, ofg);
@@ -3454,9 +3468,10 @@ Window::redraw_mode_line ()
   int r;
 
   HDC hdc = GetDC (w_hwnd_ml);
+  w_point_painter.setup_paint(&app.modeline_param, w_column, w_plinenum, w_ml_size);
+
   if (w_disp_flags & WDF_MODELINE
-      || (w_point_pixel >= 0
-          && calc_point_width (w_plinenum, w_column) != w_last_ml_point_width))
+      || w_point_painter.need_repaint_all())
     {
       paint_mode_line (hdc);
       w_disp_flags &= ~WDF_MODELINE;
@@ -3476,7 +3491,7 @@ Window::redraw_mode_line ()
           obg = SetBkColor (hdc, w_colors[WCOLOR_MODELINE_BG]);
         }
       HGDIOBJ of = SelectObject (hdc, app.modeline_param.m_hfont);
-      paint_mode_line_point (hdc);
+	  w_point_painter.update_paint(hdc);
       SelectObject (hdc, of);
       SetTextColor (hdc, ofg);
       SetTextColor (hdc, obg);
