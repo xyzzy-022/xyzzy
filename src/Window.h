@@ -266,7 +266,7 @@ class mode_line_painter
 public:
   virtual void no_format_specifier() = 0;
   virtual int first_paint(HDC hdc, int start_px) = 0;
-  virtual int update_paint(HDC hdc) = 0;
+  virtual void update_paint(HDC hdc) = 0;
   virtual bool need_repaint_all() = 0;
 
   char* get_posp() { return posp; }
@@ -288,8 +288,12 @@ public:
       m_last_percent = -1;
 	  return paint_percent(hdc);
   }
-  virtual int update_paint(HDC hdc) {
-	  return paint_percent(hdc);
+  virtual void update_paint(HDC hdc) {
+	  if(m_point_pixel == -1) // not in the format.
+		  return ;
+	  if(m_last_percent == m_percent)
+		  return;
+	  paint_percent(hdc);
   }
 
   virtual bool need_repaint_all();
@@ -367,8 +371,8 @@ public :
       m_last_ml_column = m_last_ml_linenum = -1;
 	  return paint_point(hdc);
   }
-  virtual int update_paint(HDC hdc) {
-	  return paint_point(hdc);
+  virtual void update_paint(HDC hdc) {
+	  paint_point(hdc);
   }
 
   virtual bool need_repaint_all();

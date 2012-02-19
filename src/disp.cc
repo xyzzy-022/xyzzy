@@ -3322,7 +3322,6 @@ mode_line_point_painter::need_repaint_all()
 int
 mode_line_point_painter::paint_point (HDC hdc)
 {
-
   if (m_point_pixel < 0)
     return 0;
   if (m_column == m_last_ml_column && m_plinenum == m_last_ml_linenum)
