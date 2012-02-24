@@ -1,60 +1,101 @@
 ;;; -*- mode: lisp; package: user -*-
 
 #|
-;; FORM ã®æˆ»ã‚Šå€¤ãŒ VALUE ã¨ equal ã§ãªã„ã¨ fail
+;; FORM ‚Ì–ß‚è’l‚ª VALUE ‚Æ equal ‚Å‚È‚¢‚Æ fail
 (deftest NAME ()
   FORM
   => VALUE)
 
-;; FORM ãŒå¤šå€¤ã‚’è¿”ã™ã¨ã„ã†æŒ‡å®š
-;; å®Ÿéš›ã«è¿”ã£ã¦ããŸå¤šå€¤ãŒæŒ‡å®šã—ãŸã‚ˆã‚Šå¤šãã¦ã‚‚å°‘ãªãã¦ã‚‚ fail
+;; FORM ‚ª‘½’l‚ğ•Ô‚·‚Æ‚¢‚¤w’è
+;; ÀÛ‚É•Ô‚Á‚Ä‚«‚½‘½’l‚ªw’è‚µ‚½‚æ‚è‘½‚­‚Ä‚à­‚È‚­‚Ä‚à fail
 (deftest NAME ()
   FORM
   => VALUE-0
   => VALUE-1)
 
-;; ç½ æ³¨æ„: æˆ»ã‚Šå€¤ã‚’çœç•¥ã—ãŸå ´åˆã€FORM ãŒ non-nil ã‚’è¿”ã•ãªã„ã¨ fail
+;; ã©’ˆÓ: –ß‚è’l‚ğÈ—ª‚µ‚½ê‡AFORM ‚ª non-nil ‚ğ•Ô‚³‚È‚¢‚Æ fail
 (deftest NAME ()
   FORM)
 
-;; æ¯”è¼ƒé–¢æ•°ã‚’æŒ‡å®š
+;; ”äŠrŠÖ”‚ğw’è
 (deftest NAME (:compare '=)
   0
   => 0/0)
+
+;; o—Í‚ÌƒeƒXƒg
+(deftest NAME ()
+  (princ "hello")
+  >> "hello")
+
 |#
 
 (in-package :user)
 
 (defparameter *change-tests* nil)
 
-(defun make-test-thunk (name form expected compare)
+(defun make-test-thunk (name form expected-values compare dest expected-output)
   `(lambda ()
      (block ,name
        (format t "~&~A..." ',name)
        (handler-case
-           (let ((values (multiple-value-list ,form)))
-             (if (and (= (length values) ,(length expected))
-                      (every ,compare values ',expected))
-               (progn
-                 (format t "OK~%")
-                 :pass)
-               (progn
-                 (format t "Failed~%  Expected: ~{~S~^, ~}~%  Actually: ~{~S~^, ~}~%"
-                       ',expected values)
-                 :fail)))
+           (let ((capture (make-string-output-stream)))
+             (let ((values (let ((,dest capture))
+                             (multiple-value-list ,form)))
+                   (output (get-output-stream-string capture))
+                   (passed t))
+               (labels ((fail (fmt &rest args)
+                          (when passed
+                            (format t "Failed~%")
+                            (setf passed nil))
+                          (apply #'format t fmt args)))
+                 ,(when (stringp expected-output)
+                    `(unless (string= output ,expected-output)
+                       (fail "  Output:~%  - Expected ---~%~{  >> ~A~%~}  --------------~%  - Actually ---~%~{  >> ~A~%~}  --------------~%"
+                             (split-string ,expected-output #\LFD)
+                             (split-string output #\LFD))))
+                 (unless (and (= (length values) ,(length expected-values))
+                              (every ,compare values ',expected-values))
+                   (fail "  Return values:~%  - Expected: ~{~S~^, ~}~%  - Actually: ~{~S~^, ~}~%"
+                         ',expected-values values))
+                 (when passed
+                   (format t "OK.~%"))
+                 (if passed :pass :fail))))
          (error (error)
            (format t "Error: ~A~%" error)
            :error)))))
 
-(defun expand-deftest (name options form expected)
+(defun parse-expectations (expectations)
+  "Return followings:
+- expected values
+- expected output"
+  (let ((values '())
+        (output nil)
+        (state nil))
+    (dolist (x expectations)
+      (if (member x '(=> >>))
+        (setf state x)
+        (case state
+          (=> (push x values))
+          (>> (when output
+                (error "don't put output expectation more than once."))
+              (setf output x)))))
+    (values (nreverse values)
+            output)))
+
+
+(defun expand-deftest (name options form expectations)
   ;(msgbox "name => ~S~%options => ~S~%form => ~S~%expected => ~S" name options form expected)
   (labels ((get-option (key &optional default) (getf options key default)))
-    (multiple-value-bind (expected compare)
-        (if expected
-          (values (remove '=> expected) (get-option :compare '#'equal))
-          (values '(t) '(lambda (value #:ignore) value)))
-      `(push (cons ',name ,(make-test-thunk name form expected (get-option :compare '#'equal)))
-             *change-tests*))))
+    (multiple-value-bind (evalues eoutput)
+        (parse-expectations expectations)
+      (multiple-value-bind (evalues compare)
+          (if evalues
+            (values evalues (get-option :compare '#'equal))
+            (values '(t) '(lambda (value #:ignore) value)))
+        `(push (cons ',name ,(make-test-thunk name form
+                                              evalues compare
+                                              '*standard-output* eoutput))
+               *change-tests*)))))
 
 (defmacro deftest (name (&rest options) form &rest expected)
   (expand-deftest name options form expected))
@@ -80,6 +121,7 @@
             (+ pass-count fail-count error-count) pass-count fail-count error-count)
       (goto-char (point-max)))))
 
+
 #|
 (deftest I-am-t ()
   t
@@ -103,12 +145,22 @@
 (deftest 1-is-1 (:compare '=)
   1
   => 1/1)
+
+(deftest output-test-test-00 ()
+  (princ :hello)
+  >> "hello"
+  => :hello)
+
+(deftest output-test-test-01 ()
+  (princ :hello)
+  >> "hi")
+
 ;|#
 
 ;; 2011-12-20  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix equalp for hash-table.
-;; 	equalp ã« hash-table ã‚’æ¸¡ã™ã¨å¤šå€¤ãŒè¿”ã£ã¦ãã‚‹å•é¡Œã‚’ä¿®æ­£ã€‚
+;; 	equalp ‚É hash-table ‚ğ“n‚·‚Æ‘½’l‚ª•Ô‚Á‚Ä‚­‚é–â‘è‚ğC³B
 ;; 	https://gist.github.com/1480046
 ;; 
 (deftest equalp-for-hash-table ()
@@ -122,7 +174,7 @@
 ;; 2011-06-17  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix sxhash.
-;; 	sxhash ã®å€¤ãŒ equalp ç”¨ã®å€¤ã«ãªã£ã¦ã„ã‚‹ãŒ equal ç”¨ã®å€¤ã«ãªã‚‹ã‚ˆã†ã«ä¿®æ­£ã€‚
+;; 	sxhash ‚Ì’l‚ª equalp —p‚Ì’l‚É‚È‚Á‚Ä‚¢‚é‚ª equal —p‚Ì’l‚É‚È‚é‚æ‚¤‚ÉC³B
 ;; 	(= (sxhash (list "ABC")) (sxhash (list "ABC"))) => t
 ;; 	(= (sxhash (list "abc")) (sxhash (list "ABC"))) => nil
 ;;
@@ -137,6 +189,6 @@
 
 
 
-(when (yes-or-no-p "ä»Šã™ããƒ†ã‚¹ãƒˆã™ã‚‹ï¼Ÿ")
+(when (yes-or-no-p "¡‚·‚®ƒeƒXƒg‚·‚éH")
   (test-changes))
 ;;; test-changes.l ends here.
