@@ -352,6 +352,8 @@
 ;; 	      (format t "~%> ")
 ;; 	      (format t "~A" (eval (read *standard-input*))))))
 ;; 
+;; NOTE: merge されてない（xyzzy Part17 >>593 http://toro.2ch.net/test/read.cgi/win/1303662374/593）
+
 ;; 2010-03-01  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix "*load-pathname*" initialization.
@@ -421,20 +423,39 @@
 ;; 	* src : add get-buffer-colors.
 ;; 	関数get-buffer-colorsを追加。
 ;; 	set-buffer-colorsと対となる現在のバッファの色設定を取得する関数。
-;; 
+;;
+;; NOTE: もうちょっとちゃんとテストした方が良いと思います。。。
+(deftest add-get-buffer-colors ()
+  (fboundp 'get-buffer-colors))
+
 ;; 2010-01-22  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix listen.
 ;; 	EOFのときにnilを返すように修正。
 ;; 	分かる範囲ということでstring-streamとfile-streamだけ。
 ;; 
+(deftest fix-listen-for-string-stream ()
+  (let ((stream (make-string-input-stream "")))
+    (listen stream))
+  => nil)
+
+(deftest fix-listen-for-file-stream ()
+  (let ((file ()))))
+
 ;; 2010-01-11  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix save-window-excursion.
 ;; 	(save-window-excursion (values 1 2 3))
 ;; 	で正しく多値が返らない場合があるのを修正。
-;; 	xyzzy Part11 8
-;; 
+;; 	xyzzy Part11 8 http://www.bookshelf.jp/2ch/win/1085301777.html
+;;
+;; FIXME: 未修正でも正しく多値が返ることもあるみたいなので、その時は pass してしまう
+(deftest fix-save-window-excursion ()
+  (save-window-excursion (values 1 2 3))
+  => 1
+  => 2
+  => 3)
+
 ;; 	WindowConfigurationのデストラクタ内でLispのコードが実行されるので、
 ;; 	WindowConfigurationのデストラクタを実行したあとで、多値を元の値に戻
 ;; 	す必要がある。
@@ -444,26 +465,56 @@
 ;; 	うに修正。
 ;; 	xyzzy Part10 470
 ;; 
+(deftest fix-long-operation ()
+  (long-operation
+    1
+    2)
+  => 2)
+
 ;; 2009-12-26  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : update zlib.
 ;; 	zlibをバージョン1.2.3にアップデート。
 ;; 
+;; FIXME: テストする方法が思いつかない、というかテスト必要なんだろうか
+
 ;; 2009-12-17  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* lisp : modify tags-setup-buffer.
 ;; 	XTAGSファイルを探す位置を少々変更。
 ;; 
+;; NOTE: merge されてない（xyzzy Part17 >>593 http://toro.2ch.net/test/read.cgi/win/1303662374/593）
+
 ;; 	* lisp : modify edict-lookup-word.
 ;; 	辞書を引く単語をカーソルの前方に変更。
 ;; 
+;; NOTE: merge されてない（xyzzy Part17 >>593 http://toro.2ch.net/test/read.cgi/win/1303662374/593）
+
 ;; 	* lisp : modify start point in buffer-menu.
 ;; 	buffer-menuを実行したときのカーソル位置を現在のバッファの位置に変更。
-;; 
+;;
+;; NOTE: merge されてない（xyzzy Part17 >>593 http://toro.2ch.net/test/read.cgi/win/1303662374/593）
+; (deftest modify-start-point-in-buffer-menu ()
+;   (let ((buffers '()))
+;     (do ((i 0 (1+ i)))
+;         ((>= i 4))
+;       (push (create-new-buffer "*Test Example*") buffers))
+;     (prog1
+;         (save-window-excursion
+;           (with-set-buffer
+;             (set-buffer (car buffers))
+;             (buffer-menu)
+;             (and (bolp)
+;                  (looking-at "^\\."))))
+;       (dolist (b buffers)
+;         (delete-buffer b)))))
+
 ;; 	* src : add key parameter ":show" to make-process.
 ;; 	make-processにキーパラメータ :show を追加する。
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F12
 ;; 
+;; FIXME: テストする方法が思いつかない
+
 ;; 2009-12-16  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : support IMR_DOCUMENTFEED.
@@ -474,26 +525,46 @@
 ;; 	花が　　　　　　春
 ;; 	時間を　　　　　
 ;; 
+;; FIXME: テストする方法が思いつかない
+
 ;; 	* src : fix set-buffer-modified-p.
 ;; 	(set-buffer-modified-p nil) をした時に以前更新なし状態だった点が更
 ;; 	新無し状態のままなのを修正。
-;; 
+;;
+;; TODO: 変更の内容がよくわからんので後回し
+; (deftest fix-set-buffer-modified-p ()
+;   (let ((buffer (create-new-buffer "*Example*")))
+;     (set-buffer-modified-p nil buffer)
+;     (buffer-modified-p buffer))
+;   => nil)
+
 ;; 	* src : fix inverse-cursor-line.
 ;; 	(setq inverse-cursor-line t)
 ;; 	の状態にすると行カーソルと折り返し線の交点が反転したまま残ってしま
 ;; 	うのを修正。
-;; 
+;;
+;; FIXME: テストする方法が思いつかない
+
 ;; 2009-12-10  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix format "~n@A".
 ;; 	http://d.hatena.ne.jp/bowbow99/20090829/1251547986
-;; 
+;;
+;; NOTE: merge されてなさげ（これは外したのかも）
+(deftest fix-format-n@A ()
+  (format t "~10@A" "foo")
+  >> "       foo"
+  => nil)
+
 ;; 2009-12-09  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : add "*brackets-is-wildcard-character*" to history-variable.
 ;; 	共通設定の「[...]はワイルドカード」の設定が保存されないので、対応す
 ;; 	る変数をヒストリに追加。
 ;; 
+(deftest add-*brackets-is-wildcard-character*-to-history-variable ()
+  (member '*brackets-is-wildcard-character* ed::*history-variable-list*))
+
 ;; 	* src : fix dump hash-table.
 ;; 	シンボルがキーのハッシュテーブルをダンプファイルに入れた場合、
 ;; 	gethashで値がとれない問題があった。ただし、maphashで全要素を取得す
@@ -555,6 +626,7 @@
 ;; 	主に引数のtypoを修正。
 ;; 	[xyzzy:09158]
 ;;
+;; TODO: 数が多いんで後回し
 
 ;; 	* src : fix hash-table rehash size.
 ;; 	ハッシュテーブルの要素数が80000を越える辺りから、ハッシュテーブルの
