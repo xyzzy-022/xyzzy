@@ -61,7 +61,9 @@
                    (format t "OK.~%"))
                  (if passed :pass :fail))))
          (error (error)
-           (format t "Error: ~A~%" error)
+           (format t "Error~%  Error of type ~S occured.~%~{  >> ~A~%~}"
+                 (si:*structure-definition-name (si:*structure-definition error))
+                 (split-string (princ-to-string error) #\LFD))
            :error)))))
 
 (defun parse-expectations (expectations)
