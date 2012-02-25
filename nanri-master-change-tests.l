@@ -546,25 +546,47 @@
 ;; 	主に引数のtypoを修正。
 ;; 	[xyzzy:09158]
 ;; 
+
 ;; 	* src : fix hash-table rehash size.
 ;; 	ハッシュテーブルの要素数が80000を越える辺りから、ハッシュテーブルの
 ;; 	サイズの増加量が100に固定される。そのため頻繁にrehashされパフォーマ
 ;; 	ンスが低下していた。
 ;; 	rehashするときは最低でも前のサイズの1.5倍になるようにした。
-;; 
+;;
+;; NOTE: やたらと時間掛かるんで保留
+;; Ref: https://gist.github.com/227683
+
 ;; 	* src : fix ole-method.
 ;; 	ole-method で文字列を渡すと余計な 0x00 が付く問題
 ;; 	via http://fixdap.com/p/xyzzy/8379/
 ;; 	via http://d.hatena.ne.jp/miyamuko/20080304/xyzzy_ole_method_bug
-;; 
+;;
+;; TODO: どうやってテストすりゃいいもんか miyamuko さんに聞く
+
 ;; 	* src : fix for FFI.
 ;; 	戻り値が double, float の C 関数を呼ぶとクラッシュする
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F25
 ;; 	via http://d.hatena.ne.jp/miyamuko/20070509/p1
-;; 
+;;
+;; TODO: めんどいんで後で
+
 ;; 	* src : fix start-timer.
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F21
 ;; 
+; ;; FIXME: *scratch* では動くんだけどテストにすると返ってこなくなるっぽい
+; (let ((n 0)
+;         (start (get-internal-real-time))
+;         thunk
+;         (finish nil))
+;     (setf thunk (lambda ()
+;                   (when (>= (incf n) 3)
+;                     (stop-timer thunk)
+;                     (setf finish (get-internal-real-time)))))
+;     (start-timer 1 thunk)
+;     (while (not finish)
+;       (sleep-for 0.2))
+;     (> (- finish start) 2900))
+
 ;; 	* src : fix format "~G".
 ;; 	[xyzzy:09204]
 ;;
@@ -576,7 +598,8 @@
 
 ;; 	* src : fix format "~E".
 ;; 	[xyzzy:09204]
-;; 
+;;
+;; 	http://hie.s64.xrea.com/xyzzy/ml/msg09202.html
 (deftest fix-format-E-00 ()
   (format nil "~E" 123.45)
   => "1.2345e+2")
@@ -592,8 +615,6 @@
 (deftest fix-format-F-00 ()
   (format nil "~@F" 123.45)
   => "+123.45")
-
-
 
 ;; 	* src : fix format "~R".
 ;; 	[xyzzy:09198] http://hie.s64.xrea.com/xyzzy/ml/msg09197.html
