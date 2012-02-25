@@ -121,6 +121,30 @@
             (+ pass-count fail-count error-count) pass-count fail-count error-count)
       (goto-char (point-max)))))
 
+;;;; utilities
+
+(defparameter *testfile-name* nil)
+(defparameter *testfile-last-update* nil)
+
+(defun test-on-update ()
+  (when (and (file-exist-p *testfile-name*)
+             (> (file-write-time *testfile-name*) *testfile-last-update*))
+    (setf *testfile-last-update* (file-write-time *testfile-name*)
+          *change-tests* nil)
+    (load-file *testfile-name*)
+    (test-changes)
+    (refresh-screen)))
+
+(defun watch-test-file (filename)
+  (interactive "ftest file: ")
+  (setf *testfile-name* filename
+        *testfile-last-update* (file-write-time filename))
+  (start-timer 1 'test-on-update))
+
+(defun stop-watch-test-file ()
+  (interactive)
+  (stop-timer 'test-on-update))
+
 
 #|
 (deftest I-am-t ()
@@ -157,38 +181,4 @@
 
 ;|#
 
-;; 2011-12-20  NANRI Masaoki  <southly@gmail.com>
-;; 
-;; 	* src : fix equalp for hash-table.
-;; 	equalp に hash-table を渡すと多値が返ってくる問題を修正。
-;; 	https://gist.github.com/1480046
-;; 
-(deftest equalp-for-hash-table ()
-  (let ((a (make-hash-table))
-        (b (make-hash-table)))
-    (setf (gethash 1 a) "foo"
-          (gethash 1 b) "foo")
-    (equalp a b))
-  => t)
-
-;; 2011-06-17  NANRI Masaoki  <southly@gmail.com>
-;; 
-;; 	* src : fix sxhash.
-;; 	sxhash の値が equalp 用の値になっているが equal 用の値になるように修正。
-;; 	(= (sxhash (list "ABC")) (sxhash (list "ABC"))) => t
-;; 	(= (sxhash (list "abc")) (sxhash (list "ABC"))) => nil
-;;
-(deftest sxhash-fix-00 ()
-  (= (sxhash (list "ABC")) (sxhash (list "ABC")))
-  => t)
-
-(deftest sxhash-fix-01 ()
-  (= (sxhash (list "abc")) (sxhash (list "ABC")))
-  => nil)
-
-
-
-
-(when (yes-or-no-p "今すぐテストする？")
-  (test-changes))
 ;;; test-changes.l ends here.
