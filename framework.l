@@ -145,7 +145,7 @@
 
 (defun stop-watch-test-file ()
   (interactive)
-  (stop-timer 'test-on-update))
+  (while (stop-timer 'test-on-update)))
 
 
 #|
