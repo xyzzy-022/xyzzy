@@ -31,6 +31,9 @@
 
 (in-package :user)
 
+(when (fboundp 'stop-watch-test-file)
+  (stop-watch-test-file))
+
 (defparameter *change-tests* nil)
 
 (defun make-test-thunk (name form expected-values compare dest expected-output)
