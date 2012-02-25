@@ -544,11 +544,17 @@
 ;; 	* lisp : fix typo in lisp/css-mode.l.
 ;; 	provideのtypoを修正。
 ;; 	[xyzzy:09158]
-;; 
+;;
+(deftest fix-typo-in-lisp/css-mode.l ()
+  (progn
+    (require "css-mode")
+    (and (modulep "css-mode")
+         (not (modulep "cssmode")))))
+
 ;; 	* lisp : fix typo in lisp/builtin.l.
 ;; 	主に引数のtypoを修正。
 ;; 	[xyzzy:09158]
-;; 
+;;
 
 ;; 	* src : fix hash-table rehash size.
 ;; 	ハッシュテーブルの要素数が80000を越える辺りから、ハッシュテーブルの
