@@ -601,36 +601,40 @@
 ;;
 ;; 	http://hie.s64.xrea.com/xyzzy/ml/msg09203.html
 (deftest fix-format-G ()
-  (format nil "~10g" 1.23456d+38)
-  => "123456000000000000000000000000000000000.0    "
-  )
+  (format t "~10g" 1.23456d+38)
+  >> "123456000000000000000000000000000000000.0    "
+  => nil)
 
 ;; 	* src : fix format "~E".
 ;; 	[xyzzy:09204]
 ;;
 ;; 	http://hie.s64.xrea.com/xyzzy/ml/msg09202.html
 (deftest fix-format-E-00 ()
-  (format nil "~E" 123.45)
-  => "1.2345e+2")
+  (format t "~E" 123.45)
+  >> "1.2345e+2"
+  => nil)
 
 (deftest fix-format-E-01 ()
-  (format nil "~0E" 123.45)
-  => "1.2345e+2")
+  (format t "~0E" 123.45)
+  >> "1.2345e+2"
+  => nil)
 
 ;; 	* src : fix format "~F".
 ;; 	[xyzzy:09204]
 ;;
 ;; 	http://hie.s64.xrea.com/xyzzy/ml/msg09202.html
 (deftest fix-format-F-00 ()
-  (format nil "~@F" 123.45)
-  => "+123.45")
+  (format t "~@F" 123.45)
+  >> "+123.45"
+  => nil)
 
 ;; 	* src : fix format "~R".
 ;; 	[xyzzy:09198] http://hie.s64.xrea.com/xyzzy/ml/msg09197.html
 ;;
 (deftest fix-format-R ()
-  (format nil "~16,10,'*,'-,2:R" #x123abc)
-  => "**12-3a-bc")
+  (format t "~16,10,'*,'-,2:R" #x123abc)
+  >> "**12-3a-bc"
+  => nil)
 
 ;; 	* src : fix for VC2005.
 ;; 	Microsoft Visual C++ 2005 でビルドできるように、こまごまと修正。
