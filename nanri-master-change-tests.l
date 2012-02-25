@@ -537,7 +537,10 @@
 ;; 	* lisp : fix typo in lisp/encoding.l.
 ;; 	provide‚Ìtypo‚ğC³B
 ;; 	[xyzzy:09158]
-;; 
+;;
+(deftest fix-typo-in-lisp/encoding.l ()
+  (modulep "encoding"))
+
 ;; 	* lisp : fix typo in lisp/css-mode.l.
 ;; 	provide‚Ìtypo‚ğC³B
 ;; 	[xyzzy:09158]
