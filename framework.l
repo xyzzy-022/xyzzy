@@ -36,71 +36,105 @@
 
 (defparameter *change-tests* nil)
 
-(defun make-test-thunk (name form expected-values compare dest expected-output)
-  `(lambda ()
-     (block ,name
-       (format t "~&~A..." ',name)
-       (handler-case
-           (let ((capture (make-string-output-stream)))
-             (let ((values (let ((,dest capture))
-                             (multiple-value-list ,form)))
-                   (output (get-output-stream-string capture))
-                   (passed t))
+(defun make-test-thunk (name form expected-result expected-output)
+  (multiple-value-bind (expected-type expected-datum compare-fn)
+      (case (car expected-result)
+        (:return (values :return (cddr expected-result) (second expected-result)))
+        (:error  (values :error  (second expected-result))))
+    (multiple-value-bind (output-stream expected-output)
+        (values (car expected-output) (cdr expected-output))
+      (let ((capture-stream (gensym "capture-stream-")))
+        `(lambda ()
+           (format t "~&~A..." ',name)
+           (multiple-value-bind (actual-type actual-datum actual-output)
+               (let ((,capture-stream (make-string-output-stream)))
+                 (handler-case
+                     (let ((,output-stream ,capture-stream))
+                       (values :return (multiple-value-list ,form)
+                               #1=(get-output-stream-string ,capture-stream)))
+                   (error (error)
+                     (values :error error #1#))))
+             (let ((failed-p nil))
                (labels ((fail (fmt &rest args)
-                          (when passed
-                            (format t "Failed~%")
-                            (setf passed nil))
+                          (unless failed-p
+                            (setf failed-p t)
+                            (format t "Failed~%"))
                           (apply #'format t fmt args)))
                  ,(when (stringp expected-output)
-                    `(unless (string= output ,expected-output)
-                       (fail "  Output:~%  - Expected ---~%~{  >> ~A~%~}  --------------~%  - Actually ---~%~{  >> ~A~%~}  --------------~%"
-                             (split-string ,expected-output #\LFD)
-                             (split-string output #\LFD))))
-                 (unless (and (= (length values) ,(length expected-values))
-                              (every ,compare values ',expected-values))
-                   (fail "  Return values:~%  - Expected: ~{~S~^, ~}~%  - Actually: ~{~S~^, ~}~%"
-                         ',expected-values values))
-                 (when passed
+                    `(unless (string= actual-output ,expected-output)
+                       (fail "  Output (~S):~%    Expected:~%~{    >> ~A~%~}    Actually:~%~{    >> ~A~%~}"
+                             ',output-stream
+                             ',(split-string expected-output #\LFD)
+                             (split-string actual-output #\LFD))))
+                 ,(case expected-type
+                    ;; WTF...
+                    (:return
+                     `(case actual-type
+                        (:return
+                         (unless (and (= (length actual-datum) ,(length expected-datum))
+                                      (every ,compare-fn ',expected-datum actual-datum))
+                           (fail "  Return values (~S):~%    Expected:~%~{    => ~S~%~}    Actually:~%~{    => ~S~%~}"
+                                 ,compare-fn ',expected-datum actual-datum)))
+                        (:error
+                         (fail "  Return values (~S):~%    Expected:~%~{    => ~S~%~}    Actually:~%    !! ~S: ~A~%"
+                               ,compare-fn ',expected-datum
+                               #2=(si:*structure-definition-name (si:*structure-definition actual-datum))
+                               actual-datum))))
+                    (:error
+                     `(case actual-type
+                        (:return
+                         (fail "  Error:~%    Expected:~%    !! ~S~%    Actually:~%~{    => ~S~%~}"
+                               ',expected-datum actual-datum))
+                        (:error
+                         (unless (si:*structure-subtypep
+                                  (si:*structure-definition actual-datum)
+                                  (get ',expected-datum 'si:structure-definition))
+                           (fail "  Error:~%    Expected:~%    !! ~S~%    Actually:~%    !! ~S: ~A~%"
+                                 ',expected-datum #2# actual-datum))))))
+                 (unless failed-p
                    (format t "OK.~%"))
-                 (if passed :pass :fail))))
-         (error (error)
-           (format t "Error~%  Error of type ~S occured.~%~{  >> ~A~%~}"
-                 (si:*structure-definition-name (si:*structure-definition error))
-                 (split-string (princ-to-string error) #\LFD))
-           :error)))))
+                 (if failed-p :fail :pass)))))))))
 
-(defun parse-expectations (expectations)
+(defun parse-expectations (name expectations options)
   "Return followings:
 - expected values
 - expected output"
-  (let ((values '())
-        (output nil)
-        (state nil))
+  (let ((result-type nil)
+        (result-data '())
+        (output "")
+        (dest   (getf options :output ''*standard-output*))
+        (state  nil))
     (dolist (x expectations)
-      (if (member x '(=> >>))
+      (if (member x '(=> >> !!))
         (setf state x)
         (case state
-          (=> (push x values))
-          (>> (when output
-                (error "don't put output expectation more than once."))
-              (setf output x)))))
-    (values (nreverse values)
-            output)))
-
+          (=> (case result-type
+                ((nil) (setf result-type :return))
+                (:return)
+                (:error (error "Don't expect both return value(s) and error: ~S" name)))
+              (push x result-data))
+          (>> (setf output (format nil "~A~%~A" output x)))
+          (!! (case result-type
+                (:return (error "Don't expect both return value(s) and error: ~S" name))
+                (:error  (error "Don't expect multiple errors: ~S" name)))
+              (unless (symbolp x)
+                (error 'type-error :datum x :expected-type 'symbol))
+              (setf result-type :error
+                    result-data x)))))
+    (values (case result-type
+              (:return (list* :return (getf options :compare ''equal) result-data))
+              (:error  (list  :error result-data))
+              ((nil)   (list  :return (lambda (actual #:ignore) actual) '(t)))
+              (t (error "parse-expectations - unknown result-type: ~S: ~S" result-type name)))
+            (cons dest output))))
 
 (defun expand-deftest (name options form expectations)
-  ;(msgbox "name => ~S~%options => ~S~%form => ~S~%expected => ~S" name options form expected)
-  (labels ((get-option (key &optional default) (getf options key default)))
-    (multiple-value-bind (evalues eoutput)
-        (parse-expectations expectations)
-      (multiple-value-bind (evalues compare)
-          (if evalues
-            (values evalues (get-option :compare '#'equal))
-            (values '(t) '(lambda (value #:ignore) value)))
-        `(push (cons ',name ,(make-test-thunk name form
-                                              evalues compare
-                                              '*standard-output* eoutput))
-               *change-tests*)))))
+  (multiple-value-bind (expected-result expected-output)
+      (parse-expectations name expectations options)
+    `(setf *change-tests*
+           (acons ',name ,(make-test-thunk name form expected-result expected-output)
+                  (remove ',name *change-tests* :key 'car)))))
+
 
 (defmacro deftest (name (&rest options) form &rest expected)
   (expand-deftest name options form expected))
@@ -149,7 +183,6 @@
 (defun stop-watch-test-file ()
   (interactive)
   (while (stop-timer 'test-on-update)))
-
 
 #|
 (deftest I-am-t ()

@@ -408,18 +408,23 @@
 ;; 	applyhook, *applyhook* をローカル関数に対応させた。
 ;; 	call_applyhookの第一引数にクロージャを渡すように変更した。
 ;; 
+
 ;; 	* src : add "*read-eval*".
 ;; 	スペシャル変数*read-eval*が機能するようにした。
 ;; 	*read-eval*の出力への影響の理解が怪しい。
 ;; 	*read-eval*がnilの場合はencodingをunreadable-objectとして出力するようし
 ;; 	ているが、自信なし。
 ;; 
+
+
 ;; 2010-01-23  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix for VC2008.
 ;; 	Microsoft Visual C++ 2008 でのビルド用に修正。
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?Memo%2F%A5%BD%A1%BC%A5%B9%A4%AB%A4%E9%A5%D3%A5%EB%A5%C9%A4%B7%A4%C6%A4%DF%A4%EB3
 ;; 
+;; NOTE: テストはいらんと思うけど、commit 見当たらない。
+
 ;; 	* src : add get-buffer-colors.
 ;; 	関数get-buffer-colorsを追加。
 ;; 	set-buffer-colorsと対となる現在のバッファの色設定を取得する関数。
@@ -537,6 +542,7 @@
 ;     (set-buffer-modified-p nil buffer)
 ;     (buffer-modified-p buffer))
 ;   => nil)
+
 
 ;; 	* src : fix inverse-cursor-line.
 ;; 	(setq inverse-cursor-line t)
