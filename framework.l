@@ -101,7 +101,7 @@
 - expected output"
   (let ((result-type nil)
         (result-data '())
-        (output "")
+        (output nil)
         (dest   (getf options :output '*standard-output*))
         (state  nil))
     (dolist (x expectations)
@@ -113,7 +113,7 @@
                 (:return)
                 (:error (error "Don't expect both return value(s) and error: ~S" name)))
               (push x result-data))
-          (>> (setf output (format nil "~A~%~A" output x)))
+          (>> (setf output (if output (format nil "~A~%~A" output x) x)))
           (!! (case result-type
                 (:return (error "Don't expect both return value(s) and error: ~S" name))
                 (:error  (error "Don't expect multiple errors: ~S" name)))
