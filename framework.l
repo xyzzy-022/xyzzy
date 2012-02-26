@@ -102,7 +102,7 @@
   (let ((result-type nil)
         (result-data '())
         (output "")
-        (dest   (getf options :output ''*standard-output*))
+        (dest   (getf options :output '*standard-output*))
         (state  nil))
     (dolist (x expectations)
       (if (member x '(=> >> !!))
