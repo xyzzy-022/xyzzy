@@ -415,7 +415,13 @@
 ;; 	*read-eval*がnilの場合はencodingをunreadable-objectとして出力するようし
 ;; 	ているが、自信なし。
 ;; 
+(deftest add-*read-eval*-00 ()
+  (si:*specialp '*read-eval*))
 
+(deftest add-*read-eval*-01 ()
+  (let ((*read-eval* nil))
+    (read-from-string "#.(+ 1 2)"))
+  !! reader-error)
 
 ;; 2010-01-23  NANRI Masaoki  <southly@gmail.com>
 ;; 
