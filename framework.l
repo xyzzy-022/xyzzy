@@ -95,6 +95,8 @@
                    (format t "OK.~%"))
                  (if failed-p :fail :pass)))))))))
 
+(defun non-nil-p (#:ignore actual) actual)
+
 (defun parse-expectations (name expectations options)
   "Return followings:
 - expected values
@@ -124,7 +126,7 @@
     (values (case result-type
               (:return (list* :return (getf options :compare ''equal) (nreverse result-data)))
               (:error  (list  :error result-data))
-              ((nil)   (list  :return (lambda (#:ignore actual) actual) '(t)))
+              ((nil)   (list  :return ''non-nil-p ':non-nil))
               (t (error "parse-expectations - unknown result-type: ~S: ~S" result-type name)))
             (cons dest output))))
 
