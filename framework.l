@@ -64,8 +64,8 @@
                     `(unless (string= actual-output ,expected-output)
                        (fail "  Output (~S):~%    Expected:~%~{    >> ~A~%~}    Actually:~%~{    >> ~A~%~}"
                              ',output-stream
-                             ',(split-string expected-output #\LFD)
-                             (split-string actual-output #\LFD))))
+                             ',(split-string expected-output #\LFD t)
+                             (split-string actual-output #\LFD t))))
                  ,(case expected-type
                     ;; WTF...
                     (:return
