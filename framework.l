@@ -124,7 +124,7 @@
     (values (case result-type
               (:return (list* :return (getf options :compare ''equal) (nreverse result-data)))
               (:error  (list  :error result-data))
-              ((nil)   (list  :return (lambda (actual #:ignore) actual) '(t)))
+              ((nil)   (list  :return (lambda (#:ignore actual) actual) '(t)))
               (t (error "parse-expectations - unknown result-type: ~S: ~S" result-type name)))
             (cons dest output))))
 
