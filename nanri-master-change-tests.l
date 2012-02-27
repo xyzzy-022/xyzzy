@@ -27,19 +27,20 @@
 ;; 	        (*print-level* 1))
 ;; 	    (ed::save-history-file)))
 ;; 
+
 ;; 2011-12-20  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix equalp for hash-table.
 ;; 	equalp に hash-table を渡すと多値が返ってくる問題を修正。
 ;; 	https://gist.github.com/1480046
 ;; 
-;(deftest equalp-for-hash-table ()
-;  (let ((a (make-hash-table))
-;        (b (make-hash-table)))
-;    (setf (gethash 1 a) "foo"
-;          (gethash 1 b) "foo")
-;    (equalp a b))
-;  => t)
+(deftest equalp-for-hash-table ()
+  (let ((a (make-hash-table))
+        (b (make-hash-table)))
+    (setf (gethash 1 a) "foo"
+          (gethash 1 b) "foo")
+    (equalp a b))
+  => t)
 
 ;; 2011-06-17  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -47,14 +48,15 @@
 ;; 	sxhash の値が equalp 用の値になっているが equal 用の値になるように修正。
 ;; 	(= (sxhash (list "ABC")) (sxhash (list "ABC"))) => t
 ;; 	(= (sxhash (list "abc")) (sxhash (list "ABC"))) => nil
-;; 
-;(deftest sxhash-fix-00 ()
-;  (= (sxhash (list "ABC")) (sxhash (list "ABC")))
-;  => t)
-
-;(deftest sxhash-fix-01 ()
-;  (= (sxhash (list "abc")) (sxhash (list "ABC")))
-;  => nil)
+;;
+;; NOTE: これは元からオッケー
+; (deftest sxhash-fix-00 ()
+;   (= (sxhash (list "ABC")) (sxhash (list "ABC")))
+;   => t)
+ 
+(deftest sxhash-fix-01 ()
+  (= (sxhash (list "abc")) (sxhash (list "ABC")))
+  => nil)
 
 ;; 2011-06-15  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -64,12 +66,23 @@
 ;; 	https://gist.github.com/998414
 ;; 	https://gist.github.com/1000096
 ;; 
+(deftest fix-compiling-lambda-form ()
+  (compile-and-eval
+    (let ((a 1))
+      ((lambda () a))))
+  => 1)
+
 ;; 2011-06-14  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* lisp : fix typo in lisp/compile.l.
 ;; 	関数名のミスを修正。
 ;; 	https://twitter.com/#!/bowbow99/status/80332901014704128
-;; 
+;;
+(deftest fix-typo-in-lisp/compile.l ()
+  (progn
+    (require "compile")
+    (functionp (get 'ninth (find-symbol "optimize-form" :compile)))))
+
 ;; 2011-01-30  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix abbreviate-display-string.
@@ -83,7 +96,12 @@
 ;; 	  strcpy (le + 3, rb);
 ;; 	はじめの strcpy で '\0' が書き込まれ、その位置がちょうど rb と一致した
 ;; 	ときに発生した。
-;; 
+;;
+(deftest fix-abbreviate-display-string ()
+  (abbreviate-display-string "D:/src/cmigemo-1.3c-MIT/src/wordlist.h" 40 t)
+  => "D:/.../cmigemo-1.3c-MIT/src/wordlist.h")
+
+
 ;; 2011-01-21  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* lisp : fix pipe-command.
@@ -94,9 +112,13 @@
 ;; 	execute-shell-command の第二引数に文字列・nil以外の引数を渡すとファイル
 ;; 	名が空のファイルを開こうとするので、エラーになっていた模様。
 ;; 
+;; TODO: (?_?)
+
 ;; 	* src : fix wheel icon.
 ;; 	なんとなくホイールボタンをクリックしたときのアイコンをいじってみた。
 ;; 
+;; NOTE: テスト不要かと。無理だし。
+
 ;; 	* src : fix multiple binding of special variables in let, let*.
 ;; 	http://d.hatena.ne.jp/bowbow99/20101127/1290818576
 ;; 	let や let* で同一のスペシャル変数に対して複数回の束縛を作ったときの値
@@ -112,13 +134,43 @@
 ;; 	レキシカルな環境には逆順に登録されるので、スペシャル変数に値を設定する
 ;; 	前に順序を元に戻している。
 ;; 
+(deftest fix-multiple-binding-of-special-variable-in-let/let*-00 ()
+  (progn
+    (defparameter *special* :global)
+    (let ((*special* :local-1)
+          (*special* :local-2))
+      *special*))
+  => :local-2)
+
+(deftest fix-multiple-binding-of-special-variable-in-let/let*-01 ()
+  (progn
+    (defparameter *special* :global)
+    (let* ((*special* :local-1)
+           (*special* :local-2))
+      *special*))
+  => :local-2)
+
 ;; 2011-01-05  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix let, let*.
 ;; 	http://d.hatena.ne.jp/bowbow99/20101127/1290818576
 ;; 	コンパイルしたときは値が変わることはないが、インタプリタと同様に逆順で
 ;; 	値をリストアするように修正。
-;; 
+;;
+;; NOTE: これは元から壊れてない（挙動は変わってない）はず
+; (deftest fix-let/let*-multiple-bind-for-special-variable-in-compiled-code ()
+;   (progn
+;     (defparameter *special* :global)
+;     (funcall
+;      (compile nil
+;               ;; NOTE: need empty lexenv to compile
+;               (eval '(lambda ()
+;                       (let ((*special* :local-1)
+;                             (*special* :local-2))
+;                         *special*)))))
+;     *special*)
+;   => :global)
+
 ;; 2011-01-04  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix special variables restore at the end of let, let*.
@@ -136,6 +188,24 @@
 ;; 	値を保存するとき(src/eval.cc 347行目辺り)と逆順に値をリストアするように
 ;; 	した。
 ;; 
+(deftest fix-special-variables-restore-at-the-end-of-let/let*-00 ()
+  (progn
+    (defparameter *special* :global)
+    (let ((*special* :local-1)
+          (*special* :local-2))
+      *special*)
+    *special*)
+  => :global)
+
+(deftest fix-special-variables-restore-at-the-end-of-let/let*-01 ()
+  (progn
+    (defparameter *special* :global)
+    (let* ((*special* :local-1)
+           (*special* :local-2))
+      *special*)
+    *special*)
+  => :global)
+
 ;; 2010-12-14  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix eol-code of zero size file.
@@ -143,7 +213,21 @@
 ;; 	ドが常に CRLF になるのを修正し *default-eol-code* に基づいた改行コード
 ;; 	になるようにする。
 ;; 	xyzzy Part16 577
-;; 
+;;
+
+;; FIXME: 手元の xyzzy は nanri-master をいじったものでこの変更も入ってるはずなん
+;; だけど fail する。何か勘違いしてる？
+(deftest fix-eol-code-of-zero-size-file ()
+  (let ((name (make-temp-file-name))
+        buffer)
+    (with-open-file (out name :direction :output :if-does-not-exist :create))
+    (unwind-protect
+        (let ((*default-eol-code* *eol-lf*))
+          (setq buffer (ed::find-file-internal name))
+          (buffer-eol-code buffer))
+      (delete-buffer buffer)))
+  => 0)
+
 ;; 2010-12-13  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix DLL loading (hhctrl.ocx).
@@ -161,6 +245,8 @@
 ;; 	foreign:define-dll-entry (si:load-dll-module) で指定する DLL も対象だが、
 ;; 	こちらはフルパスで指定するのが望ましいだろう。
 ;; 
+;; TODO: テキトーな dll を読み込んでテストする？？
+
 ;; 2010-12-12  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : update zlib(version 1.2.5).
@@ -172,7 +258,8 @@
 ;; 	* src : support lzma and xz.
 ;; 	tar32.dll Ver2.35 から利用できるようになった lzma および xz の圧縮と展
 ;; 	開に対応。
-;; 
+;;
+;; TODO: よくわからんので後で。
 
 ;; 2010-12-11  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -365,6 +452,7 @@
   >> short-float-negative-epsilon   =                    5.960464e-8, test = t
   >> single-float-epsilon           =                    1.192093e-7, test = t
   >> single-float-negative-epsilon  =                    5.960464e-8, test = t
+  >> 
   => nil
   )
 
