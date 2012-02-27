@@ -1,6 +1,18 @@
 ;;; -*- mode: lisp; package: user -*-
 
 #|
+使い方（暫定）:
+1. どこかへ framework.l と nanri-master-change-tests.l をダウンロード
+2. M-x load-file
+   load file: path/to/framework.l
+3. M-x load-file
+   load file: path/to/nanri-master-change-tests.l
+4. M-x change-tests
+
+で *Test Results* だかいう名前のバッファが開いて結果が表示される。
+|#
+
+#|
 ;; FORM の戻り値が VALUE と equal でないと fail
 (deftest NAME ()
   FORM
