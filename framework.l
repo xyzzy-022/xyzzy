@@ -232,6 +232,9 @@
 
 ;;;; utilities
 
+
+;;;;; load and run tests automatically
+
 (defparameter *testfile-name* nil)
 (defparameter *testfile-last-update* nil)
 
@@ -253,5 +256,14 @@
 (defun stop-watch-test-file ()
   (interactive)
   (while (stop-timer 'test-on-update)))
+
+
+;;;;; compile and evaluate
+
+(defmacro compile-and-eval (&body body)
+  `(funcall (compile nil (eval '(lambda () ,@body)))))
+(setf (get 'compile-and-eval 'ed:lisp-indent-hook) 0)
+
+
 
 ;;; framework.l ends here.
