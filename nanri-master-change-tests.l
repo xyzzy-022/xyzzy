@@ -328,15 +328,26 @@
 ;; 	(format nil "~0,1T")
 ;; 	=> " "
 ;; 
+(deftest fix-format-T ()
+  (format t "~0,1T")
+  >> " "
+  => nil)
+
 ;; 	* src : fox format "~VT" in the case of being provided '() as a prefix parameter.
 ;; 	Vに引数としてnilを渡したときの動作を修正。
 ;; 	(format t "~VA" nil 'x)
 ;; 	== (format t "~A" 'x)
 ;; 
+(deftest fix-format-VT ()
+  (format t "~VA" nil 'x)
+  >> "x"
+  => nil)
+
 ;; 	* src : fix for VC2010.
 ;; 	Microsoft Visual C++ 2010 でのビルド用に修正。
 ;; 	Makefileの修正のみ。
 ;; 
+
 ;; 2010-04-04  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : add repl.
@@ -360,6 +371,8 @@
 ;; 	ダンプ作成時にロードしたファイル名がそのままダンプファイルに保存される
 ;; 	ようなので、起動時にも初期化するように修正。
 ;; 
+;; TODO: xyzzy を起動するマクロ書く
+
 ;; 	* src : fix format "~F".
 ;; 	formatの"~F"の第一パラメータwを指定しないと第三パラメータkが機能しない
 ;; 	のを修正。
@@ -401,13 +414,62 @@
 ;; 	800000000.0
 ;; 	9000000000.0
 ;; 	nil
-;; 
+;;
+(deftest fix-format-F-01 ()
+  (dotimes (i 10)
+    (format t "~,,VF~%" i pi))
+  >> "3.141592653589793"
+  >> "31.41592653589793"
+  >> "314.1592653589793"
+  >> "3141.592653589793"
+  >> "31415.92653589793"
+  >> "314159.2653589793"
+  >> "3141592.653589793"
+  >> "31415926.53589793"
+  >> "314159265.3589793"
+  >> "3141592653.589793"
+  >> ""
+  => nil
+  )
+
+
+(deftest fix-format-F-02 ()
+  (do ((i -9 (1+ i)))
+      ((> i 9))
+    (format t "~,,VF~%" i i))
+  >> "-0.000000009"
+  >> "-0.00000008"
+  >> "-0.0000007"
+  >> "-0.000006"
+  >> "-0.00005"
+  >> "-0.0004"
+  >> "-0.003"
+  >> "-0.02"
+  >> "-0.1"
+  >> "0.0"
+  >> "10.0"
+  >> "200.0"
+  >> "3000.0"
+  >> "40000.0"
+  >> "500000.0"
+  >> "6000000.0"
+  >> "70000000.0"
+  >> "800000000.0"
+  >> "9000000000.0"
+  >> ""
+  => nil
+  )
+
 ;; 2010-02-21  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix applyhook.
 ;; 	applyhook, *applyhook* をローカル関数に対応させた。
 ;; 	call_applyhookの第一引数にクロージャを渡すように変更した。
 ;; 
+(deftest fix-applyhook-00 ()
+  (let ((*applyhook* (lambda (fn args)
+                       (functionp fn))))
+    (car 1)))
 
 ;; 	* src : add "*read-eval*".
 ;; 	スペシャル変数*read-eval*が機能するようにした。
@@ -422,6 +484,8 @@
   (let ((*read-eval* nil))
     (read-from-string "#.(+ 1 2)"))
   !! reader-error)
+
+;; TODO: 出力への影響？
 
 ;; 2010-01-23  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -451,7 +515,17 @@
   => nil)
 
 (deftest fix-listen-for-file-stream ()
-  (let ((file ()))))
+  (let* ((file (make-temp-file-name))
+         (buffer (ed::find-file-internal file)))
+    (save-excursion
+      (with-set-buffer
+        (set-buffer buffer)
+        (save-buffer)))
+    (unwind-protect
+        (with-open-file (in file :direction :input)
+          (listen in))
+      (delete-buffer buffer)))
+  => nil)
 
 ;; 2010-01-11  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -548,7 +622,6 @@
 ;     (set-buffer-modified-p nil buffer)
 ;     (buffer-modified-p buffer))
 ;   => nil)
-
 
 ;; 	* src : fix inverse-cursor-line.
 ;; 	(setq inverse-cursor-line t)
@@ -661,7 +734,7 @@
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F25
 ;; 	via http://d.hatena.ne.jp/miyamuko/20070509/p1
 ;;
-;; TODO: めんどいんで後で
+;; TODO: xyzzy を起動するマクロ書く
 
 ;; 	* src : fix start-timer.
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F21
