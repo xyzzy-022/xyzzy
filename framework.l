@@ -34,10 +34,22 @@
   0
   => 0/0)
 
-;; 出力のテスト
+;; 出力のテスト。string= で比較される。>> 直後の空白は区切りであって出力の一部ではない。
 (deftest NAME ()
   (princ "hello")
-  >> "hello")
+  >> hello)
+
+;; 改行もそのまま書ける
+(deftest NAME ()
+  (format t "foo~%bar")
+  >> foo
+  >> bar
+  => nil)
+
+;; 指定されたエラーを投げないと fail
+(deftest NAME ()
+  (+ 'foo 'bar)
+  !! type-error)
 
 |#
 
@@ -242,39 +254,4 @@
   (interactive)
   (while (stop-timer 'test-on-update)))
 
-#|
-(deftest I-am-t ()
-  t
-  => t)
-
-(deftest I-am-keyword ()
-  :keyword
-  => :keyword)
-
-(deftest I-am-nil ()
-  nil
-  => nil)
-
-(deftest foo-eql-foo-00 ()
-  (eql 'foo 'foo))
-
-(deftest foo-eql-foo-01 ()
-  (eql 'foo 'foo)
-  => t)
-
-(deftest 1-is-1 (:compare '=)
-  1
-  => 1/1)
-
-(deftest output-test-test-00 ()
-  (princ :hello)
-  >> "hello"
-  => :hello)
-
-(deftest output-test-test-01 ()
-  (princ :hello)
-  >> "hi")
-
-;|#
-
-;;; test-changes.l ends here.
+;;; framework.l ends here.
