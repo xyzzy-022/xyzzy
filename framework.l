@@ -5,8 +5,8 @@
 1. どこかへ framework.l と nanri-master-change-tests.l をダウンロード
 2. M-x load-file
    load file: path/to/framework.l
-3. M-x load-file
-   load file: path/to/nanri-master-change-tests.l
+3. M-x load-test-file
+   test file: path/to/nanri-master-change-tests.l
 4. M-x change-tests
 
 で *Test Results* だかいう名前のバッファが開いて結果が表示される。
@@ -45,6 +45,39 @@
 
 (when (fboundp 'stop-watch-test-file)
   (stop-watch-test-file))
+
+
+;;;; test file loader
+
+(defparameter *test-file-readtable* (copy-readtable nil))
+
+(defun expected-output-reader (stream char)
+  (let ((next (peek-char nil stream nil #1='#:eof t)))
+    (case next
+      (#\>
+       (read-char stream nil nil t) ; discard 2nd >
+       (if (peek-char #\space stream nil #1# t)
+         (read-char stream nil nil t) ; discard following space
+         (error 'reader-error :stream stream :datum "不正な期待出力です"))
+       (list :expected-output
+             (with-output-to-string (s)
+               (while (and (setf next (read-char stream nil nil t))
+                           (not (eql next #\LFD)))
+                 (princ next s)))))
+      ((#\space #1#) '>)
+      (t
+       (let ((follow (read stream nil "" t)))
+         (intern (format nil ">~A" follow) *package*))))))
+
+(set-macro-character #\> 'expected-output-reader t *test-file-readtable*)
+
+(defun load-test-file (filename)
+  (interactive "ftest file: ")
+  (let ((*readtable* *test-file-readtable*))
+    (load-file filename)))
+
+
+;;;; macro deftest
 
 (defparameter *change-tests* nil)
 
@@ -119,28 +152,35 @@
         (dest   (getf options :output '*standard-output*))
         (state  nil))
     (dolist (x expectations)
-      (if (member x '(=> >> !!))
-        (setf state x)
-        (case state
-          (=> (case result-type
-                ((nil) (setf result-type :return))
-                (:return)
-                (:error (error "Don't expect both return value(s) and error: ~S" name)))
-              (push x result-data))
-          (>> (setf output (if output (format nil "~A~%~A" output x) x)))
-          (!! (case result-type
-                (:return (error "Don't expect both return value(s) and error: ~S" name))
-                (:error  (error "Don't expect multiple errors: ~S" name)))
-              (unless (symbolp x)
-                (error 'type-error :datum x :expected-type 'symbol))
-              (setf result-type :error
-                    result-data x)))))
+      (cond
+       ((member x '(=> !!)) (setf state x))
+       ((and (consp x) (eql (first x) :expected-output))
+        ;(msgbox "~S~% >> ~S" name x)
+        (setf output (if output (format nil "~A~%~A" output (second x)) (second x))))
+       (t (case state
+            (=> (case result-type
+                  ((nil) (setf result-type :return))
+                  (:return)
+                  (:error (error "Don't expect both return value(s) and error: ~S" name)))
+                (push x result-data))
+            ;(>> (setf output (if output (format nil "~A~%~A" output x) x)))
+            (!! (case result-type
+                  (:return (error "Don't expect both return value(s) and error: ~S" name))
+                  (:error  (error "Don't expect multiple errors: ~S" name)))
+                (unless (symbolp x)
+                  (error 'type-error :datum x :expected-type 'symbol))
+                (setf result-type :error
+                      result-data x))))))
+    ;(multiple-value-bind (r o)
     (values (case result-type
               (:return (list* :return (getf options :compare ''equal) (nreverse result-data)))
               (:error  (list  :error result-data))
               ((nil)   (list  :return ''non-nil-p ':non-nil))
               (t (error "parse-expectations - unknown result-type: ~S: ~S" result-type name)))
-            (cons dest output))))
+            (cons dest output))
+      ;(msgbox "name = ~S~2%expected-result = ~S~%expected-output = ~S" name r o)
+      ;(values r o))
+    ))
 
 (defun expand-deftest (name options form expectations)
   (multiple-value-bind (expected-result expected-output)
@@ -153,6 +193,9 @@
 (defmacro deftest (name (&rest options) form &rest expected)
   (expand-deftest name options form expected))
 (setf (get 'deftest 'ed:lisp-indent-hook) 2)
+
+
+;;;; runner
 
 (defun test-changes ()
   (interactive)
@@ -174,6 +217,7 @@
             (+ pass-count fail-count error-count) pass-count fail-count error-count)
       (goto-char (point-max)))))
 
+
 ;;;; utilities
 
 (defparameter *testfile-name* nil)
@@ -184,7 +228,7 @@
              (> (file-write-time *testfile-name*) *testfile-last-update*))
     (setf *testfile-last-update* (file-write-time *testfile-name*)
           *change-tests* nil)
-    (load-file *testfile-name*)
+    (load-test-file *testfile-name*)
     (test-changes)
     (refresh-screen)))
 
