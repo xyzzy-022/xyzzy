@@ -173,6 +173,7 @@
 ;; 	tar32.dll Ver2.35 から利用できるようになった lzma および xz の圧縮と展
 ;; 	開に対応。
 ;; 
+
 ;; 2010-12-11  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix hash-table.
@@ -184,6 +185,8 @@
 ;; 	http://twitter.com/miyamuko/status/14229437114
 ;; 	http://d.hatena.ne.jp/knenet/20091223/1261578863
 ;; 
+;; TODO: xyzzy を起動するマクロ書く
+
 ;; 2010-12-10  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix (cdr '#1='#1#) printing.
@@ -194,7 +197,15 @@
 ;; 	(cdr '#1='#1#)        => #1=((quote . #1#))
 ;; 	(cdr '#1=(quote #1#)) => #1=((quote . #1#))
 ;; 	(cdr '#1=(q #1#))     => #1=((q . #1#))
-;; 
+;;
+;; FIXME: handler-case ではスタックオーバーフローを止められずテスト実行がクラッシュしてまう
+;; FIXME: 手元の nanri-master をちょっといじったものだと「致命的な例外」だかで xyzzy 自体が
+;; 落ちてしまう
+; (deftest |fix (cdr '#1='#1#) printing| ()
+;   (write (cdr '#1='#1#) :circle t)
+;   >> #1=((quote . #1#))
+;   => #2=((quote . #2#)))
+
 ;; 2010-12-01  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix macroexpand.
@@ -207,6 +218,16 @@
 ;; 	=> (setq x (cons 1 x))
 ;; 	=> nil
 ;; 
+(deftest fix-macroexpand-00 ()
+  (macroexpand '(push 1 x))
+  => (setq x (cons 1 x))
+  => t)
+
+(deftest fix-macroexpand-01 ()
+  (macroexpand '(setq x (cons 1 x)))
+  => (setq x (cons 1 x))
+  => nil)
+
 ;; 	* src : fix flet, labels, macrolet.
 ;; 	http://twitter.com/bowbow99/status/8011887295856640
 ;; 	引数のチェックがおかしかったのを修正。
@@ -217,10 +238,20 @@
 ;; 	(macrolet () 3) => 3
 ;; 	(macrolet ())   => nil
 ;; 
+(deftest fix-flet/labels/macrolet-00 ()
+  (flet ()) => nil)
+
+(deftest fix-flet/labels/macrolet-01 ()
+  (labels ()) => nil)
+
+(deftest fix-flet/labels/macrolet-02 ()
+  (macrolet ()) => nil)
+
 ;; 	* src : add "listp" Macro.
 ;; 	オブジェクトが cons である、又は nil であるかどうか調べる listp マクロ
 ;; 	を追加。
 ;; 
+
 ;; 2010-11-09  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix type-check in list-length.
@@ -233,6 +264,14 @@
 ;; 	引数にdotted listを渡したときのエラーメッセージがいまいちだが、
 ;; 	とりあえずそのまま。
 ;; 
+(deftest fix-type-check-in-list-length-00 ()
+  (list-length :foo)
+  !! type-error)
+
+(deftest fix-type-check-in-list-length-01 ()
+  (list-length '(a . b))
+  !! type-error)
+
 ;; 	* src : fix nthcdr given dotted list.
 ;; 	http://twitter.com/bowbow99/status/1746294087352320
 ;; 	(nthcdr 0 '()) => nil
@@ -244,7 +283,31 @@
 ;; 	(nthcdr 3 '(0 . 1)) => nil
 ;; 
 ;; 	最後のケースはエラーにすべきだけど、とりあえずそのまま。
-;; 
+;;
+
+;; NOTE: 05 以外は元からちゃんと動く
+; (deftest fix-nthcdr-given-dotted-list-00 ()
+;   (nthcdr 0 '()) => nil)
+
+; (deftest fix-nthcdr-given-dotted-list-01 ()
+;   (nthcdr 3 '()) => nil)
+
+; (deftest fix-nthcdr-given-dotted-list-02 ()
+;   (nthcdr 0 '(a b c)) => (a b c))
+
+; (deftest fix-nthcdr-given-dotted-list-03 ()
+;   (nthcdr 2 '(a b c)) => (c))
+
+; (deftest fix-nthcdr-given-dotted-list-04 ()
+;   (nthcdr 4 '(a b c)) => nil)
+
+(deftest fix-nthcdr-given-dotted-list-05 ()
+  (nthcdr 1 '(0 . 1)) => 1)
+
+; (deftest fix-nthcdr-given-dotted-list-06 ()
+;   (nthcdr 3 '(0 . 1)) => nil)
+
+
 ;; 	* src : fix single-float-epsilon, single-float-negative-epsilon.
 ;; 	http://twitter.com/TwilightClover/status/26251344464
 ;; 	http://gist.github.com/608561
@@ -276,13 +339,58 @@
 ;; 	single-float-negative-epsilon  =                    5.960464e-8, test = t
 ;; 	nil
 ;; 
+(deftest fix-single-float-eplilon ()
+  (dolist (sym '((double-float-epsilon t)
+                 (double-float-negative-epsilon nil)
+                 (long-float-epsilon t)
+                 (long-float-negative-epsilon nil)
+                 (short-float-epsilon t)
+                 (short-float-negative-epsilon nil)
+                 (single-float-epsilon t)
+                 (single-float-negative-epsilon nil)))
+    (let ((epsilon (symbol-value (car sym)))
+          (positive (cadr sym)))
+      (format t "~30S = ~@30S, test = ~S~%"
+              (car sym)
+              epsilon
+              (if positive
+                  (not (= (float 1 epsilon) (+ (float 1 epsilon) epsilon)))
+                (not (= (float 1 epsilon) (- (float 1 epsilon) epsilon)))))
+      ))
+  >> double-float-epsilon           =          2.220446049250313d-16, test = t
+  >> double-float-negative-epsilon  =          1.110223024625157d-16, test = t
+  >> long-float-epsilon             =          2.220446049250313d-16, test = t
+  >> long-float-negative-epsilon    =          1.110223024625157d-16, test = t
+  >> short-float-epsilon            =                    1.192093e-7, test = t
+  >> short-float-negative-epsilon   =                    5.960464e-8, test = t
+  >> single-float-epsilon           =                    1.192093e-7, test = t
+  >> single-float-negative-epsilon  =                    5.960464e-8, test = t
+  => nil
+  )
+
 ;; 2010-09-30  MIYAMUKO Katsuyuki  <miyamuko@gmail.com>
 ;; 
 ;; 	* src : add deleted-window-p
 ;; 	削除された Window なら t を返す。
 ;; 	deleted-buffer-p の Window バージョン。
 ;; 	http://twitter.com/bowbow99/status/25935896653
-;; 
+;;
+
+;; NOTE: 自前で用意してた場合 pass してしまう。
+(deftest add-deleted-window-p-00 ()
+  (fboundp 'deleted-window-p))
+
+;; NOTE: 自前で用意してた場合 pass してしまう。
+(deftest add-deleted-window-p-01 ()
+  (let ((current (selected-window))
+        (new     (save-window-excursion
+                   (split-window -20)
+                   (selected-window))))
+    (deleted-window-p new)))
+
+(deftest add-deleted-window-p-02 ()
+  (si:*builtin-function-p (symbol-function 'deleted-window-p)))
+
 ;; 2010-09-12  MIYAMUKO Katsuyuki  <miyamuko@gmail.com>
 ;; 
 ;; 	* src : add optional value parameter to si:putenv.
@@ -297,6 +405,32 @@
 ;; 	(si:putenv "=FOO" "bar")
 ;; 	=> nil
 ;; 
+(deftest add-putenv-00 ()
+  (multiple-value-bind (sym class)
+      (find-symbol "putenv" :system)
+    class)
+  => :external)
+
+(deftest add-putend-01 ()
+  (fboundp (find-symbol "putenv" :system)))
+
+(deftest add-putenv-02 ()
+  (funcall (find-symbol "putenv" :system) "FOO" "bar")
+  => "bar")
+
+(deftest add-putenv-03 ()
+  (progn
+    (funcall (find-symbol "putenv" :system) "FOO" "baz")
+    (si:getenv "FOO"))
+  => "baz")
+
+(deftest add-putenv-04 ()
+  (values
+   (funcall (find-symbol "putenv" :system) "FOO" nil)
+   (si:getenv "FOO"))
+  => nil
+  => nil)
+
 ;; 2010-09-11  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : remove redefinition.
@@ -305,22 +439,44 @@
 ;; 	定義を削除。
 ;; 	とりあえずVC2010でのみ削除。
 ;; 
+
 ;; 	* src : remove pragma optimize.
 ;; 	「internal compiler error」対策とのコメントがあるが、Microsoft Visual
 ;; 	C++ 2010 ではエラーが発生しないので削除。
 ;; 	とりあえずVC2010でのみ削除。
 ;; 
+
 ;; 	* src : add si:putenv.
 ;; 	si:putenv を追加。
 ;; 	via http://d.hatena.ne.jp/miyamuko/20100910/xyzzy_putenv
 ;; 
+;; NOTE: その後変更されてるんでそっちでテスト
+
 ;; 2010-08-31  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix call-process.
 ;; 	call-processの標準入力・標準出力等の指定がうまく設定されない現象がおき
 ;; 	ていたのを修正。
-;; 
-
+;;
+;; FIXME: command prompt が一瞬表示されるのうざい
+;; FIXME: 0.2.2.235 で pass してしまう。どういう場合に上手く設定されないのかわからん。
+; (deftest fix-call-process-input/output ()
+;   (labels ((make-file (name &optional contents)
+;              (with-open-file (out name
+;                                   :direction :output
+;                                   :if-does-not-exist :create)
+;                (when (princ contents out)))
+;              name))
+;     (let ((infile (make-file (make-temp-file-name) "hello"))
+;           (outfile (make-file (make-temp-file-name) "")))
+;       (call-process "sort" :input infile :output outfile :wait t)
+;       (unwind-protect
+;           (with-open-file (in outfile :direction :input)
+;             (read in))
+;         (delete-file infile)
+;         (delete-file outfile))))
+;   => hello
+;   )
 
 ;; 2010-07-14  NANRI Masaoki  <southly@gmail.com>
 ;; 
