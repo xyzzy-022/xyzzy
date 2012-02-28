@@ -81,7 +81,7 @@
 (deftest fix-typo-in-lisp/compile.l ()
   (progn
     (require "compile")
-    (functionp (get 'ninth (find-symbol "optimize-form" :compile)))))
+    (functionp (get 'ninth (find-symbol "optimize-form" :compiler)))))
 
 ;; 2011-01-30  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -223,6 +223,7 @@
     (with-open-file (out name :direction :output :if-does-not-exist :create))
     (unwind-protect
         (let ((*default-eol-code* *eol-lf*))
+          (declare (special *default-eol-code*))
           (setq buffer (ed::find-file-internal name))
           (buffer-eol-code buffer))
       (delete-buffer buffer)))
