@@ -266,6 +266,43 @@
   `(funcall (compile nil (eval '(lambda () ,@body)))))
 (setf (get 'compile-and-eval 'ed:lisp-indent-hook) 0)
 
-
+
+;;;;; execute in another xyzzy
+;;;
+;;; 注意:
+;;; - readable に印字できないものが BODY に含まれているとアウト
+;;; - 戻り値も readable に印字できないものはアウト
+(defmacro with-another-xyzzy ((&key (options "") (timeout 60) (show :show))
+                              &body body)
+  `(let* ((tmpfile (make-temp-file-name))
+          (create-time (file-write-time tmpfile))
+          (out (gensym "tmpfile-stream-")))
+     (unwind-protect
+         (let ((command-string
+                 (format nil "~A ~A -e ~S"
+                       (merge-pathnames "xyzzy.exe" (si:system-root))
+                       ,options
+                       (let ((*print-circle* t))
+                         (prin1-to-string
+                          `(progn
+                             (with-open-file (,out ,tmpfile
+                                              :direction :output
+                                              :if-does-not-exist :create)
+                               (dolist (r (multiple-value-list (progn ,@',body)))
+                                 (print r ,out)))
+                             (kill-xyzzy)))))))
+           ;(format t "command-string = ~A~%" command-string)
+           (call-process command-string :show ,show)
+           (while (= (file-write-time tmpfile) create-time)
+             (sleep-for 1)
+             (when (> (get-universal-time) (+ create-time ,timeout))
+               (error "with-another-xyzzy timeout.")))
+           (let ((results '()) r)
+             (with-open-file (in tmpfile :direction :input)
+               (while (setq r (read in nil nil))
+                 (push r results)))
+             (values-list (nreverse results))))
+       (delete-file tmpfile))))
+(setf (get 'with-another-xyzzy 'ed:lisp-indent-hook) 1)
 
 ;;; framework.l ends here.
