@@ -5,7 +5,7 @@
 1. M-x load-file
    load file: ${XYZZY}/unittest/simple-test.l
 2. M-x load-test-file
-   test file: ${XYZZY}/unittest/xyzzy/nanri-master-change-tests.l
+   test file: ${XYZZY}/unittest/nanri-master-change-tests.l
 3. M-x change-tests
 
 で *Test Results* だかいう名前のバッファが開いて結果が表示される。
