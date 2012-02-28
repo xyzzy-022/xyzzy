@@ -220,10 +220,12 @@
     (pop-to-buffer buffer)
     (with-output-to-buffer (buffer)
       (dolist (x *change-tests*)
+        (message "running test: ~S..." (car x))
         (case (funcall (cdr x))
           (:pass (incf pass-count))
           (:fail (incf fail-count) (ding))
-          (:error (incf error-count) (ding))))
+          (:error (incf error-count) (ding)))
+        (refresh-screen))
       (format t "----------------------------------------------------------------------~%")
       (format t "total ~D tests, ~D passed, ~D failed, ~D Errors"
             (+ pass-count fail-count error-count) pass-count fail-count error-count)
