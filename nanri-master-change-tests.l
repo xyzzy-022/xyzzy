@@ -214,9 +214,6 @@
 ;; 	になるようにする。
 ;; 	xyzzy Part16 577
 ;;
-
-;; FIXME: 手元の xyzzy は nanri-master をいじったものでこの変更も入ってるはずなん
-;; だけど fail する。何か勘違いしてる？
 (deftest fix-eol-code-of-zero-size-file ()
   (let ((name (make-temp-file-name))
         buffer)
@@ -975,6 +972,7 @@
 ;; 	via http://d.hatena.ne.jp/miyamuko/20080304/xyzzy_ole_method_bug
 ;;
 ;; TODO: どうやってテストすりゃいいもんか miyamuko さんに聞く
+
 
 ;; 	* src : fix for FFI.
 ;; 	戻り値が double, float の C 関数を呼ぶとクラッシュする
