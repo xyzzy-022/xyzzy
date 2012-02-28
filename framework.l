@@ -294,15 +294,17 @@
                              (kill-xyzzy)))))))
            (let ((tmpbuf (create-new-buffer "*Temp*")))
              (setup-temp-buffer tmpbuf)
-             (let ((proc (make-process command-string :output tmpbuf)))
-               ;; wait for finish.
-               (while (eql (process-status proc) :run)
-                 (sleep-for 1)
-                 (when (> (get-universal-time) (+ create-time ,timeout))
-                   (kill-process proc)
-                   (error "with-another-xyzzy timeout.")))
-               ;; NOTE: xyzzy always exit with code 0?
-               ))
+             (unwind-protect
+                 (let ((proc (make-process command-string :output tmpbuf)))
+                   ;; wait for finish.
+                   (while (eql (process-status proc) :run)
+                     (sleep-for 1)
+                     (when (> (get-universal-time) (+ create-time ,timeout))
+                       (kill-process proc)
+                       (error "with-another-xyzzy timeout.")))
+                   ;; NOTE: xyzzy always exit with code 0?
+                   )
+               (delete-buffer tmpbuf)))
            ;; FIXME: what if error occured?
            (let ((results '()) r)
              (with-open-file (in tmpfile :direction :input)
