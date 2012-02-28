@@ -971,7 +971,23 @@
 ;; 	via http://fixdap.com/p/xyzzy/8379/
 ;; 	via http://d.hatena.ne.jp/miyamuko/20080304/xyzzy_ole_method_bug
 ;;
-;; TODO: ‚Ç‚¤‚â‚Á‚ÄƒeƒXƒg‚·‚è‚á‚¢‚¢‚à‚ñ‚© miyamuko ‚³‚ñ‚É•·‚­
+(deftest fix-ole-method ()
+  (flet ((ole-create-file (content)
+           (let ((tmp (make-temp-file-name)))
+             (unwind-protect
+                 (let* ((fso (ole-create-object "Scripting.FileSystemObject"))
+                        (file (ole-method fso 'OpenTextFile tmp 2)))
+                   (unwind-protect
+                       (ole-method file 'Write content)
+                     (ole-method file 'Close))
+                   (file-length tmp))
+               (delete-file tmp)))))
+    (values (ole-create-file "")
+            (ole-create-file "f")
+            (ole-create-file "foo")))
+  => 0
+  => 1
+  => 3)
 
 
 ;; 	* src : fix for FFI.
