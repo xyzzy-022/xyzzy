@@ -617,6 +617,7 @@
 ;; 
 ;; TODO: xyzzy を起動するマクロ書く
 
+
 ;; 	* src : fix format "~F".
 ;; 	formatの"~F"の第一パラメータwを指定しないと第三パラメータkが機能しない
 ;; 	のを修正。
@@ -995,7 +996,6 @@
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F25
 ;; 	via http://d.hatena.ne.jp/miyamuko/20070509/p1
 ;;
-;; TODO: xyzzy を起動するマクロ書く
 (deftest fix-for-FFI-c-function-return-doubl/float-00 ()
   (with-another-xyzzy (:options "-q" :timeout 6)
     (labels ((c (name) (find-symbol name :c)))
