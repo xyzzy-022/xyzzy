@@ -284,6 +284,7 @@
                        ,options
                        (let ((*print-circle* t))
                          (prin1-to-string
+                          ;; TODO: error handling
                           `(progn
                              (with-open-file (,out ,tmpfile
                                               :direction :output
@@ -302,6 +303,7 @@
                    (error "with-another-xyzzy timeout.")))
                ;; NOTE: xyzzy always exit with code 0?
                ))
+           ;; FIXME: what if error occured?
            (let ((results '()) r)
              (with-open-file (in tmpfile :direction :input)
                (while (setq r (read in nil nil))
