@@ -2,12 +2,11 @@
 
 #|
 使い方（暫定）:
-1. どこかへ framework.l と nanri-master-change-tests.l をダウンロード
-2. M-x load-file
-   load file: path/to/framework.l
-3. M-x load-test-file
-   test file: path/to/nanri-master-change-tests.l
-4. M-x change-tests
+1. M-x load-file
+   load file: ${XYZZY}/unittest/simple-test.l
+2. M-x load-test-file
+   test file: ${XYZZY}/unittest/xyzzy/nanri-master-change-tests.l
+3. M-x change-tests
 
 で *Test Results* だかいう名前のバッファが開いて結果が表示される。
 |#
@@ -314,4 +313,4 @@
        (delete-file tmpfile))))
 (setf (get 'with-another-xyzzy 'ed:lisp-indent-hook) 1)
 
-;;; framework.l ends here.
+;;; simple-test.l ends here.
