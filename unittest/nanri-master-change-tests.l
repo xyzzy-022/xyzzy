@@ -958,6 +958,58 @@
 ;;
 ;; TODO: 数が多いんで後回し
 
+(deftest fix-typo-in-lisp/builtin--sort ()
+  (get 'sort 'si::builtin-function-argument #1='#:undefined)
+  => (sequence lisp::predicate &key :key))
+
+(deftest fix-typo-in-lisp/builtin--rename-file ()
+  (get 'rename-file 'si::builtin-function-argument #1='#:undefined)
+  => (lisp::file lisp::new-name &key :if-exists :if-access-denied))
+
+(deftest fix-typo-in-lisp/builtin--copy-file ()
+  (get 'copy-file 'si::builtin-function-argument #1='#:undefined)
+  => (lisp::file lisp::new-file &key :if-exists :copy-attributes :if-access-denied))
+
+(deftest fix-typo-in-lisp/builtin--dump-image-path ()
+  (get 'system:dump-image-path 'si::builtin-function-argument #1='#:undefined)
+  => nil)
+
+(deftest fix-typo-in-lisp/builtin--char-before ()
+  (get 'char-before 'si::builtin-function-argument #1='#:undefined)
+  => (point &optional editor::not-used))
+
+(deftest fix-typo-in-lisp/builtin--file-name-dialog ()
+  (get 'file-name-dialog 'si::builtin-function-argument #1='#:undefined)
+  => (&key :char-encoding :eol-code :filter :filter-index :title :default :extension :save :multiple :must-exist :explorer :hide-read-only :initial-directory))
+
+(deftest fix-typo-in-lisp/builtin--directory-name-dialog ()
+  (get 'directory-name-dialog 'si::builtin-function-argument #1='#:undefined)
+  => (&key :title :default))
+
+(deftest fix-typo-in-lisp/builtin--make-iso2022-encoding ()
+  (get 'make-iso2022-encoding 'si::builtin-function-argument #1='#:undefined)
+  => (editor::name editor::display-name &key :g0 :g1 :g2 :g3 :ascii-eol :ascii-control :7bits :locking-shift :short-form :no-escape :cjk :use-cns11643 :vender))
+
+(deftest fix-typo-in-lisp/builtin--make-utf16-encoding ()
+  (get 'make-utf16-encoding 'si::builtin-function-argument #1='#:undefined)
+  => (editor::name editor::display-name &key :signature :byte-order :windows :cjk))
+
+(deftest fix-typo-in-lisp/builtin--make-utf8-encoding ()
+  (get 'make-utf8-encoding 'si::builtin-function-argument #1='#:undefined)
+  => (editor::name editor::display-name &key :signature :windows :cjk))
+
+(deftest fix-typo-in-lisp/builtin--make-utf7-encoding ()
+  (get 'make-utf7-encoding 'si::builtin-function-argument #1='#:undefined)
+  => (editor::name editor::display-name &key :windows :imap4 :white :set-o :cjk))
+
+(deftest fix-typo-in-lisp/builtin--make-utf5-encoding ()
+  (get 'make-utf5-encoding 'si::builtin-function-argument #1='#:undefined)
+  => (editor::name editor::display-name &key :windows :imap4 :white :set-o :cjk))
+
+(deftest fix-typo-in-lisp/builtin--parse-char-encoding-string ()
+  (get 'parse-char-encoding-string 'si::builtin-function-argument #1='#:undefined)
+  => (editor::accept-char-encoding string &key :start :end))
+
 ;; 	* src : fix hash-table rehash size.
 ;; 	ハッシュテーブルの要素数が80000を越える辺りから、ハッシュテーブルの
 ;; 	サイズの増加量が100に固定される。そのため頻繁にrehashされパフォーマ
