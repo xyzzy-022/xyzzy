@@ -470,7 +470,7 @@
 (deftest add-deleted-window-p-01 ()
   (let ((current (selected-window))
         (new     (save-window-excursion
-                   (split-window -20)
+                   (split-window -1)
                    (selected-window))))
     (deleted-window-p new)))
 
