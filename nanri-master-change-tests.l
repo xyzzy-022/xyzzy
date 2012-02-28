@@ -996,6 +996,18 @@
 ;; 	via http://d.hatena.ne.jp/miyamuko/20070509/p1
 ;;
 ;; TODO: xyzzy ‚ð‹N“®‚·‚éƒ}ƒNƒ‘‚­
+(deftest fix-for-FFI-c-function-return-doubl/float-00 ()
+  (with-another-xyzzy (:options "-q" :timeout 6)
+    (labels ((c (name) (find-symbol name :c)))
+      (require "foreign")
+      (eval `(,(c "define-dll-entry")
+              ,(c "double")
+              strtod (,(c "char*") (,(c "char*") *))
+              "msvcrt"))
+      (strtod (si:make-string-chunk "123") 0)))
+  => 123.0d0
+  )
+
 
 ;; 	* src : fix start-timer.
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F21
