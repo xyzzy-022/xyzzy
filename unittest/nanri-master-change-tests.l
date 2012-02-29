@@ -924,13 +924,49 @@
 ;; 	defpackageマクロで:exportオプションを指定できない不具合を修正。
 ;; 	[xyzzy:09241]
 ;; 
+
+
 ;; 	* lisp : fix shell-alternate-send-input.
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F15
 ;; 
+
+(require "shell")
+
+(deftest fix-shell-alternate-send-input ()
+  (labels ((mocked-shell-send-input ()
+             *shell-ret*))
+    (let ((original-shell-send-input #'shell-send-input))
+      (setf (symbol-function 'shell-send-input) #'mocked-shell-send-input)
+      (unwind-protect
+          (let ((*shell-ret* "\n"))
+            (shell-alternate-send-input))
+        (setf (symbol-function 'shell-send-input) original-shell-send-input))))
+  => "\r")
+
 ;; 	* lisp : fix calendar.
 ;; 	カレンダーの祝日を現行法にあわせる。
 ;; 	[xyzzy:09224]
 ;; 
+(require "calendar")
+
+(defun calendar-japanese-holiday-spec (year month day)
+  (let ((v (make-vector 33)))
+    (ed::calendar-japanese-holiday year month v)
+    (svref v day)))
+
+(deftest fix-calendar-01 ()
+  (calendar-japanese-holiday-spec 2007 4 29)
+  => "昭和の日")
+
+(deftest fix-calendar-02 ()
+  (calendar-japanese-holiday-spec 2007 5 4)
+  => "みどりの日")
+
+(deftest fix-calendar-03 ()
+  (calendar-japanese-holiday-spec 2008 5 6)
+  => "振替休日")
+
+
 ;; 	* lisp : fix typo in lisp/timestmp.l.
 ;; 	コメントのtypoを修正。
 ;; 	[xyzzy:09158]
@@ -956,8 +992,6 @@
 ;; 	主に引数のtypoを修正。
 ;; 	[xyzzy:09158]
 ;;
-;; TODO: 数が多いんで後回し
-
 (deftest fix-typo-in-lisp/builtin--sort ()
   (get 'sort 'si::builtin-function-argument #1='#:undefined)
   => (sequence lisp::predicate &key :key))
