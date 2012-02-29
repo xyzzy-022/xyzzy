@@ -744,8 +744,7 @@
 ;; 	関数get-buffer-colorsを追加。
 ;; 	set-buffer-colorsと対となる現在のバッファの色設定を取得する関数。
 ;;
-;; NOTE: もうちょっとちゃんとテストした方が良いと思います。。。
-(deftest add-get-buffer-colors ()
+(deftest add-get-buffer-colors-00 ()
   (fboundp 'get-buffer-colors))
 
 (deftest add-get-buffer-colors-01 ()
