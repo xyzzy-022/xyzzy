@@ -748,6 +748,23 @@
 (deftest add-get-buffer-colors ()
   (fboundp 'get-buffer-colors))
 
+(deftest add-get-buffer-colors-01 ()
+  (flet ((make-tmp-colors ()
+           (let ((l (list #xffffff #x000000)))
+             (dotimes (i 16)
+               (push (* i #x111111) l))
+             (make-vector 18 :initial-contents (nreverse l)))))
+    (let ((colors (make-tmp-colors))
+          (buf (create-new-buffer "test get-buffer-colors")))
+      (save-excursion
+        (with-set-buffer
+          (set-buffer buf)
+          (unwind-protect
+              (progn
+                (set-buffer-colors colors)
+                (equalp colors (get-buffer-colors buf)))
+            (delete-buffer buf)))))))
+
 ;; 2010-01-22  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : fix listen.
