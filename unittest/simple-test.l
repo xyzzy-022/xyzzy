@@ -101,18 +101,24 @@
 
 (defun non-nil-p (#:ignore actual) actual)
 
+;;; expected-results ::= (:return COMPARE-FN . VALUES) |
+;;;                      (:error ERROR-TYPE)
+;;; expected-output ::= (STREAM-SYMBOL . OUTPUT)
+;;; expected-expansion ::= FORM
 (defun parse-expectations (name expectations options)
   "Return followings:
 - expected values
-- expected output"
+- expected output
+- expected expansion"
   (let ((result-type nil)
         (result-data '())
         (output nil)
         (dest   (getf options :output '*standard-output*))
-        (state  nil))
+        (state  nil)
+        (expansion nil))
     (dolist (x expectations)
       (cond
-       ((member x '(=> !!)) (setf state x))
+       ((member x '(=> !! ==)) (setf state x))
        ((and (consp x) (eql (first x) :expected-output))
         (setf output (if output (format nil "~A~%~A" output (second x)) (second x))))
        (t (case state
@@ -127,17 +133,18 @@
                 (unless (symbolp x)
                   (error 'type-error :datum x :expected-type 'symbol))
                 (setf result-type :error
-                      result-data x))))))
+                      result-data x))
+            (== (setf expansion x))))))
     (values (case result-type
               (:return (list* :return (getf options :compare ''equal) (nreverse result-data)))
               (:error  (list  :error result-data))
               ((nil)   (list  :return ''non-nil-p ':non-nil))
               (t (error "parse-expectations - unknown result-type: ~S: ~S" result-type name)))
-            (cons dest output))
-    ))
+            (cons dest output)
+            expansion)))
 
 (defun expand-deftest (name options doc form expectations)
-  (multiple-value-bind (expected-result expected-output)
+  (multiple-value-bind (expected-result expected-output expected-expansion)
       (parse-expectations name expectations options)
     `(setf *change-tests*
            (cons (list ',name ,doc ,(make-test-thunk name form expected-result expected-output))
