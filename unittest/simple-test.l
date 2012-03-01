@@ -1,57 +1,5 @@
 ;;; -*- mode: lisp; package: user -*-
 
-#|
-使い方（暫定）:
-1. M-x load-file
-   load file: ${XYZZY}/unittest/simple-test.l
-2. M-x load-test-file
-   test file: ${XYZZY}/unittest/nanri-master-change-tests.l
-3. M-x test-changes
-
-で *Test Results* だかいう名前のバッファが開いて結果が表示される。
-|#
-
-#|
-;; FORM の戻り値が VALUE と equal でないと fail
-(deftest NAME ()
-  FORM
-  => VALUE)
-
-;; FORM が多値を返すという指定
-;; 実際に返ってきた多値が指定したより多くても少なくても fail
-(deftest NAME ()
-  FORM
-  => VALUE-0
-  => VALUE-1)
-
-;; 罠注意: 戻り値を省略した場合、FORM が non-nil を返さないと fail
-(deftest NAME ()
-  FORM)
-
-;; 比較関数を指定
-(deftest NAME (:compare '=)
-  0
-  => 0/0)
-
-;; 出力のテスト。string= で比較される。>> 直後の空白は区切りであって出力の一部ではない。
-(deftest NAME ()
-  (princ "hello")
-  >> hello)
-
-;; 改行もそのまま書ける
-(deftest NAME ()
-  (format t "foo~%bar")
-  >> foo
-  >> bar
-  => nil)
-
-;; 指定されたエラーを投げないと fail
-(deftest NAME ()
-  (+ 'foo 'bar)
-  !! type-error)
-
-|#
-
 (in-package :user)
 
 (when (fboundp 'stop-watch-test-file)
@@ -166,7 +114,6 @@
       (cond
        ((member x '(=> !!)) (setf state x))
        ((and (consp x) (eql (first x) :expected-output))
-        ;(msgbox "~S~% >> ~S" name x)
         (setf output (if output (format nil "~A~%~A" output (second x)) (second x))))
        (t (case state
             (=> (case result-type
@@ -174,7 +121,6 @@
                   (:return)
                   (:error (error "Don't expect both return value(s) and error: ~S" name)))
                 (push x result-data))
-            ;(>> (setf output (if output (format nil "~A~%~A" output x) x)))
             (!! (case result-type
                   (:return (error "Don't expect both return value(s) and error: ~S" name))
                   (:error  (error "Don't expect multiple errors: ~S" name)))
@@ -182,15 +128,12 @@
                   (error 'type-error :datum x :expected-type 'symbol))
                 (setf result-type :error
                       result-data x))))))
-    ;(multiple-value-bind (r o)
     (values (case result-type
               (:return (list* :return (getf options :compare ''equal) (nreverse result-data)))
               (:error  (list  :error result-data))
               ((nil)   (list  :return ''non-nil-p ':non-nil))
               (t (error "parse-expectations - unknown result-type: ~S: ~S" result-type name)))
             (cons dest output))
-      ;(msgbox "name = ~S~2%expected-result = ~S~%expected-output = ~S" name r o)
-      ;(values r o))
     ))
 
 (defun expand-deftest (name options doc form expectations)
