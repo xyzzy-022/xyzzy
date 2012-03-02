@@ -614,8 +614,11 @@ Output (*trace-output*):
                              (with-open-file (,out ,tmpfile
                                               :direction :output
                                               :if-does-not-exist :create)
-                               (dolist (r (multiple-value-list (progn ,@',body)))
-                                 (print r ,out)))
+                               (handler-case
+                                   (let ((values (multiple-value-list (progn ,@',body))))
+                                     (format ,out ":return~%~{~S~%~}" values))
+                                 (error (error)
+                                   (format ,out ":error~%~S" error))))
                              (kill-xyzzy)))))))
            (let ((tmpbuf (create-new-buffer "*Temp*")))
              (setup-temp-buffer tmpbuf)
@@ -631,11 +634,17 @@ Output (*trace-output*):
                    )
                (delete-buffer tmpbuf)))
            ;; FIXME: what if error occured?
-           (let ((results '()) r)
-             (with-open-file (in tmpfile :direction :input)
-               (while (setq r (read in nil nil))
-                 (push r results)))
-             (values-list (nreverse results))))
+           (with-open-file (in tmpfile :direction :input)
+             (case (read in nil '#1=#:eof)
+               (:return (let ((values '()) r)
+                          (while (setq r (read in nil nil))
+                            (push r values))
+                          (nreverse values)))
+               (:error  (let ((error (read in nil nil)))
+                          (if (si:*structurep error)
+                            (error error)
+                            (error "unknown error~@[: ~S~]" error))))
+               (#1#     (error "result not sent.")))))
        (delete-file tmpfile))))
 (setf (get 'with-another-xyzzy 'ed:lisp-indent-hook) 1)
 
