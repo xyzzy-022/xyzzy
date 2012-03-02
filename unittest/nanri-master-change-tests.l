@@ -46,17 +46,21 @@
     ;; NOTE: xyzzy.exe -q で起動してるとヒストリファイルを使わない感じになっちゃうので
     (unless ed::*history-file-loaded*
       (trap-errors (ed::load-history-file)))
-    (with-fake-functions ((write (object &key pretty readably escape)
-                            (unless (and pretty readably escape)
-                              (return-from test nil))))
-      (let ((*history-file-name* "test.hist")
-            (*print-circle* t)
-            (*print-pretty* nil)
-            (*print-readably* nil)
-            (*print-length* 1)
-            (*print-level* 1))
-        (ed::save-history-file))
-      t)))
+    (let ((tmpfile (make-temp-file-name)))
+      (unwind-protect
+          (with-fake-functions ((write (object &key pretty readably escape)
+                                  (unless (and pretty readably escape)
+                                    (return-from test nil))))
+            (let ((*history-file-name* tmpfile)
+                  (*print-circle* t)
+                  (*print-pretty* nil)
+                  (*print-readably* nil)
+                  (*print-length* 1)
+                  (*print-level* 1))
+              (ed::save-history-file))
+            t)
+        (when (file-exist-p tmpfile)
+          (delete-file tmpfile)))))
 
 ;; 2011-12-20  NANRI Masaoki  <southly@gmail.com>
 ;; 
