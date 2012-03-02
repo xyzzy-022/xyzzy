@@ -571,7 +571,7 @@ Output (*trace-output*):
     (setf *testfile-last-update* (file-write-time *testfile-name*)
           *tests* nil)
     (load-test-file *testfile-name*)
-    (test-changes)
+    (run-all-tests)
     (refresh-screen)))
 
 (defun watch-test-file (filename)
