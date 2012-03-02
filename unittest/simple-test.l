@@ -649,6 +649,18 @@ Output (*trace-output*):
        (delete-file tmpfile))))
 (setf (get 'with-another-xyzzy 'ed:lisp-indent-hook) 1)
 
+#+unittest-meta-test
+(progn
+  (ASSERT (equal (multiple-value-list
+                  (with-another-xyzzy (:options "-q")
+                    (values 1 2 3)))
+                 '(1 2 3)))
+  (ASSERT (typep (handler-case
+                     (with-another-xyzzy (:options "-q")
+                       (error "Bah!!"))
+                   (error (e) e))
+                 'simple-error)))
+
 
 ;;;;; faking function definition
 
