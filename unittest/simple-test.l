@@ -550,7 +550,7 @@ Output (*trace-output*):
       (format t "----------------------------------------------------------------------------~%")
       (let ((total (+ pass-count fail-count error-count)))
         (if (= total pass-count)
-          (format t "total ~D tests: ALL passed.")
+          (format t "total ~D tests: ALL passed." total)
           (format t "total ~D tests: ~D passed, ~D failed~@[, ~D errors~]~%"
                 total pass-count fail-count (unless (zerop error-count) error-count))))
       (goto-char (point-max)))))
