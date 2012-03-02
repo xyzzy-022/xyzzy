@@ -639,4 +639,38 @@ Output (*trace-output*):
        (delete-file tmpfile))))
 (setf (get 'with-another-xyzzy 'ed:lisp-indent-hook) 1)
 
+
+;;;;; faking function definition
+
+(defmacro with-fake-functions (fakes &body body)
+  `(let ((#1=#:odefs
+           (list ,@(mapcar (lambda (name)
+                             `(cons ',name
+                                    (if (fboundp ',name)
+                                      (symbol-function ',name)
+                                      #2='#:undefined)))
+                         (mapcar 'first fakes)))))
+     ,@(mapcar (lambda (fake)
+                 (let ((name (first fake))
+                       (args (second fake))
+                       (body (cddr fake)))
+                   `(setf (symbol-function ',name) (lambda ,args ,@body))))
+             fakes)
+     (unwind-protect
+         (progn ,@body)
+       (dolist (orig #1#)
+         (let ((name (car orig))
+               (odef (cdr orig)))
+           (if (eq odef #2#)
+             (fmakunbound name)
+             (setf (symbol-function name) odef)))))))
+(setf (get 'with-fake-functions 'ed:lisp-indent-hook) 1
+      (get 'with-fake-functions 'ed::lisp-indent-flet) t)
+
+#+unittest-meta-test
+(progn
+  (ASSERT (eql #1='#:identity
+               (with-fake-functions ((test (x) #1#))
+                 (test 33)))))
+
 ;;; simple-test.l ends here.
