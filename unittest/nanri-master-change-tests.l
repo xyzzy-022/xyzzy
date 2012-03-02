@@ -60,7 +60,7 @@
               (ed::save-history-file))
             t)
         (when (file-exist-p tmpfile)
-          (delete-file tmpfile)))))
+          (delete-file tmpfile))))))
 
 ;; 2011-12-20  NANRI Masaoki  <southly@gmail.com>
 ;; 
