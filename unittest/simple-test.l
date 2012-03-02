@@ -640,7 +640,7 @@ Output (*trace-output*):
                (:return (let ((values '()) r)
                           (while (setq r (read in nil nil))
                             (push r values))
-                          (nreverse values)))
+                          (values-list (nreverse values))))
                (:error  (let ((error (read in nil nil)))
                           (if (si:*structurep error)
                             (error error)
