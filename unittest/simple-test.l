@@ -597,6 +597,7 @@ Output (*trace-output*):
 ;;; 注意:
 ;;; - readable に印字できないものが BODY に含まれているとアウト
 ;;; - 戻り値も readable に印字できないものはアウト
+;;; - レキシカル変数を持ち込めない...
 (defmacro with-another-xyzzy ((&key (options "") (timeout 60) (show :show))
                               &body body)
   `(let* ((tmpfile (make-temp-file-name))
@@ -626,7 +627,7 @@ Output (*trace-output*):
                  (let ((proc (make-process command-string :output tmpbuf)))
                    ;; wait for finish.
                    (while (eql (process-status proc) :run)
-                     (sleep-for 1)
+                     (sleep-for 0.1)
                      (when (> (get-universal-time) (+ create-time ,timeout))
                        (kill-process proc)
                        (error "with-another-xyzzy timeout.")))
