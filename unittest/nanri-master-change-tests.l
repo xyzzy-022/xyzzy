@@ -1287,7 +1287,7 @@
     (start-timer 1 thunk)
     (while (not finish)
       (sleep-for 0.2)
-      (when (> (- (get-internal-real-time) start) 6)
+      (when (> (- (get-internal-real-time) start) 6000)
         (error "fix-start-timer test timeout.")))
     (> (- finish start) 2900)))
 
