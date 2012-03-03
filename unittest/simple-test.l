@@ -638,7 +638,7 @@ Output (*trace-output*):
            (with-open-file (in tmpfile :direction :input)
              (case (read in nil '#1=#:eof)
                (:return (let ((values '()) r)
-                          (while (setq r (read in nil nil))
+                          (while (not (eq (setq r (read in nil '#1#)) '#1#))
                             (push r values))
                           (values-list (nreverse values))))
                (:error  (let ((error (read in nil nil)))
