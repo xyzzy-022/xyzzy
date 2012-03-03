@@ -18,7 +18,8 @@
   "セッションファイルを保存時に *print-length* などの影響を受けないように修正。"
   (block test
     (with-fake-functions ((write (object &key pretty readably escape)
-                            (unless (and pretty readably escape)
+                            (unless (or (stringp object)
+                                        (and pretty readably escape))
                               (return-from test nil))))
       (let ((*print-circle* t)
             (*print-pretty* nil)
