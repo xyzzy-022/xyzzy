@@ -1,4 +1,6 @@
 
+;;; -*- mode:lisp; package:makelc -*-
+
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (require "compile"))
 
@@ -6,6 +8,8 @@
   (:use :lisp :ed))
 
 (in-package :makelc)
+(export '(compile-package
+	  compile-files))
 
 (defmacro time (form)
   `(let ((start (get-internal-real-time))
@@ -17,9 +21,9 @@
   (let ((fns nil)
 	(p (find-package pkg)))
     (do-symbols (s p)
-      (when (and (eq p (symbol-package s))
-		 (fboundp s)
-		 (not (macro-function s)))
+      (when (and (fboundp s)
+		 (not (macro-function s))
+		 (eq p (symbol-package s)))
 	(let ((f (symbol-function s)))
 	  (when (not (or (si:*builtin-function-p f)
 			 (compiled-function-p f)
@@ -29,11 +33,13 @@
 	    (push s fns)))))
     (nreverse fns)))
 
-(defun compile-pkg (pkg)
+(defun compile-package (pkg)
   (format t "compiling <~A> ...~%" pkg)
   (time
    (dolist (f (not-compiled-functions pkg))
      (format t "~A ..." f)
+     (goto-char (point-max))
+     (refresh-screen)
      (handler-case
 	 (progn
 	   (compile f)
@@ -47,13 +53,18 @@
   (let ((files (directory dir :absolute t :wild "*.l" :recursive t)))
     (time
      (dolist (f files)
-       (compile-file f)))))
+       (compile-file f)
+       (goto-char (point-max))
+       (refresh-screen)))))
 
 (defun user::makelc ()
   (interactive)
-  (with-output-to-temp-buffer ((format nil "*compile log*"))
-    (compile-pkg :compiler)
-    (compile-pkg :lisp)
-    (compile-files "~/lisp")
-    (when (file-exist-p #0="~/xyzzy.wxp")
-      (delete-file #0#))))
+  (let ((buf (create-new-buffer "*compile log*")))
+    (set-buffer buf)
+    (setup-temp-buffer buf)
+    (with-output-to-buffer (buf)
+      (compile-package :compiler)
+      (compile-package :lisp)
+      (compile-files "~/lisp")
+      (when (file-exist-p #0="~/xyzzy.wxp")
+	(delete-file #0#)))))
