@@ -1288,12 +1288,12 @@
                   (when (>= (incf n) 3)
                     (stop-timer thunk)
                     (setf finish (get-internal-real-time)))))
-    (start-timer 1 thunk)
+    (start-timer 0.5 thunk)
     (while (not finish)
       (sleep-for 0.2)
       (when (> (- (get-internal-real-time) start) 6000)
         (error "fix-start-timer test timeout.")))
-    (> (- finish start) 2900)))
+    (> (- finish start) 1400)))
 
 ;; 	* src : fix format "~G".
 ;; 	[xyzzy:09204]
