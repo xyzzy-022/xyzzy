@@ -309,6 +309,38 @@
 ;; 	* lisp : support lzma and xz in filer.
 ;; 	lzma および xz の圧縮と展開をファイラから利用できるように修正。
 ;; 
+(deftest lzma-support-in-filer-00 ()
+  "lzma の圧縮と展開をファイラから利用できるように修正。"
+  (member "*.lzma" (cdr (assoc "アーカイブ" ed:*filer-path-masks* :test #'string=))
+          :test #'string=))
+
+(deftest lzma-support-in-filer-01 ()
+  (with-fake-functions ((dialog-box (&rest args)
+                          (values t '((ed::name . "foo.tar.lzma")
+                                      (ed::dir . "C:/dir")
+                                      (ed::base . "dir"))))
+                        (ed::add-history (&rest args) t)
+                        (ed::filer-get-directory () "C:/"))
+    (ed::filer-get-archive-name))
+  => "C:/dir/foo.tar.lzma"
+  => "C:/dir")
+
+(deftest xz-support-in-filer-00 ()
+  "xz の圧縮と展開をファイラから利用できるように修正。"
+  (member "*.xz" (cdr (assoc "アーカイブ" ed:*filer-path-masks* :test #'string=))
+          :test #'string=))
+
+(deftest xz-support-in-filer-01 ()
+  (with-fake-functions ((dialog-box (&rest args)
+                          (values t '((ed::name . "foo.tar.xz")
+                                      (ed::dir . "C:/dir")
+                                      (ed::base . "dir"))))
+                        (ed::add-history (&rest args) t)
+                        (ed::filer-get-directory () "C:/"))
+    (ed::filer-get-archive-name))
+  => "C:/dir/foo.tar.xz"
+  => "C:/dir")
+
 ;; 	* src : support lzma and xz.
 ;; 	tar32.dll Ver2.35 から利用できるようになった lzma および xz の圧縮と展
 ;; 	開に対応。
