@@ -610,7 +610,6 @@ Output (*trace-output*):
                        ,options
                        (let ((*print-circle* t))
                          (prin1-to-string
-                          ;; TODO: error handling
                           `(progn
                              (with-open-file (,out ,tmpfile
                                               :direction :output
@@ -634,7 +633,6 @@ Output (*trace-output*):
                    ;; NOTE: xyzzy always exit with code 0?
                    )
                (delete-buffer tmpbuf)))
-           ;; FIXME: what if error occured?
            (with-open-file (in tmpfile :direction :input)
              (case (read in nil '#1=#:eof)
                (:return (let ((values '()) r)
