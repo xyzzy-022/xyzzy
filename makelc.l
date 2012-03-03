@@ -1,4 +1,3 @@
-
 ;;; -*- mode:lisp; package:makelc -*-
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
