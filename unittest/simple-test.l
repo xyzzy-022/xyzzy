@@ -513,8 +513,9 @@ Output (*trace-output*):
             (check (check-output expected-output actual-output))))
         failures))))
 
-(defun run-all-tests ()
-  (interactive)
+(defun run-tests (test-list)
+  (interactive
+      (list *tests*))
   (let ((buffer (get-buffer-create "*Test Results*"))
         (pass-count 0)
         (fail-count 0)
@@ -523,7 +524,7 @@ Output (*trace-output*):
     (erase-buffer buffer)
     (pop-to-buffer buffer)
     (with-output-to-buffer (buffer)
-      (dolist (test *tests*)
+      (dolist (test test-list)
         (multiple-value-bind (name doc form thunk expectations) (values-list test)
           (progn
             (format t "~&~S..." name)
@@ -554,6 +555,10 @@ Output (*trace-output*):
           (format t "total ~D tests: ~D passed, ~D failed~@[, ~D errors~]~%"
                 total pass-count fail-count (unless (zerop error-count) error-count))))
       (goto-char (point-max)))))
+
+(defun run-all-tests ()
+  (interactive)
+  (run-tests *tests*))
 
 
 
