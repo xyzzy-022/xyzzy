@@ -164,7 +164,8 @@ EXPANSION = FORM"
        (when (find ',name *tests* :key 'car)
          (warn "テスト再定義してる: ~S" ',name))
        (setf *tests*
-             (cons (list ',name ,doc ',form ,thunk-form ',expectations)
+             (cons (list ',name ,doc ',form ,thunk-form ',expectations
+                         *load-pathname*)
                    (delete ',name *tests* :key 'car)))
        ',name)))
 
@@ -559,6 +560,18 @@ Output (*trace-output*):
 (defun run-all-tests ()
   (interactive)
   (run-tests *tests*))
+
+(defvar *run-tests-from-file-history* nil)
+
+(setf (get 'run-tests-from-file 'ed::minibuffer-history-variable) '*run-tests-from-file-history*)
+
+(defun run-tests-from-file (testfile)
+  (interactive "ftestfile: "
+    :history0 'run-tests-from-file
+    :default0 (car *run-tests-from-file-history*))
+  (run-tests (remove-if-not (lambda (tests)
+                              (path-equal (sixth tests) testfile))
+                            *tests*)))
 
 
 
