@@ -39,10 +39,14 @@
 
 (set-macro-character #\> 'expected-output-reader t *test-file-readtable*)
 
+(defvar *test-files* nil)
+
 (defun load-test-file (filename)
   (interactive "ftest file: ")
   (let ((*readtable* *test-file-readtable*))
-    (load-file filename)))
+    (load-file filename))
+  (setf *test-files* (acons filename (file-write-time filename)
+                            (remove filename *test-files* :key #'car))))
 
 #+unittest-meta-test
 (progn
@@ -569,6 +573,10 @@ Output (*trace-output*):
   (interactive "ftestfile: "
     :history0 'run-tests-from-file
     :default0 (car *run-tests-from-file-history*))
+  (let ((loaded (assoc testfile *test-files* :test #'path-equal)))
+    (when (or (not loaded)
+              (> (file-write-time testfile) (cdr loaded)))
+      (load-test-file testfile)))
   (run-tests (remove-if-not (lambda (tests)
                               (path-equal (sixth tests) testfile))
                             *tests*)))
