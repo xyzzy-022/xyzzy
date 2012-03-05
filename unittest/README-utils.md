@@ -17,7 +17,7 @@ Variable `*test-temp-buffer-delete*`
 Macro `with-temp-buffer` &body BODY
 -----------------------------------
 一時バッファに移動して BODY を実行します。
-BODY を実行後（`*test-temp-buffer-delete* が nil でなければ）一時
+BODY を実行後（`*test-temp-buffer-delete*` が nil でなければ）一時
 バッファは削除されます。
 
 
