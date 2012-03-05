@@ -20,14 +20,6 @@ Macro `with-temp-buffer` &body BODY
 BODY を実行後（`*test-temp-buffer-delete*` が nil でなければ）一時
 バッファは削除されます。
 
-
-Function `make-test-package` &rest OPTIONS
-------------------------------------------
-テスト用のパッケージを作成して返します。
-OPTIONS には `make-package` のキーワード引数と同じものを使えます。
-
-- 参考: [make-package](http://xyzzy.s53.xrea.com/reference/wiki.cgi?p=make-package)
-
 Macro `compile-and-eval` &body BODY
 -----------------------------------
 BODY をコンパイルしてから実行します。
