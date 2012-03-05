@@ -10,7 +10,7 @@
   - `M-x run-tests-from-file` - 指定したファイルから読み込んだテストを実行
   - `M-x run-tests` - 前回実行したテストをもっかい実行
 
-すると "*Test Results*" というバッファに色々出てきます。最期の行に "ALL passed" とか "0 failed" とか表示されていればオッケーです。
+すると "\*Test Results\*" というバッファに色々出てきます。最期の行に "ALL passed" とか "0 failed" とか表示されていればオッケーです。
 
 全てのテストを実行するのであれば unittest/run-all.l を `eval-buffer` や `load-file` やコマンドラインの "-l" オプションで読み込むのがカンタンです。
 
