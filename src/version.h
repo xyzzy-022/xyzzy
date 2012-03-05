@@ -2,6 +2,7 @@
 # define _version_h_
 
 # define PROGRAM_NAME "xyzzy"
+# define PROGRAM_COPYRIGHT "Copyright (C) 1996-2005 T.Kamei"
 
 # define PROGRAM_MAJOR_VERSION 0
 # define PROGRAM_MINOR_VERSION 2

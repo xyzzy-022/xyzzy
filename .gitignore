@@ -27,6 +27,9 @@ GTAGS
 *.lc
 *.ssn
 etc/DOC
+xyzzy.exe
+xyzzycli.exe
+xyzzyenv.exe
 xyzzy.wxp
 usr/
 site-lisp/
@@ -50,6 +53,7 @@ site-lisp/
 *.meta
 *.obj
 *.pch
+*.map
 *.pdb
 *.pgc
 *.pgd

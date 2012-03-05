@@ -302,10 +302,6 @@
       <Project>{f3cc8760-6c73-4299-a3ad-3ab9683a62e7}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="gen\gen-vinf.vcxproj">
-      <Project>{160082da-390d-4dd3-ae60-9db800c56502}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="privctrl\mousemsg.h" />
@@ -426,8 +422,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <Target Name="MergeResourceFiles" Inputs="$(SolutionDir)src\xyzzy.rc;$(SolutionDir)src\version.h;$(SolutionDir)gen\$(Configuration)\verinfo.h" Outputs="$(SolutionDir)src\xyzzy.gen.rc">
-    <Exec Command="type $(SolutionDir)src\xyzzy.rc $(SolutionDir)gen\$(Configuration)\verinfo.h &gt; $(SolutionDir)src\xyzzy.gen.rc 2&gt; nul" />
+  <Target Name="MergeResourceFiles" Inputs="$(SolutionDir)src\xyzzy.rc;$(SolutionDir)src\version.h;$(SolutionDir)src\version-rc.h" Outputs="$(SolutionDir)src\xyzzy.gen.rc">
+    <Exec Command="type $(SolutionDir)src\xyzzy.rc $(SolutionDir)src\version-rc.h &gt; $(SolutionDir)src\xyzzy.gen.rc 2&gt; nul" />
   </Target>
   <Target Name="BeforeResourceCompile" DependsOnTargets="MergeResourceFiles" />
   <ItemGroup>
