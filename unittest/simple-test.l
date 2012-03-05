@@ -518,9 +518,11 @@ Output (*trace-output*):
             (check (check-output expected-output actual-output))))
         failures))))
 
-(defun run-tests (test-list)
-  (interactive
-      (list *tests*))
+(defvar *last-test-list* nil)
+
+(defun run-tests (&optional (test-list (or *last-test-list* *tests*)))
+  (interactive)
+  (setf *last-test-list* test-list)
   (let ((buffer (get-buffer-create "*Test Results*"))
         (pass-count 0)
         (fail-count 0)
