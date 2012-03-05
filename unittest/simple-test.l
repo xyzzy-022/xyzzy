@@ -654,17 +654,34 @@ Output (*trace-output*):
                              (kill-xyzzy)))))))
            (let ((tmpbuf (create-new-buffer "*Temp*")))
              (setup-temp-buffer tmpbuf)
-             (unwind-protect
-                 (let ((proc (make-process command-string :output tmpbuf)))
+             (let ((proc (make-process command-string :output tmpbuf)))
+               (unwind-protect
                    ;; wait for finish.
                    (while (eql (process-status proc) :run)
                      (sleep-for 0.1)
                      (when (> (get-universal-time) (+ create-time ,timeout))
-                       (kill-process proc)
+                       (signal-process proc)
                        (error "with-another-xyzzy timeout.")))
-                   ;; NOTE: xyzzy always exit with code 0?
-                   )
-               (delete-buffer tmpbuf)))
+                 ;; FIXME: when another xyzzy doesn't close properly, it stay
+                 ;; in front so user can't see test progress.
+                 (activate-xyzzy-window (si:*instance-number))
+                 (handler-case
+                     (delete-buffer tmpbuf)
+                   (error ()
+                     (labels ((delete-tmpbuf ()
+                                (labels ((again () (start-timer 1 #'delete-tmpbuf t)))
+                                  (cond ((deleted-buffer-p tmpbuf)
+                                         (message "tmpbuf deleted successfully."))
+                                        ((eql (process-status proc) :exit)
+                                         (handler-case
+                                             (delete-buffer tmpbuf)
+                                           (error () (again))))
+                                        ((> (get-internal-real-time)
+                                            (+ create-time 180000))
+                                         (message "give up to delete tmpbuf ~S, sorry."
+                                                  (buffer-name tmpbuf)))
+                                        (t (again))))))
+                       (start-timer 6 #'delete-tmpbuf t)))))))
            (with-open-file (in tmpfile :direction :input)
              (case (read in nil '#1=#:eof)
                (:return (let ((values '()) r)
