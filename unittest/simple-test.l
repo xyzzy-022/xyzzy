@@ -584,6 +584,10 @@ Output (*trace-output*):
 
 
 ;;;; utilities
+(defvar *test-uid-counter* 0)
+(defun test-uid ()
+  (incf *test-uid-counter*))
+
 
 
 ;;;;; load and run tests automatically
