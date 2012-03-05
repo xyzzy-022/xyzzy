@@ -5,31 +5,31 @@
 テスト用ユーティリティの説明
 ============================
 
-Function test-uid
------------------
+Function `test-uid`
+-------------------
 ユニークな整数を返します。
 テスト用にユニークな名前を生成する場合などに利用します。
 
-Variable *test-temp-buffer-delete*
-----------------------------------
+Variable `*test-temp-buffer-delete*`
+------------------------------------
 一時バッファを使用後、削除するかどうかを指定します。
 
-Macro with-temp-buffer &body BODY
----------------------------------
+Macro `with-temp-buffer` &body BODY
+-----------------------------------
 一時バッファに移動して BODY を実行します。
 BODY を実行後（`*test-temp-buffer-delete* が nil でなければ）一時
 バッファは削除されます。
 
 
-Function make-test-package &rest OPTIONS
-----------------------------------------
+Function `make-test-package` &rest OPTIONS
+------------------------------------------
 テスト用のパッケージを作成して返します。
 OPTIONS には `make-package` のキーワード引数と同じものを使えます。
 
 - 参考: [make-package](http://xyzzy.s53.xrea.com/reference/wiki.cgi?p=make-package)
 
-Macro compile-and-eval &body BODY
----------------------------------
+Macro `compile-and-eval` &body BODY
+-----------------------------------
 BODY をコンパイルしてから実行します。
 テストしたい問題がコンパイルした場合のみ発生するような場合に。
 
@@ -37,8 +37,8 @@ BODY をコンパイルしてから実行します。
 - 実装上の都合で `compile-and-eval` の外にあるレキシカル変数などは参照
   できなくなります。
 
-Macro with-another-xyzzy (&key OPTIONS) &body BODY
----------------------------------------------------
+Macro `with-another-xyzzy` (&key OPTIONS) &body BODY
+-----------------------------------------------------
 テストを実行してる xyzzy とは別にもう一つ xyzzy を起動して、そちらで
 BODY を評価します。
 BODY が正常に終了すれば BODY の返した値を返します。
@@ -67,8 +67,8 @@ OPTIONS にはキーワード引数で何か設定できます。
   - BODY や戻り値やエラーには、読み込み可能な形で出力できるものしか
     使えません。
 
-Macro with-fake-functions ((NAME FAKE-LAMBDA-LIST &body FAKE-BODY)*) &body BODY)
---------------------------------------------------------------------------------
+Macro `with-fake-functions` ((NAME FAKE-LAMBDA-LIST &body FAKE-BODY)*) &body BODY)
+----------------------------------------------------------------------------------
 一時的にグローバルな関数定義を差し替えて BODY を実行します。
 BODY を実行するとどこかで関数 NAME が呼び出されるのだけど、嬉しくない
 副作用があったり面倒な準備が必要だったりする場合に使います。
