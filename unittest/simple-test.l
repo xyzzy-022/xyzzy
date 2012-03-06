@@ -244,6 +244,9 @@ EXPANSION = FORM"
 
 
 ;;;;; macro expansion
+;;;
+;;; :: expected-expansion = EXPANSION
+;;; :: actual-expansion   = (EXPANSION-1 EXPANSION) | nil
 
 (defun form-equal (expected actual)
   (let ((seen (make-hash-table :test #'equal)))
@@ -335,6 +338,9 @@ Macro expansion:
 
 
 ;;;;; results (return values, or error)
+;;;
+;;; :: expected-results = (:return COMPARE-FN . VALUES) | (:error ERROR-TYPE)
+;;; :: actual-results   = (:retrun . VALUES) | (:error ERROR)
 
 (defun check-results (expected-results actual-results)
   "check result of execution (ACTUAL-RESULTS) against EXPECTED-RESULTS.
@@ -495,6 +501,9 @@ Evaluation result (error):
 
 
 ;;;;; output
+;;;
+;;; :: expected-output = (STREAM-VAR OUTPUT-STRING)
+;;; :: actual-output   = OUTPUT-STRING
 
 (defun check-output (expected-output actual-output)
   "Check ACTUAL-OUTPUT is same as EXPECTED-OUTPUT."
