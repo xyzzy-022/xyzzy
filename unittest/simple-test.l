@@ -62,12 +62,26 @@
 
 (defparameter *tests* nil)
 
+;;;;; test thunk
+;;;
+;;; Test thunk is a function (lexical closure) which returns actual
+;;; behaviour of FORM.
+;;; It returns followings as multiple values:
+;;; - macro expansion if FORM is a macro call
+;;; - result of evaluation of FORM, either returned one or more values
+;;;   or signalled an error
+;;; - output string printed to OUTPUT-STREAM-VAR
+
 (defparameter *output-capture-stream* nil)
 
 (defun make-test-thunk-form (form output-stream-var)
   `(lambda ()
      (let ((*output-capture-stream* (make-string-output-stream)))
-       (values (handler-case
+       (values (multiple-value-bind (expn-1 expanded-p)
+                   (macroexpand-1 ',form)  ; TODO: env?
+                 (when expanded-p
+                   (list expn-1 (macroexpand ',form))))
+               (handler-case
                    (list* :return
                           (,@(if output-stream-var
                                `(let ((,output-stream-var *output-capture-stream*)))
@@ -83,14 +97,22 @@
   (ASSERT (equal (make-test-thunk-form '(+ 1 2) nil)
                  `(lambda ()
                     (let ((*output-capture-stream* (make-string-output-stream)))
-                      (values (handler-case
+                      (values (multiple-value-bind (expn-1 expanded-p)
+                                  (macroexpand-1 '(+ 1 2))
+                                (when expanded-p
+                                  (list expn-1 (macroexpand '(+ 1 2)))))
+                              (handler-case
                                   (list* :return (progn (multiple-value-list (+ 1 2))))
                                 (error (error) (list :error error)))
                               nil)))))
   (ASSERT (equal (make-test-thunk-form '(princ :hello) '*standard-output*)
                  `(lambda ()
                     (let ((*output-capture-stream* (make-string-output-stream)))
-                      (values (handler-case
+                      (values (multiple-value-bind (expn-1 expanded-p)
+                                  (macroexpand-1 '(princ :hello))
+                                (when expanded-p
+                                  (list expn-1 (macroexpand '(princ :hello)))))
+                              (handler-case
                                   (list* :return
                                          (let ((*standard-output* *output-capture-stream*))
                                            (multiple-value-list (princ :hello))))
@@ -230,31 +252,32 @@ EXPANSION = FORM"
                       `(,(gensym) ,(gensym))))
   )
 
-(defun check-macro-expansion (expected-expn form)
+(defun check-macro-expansion (expected-expn actual-expns)
   "check macro expansion of FORM satisfies EXPECTED-EXPansioN.
 Return nil if FORM expanded as expected. Otherwise, return a list describing
 how actual expansion differs."
   (unless (undefined-p expected-expn)
-    (multiple-value-bind (actual-expn1 ep actual-expn)
-        (macroexpand-1 form) ; TODO: env
-      (unless ep
-        (return-from check-macro-expansion
-          (list :expansion :not-expanded
-                expected-expn)))
-      (setq actual-expn (macroexpand form))
-      (unless (or (form-equal expected-expn actual-expn1)
-                  (form-equal expected-expn actual-expn))
-        (return-from check-macro-expansion
-          (list :expansion :wrong-expansion
-                expected-expn
-                actual-expn1 actual-expn))))))
+    (cond ((null actual-expns)
+           (list :expansion :not-expanded expected-expn))
+          ((or (form-equal expected-expn (first actual-expns))
+               (form-equal expected-expn (second actual-expns)))
+           nil)
+          (t
+           (list :expansion :wrong-expansion
+                 expected-expn
+                 (first actual-expns)
+                 (second actual-expns))))))
 
 #+unittest-meta-test
-(progn
-  (ASSERT (null  (check-macro-expansion '(setq x 1) '(setf x 1))))
-  (ASSERT (equal (check-macro-expansion '(setq x 1) '(setq x 1))
+(labels ((expn (form)
+           (multiple-value-bind (expn expanded-p)
+               (macroexpand-1 form)
+             (when expanded-p
+               (list expn (macroexpand form))))))
+  (ASSERT (null  (check-macro-expansion '(setq x 1) (expn '(setf x 1)))))
+  (ASSERT (equal (check-macro-expansion '(setq x 1) (expn '(setq x 1)))
                  `(:expansion :not-expanded (setq x 1))))
-  (ASSERT (equal (check-macro-expansion '(set x 1) '(setf x 1))
+  (ASSERT (equal (check-macro-expansion '(set x 1) (expn '(setf x 1)))
                  `(:expansion :wrong-expansion (set x 1) (setq x 1) (setq x 1)))))
 
 (define-failure-reporter :expansion :not-expanded (expected-expn)
