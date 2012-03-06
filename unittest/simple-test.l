@@ -58,10 +58,31 @@
                    '(:expected-output "hello")))))
 
 
-;;;; macro deftest
+;;;; Macro deftest
+;;
+;; You can define a "test" with this macro. A test consists of NAME,
+;; DESCRIPTION and series of example FORM and EXPECTATIONS for that
+;; form.
+;; They are packed in a list and stored in variable `*tests*`.
+;;
+;; :: test = (NAME DESCRIPTION . EXAMPLES)
 
 (defparameter *tests* nil)
 
+(defun store-test (name description examples)
+  (setf *tests*
+        (cons (list* name description examples)
+              (remove name *tests* :key #'car)))
+  name)
+
+(defun find-test (name)
+  (assoc name *tests*))
+
+(defun test-name (test) (first test))
+(defun test-description (test) (second test))
+(defun test-examples (test) (cddr test))
+
+
 ;;;;; test thunk
 ;;;
 ;;; Test thunk is a function (lexical closure) which returns actual
