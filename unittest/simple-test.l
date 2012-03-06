@@ -70,6 +70,8 @@
 (defparameter *tests* nil)
 
 (defun store-test (name description examples)
+  (when (member name *tests* :key #'car)
+    (warn "Overwriting a test: ~S" name))
   (setf *tests*
         (cons (list* name description examples)
               (remove name *tests* :key #'car)))
