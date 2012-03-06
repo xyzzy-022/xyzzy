@@ -244,6 +244,45 @@
       `(list ,@(mapcar #'make-example-1
                        (group-examples forms-and-expectations))))))
 
+#+unittest-meta-test
+(let* ((examples-src
+         (make-examples-form 'hi nil
+                             '(form-1 => 1 => 2
+                               form-2 == (expansion (of form-2)) => t
+                               form-3 (:expected-output "hi")
+                               form-4 (:expected-output "hi") (:expected-output "ho") => nil
+                               form-5 !! type-error)))
+       (examples (eval examples-src))
+       ;; I need destructuring-bind...
+       (1st (first examples))
+       (2nd (second examples))
+       (3rd (third examples))
+       (4th (fourth examples))
+       (5th (fifth examples)))
+  (labels ((expected-expansion (example) (third example))
+           (expected-results   (example) (fourth example))
+           (expected-output    (example) (fifth example)))
+    ;; form-1 => 1 => 2
+    (ASSERT (equal (expected-results 1st)
+                   '(:return equal 1 2)))
+    ;; form-2 == (expansion (of form-2)) => t
+    (ASSERT (equal (expected-expansion 2nd)
+                   '(expansion (of form-2))))
+    (ASSERT (equal (expected-results 2nd)
+                   '(:return equal t)))
+    ;; form-3 (:expected-output "hi")
+    (ASSERT (equal (expected-output 3rd)
+                   '(*standard-output* "hi")))
+    ;; form-4 (:expected-output "hi") (:expected-output "ho") => nil
+    (ASSERT (equal (expected-output 4th)
+                   '(*standard-output* "hi\nho")))
+    (ASSERT (equal (expected-results 4th)
+                   '(:return equal nil)))
+    ;; form-5 !! type-error
+    (ASSERT (equal (expected-results 5th)
+                   '(:error type-error)))
+    ))
+
 (defmacro deftest (name options doc &rest forms-and-expectations)
   (multiple-value-bind (doc forms-and-expectations)
       (if (stringp doc)
