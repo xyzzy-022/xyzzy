@@ -142,89 +142,117 @@
                                 (error (error) (list :error error)))
                               (get-output-stream-string *output-capture-stream*)))))))
 
+
+;;;;; example forms and corresponding expectations
+;;;
+;;; Each example form and corresponding expectations (expressed by
+;;; things like `=> VALUE`) is called "example" here.
+;;; 
+;;; :: EXAMPLE = (FORM THUNK EXPECTED-EXPANSION EXPECTED-RESULTS EXPECTED-OUTPUT)
+
 (defun non-nil-p (#:ignore actual) actual)
 
-(defun parse-expectations (name expectations options)
-  "Return a list describing expected behaviour.
-=> (RESULT OUTPUT EXPANSION)
-RESULT = (:return COMPARE-FN . VALUES) | (:error ERROR-TYPE)
-OUTPUT = (STREAM-VAR . OUTPUT-STRING)
-EXPANSION = FORM"
-  (let ((result-type nil)
-        (result-data '())
-        (output nil)
-        (dest   (getf options :output '*standard-output*))
-        (state  nil)
-        (expansion +undefined+))
-    (dolist (x expectations)
-      (cond
-       ((member x '(=> !! ==)) (setf state x))
-       ((and (consp x) (eql (first x) :expected-output))
-        (setf output (if output (format nil "~A~%~A" output (second x)) (second x))))
-       (t (case state
-            (=> (case result-type
-                  ((nil) (setf result-type :return))
-                  (:return)
-                  (:error (error "Don't expect both return value(s) and error: ~S" name)))
-                (push x result-data))
-            (!! (case result-type
-                  (:return (error "Don't expect both return value(s) and error: ~S" name))
-                  (:error  (error "Don't expect multiple errors: ~S" name)))
-                (unless (symbolp x)
-                  (error 'type-error :datum x :expected-type 'symbol))
-                (setf result-type :error
-                      result-data x))
-            (== (setf expansion x))))))
-    (list (case result-type
-            (:return (list* :return (getf options :compare 'equal) (nreverse result-data)))
-            (:error  (list  :error result-data))
-            ((nil)   (list  :return 'non-nil-p ':non-nil))
-            (t (error "parse-expectations - unknown result-type: ~S: ~S" result-type name)))
-          (when output (list dest output))
-          expansion)))
+;; This is helper function for `make-examples-form`.
+;; In macro `deftest` example forms and corresponding expectations
+;; appear with no grouping. More badly, some of them must be paired
+;; (e.g. `=>` and following value form) while expected output is
+;; being a single list.
+;; To make it easier to manipulate farther in `make-examples-form`,
+;; they are grouped by example forms. Eache example form and corres-
+;; ponding expectations are packed into a list of form:
+;;
+;;     (FORM EXPECTATION-0 EXPECTATION-1 .. EXPECTATION-N)
+;;
+;; where EXPECTATION-X is also a list of form:
+;;
+;;     ({=>,!!,>>,==} DATUM)
+;;
+(defun group-examples (forms-and-expectations)
+  (labels ((output-expectation-p (x)
+             (and (consp x) (eql (car x) :expected-output)))
+           (recur (rest current examples)
+             (let ((head (first rest))
+                   (next (second rest)))
+               (cond ((null rest)
+                      (nreverse (cons (nreverse current) examples)))
+                     ((member head '(=> !! ==))
+                      (recur (cddr rest)
+                             (cons (list head next) current)
+                             examples))
+                     ((output-expectation-p head)
+                      (recur (cdr rest)
+                             (cons (list '>> (second head)) current)
+                             examples))
+                     (t (recur (cdr rest)
+                               (list head)
+                               (cons (nreverse current) examples)))))))
+    (let ((head (first forms-and-expectations)))
+      (when (or (member head '(=> !! ==))
+                (output-expectation-p head))
+        (error "テスト式なしに期待とな！？: ~S" forms-and-expectations))
+      (recur (cdr forms-and-expectations) (list head) nil))))
 
 #+unittest-meta-test
 (progn
-  ;; results (return values)
-  (ASSERT (equal (parse-expectations 'example '(=> 3) nil)
-                 `((:return equal 3) nil ,+undefined+)))
-  (ASSERT (equal (parse-expectations 'example '(=> 3 => 4) nil)
-                 `((:return equal 3 4) nil ,+undefined+)))
-  ;; results (error)
-  (ASSERT (equal (parse-expectations 'example '(!! type-error) nil)
-                 `((:error type-error) nil ,+undefined+)))
-  ;; output
-  (ASSERT (equal (parse-expectations 'example '((:expected-output "hello")) nil)
-                 `((:return non-nil-p :non-nil)
-                   (*standard-output* "hello")
-                   ,+undefined+)))
-  ;; expansion
-  (ASSERT (equal (parse-expectations 'example '(== (a b c)) nil)
-                 `((:return non-nil-p :non-nil) nil (a b c))))
-  )
+  (ASSERT (equal (group-examples '(form-1 => t))
+                 '((form-1 (=> t)))))
+  (ASSERT (equal (group-examples '(form-1 => t form-2 (:expected-output "hi") => t))
+                 '((form-1 (=> t))
+                   (form-2 (>> "hi") (=> t))))))
 
+(defun make-examples-form (name options forms-and-expectations)
+  (let ((compare-fn (getf options :compare 'equal))
+        (output-stream-var (getf options :output '*standard-output*)))
+    (labels ((make-example-1 (x)
+               ;(format t "x = ~S~%" x)
+               (let ((form (first x))
+                     (expectations (rest x))
+                     (expected-expansion +undefined+)
+                     (expected-output-string nil)
+                     (expected-result-type '#1=#:undefined)
+                     (expected-result-datum nil))
+                 (dolist (y (rest x))
+                   ;(format t "y = ~S~%" y)
+                   (case (car y)
+                     (=> (case expected-result-type
+                           (:return (push (second y) expected-result-datum))
+                           (:error  (error "Don't expect return and error at same time: ~S" name))
+                           (#1#     (setf expected-result-type :return
+                                          expected-result-datum (list (second y))))
+                           (otherwise (error "Unknown type of expected result: ~S" name))))
+                     (!! (case expected-result-type
+                           (:return (error "Don't expect return and error at same time: ~S" name))
+                           (:error  (error "Don't expect more than one error: ~S" name))
+                           (#1#     (setf expected-result-type :error
+                                          expected-result-datum (second y)))
+                           (otherwise (error "Unknown type of expected result: ~S" name))))
+                     (>> (setf expected-output-string
+                               (format nil "~@[~A~%~]~A"
+                                       expected-output-string
+                                       (second y))))
+                     (== (unless (undefined-p expected-expansion)
+                           (error "Just one expansion of form, please: ~S" name))
+                         (setf expected-expansion (second y)))
+                     (otherwise (error "Unknown type of expectation: ~S: ~S" y name))))
+                 `(list ',form ,(make-test-thunk-form form output-stream-var)
+                        ',expected-expansion
+                        ,(case expected-result-type
+                           (:return `'(:return ,compare-fn ,@expected-result-datum))
+                           (:error  `'(:error ,expected-result-datum))
+                           (otherwise (error "Unknown type of expected result: ~S" name)))
+                        '(,output-stream-var ,expected-output-string)))))
+      `(list ,@(mapcar #'make-example-1
+                       (group-examples forms-and-expectations))))))
 
-(defun expand-deftest (name options doc form expectations)
-  (let* ((expectations (parse-expectations name expectations options))
-         (expected-output-dest (when (second expectations)
-                                 (car (second expectations))))
-         (thunk-form   (make-test-thunk-form form expected-output-dest)))
-    `(progn
-       (when (find ',name *tests* :key 'car)
-         (warn "テスト再定義してる: ~S" ',name))
-       (setf *tests*
-             (cons (list ',name ,doc ',form ,thunk-form ',expectations
-                         *load-pathname*)
-                   (delete ',name *tests* :key 'car)))
-       ',name)))
-
-(defmacro deftest (name (&rest options) form &rest expected)
-  (multiple-value-bind (doc form expected)
-      (if (stringp form)
-        (values form (car expected) (cdr expected))
-        (values nil form expected))
-    (expand-deftest name options doc form expected)))
+(defmacro deftest (name options doc &rest forms-and-expectations)
+  (multiple-value-bind (doc forms-and-expectations)
+      (if (stringp doc)
+        (values doc forms-and-expectations)
+        (values nil (cons doc forms-and-expectations)))
+    `(store-test ',name ,doc
+                 ,(make-examples-form name options forms-and-expectations))))
 (setf (get 'deftest 'ed:lisp-indent-hook) 2)
+
 
 
 ;;;; check actual behaviour against expected one
