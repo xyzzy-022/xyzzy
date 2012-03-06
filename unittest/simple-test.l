@@ -239,6 +239,21 @@
                         ,(case expected-result-type
                            (:return `'(:return ,compare-fn ,@(nreverse expected-result-datum)))
                            (:error  `'(:error ,expected-result-datum))
+                           ;; TODO: default expected-results - true? or ignore?
+                           ;; With former implementation, you could have just one
+                           ;; example form and default expected-results for that
+                           ;; form was return true (non-nil).
+                           ;; Since we now can have multiple example forms in a
+                           ;; test, I doubt this is desirable for all forms. That
+                           ;; is when it is just a preparation for actual test form
+                           ;; return values shouldn't matter. I want to write just
+                           ;; preparation form with no expectation to ignore any
+                           ;; results in such case. But error might be a different
+                           ;; story. Also, different behaviour for last form and
+                           ;; non-last form may cause confusion.
+                           ;; So, I haven't decided yet. Following is just to shut
+                           ;; quick-test up.
+                           (#1#     `'(:return :true))
                            (otherwise (error "Unknown type of expected result: ~S" name)))
                         '(,output-stream-var ,expected-output-string)))))
       `(list ,@(mapcar #'make-example-1
