@@ -237,7 +237,7 @@
                  `(list ',form ,(make-test-thunk-form form output-stream-var)
                         ',expected-expansion
                         ,(case expected-result-type
-                           (:return `'(:return ,compare-fn ,@expected-result-datum))
+                           (:return `'(:return ,compare-fn ,@(nreverse expected-result-datum)))
                            (:error  `'(:error ,expected-result-datum))
                            (otherwise (error "Unknown type of expected result: ~S" name)))
                         '(,output-stream-var ,expected-output-string)))))
