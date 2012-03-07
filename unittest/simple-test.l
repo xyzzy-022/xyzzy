@@ -586,6 +586,20 @@ Output (*trace-output*):
 
 
 ;;;; utilities
+
+(defmacro with-temp-files ((&rest temp-file-vars) &body body)
+  `(let (,@(mapcar (lambda (var)
+                     `(,var (make-temp-file-name)))
+                   temp-file-vars))
+     (unwind-protect
+         (progn ,@body)
+       ,@(mapcar (lambda (var)
+                   `(when (file-exist-p ,var)
+                      (delete-file ,var)))
+                 temp-file-vars))))
+(setf (get 'with-temp-files 'ed:lisp-indent-hook) 1)
+
+
 (defvar *test-uid-counter* 0)
 (defun test-uid ()
   (incf *test-uid-counter*))
