@@ -16,17 +16,18 @@
 ;;
 (deftest fix-saving-session-file ()
   "セッションファイルを保存時に *print-length* などの影響を受けないように修正。"
-  (block test
-    (with-fake-functions ((write (object &key pretty readably escape)
-                            (unless (or (stringp object)
-                                        (and pretty readably escape))
-                              (return-from test nil))))
-      (let ((*print-circle* t)
-            (*print-pretty* nil)
-            (*print-length* 1)
-            (*print-level* 1))
-        (ed::write-session-file "test.ssn"))
-      t)))
+  (with-temp-files (ssn)
+    (block test
+      (with-fake-functions ((write (object &key pretty readably escape)
+                              (unless (or (stringp object)
+                                          (and pretty readably escape))
+                                (return-from test nil))))
+        (let ((*print-circle* t)
+              (*print-pretty* nil)
+              (*print-length* 1)
+              (*print-level* 1))
+          (ed::write-session-file ssn))
+        t))))
 
 ;; 	* lisp : fix saving history-file.
 ;; 	ヒストリファイル書き込み時に *print-length* などの影響を受けるのを修正。
@@ -43,25 +44,22 @@
 ;;
 (deftest fix-saving-history-file ()
   "ヒストリファイル書き込み時に *print-length* などの影響を受けるのを修正。"
-  (block test
-    ;; NOTE: xyzzy.exe -q で起動してるとヒストリファイルを使わない感じになっちゃうので
-    (unless ed::*history-file-loaded*
-      (trap-errors (ed::load-history-file)))
-    (let ((tmpfile (make-temp-file-name)))
-      (unwind-protect
-          (with-fake-functions ((write (object &key pretty readably escape)
-                                  (unless (and pretty readably escape)
-                                    (return-from test nil))))
-            (let ((*history-file-name* tmpfile)
-                  (*print-circle* t)
-                  (*print-pretty* nil)
-                  (*print-readably* nil)
-                  (*print-length* 1)
-                  (*print-level* 1))
-              (ed::save-history-file))
-            t)
-        (when (file-exist-p tmpfile)
-          (delete-file tmpfile))))))
+  ;; NOTE: xyzzy.exe -q で起動してるとヒストリファイルを使わない感じになっちゃうので
+  (unless ed::*history-file-loaded*
+    (trap-errors (ed::load-history-file)))
+  (with-temp-files (histfile)
+    (block test
+      (with-fake-functions ((write (object &key pretty readably escape)
+                              (unless (and pretty readably escape)
+                                (return-from test nil))))
+        (let ((*history-file-name* histfile)
+              (*print-circle* t)
+              (*print-pretty* nil)
+              (*print-readably* nil)
+              (*print-length* 1)
+              (*print-level* 1))
+          (ed::save-history-file))
+        t))))
 
 ;; 2011-12-20  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -271,15 +269,15 @@
   "ファイルサイズが 0 のときの (正確には改行がないファイルのときの) 改行コー
 ドが常に CRLF になるのを修正し *default-eol-code* に基づいた改行コード
 になるようにする。"
-  (let ((name (make-temp-file-name))
-        buffer)
-    (with-open-file (out name :direction :output :if-does-not-exist :create))
-    (unwind-protect
-        (let ((*default-eol-code* *eol-lf*))
-          (declare (special *default-eol-code*))
-          (setq buffer (ed::find-file-internal name))
-          (buffer-eol-code buffer))
-      (delete-buffer buffer)))
+  (with-temp-files (name)
+    (let (buffer)
+      (with-open-file (out name :direction :output :if-does-not-exist :create))
+      (unwind-protect
+          (let ((*default-eol-code* *eol-lf*))
+            (declare (special *default-eol-code*))
+            (setq buffer (ed::find-file-internal name))
+            (buffer-eol-code buffer))
+        (delete-buffer buffer))))
   => 0)
 
 ;; 2010-12-13  NANRI Masaoki  <southly@gmail.com>
@@ -913,16 +911,9 @@
 
 (deftest fix-listen-for-file-stream ()
   "EOFのときにnilを返すように修正（file-stream）"
-  (let* ((file (make-temp-file-name))
-         (buffer (ed::find-file-internal file)))
-    (save-excursion
-      (with-set-buffer
-        (set-buffer buffer)
-        (save-buffer)))
-    (unwind-protect
-        (with-open-file (in file :direction :input)
-          (listen in))
-      (delete-buffer buffer)))
+  (with-temp-files (file)
+    (with-open-file (in file :direction :input)
+      (listen in)))
   => nil)
 
 ;; 2010-01-11  NANRI Masaoki  <southly@gmail.com>
@@ -1269,15 +1260,13 @@
 (deftest fix-ole-method ()
   "ole-method で文字列を渡すと余計な 0x00 が付く問題"
   (flet ((ole-create-file (content)
-           (let ((tmp (make-temp-file-name)))
-             (unwind-protect
-                 (let* ((fso (ole-create-object "Scripting.FileSystemObject"))
-                        (file (ole-method fso 'OpenTextFile tmp 2)))
-                   (unwind-protect
-                       (ole-method file 'Write content)
-                     (ole-method file 'Close))
-                   (file-length tmp))
-               (delete-file tmp)))))
+           (with-temp-files (tmp)
+             (let* ((fso (ole-create-object "Scripting.FileSystemObject"))
+                    (file (ole-method fso 'OpenTextFile tmp 2)))
+               (unwind-protect
+                   (ole-method file 'Write content)
+                 (ole-method file 'Close))
+               (file-length tmp)))))
     (values (ole-create-file "")
             (ole-create-file "f")
             (ole-create-file "foo")))
