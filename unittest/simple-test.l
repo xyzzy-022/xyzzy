@@ -639,66 +639,141 @@ Output (*trace-output*):
   >> what?
 "))
 
-(defun run-test-1 (test)
-  (multiple-value-bind (name doc form thunk expectations)
-      (values-list test)
-    (multiple-value-bind (expected-results expected-output expected-expansion)
-        (values-list expectations)
-      (let ((failures '()))
-        (macrolet ((check (form)
-                     `(let ((failure ,form))
-                        (when failure (push failure failures)))))
-          (check (check-macro-expansion expected-expansion form))
-          (multiple-value-bind (actual-results actual-output)
-              (funcall thunk)
-            (check (check-results expected-results actual-results))
-            (check (check-output expected-output actual-output))))
-        failures))))
+
+;;;; running tests
 
 (defvar *last-test-list* nil)
 
-(defun run-tests (&optional (test-list (or *last-test-list* *tests*)))
-  (interactive)
-  (setf *last-test-list* test-list)
-  (let ((buffer (get-buffer-create "*Test Results*"))
-        (pass-count 0)
-        (fail-count 0)
-        (error-count 0))
+(defun get-report-buffer-stream ()
+  (let ((buffer (get-buffer-create "*Test Results*")))
     (setup-temp-buffer buffer)
     (erase-buffer buffer)
-    (pop-to-buffer buffer)
-    (with-output-to-buffer (buffer)
-      (dolist (test test-list)
-        (multiple-value-bind (name doc form thunk expectations) (values-list test)
-          (progn
-            (format t "~&~S..." name)
-            (message "Running test: ~S..." name))
-          (handler-case
-              (let ((failures (run-test-1 test)))
-                (cond ((null failures) ; passed
-                       (incf pass-count)
-                       (format t "OK~%"))
-                      (t ; failed
-                       (incf fail-count) (ding)
-                       (format t "Failed~%")
-                       (when doc (format t "  Description:~%~{    ~A~%~}" (split-string doc #\LFD)))
-                       (dolist (failure failures)
-                         (let ((report (with-output-to-string (*standard-output*)
-                                         (report-failure failure))))
-                           (format t "~{  ~A~%~}" (split-string report #\LFD)))))))
-            (error (error)
-              (incf error-count)
-              (format t "~&***  Error occured while running test ~S.~%    ~A~%" name error)
-              (format t "  ;; This is not error from test code, but (most likely)~%")
-              (format t "  ;; bug in testing framework.")))
-          (refresh-screen)))
-      (format t "----------------------------------------------------------------------------~%")
-      (let ((total (+ pass-count fail-count error-count)))
-        (if (= total pass-count)
-          (format t "total ~D tests: ALL passed." total)
-          (format t "total ~D tests: ~D passed, ~D failed~@[, ~D errors~]~%"
-                total pass-count fail-count (unless (zerop error-count) error-count))))
-      (goto-char (point-max)))))
+    (set-buffer buffer)
+    (make-buffer-stream buffer)))
+
+(defparameter *current-session* nil)
+
+(defstruct session
+  (report-output (get-report-buffer-stream))
+  (pass-count 0)
+  (fail-count 0)
+  finished-tests
+  current-test
+  remaining-tests)
+
+(defun assert-in-session ()
+  (unless *current-session*
+    (error "Not in a run-tests session.")))
+
+(macrolet ((def (slot)
+             (let ((name (intern (format nil "ssn-~A" slot)))
+                   (acc  (find-symbol (format nil "session-~A" slot))))
+               `(defmacro ,name (&optional (session '*current-session*))
+                  `(,',acc ,session)))))
+  ;; (defmacro ssn-report-output (&optional (session '*current-session*))
+  ;;   `(session-report-output ,session))
+  (def report-output)
+  (def pass-count)
+  (def fail-count)
+  (def finished-tests)
+  (def current-test)
+  (def remaining-tests))
+
+;; :: ssn-finished-test = ((TEST (EXAMPLE . FAILURES))...)
+;; :: ssn-current-test = (TEST FINISHED-EXAMPLES REMAINING-EXAMPLES)
+;; :: FINISHED-EXAMPLES = ((EXAMPLE . FAILURES)...) // in reverse order
+
+(defun run-one-example (example)
+  "Execute and inspect EXAMPLE form and check if it is as expected.
+Returns list of failures."
+  (let ((failures '()))
+    (multiple-value-bind (form thunk expected-expansion expected-results expected-output)
+        (values-list example)
+      (macrolet ((check (x)
+                   `(let ((failure ,x))
+                      (when failure (push failure failures)))))
+        (multiple-value-bind (actual-expansion actual-results actual-output)
+            (funcall thunk)
+          (check (check-macro-expansion expected-expansion actual-expansion))
+          (check (check-results expected-results actual-results))
+          (check (check-output expected-output actual-output)))
+        (nreverse failures)))))
+
+(defun report-test-failures (test finished &optional (out (ssn-report-output)))
+  (let ((desc (test-description test)))
+    (when desc (format out "~{  ;; ~A~%~}" (split-string desc #\LFD))))
+  (dolist (example/failures finished)
+    (let ((example  (car example/failures))
+          (failures (cdr example/failures)))
+      (format out "  * ~S~%" (car example)) ; form
+      (dolist (failure failures)
+        (let ((report (with-output-to-string (*standard-output*)
+                        (report-failure failure))))
+          (format out "~{  ~A~%~}" (split-string report #\LFD)))))))
+
+(defun run-current-test ()
+  (assert-in-session)
+  (macrolet ((test      () `(first (ssn-current-test)))
+             (finished  () `(second (ssn-current-test)))
+             (remaining () `(third (ssn-current-test))))
+    (let ((example (first (remaining))))
+      (cond ((eql (first example) :break)
+             ;; FIXME: just stop (pause) execution properly.
+             (error "BREAK"))
+            ((null (remaining))
+             (let* ((finished (nreverse (finished)))
+                    (passed-p (every #'null (mapcar #'cdr finished))))
+               (format (ssn-report-output) "~:[Failed~;OK~]~%" passed-p)
+               (message "running test: ~S...~:[Failed~;OK~]" (test-name (test)) passed-p)
+               (if passed-p
+                 (incf (ssn-pass-count))
+                 (progn
+                   (incf (ssn-fail-count))
+                   (ding)
+                   (report-test-failures (test) finished)))
+               (push (cons (test) finished) (ssn-finished-tests))
+               (setf (ssn-current-test) nil)
+               (refresh-screen)
+               (continue-run-tests)))
+            (t
+             (let ((failures (run-one-example example)))
+               (setf (remaining) (rest (remaining)))
+               (push (cons example failures) (finished))
+               (run-current-test)))))))
+
+(defun continue-run-tests ()
+  (assert-in-session)
+  (cond ((ssn-current-test)
+         (run-current-test))
+        ((ssn-remaining-tests)
+         (let ((next (first (ssn-remaining-tests))))
+           (format (ssn-report-output) "~&~S..." (test-name next))
+           (message "running test: ~S..." (test-name next))
+           (setf (ssn-current-test) (list next nil (test-examples next))
+                 (ssn-remaining-tests) (rest (ssn-remaining-tests))))
+         (continue-run-tests))
+        (t ;; all tests finished. Report and die.
+         (let* ((pass (ssn-pass-count))
+                (fail (ssn-fail-count))
+                (total (+ pass fail))
+                (all-passed-p (zerop fail))
+                (out (ssn-report-output)))
+           (format out "~&----------------------------------------------------------------------~%")
+           (format out "Total ~D tests: ~:[~D~;~*All~] passed~@[~*, ~A failed~]~%"
+                   total all-passed-p pass (not all-passed-p) fail))
+         (null (setf *current-session* nil)))))
+
+(defun run-tests (&optional (test-list (or *last-test-list* *tests*)))
+  (interactive)
+  (unless (or (null *current-session*)
+              (yes-or-no-p "Last run of tests is not finished. Abort that and run new tests?"))
+    (return-from run-tests nil))
+  (setf *last-test-list* test-list
+        *current-session* (make-session :remaining-tests test-list))
+  (continue-run-tests))
+
+
+;;;;; convenience commands to run tests
 
 (defun run-all-tests ()
   (interactive)
