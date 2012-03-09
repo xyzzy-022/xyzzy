@@ -589,7 +589,7 @@ Evaluation result (error):
 
 (defun check-output (expected-output actual-output)
   "Check ACTUAL-OUTPUT is same as EXPECTED-OUTPUT."
-  (unless expected-output (return-from check-output nil))
+  (unless (second expected-output) (return-from check-output nil))
   (cond ((string= actual-output "")
          (list :output :nothing-printed expected-output))
         ((not (string= actual-output (second expected-output)))
