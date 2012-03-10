@@ -69,11 +69,11 @@
 
 (defparameter *tests* nil)
 
-(defun store-test (name description examples)
+(defun store-test (name description source examples)
   (when (member name *tests* :key #'car)
     (warn "Overwriting a test: ~S" name))
   (setf *tests*
-        (cons (list* name description examples)
+        (cons (list* name description source examples)
               (remove name *tests* :key #'car)))
   name)
 
@@ -82,7 +82,8 @@
 
 (defun test-name (test) (first test))
 (defun test-description (test) (second test))
-(defun test-examples (test) (cddr test))
+(defun test-source (test) (third test))
+(defun test-examples (test) (cdddr test))
 
 
 ;;;;; test thunk
@@ -303,7 +304,7 @@
       (if (stringp doc)
         (values doc forms-and-expectations)
         (values nil (cons doc forms-and-expectations)))
-    `(store-test ',name ,doc
+    `(store-test ',name ,doc *load-pathname*
                  ,(make-examples-form name options forms-and-expectations))))
 (setf (get 'deftest 'ed:lisp-indent-hook) 2)
 
@@ -791,8 +792,8 @@ Returns list of failures."
     (when (or (not loaded)
               (> (file-write-time testfile) (cdr loaded)))
       (load-test-file testfile)))
-  (run-tests (remove-if-not (lambda (tests)
-                              (path-equal (sixth tests) testfile))
+  (run-tests (remove-if-not (lambda (test)
+                              (path-equal (test-source test) testfile))
                             *tests*)))
 
 
