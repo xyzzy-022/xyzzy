@@ -149,13 +149,13 @@ class print_circle
 
   void remove_reps ();
   void setup1 (lisp object);
-  circle_object *lookup (lisp object) const;
   void add_object (lisp object);
 public:
   void reinit ();
   print_circle ();
   ~print_circle ();
   void setup (lisp object);
+  circle_object *lookup (lisp object) const;
   int find (wStream &stream, lisp object, int need_dot) const;
 };
 
@@ -459,6 +459,8 @@ print_list_pretty (wStream &stream, const print_control &pc, lisp object, int le
   lisp x = xcar (object);
   object = xcdr (object);
   if (!consp (object) || xcdr (object) != Qnil)
+    return 0;
+  if (pc.circle && pc.pr_circle->lookup (object))
     return 0;
   if (x == Qquote)
     stream.add ('\'');
@@ -1578,7 +1580,7 @@ print_wait_object (wStream &stream, const print_control &, lisp object)
 static void
 print_char_encoding (wStream &stream, const print_control &pc, lisp object)
 {
-  if (pc.readably || pc.escape)
+  if ((pc.readably || pc.escape) && xsymbol_value (Vread_eval) != Qnil)
     {
       stream.add ("#.");
       object = make_char_encoding_constructor (object);
@@ -2078,7 +2080,7 @@ Format::s_exp (wStream &stream, Char c)
 void
 Format::integer (wStream &stream, lisp linteger, int base, int istart)
 {
-  max_param (4);
+  max_param (4 + istart);
   int mincol = integer_param_min (istart, 0, 0);
   Char padchar = char_param (istart + 1, ' ');
   Char commachar = char_param (istart + 2, ',');
@@ -2394,9 +2396,10 @@ Format::fixed_format (wStream &stream)
       return;
     }
 
-  if (!param_is_given (0) && !param_is_given (1))
+  if (!param_is_given (0) && !param_is_given (1) && !param_is_given(2))
     {
       print_control pc (10);
+      if (atsign && f.sign > 0) stream.add('+');
       print_flonum (stream, pc, lnumber);
       return;
     }
@@ -2412,7 +2415,19 @@ Format::fixed_format (wStream &stream)
           exp_format (stream);
           return;
         }
-      w = fixed_fmt_width (f.sign, atsign, f.exp, d);
+      if (param_is_given (1))
+        w = fixed_fmt_width (f.sign, atsign, f.exp, d);
+      else
+        {
+          int n = 0;
+          if (f.sign < 0 || atsign)
+            n++;
+          if (f.exp < 0)
+            n += 1 - f.exp + max (f.be - f.b0, 1);
+          else
+            n += 1 + max (f.exp, f.be - f.b0);
+          w = n;
+        }
     }
 
   if (param_is_given (1))
@@ -2528,18 +2543,11 @@ Format::exp_format (wStream &stream)
       return;
     }
 
-  if (!param_is_given (0) && !param_is_given (1) && !param_is_given (2))
-    {
-      print_control pc (10);
-      print_flonum (stream, pc, lnumber);
-      return;
-    }
-
   if (!param_is_given (2))
     e = exp_width (f.exp - k + 1);
 
   if (!param_is_given (1))
-    d = f.be - f.b0;
+    d = f.be - f.b0 - 1;
   if (k > 0)
     d = max (d, k - 1);
   else if (k < 0)
@@ -2667,8 +2675,13 @@ Format::general_format (wStream &stream)
       param[1].type = FMT_INT;
       param[1].value = dd;
       param[2].type = FMT_NIL;
-      param[3].type = FMT_CHAR;
-      param[3].value = overflow;
+      if (param_is_given (4))
+        {
+          param[3].type = FMT_CHAR;
+          param[3].value = overflow;
+        }
+      else
+        param[3].type = FMT_NIL;
       param[4].type = FMT_CHAR;
       param[4].value = padchar;
       nparams = 5;
@@ -2833,7 +2846,7 @@ Format::tabulate (wStream &stream)
         {
           if (!colinc)
             return;
-          colnum += (col - colnum + colinc - 1) / colinc * colinc;
+          colnum += (col - colnum + colinc) / colinc * colinc;
         }
       stream.fill (' ', colnum - col);
     }
@@ -3349,6 +3362,12 @@ Format::prefix_parameters ()
                   {
                     param[nparams].type = FMT_CHAR;
                     param[nparams].value = xchar_code (x);
+                    nparams++;
+                  }
+                else if (x == Qnil)
+                  {
+                    param[nparams].type = FMT_NIL;
+                    param[nparams].value = 0;
                     nparams++;
                   }
                 else

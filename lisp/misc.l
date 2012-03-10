@@ -165,7 +165,7 @@
 (defmacro long-operation (&rest body)
   `(prog2
        (begin-wait-cursor)
-       ,@body
+       (progn ,@body)
      (end-wait-cursor)))
 
 (defun msgbox (fmt &rest args)

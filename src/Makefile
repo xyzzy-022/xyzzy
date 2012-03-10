@@ -1,6 +1,6 @@
 
 # define VC++ version (4, 6, or 7)
-VCVER=4
+VCVER=10
 
 .SUFFIXES: .cc .rc .res .d
 
@@ -140,7 +140,11 @@ CXXOPT=-GF -EHa
 !ENDIF
 
 DEFS=-DSTRICT -DWIN32 -D_WIN32 -D_MT -D__XYZZY__ -DPRIVCTRL_NODLL -DHAVE_DIMM_H -DDEBUG_GC
+!IF "$(VCVER)" == "8" || "$(VCVER)" == "9" || "$(VCVER)" == "10"
+CXX=cl -nologo -Zc:wchar_t- -Zc:forScope- -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_WARNINGS
+!ELSE
 CXX=cl -nologo
+!ENDIF
 CPP=cl -nologo -E
 LD=link -nologo
 LIBS=kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib \

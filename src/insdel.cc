@@ -165,9 +165,9 @@ move_chunk (const Chunk *sp, int src, Chunk *dp, int dst, int size)
 }
 
 static void
-adjust (const Chunk *&chunk, int &offset)
+adjust (Chunk *&chunk, int &offset)
 {
-  const Chunk *cp = chunk;
+  Chunk *cp = chunk;
   int o = offset;
   while (o > cp->c_used)
     {
@@ -227,9 +227,9 @@ Buffer::move_before_gap (Point &w_point, int size) const
 }
 
 static void
-adjust_dst (const Chunk *&chunk, int &offset)
+adjust_dst (Chunk *&chunk, int &offset)
 {
-  const Chunk *cp = chunk;
+  Chunk *cp = chunk;
   int o = offset;
   while (o > Chunk::TEXT_SIZE)
     {
@@ -759,7 +759,7 @@ Buffer::insert_file_contents (Window *wp, lisp filename, lisp visit,
 
   if (visit != Qnil)
     {
-      b_eol_code = exact_eol_code (rfc.r_eol_code);
+      b_eol_code = exact_eol_code (rfc.r_eol_code, b_eol_code);
       lchar_encoding = rfc.r_char_encoding;
       b_modified = 0;
       b_need_auto_save = 0;

@@ -244,10 +244,10 @@ funcall_dll (lisp fn, lisp arglist)
       return make_integer (long_to_large_int (u_long (proc ())));
 
     case CTYPE_FLOAT:
-      return make_single_float (((float (__stdcall *)())fn)());
+      return make_single_float (((float (__stdcall *)())proc)());
 
     case CTYPE_DOUBLE:
-      return make_double_float (((double (__stdcall *)())fn)());
+      return make_double_float (((double (__stdcall *)())proc)());
     }
 #else
 # error "yet"

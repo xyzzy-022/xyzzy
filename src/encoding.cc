@@ -617,15 +617,15 @@ utf_to_internal_stream::per_lang_putw (int lang)
     default:
     case ENCODING_LANG_JP:
     case ENCODING_LANG_JP2:
-      return putw_jp;
+      return &putw_jp;
 
     case ENCODING_LANG_KR:
     case ENCODING_LANG_CN_GB:
     case ENCODING_LANG_CN_BIG5:
-      return putw_gen;
+      return &putw_gen;
 
     case ENCODING_LANG_CN:
-      return putw_cn;
+      return &putw_cn;
     }
 }
 

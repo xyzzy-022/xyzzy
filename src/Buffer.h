@@ -320,9 +320,11 @@ exact_valid_eol_code_p (int code)
 }
 
 static inline eol_code
-exact_eol_code (int code)
+exact_eol_code (int code, int default_code = 1)
 {
-  return exact_valid_eol_code_p (code) ? eol_code (code) : eol_crlf;
+  return (exact_valid_eol_code_p (code) ? eol_code (code)
+          : exact_valid_eol_code_p (default_code) ? eol_code (default_code)
+          : eol_crlf);
 }
 
 class UndoInfo;

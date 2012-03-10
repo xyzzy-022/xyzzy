@@ -889,6 +889,68 @@ kbd_queue::reconvert (RECONVERTSTRING *rsbuf, int unicode_p)
 }
 
 int
+kbd_queue::documentfeed (RECONVERTSTRING *rsbuf, int unicode_p)
+{
+  if (!idlep ())
+    return 0;
+
+  lisp hook = xsymbol_value (Vime_documentfeed_helper);
+  if (hook == Qunbound || hook == Qnil)
+    return 0;
+
+  try
+    {
+      suppress_gc sgc;
+      lisp r = Ffuncall (hook, Qnil);
+      int n = multiple_value::count ();
+      multiple_value::clear ();
+      if (n != 2)
+        return 0;
+
+      lisp b = multiple_value::value (0);
+      lisp c = multiple_value::value (1);
+
+      char *content = w2s (c);
+      char *before = w2s (b);
+      long len = strlen (content);
+      long offset = strlen (before);
+      if (unicode_p)
+        {
+          int numc = MultiByteToWideChar (CP_ACP, 0, content, len, 0, 0);
+          int numo = MultiByteToWideChar (CP_ACP, 0, before, offset, 0, 0);
+          len = (numc + 1) * sizeof (wchar_t);
+          offset = numo * sizeof (wchar_t);
+        }
+      long size = sizeof *rsbuf + len;
+
+      if (!rsbuf)
+        return size;
+
+      rsbuf->dwSize = size;
+      rsbuf->dwVersion = 0;
+      rsbuf->dwStrLen = len;
+      rsbuf->dwStrOffset = sizeof *rsbuf;
+      rsbuf->dwCompStrLen = 0;
+      rsbuf->dwCompStrOffset = 0;
+      rsbuf->dwTargetStrLen = 0;
+      rsbuf->dwTargetStrOffset = offset;
+
+      if (!unicode_p)
+        strncpy ((char *)(rsbuf + 1), content, len);
+      else
+        MultiByteToWideChar (CP_ACP, 0, content, -1, (wchar_t *)(rsbuf + 1), strlen (content));
+
+      return size;
+    }
+  catch (nonlocal_jump &)
+    {
+      print_condition (nonlocal_jump::data ());
+      return 0;
+    }
+  return 0;
+}
+
+int
 kbd_queue::kbd_mblead_p (int c) const
 {
   switch (PRIMARYLANGID (kbd_langid ()))

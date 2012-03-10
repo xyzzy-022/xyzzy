@@ -93,7 +93,7 @@
     ;1989(ïΩê¨å≥)îN2åé17ì˙ ñ@ó•4çÜ (ë¶ì˙é{çs)
     (1989 1989 2 24 "è∫òaìVçcÇÃëÂërÇÃóÁ")
     ;1989(ïΩê¨å≥)îN2åé17ì˙ ñ@ó•5çÜ (ë¶ì˙é{çs)
-    (1989 nil 4 29 "Ç›Ç«ÇËÇÃì˙")
+    (1989 2006 4 29 "Ç›Ç«ÇËÇÃì˙")
     (1989 nil 12 23 "ìVçcíaê∂ì˙")
     ;1990(ïΩê¨2)îN6åé1ì˙ ñ@ó•24çÜ (ë¶ì˙é{çs)
     (1990 1990 11 12 "ë¶à óÁê≥ìaÇÃãV")
@@ -107,6 +107,9 @@
     ;2001(ïΩê¨13)îN6åé22ì˙ ñ@ó•59çÜ (2003(ïΩê¨15)îN1åé1ì˙é{çs)
     (2003 nil 7 (2 . 1) "äCÇÃì˙")
     (2003 nil 9 (2 . 1) "åhòVÇÃì˙")
+    ;2005(ïΩê¨17)îN5åé20ì˙ ñ@ó•43çÜ (2007(ïΩê¨19)îN1åé1ì˙é{çs)
+    (2007 nil 4 29 "è∫òaÇÃì˙")
+    (2007 nil 5 4  "Ç›Ç«ÇËÇÃì˙")
     ))
 
 (defun calendar-calc-equinox (year f)
@@ -166,8 +169,10 @@
   (let ((sun (- 1 (calendar-ut-day year month 1)))
 	;; 1985(è∫òa60)îN12åé27ì˙ ñ@ó•103çÜ (ë¶ì˙é{çs) - çëñØÇÃãxì˙
 	(nh (and (> year 1985) "çëñØÇÃãxì˙"))
+	;; 2005(ïΩê¨17)îN5åé20ì˙ ñ@ó•ëÊ43çÜ (ïΩê¨19îN1åé1ì˙é{çs) - êUë÷ãxì˙ÇÃâ¸ê≥
+	(ex2 (>= year 2007))
 	;; 1973(è∫òa48)îN4åé12ì˙ ñ@ó•10çÜ (ë¶ì˙é{çs) - êUë÷ãxì˙
-	(ex (or (> year 1973) (and (= year 1973) (>= month 4)))))
+	(ex (and (or (> year 1973) (and (= year 1973) (>= month 4))) (< year 2007))))
     (dotimes (i (length v))
       (setf (svref v i) nil))
     (when (<= year *calendar-gregorian-reform-year*)
@@ -199,6 +204,16 @@
       (cond ((or (null (svref v d))
 		 (eq (svref v d) nh))
 	     (setf (svref v d) t))
+	    ((and ex2
+		  (not (eq (svref v d) nh)))
+	     (let ((s nil))
+	       (do ((p 1 (+ p 1)))
+		   ((or (> p 6) (>= (+ d p) (- (length v) 1)) s) nil)
+		 (and (or (eq (svref v (+ d p)) nh)
+			  (null (svref v (+ d p))))
+		      (setq s p)))
+	       (and s
+		    (setf (svref v (+ d s)) "êUë÷ãxì˙"))))
 	    ((and ex
 		  (not (eq (svref v d) nh))
 		  (or (eq (svref v (+ d 1)) nh)

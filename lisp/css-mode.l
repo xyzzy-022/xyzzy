@@ -5,7 +5,7 @@
 
 ;;; Author: ˆíŒ©‚³‚ñ(henmi@synform.co.jp)
 
-(provide "cssmode")
+(provide "css-mode")
 
 (in-package "editor")
 

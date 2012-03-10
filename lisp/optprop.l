@@ -555,6 +555,7 @@
    *beep-on-never* *beep-on-warn* *save-history* *menu-history-max*
    kept-undo-information *buffer-list-sort-ignore-case*
    *sort-buffer-list-by-created-order*
+   *brackets-is-wildcard-character*
    *save-resume-info* *enable-D&D-edit* *select-match* *reverse-match*
    *no-wrap-search-on-kbd-macro* *sync-kill-ring-with-clipboard*
    *shodat-copy-mode* *save-buffer-ime-mode*

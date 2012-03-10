@@ -1000,7 +1000,7 @@ Window::paint_cursor_line (HDC hdc, int f) const
             (hdc, CreatePen (PS_SOLID, 0, w_colors[WCOLOR_CURSOR] ^ w_colors[WCOLOR_BACK]));
           int omode = SetROP2 (hdc, R2_XORPEN);
           MoveToEx (hdc, x1, y, 0);
-          LineTo (hdc, x2 + 1, y);
+          LineTo (hdc, x2, y);
           SetROP2 (hdc, omode);
           DeleteObject (SelectObject (hdc, open));
         }

@@ -649,6 +649,9 @@
 (defun compile-call (form)
   (let ((f (assoc (car form) *macro-environment* :test #'eq)))
     (cond ((null f)
+	   (when (and (consp (car form))
+		      (eq (caar form) 'lambda))
+	     (push 'funcall form))
 	   (dolist (f (cdr form))
 	     (compile-form f))
 	   (output-insn 'insn-call (car form) (- (length form) 1)))
@@ -1465,7 +1468,7 @@
   (setf (get 'sixth 'optimize-form) #'(lambda (x) `(nth 5 ,(cadr x))))
   (setf (get 'seventh 'optimize-form) #'(lambda (x) `(nth 6 ,(cadr x))))
   (setf (get 'eighth 'optimize-form) #'(lambda (x) `(nth 7 ,(cadr x))))
-  (setf (get 'nineth 'optimize-form) #'(lambda (x) `(nth 8 ,(cadr x))))
+  (setf (get 'ninth 'optimize-form) #'(lambda (x) `(nth 8 ,(cadr x))))
   (setf (get 'tenth 'optimize-form) #'(lambda (x) `(nth 9 ,(cadr x)))))
 
 (let ((fn #'(lambda (x)

@@ -625,6 +625,7 @@ static symbols lsp[] =
   DEFVAR2 (*read-default-float-format*),
   DEFVAR2 (*readtable*),
   DEFVAR2 (*read-suppress*),
+  DEFVAR2 (*read-eval*),
 
   /* package.cc */
   DEFUN3 (make-package, 1, 0, FFneed_rest),
@@ -899,6 +900,7 @@ static symbols sys[] =
   /* environ.cc */
   SI_DEFUN3 (system-root, 0, 0, 0),
   SI_DEFUN3 (getenv, 1, 0, 0),
+  SI_DEFUN3 (putenv, 1, 1, 0),
   SI_DEFUN3 (delete-registry-tree, 0, 0, 0),
   SI_DEFUN3 (performance-counter, 0, 0, 0),
   SI_DEFUN3 (dump-image-path, 0, 0, 0),
@@ -1671,6 +1673,7 @@ static symbols ed[] =
   DEFUN3 (file-locked-p, 0, 1, 0),
   MAKE_SYMBOL2 (exclusive-lock-file),
   DEFUN3 (set-buffer-colors, 1, 1, 0),
+  DEFUN3 (get-buffer-colors, 0, 1, 0),
   DEFVAR2 (*change-buffer-colors-hook*),
   DEFVAR2 (*sort-buffer-list-by-created-order*),
   DEFVAR2 (*title-bar-text-order*),
@@ -1946,6 +1949,7 @@ static symbols ed[] =
   DEFCMD3 (split-window, 0, 2, 0, "p"),
   DEFCMD3 (delete-other-windows, 0, 0, 0, ""),
   DEFCMD3 (delete-window, 0, 0, 0, ""),
+  DEFUN3 (deleted-window-p, 1, 0, 0),
   DEFUN3 (selected-window, 0, 0, 0),
   DEFUN3 (minibuffer-window, 0, 0, 0),
   DEFUN3 (minibuffer-window-p, 1, 0, 0),
@@ -2313,6 +2317,7 @@ static symbols ed[] =
   DEFVAR2 (*deactivate-hook*),
   DEFVAR2 (*save-buffer-ime-mode*),
   DEFVAR2 (*ime-reconvert-helper*),
+  DEFVAR2 (*ime-documentfeed-helper*),
   DEFVAR2 (*keyboard-layout-list*),
   DEFVAR (*ime-does-not-process-C-\\*, Vime_does_not_process_control_backslach),
   DEFVAR2 (*no-input-language-change-notification*),

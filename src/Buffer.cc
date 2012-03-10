@@ -744,6 +744,8 @@ Fset_buffer_modified_p (lisp flag, lisp buffer)
   bp->b_modified = bp->b_need_auto_save = flag != Qnil;
   bp->modify_mode_line ();
   Buffer::maybe_modify_buffer_bar ();
+  if (!bp->b_modified)
+    bp->save_modtime_undo (bp->b_modtime);
   if (!bp->b_modified && symbol_value (Slock_file, bp) == Kedit)
     bp->unlock_file ();
   return Qt;
@@ -1378,6 +1380,24 @@ Fset_buffer_colors (lisp lcolors, lisp lbuffer)
       Buffer::coerce_to_buffer (lbuffer)->change_colors (cc);
     }
   return Qt;
+}
+
+lisp
+Fget_buffer_colors (lisp lbuffer)
+{
+  lisp v = make_vector (USER_DEFINABLE_COLORS, Qnil);
+  Buffer *bp = Buffer::coerce_to_buffer (lbuffer);
+  if (bp->b_colors_enable)
+    {
+      for (int i = 0; i < USER_DEFINABLE_COLORS; i++)
+        xvector_contents (v) [i] = make_fixnum (bp->b_colors[i]);
+    }
+  else
+    {
+      for (int i = 0; i < USER_DEFINABLE_COLORS; i++)
+        xvector_contents (v) [i] = make_fixnum (Window::default_xcolors[i]);
+    }
+  return v;
 }
 
 void

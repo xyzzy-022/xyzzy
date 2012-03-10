@@ -653,11 +653,11 @@ lookup (u_int hash, const Char *s, int size, lisp vector)
 }
 
 void
-maybe_symbol_string::parse (const Char *&xb, int &xl)
+maybe_symbol_string::parse (Char *&xb, int &xl)
 {
-  const Char *b = xb;
-  const Char *be = b + xl;
-  for (const Char *colon = b; colon < be; colon++)
+  Char *b = xb;
+  Char *be = b + xl;
+  for (Char *colon = b; colon < be; colon++)
     if (*colon == ':')
       {
         if (colon == b)

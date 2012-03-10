@@ -3878,7 +3878,7 @@ lisp syntax_state::ss_hashtab;
 const syntax_table *syntax_state::ss_tab;
 Buffer *syntax_state::ss_bp;
 Chunk *syntax_state::ss_chunk;
-void (syntax_state::*syntax_state::update)(Char);
+void (syntax_state::*syntax_state::update)(const Char *);
 
 void
 syntax_state::init_color_table ()

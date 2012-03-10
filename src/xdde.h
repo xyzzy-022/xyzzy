@@ -228,7 +228,7 @@ DdeDataP::DdeDataP (HDDEDATA h_)
   d = DdeAccessData (hdata, &len);
 }
 
-inline
+inline int
 DdeDataP::length () const
 {
   return len;
