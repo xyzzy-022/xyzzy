@@ -13,7 +13,21 @@
 ;; 	        (*print-length* 1)
 ;; 	        (*print-level* 1))
 ;; 	    (ed::write-session-file "1ssn.l")))
-;; 
+;;
+(deftest fix-saving-session-file ()
+  "セッションファイルを保存時に *print-length* などの影響を受けないように修正。"
+  (block test
+    (with-fake-functions ((write (object &key pretty readably escape)
+                            (unless (or (stringp object)
+                                        (and pretty readably escape))
+                              (return-from test nil))))
+      (let ((*print-circle* t)
+            (*print-pretty* nil)
+            (*print-length* 1)
+            (*print-level* 1))
+        (ed::write-session-file "test.ssn"))
+      t)))
+
 ;; 	* lisp : fix saving history-file.
 ;; 	ヒストリファイル書き込み時に *print-length* などの影響を受けるのを修正。
 ;; 
@@ -26,7 +40,28 @@
 ;; 	        (*print-length* 1)
 ;; 	        (*print-level* 1))
 ;; 	    (ed::save-history-file)))
-;; 
+;;
+(deftest fix-saving-history-file ()
+  "ヒストリファイル書き込み時に *print-length* などの影響を受けるのを修正。"
+  (block test
+    ;; NOTE: xyzzy.exe -q で起動してるとヒストリファイルを使わない感じになっちゃうので
+    (unless ed::*history-file-loaded*
+      (trap-errors (ed::load-history-file)))
+    (let ((tmpfile (make-temp-file-name)))
+      (unwind-protect
+          (with-fake-functions ((write (object &key pretty readably escape)
+                                  (unless (and pretty readably escape)
+                                    (return-from test nil))))
+            (let ((*history-file-name* tmpfile)
+                  (*print-circle* t)
+                  (*print-pretty* nil)
+                  (*print-readably* nil)
+                  (*print-length* 1)
+                  (*print-level* 1))
+              (ed::save-history-file))
+            t)
+        (when (file-exist-p tmpfile)
+          (delete-file tmpfile))))))
 
 ;; 2011-12-20  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -35,6 +70,7 @@
 ;; 	https://gist.github.com/1480046
 ;; 
 (deftest equalp-for-hash-table ()
+  "equalp に hash-table を渡すと多値がが選ってくる問題を修正。"
   (let ((a (make-hash-table))
         (b (make-hash-table)))
     (setf (gethash 1 a) "foo"
@@ -55,6 +91,7 @@
 ;   => t)
  
 (deftest sxhash-fix-01 ()
+  "sxhash の値が equalp 用の値になっていたが equal 用の値に修正。"
   (= (sxhash (list "abc")) (sxhash (list "ABC")))
   => nil)
 
@@ -67,6 +104,7 @@
 ;; 	https://gist.github.com/1000096
 ;; 
 (deftest fix-compiling-lambda-form ()
+  "lambda form をコンパイルするとレキシカル変数を参照できなくなっていた問題を修正。"
   (compile-and-eval
     (let ((a 1))
       ((lambda () a))))
@@ -79,6 +117,7 @@
 ;; 	https://twitter.com/#!/bowbow99/status/80332901014704128
 ;;
 (deftest fix-typo-in-lisp/compile.l ()
+  "lisp/compile.l の関数名 typo を修正（s/nineth/ninth/）。"
   (progn
     (require "compile")
     (functionp (get 'ninth (find-symbol "optimize-form" :compiler)))))
@@ -98,6 +137,7 @@
 ;; 	ときに発生した。
 ;;
 (deftest fix-abbreviate-display-string ()
+  "abbreviate-display-string で必要以上に文字列が省略されることがあるのを修正。"
   (abbreviate-display-string "D:/src/cmigemo-1.3c-MIT/src/wordlist.h" 40 t)
   => "D:/.../cmigemo-1.3c-MIT/src/wordlist.h")
 
@@ -112,7 +152,12 @@
 ;; 	execute-shell-command の第二引数に文字列・nil以外の引数を渡すとファイル
 ;; 	名が空のファイルを開こうとするので、エラーになっていた模様。
 ;; 
-;; TODO: (?_?)
+;; NOTE: 変更の内容をよく理解してないが、変更されてるかだけチェック。
+(deftest fix-pipe-command ()
+  "pipe-command が execute-shell-command に渡す引数が間違ってたのを修正（たぶん）"
+  (with-fake-functions ((execute-shell-command (a b c) b))
+    (pipe-command "duh.."))
+  => nil)
 
 ;; 	* src : fix wheel icon.
 ;; 	なんとなくホイールボタンをクリックしたときのアイコンをいじってみた。
@@ -135,6 +180,8 @@
 ;; 	前に順序を元に戻している。
 ;; 
 (deftest fix-multiple-binding-of-special-variable-in-let/let*-00 ()
+  "let で同一のスペシャル変数に対して複数回の束縛を作ったときの値
+がおかしいのを修正。"
   (progn
     (defparameter *special* :global)
     (let ((*special* :local-1)
@@ -143,6 +190,8 @@
   => :local-2)
 
 (deftest fix-multiple-binding-of-special-variable-in-let/let*-01 ()
+  "let* で同一のスペシャル変数に対して複数回の束縛を作ったときの値
+がおかしいのを修正。"
   (progn
     (defparameter *special* :global)
     (let* ((*special* :local-1)
@@ -157,7 +206,7 @@
 ;; 	コンパイルしたときは値が変わることはないが、インタプリタと同様に逆順で
 ;; 	値をリストアするように修正。
 ;;
-;; NOTE: これは元から壊れてない（挙動は変わってない）はず
+;; NOTE: これは元から壊れてない（挙動は変わってない）
 ; (deftest fix-let/let*-multiple-bind-for-special-variable-in-compiled-code ()
 ;   (progn
 ;     (defparameter *special* :global)
@@ -189,6 +238,8 @@
 ;; 	した。
 ;; 
 (deftest fix-special-variables-restore-at-the-end-of-let/let*-00 ()
+  "let で同一のスペシャル変数に対して複数回の束縛を作ると、スコー
+プが外れたときに値が書き換わってしまうのを修正。"
   (progn
     (defparameter *special* :global)
     (let ((*special* :local-1)
@@ -198,6 +249,8 @@
   => :global)
 
 (deftest fix-special-variables-restore-at-the-end-of-let/let*-01 ()
+  "let* で同一のスペシャル変数に対して複数回の束縛を作ると、スコー
+プが外れたときに値が書き換わってしまうのを修正。"
   (progn
     (defparameter *special* :global)
     (let* ((*special* :local-1)
@@ -215,6 +268,9 @@
 ;; 	xyzzy Part16 577
 ;;
 (deftest fix-eol-code-of-zero-size-file ()
+  "ファイルサイズが 0 のときの (正確には改行がないファイルのときの) 改行コー
+ドが常に CRLF になるのを修正し *default-eol-code* に基づいた改行コード
+になるようにする。"
   (let ((name (make-temp-file-name))
         buffer)
     (with-open-file (out name :direction :output :if-does-not-exist :create))
@@ -253,11 +309,42 @@
 ;; 	* lisp : support lzma and xz in filer.
 ;; 	lzma および xz の圧縮と展開をファイラから利用できるように修正。
 ;; 
+(deftest lzma-support-in-filer-00 ()
+  "lzma の圧縮と展開をファイラから利用できるように修正。"
+  (member "*.lzma" (cdr (assoc "アーカイブ" ed:*filer-path-masks* :test #'string=))
+          :test #'string=))
+
+(deftest lzma-support-in-filer-01 ()
+  (with-fake-functions ((dialog-box (&rest args)
+                          (values t '((ed::name . "foo.tar.lzma")
+                                      (ed::dir . "C:/dir")
+                                      (ed::base . "dir"))))
+                        (ed::add-history (&rest args) t)
+                        (ed::filer-get-directory () "C:/"))
+    (ed::filer-get-archive-name))
+  => "C:/dir/foo.tar.lzma"
+  => "C:/dir")
+
+(deftest xz-support-in-filer-00 ()
+  "xz の圧縮と展開をファイラから利用できるように修正。"
+  (member "*.xz" (cdr (assoc "アーカイブ" ed:*filer-path-masks* :test #'string=))
+          :test #'string=))
+
+(deftest xz-support-in-filer-01 ()
+  (with-fake-functions ((dialog-box (&rest args)
+                          (values t '((ed::name . "foo.tar.xz")
+                                      (ed::dir . "C:/dir")
+                                      (ed::base . "dir"))))
+                        (ed::add-history (&rest args) t)
+                        (ed::filer-get-directory () "C:/"))
+    (ed::filer-get-archive-name))
+  => "C:/dir/foo.tar.xz"
+  => "C:/dir")
+
 ;; 	* src : support lzma and xz.
 ;; 	tar32.dll Ver2.35 から利用できるようになった lzma および xz の圧縮と展
 ;; 	開に対応。
 ;;
-;; TODO: よくわからんので後で。
 
 ;; 2010-12-11  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -270,7 +357,24 @@
 ;; 	http://twitter.com/miyamuko/status/14229437114
 ;; 	http://d.hatena.ne.jp/knenet/20091223/1261578863
 ;; 
-;; TODO: xyzzy を起動するマクロ書く
+;; FIXME: 「空でない環境で定義された関数はコンパイルできません」
+; (deftest fix-hash-table-and-gc-crash ()
+;   (with-another-xyzzy (:options "-q")
+;     (defun xn ()
+;       (let ((tb (make-hash-table)))
+;         (dotimes (a 10000 :done)
+;           (let* ((p (f))
+;                  (n (gethash p tb)))
+;             (setf (gethash p tb) (if n (1+ n) 1))))))
+;     (defun f ()
+;       (let ((p 0))
+;         (dotimes (- 20 p)
+;           (if (< 0.4 (random 1.0)) (incf p)))))
+;     (progn
+;       (compile 'xn)
+;       (compile 'f)
+;       (xn)))
+;   => :done)
 
 ;; 2010-12-10  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -283,13 +387,12 @@
 ;; 	(cdr '#1=(quote #1#)) => #1=((quote . #1#))
 ;; 	(cdr '#1=(q #1#))     => #1=((q . #1#))
 ;;
-;; FIXME: handler-case ではスタックオーバーフローを止められずテスト実行がクラッシュしてまう
-;; FIXME: 手元の nanri-master をちょっといじったものだと「致命的な例外」だかで xyzzy 自体が
-;; 落ちてしまう
-; (deftest |fix (cdr '#1='#1#) printing| ()
-;   (write (cdr '#1='#1#) :circle t)
-;   >> #1=((quote . #1#))
-;   => #2=((quote . #2#)))
+(deftest |fix (cdr '#1='#1#) printing| ()
+  "「(cdr '#1='#1#)」の評価結果の印字でスタックオーバーフローするのを修正。"
+  (with-another-xyzzy (:options "-q")
+    (with-output-to-string (*standard-output*)
+      (write (cdr '#1='#1#) :circle t)))
+  => "#1=((quote . #1#))")
 
 ;; 2010-12-01  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -304,11 +407,13 @@
 ;; 	=> nil
 ;; 
 (deftest fix-macroexpand-00 ()
+  "macroexpand で2番目の戻り値が返っていなかったのを修正: 展開した場合 t"
   (macroexpand '(push 1 x))
   => (setq x (cons 1 x))
   => t)
 
 (deftest fix-macroexpand-01 ()
+  "macroexpand で2番目の戻り値が返っていなかったのを修正: 展開しない場合 nil"
   (macroexpand '(setq x (cons 1 x)))
   => (setq x (cons 1 x))
   => nil)
@@ -324,12 +429,15 @@
 ;; 	(macrolet ())   => nil
 ;; 
 (deftest fix-flet/labels/macrolet-00 ()
+  "flet, labels, macrolet の BODY を空にするとエラーになってたのを修正: flet"
   (flet ()) => nil)
 
 (deftest fix-flet/labels/macrolet-01 ()
+  "flet, labels, macrolet の BODY を空にするとエラーになってたのを修正: labels"
   (labels ()) => nil)
 
 (deftest fix-flet/labels/macrolet-02 ()
+  "flet, labels, macrolet の BODY を空にするとエラーになってたのを修正: macrolet"
   (macrolet ()) => nil)
 
 ;; 	* src : add "listp" Macro.
@@ -350,10 +458,12 @@
 ;; 	とりあえずそのまま。
 ;; 
 (deftest fix-type-check-in-list-length-00 ()
+  "list-length の型チェック。"
   (list-length :foo)
   !! type-error)
 
 (deftest fix-type-check-in-list-length-01 ()
+  "list-length の型チェック。ドットリストもダメ。"
   (list-length '(a . b))
   !! type-error)
 
@@ -387,6 +497,7 @@
 ;   (nthcdr 4 '(a b c)) => nil)
 
 (deftest fix-nthcdr-given-dotted-list-05 ()
+  "nthcdr をドットリストに対応させる。"
   (nthcdr 1 '(0 . 1)) => 1)
 
 ; (deftest fix-nthcdr-given-dotted-list-06 ()
@@ -425,6 +536,7 @@
 ;; 	nil
 ;; 
 (deftest fix-single-float-eplilon ()
+  "single-float-epsilon とその仲間たちの値が、倍精度のそれと同じになってしまってたのを修正。"
   (dolist (sym '((double-float-epsilon t)
                  (double-float-negative-epsilon nil)
                  (long-float-epsilon t)
@@ -464,10 +576,14 @@
 
 ;; NOTE: 自前で用意してた場合 pass してしまう。
 (deftest add-deleted-window-p-00 ()
+  "削除された window なら t を返す deleted-window-p を追加。
+関数かどうかチェック。"
   (fboundp 'deleted-window-p))
 
 ;; NOTE: 自前で用意してた場合 pass してしまう。
 (deftest add-deleted-window-p-01 ()
+  "削除された window なら t を返す deleted-window-p を追加。
+削除された window に t を返すかチェック。"
   (let ((current (selected-window))
         (new     (save-window-excursion
                    (split-window -1)
@@ -475,6 +591,8 @@
     (deleted-window-p new)))
 
 (deftest add-deleted-window-p-02 ()
+  "削除された window なら t を返す deleted-window-p を追加。
+ビルトイン関数かどうかチェック。"
   (si:*builtin-function-p (symbol-function 'deleted-window-p)))
 
 ;; 2010-09-12  MIYAMUKO Katsuyuki  <miyamuko@gmail.com>
@@ -492,25 +610,30 @@
 ;; 	=> nil
 ;; 
 (deftest add-putenv-00 ()
+  "関数 si:putenv を追加＆引数を (VARNAME &optional VALUE) に"
   (multiple-value-bind (sym class)
       (find-symbol "putenv" :system)
     class)
   => :external)
 
 (deftest add-putend-01 ()
+  "関数 si:putenv を追加＆引数を (VARNAME &optional VALUE) に"
   (fboundp (find-symbol "putenv" :system)))
 
 (deftest add-putenv-02 ()
+  "関数 si:putenv を追加＆引数を (VARNAME &optional VALUE) に"
   (funcall (find-symbol "putenv" :system) "FOO" "bar")
   => "bar")
 
 (deftest add-putenv-03 ()
+  "関数 si:putenv を追加＆引数を (VARNAME &optional VALUE) に"
   (progn
     (funcall (find-symbol "putenv" :system) "FOO" "baz")
     (si:getenv "FOO"))
   => "baz")
 
 (deftest add-putenv-04 ()
+  "関数 si:putenv を追加＆引数を (VARNAME &optional VALUE) に"
   (values
    (funcall (find-symbol "putenv" :system) "FOO" nil)
    (si:getenv "FOO"))
@@ -544,7 +667,7 @@
 ;; 	call-processの標準入力・標準出力等の指定がうまく設定されない現象がおき
 ;; 	ていたのを修正。
 ;;
-;; FIXME: command prompt が一瞬表示されるのうざい
+;; TODO: command prompt が一瞬表示されるのうざい
 ;; FIXME: 0.2.2.235 で pass してしまう。どういう場合に上手く設定されないのかわからん。
 ; (deftest fix-call-process-input/output ()
 ;   (labels ((make-file (name &optional contents)
@@ -615,8 +738,14 @@
 ;; 	ダンプ作成時にロードしたファイル名がそのままダンプファイルに保存される
 ;; 	ようなので、起動時にも初期化するように修正。
 ;; 
-;; TODO: xyzzy を起動するマクロ書く
-
+(deftest fix-*load-pathname*-from-dump-image ()
+  "ダンプ作成時にロードしたファイル名がそのままダンプファイルに保存される
+ようなので、起動時にも初期化するように修正。"
+  ;; FIXME: ダンプイメージがまだ無い場合 pass ってしまう。
+  (with-another-xyzzy (:options "-q")
+    *load-pathname*)
+  => nil
+  )
 
 ;; 	* src : fix format "~F".
 ;; 	formatの"~F"の第一パラメータwを指定しないと第三パラメータkが機能しない
@@ -712,6 +841,7 @@
 ;; 	call_applyhookの第一引数にクロージャを渡すように変更した。
 ;; 
 (deftest fix-applyhook-00 ()
+  "applyhook, *applyhook* をローカル関数に対応させた。"
   (let ((*applyhook* (lambda (fn args)
                        (functionp fn))))
     (car 1)))
@@ -723,9 +853,11 @@
 ;; 	ているが、自信なし。
 ;; 
 (deftest add-*read-eval*-00 ()
+  "スペシャル変数*read-eval*が機能するようにした。"
   (si:*specialp '*read-eval*))
 
 (deftest add-*read-eval*-01 ()
+  "スペシャル変数*read-eval*が機能するようにした。"
   (let ((*read-eval* nil))
     (read-from-string "#.(+ 1 2)"))
   !! reader-error)
@@ -744,9 +876,28 @@
 ;; 	関数get-buffer-colorsを追加。
 ;; 	set-buffer-colorsと対となる現在のバッファの色設定を取得する関数。
 ;;
-;; NOTE: もうちょっとちゃんとテストした方が良いと思います。。。
-(deftest add-get-buffer-colors ()
+(deftest add-get-buffer-colors-00 ()
+  "関数get-buffer-colorsを追加。"
   (fboundp 'get-buffer-colors))
+
+;; NOTE: NANRI さんからの頂き物; thx
+(deftest add-get-buffer-colors-01 ()
+  "関数get-buffer-colorsは現在のバッファの色設定を返す。"
+  (flet ((make-tmp-colors ()
+           (let ((l (list #xffffff #x000000)))
+             (dotimes (i 16)
+               (push (* i #x111111) l))
+             (make-vector 18 :initial-contents (nreverse l)))))
+    (let ((colors (make-tmp-colors))
+          (buf (create-new-buffer "test get-buffer-colors")))
+      (save-excursion
+        (with-set-buffer
+          (set-buffer buf)
+          (unwind-protect
+              (progn
+                (set-buffer-colors colors)
+                (equalp colors (get-buffer-colors buf)))
+            (delete-buffer buf)))))))
 
 ;; 2010-01-22  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -755,11 +906,13 @@
 ;; 	分かる範囲ということでstring-streamとfile-streamだけ。
 ;; 
 (deftest fix-listen-for-string-stream ()
+  "EOFのときにnilを返すように修正（string-stream）"
   (let ((stream (make-string-input-stream "")))
     (listen stream))
   => nil)
 
 (deftest fix-listen-for-file-stream ()
+  "EOFのときにnilを返すように修正（file-stream）"
   (let* ((file (make-temp-file-name))
          (buffer (ed::find-file-internal file)))
     (save-excursion
@@ -779,23 +932,26 @@
 ;; 	で正しく多値が返らない場合があるのを修正。
 ;; 	xyzzy Part11 8 http://www.bookshelf.jp/2ch/win/1085301777.html
 ;;
+;; 	WindowConfigurationのデストラクタ内でLispのコードが実行されるので、
+;; 	WindowConfigurationのデストラクタを実行したあとで、多値を元の値に戻
+;; 	す必要がある。
+;; 
 ;; FIXME: 未修正でも正しく多値が返ることもあるみたいなので、その時は pass してしまう
 (deftest fix-save-window-excursion ()
+  "正しく多値が返らない場合があるのを修正"
   (save-window-excursion (values 1 2 3))
   => 1
   => 2
   => 3)
 
-;; 	WindowConfigurationのデストラクタ内でLispのコードが実行されるので、
-;; 	WindowConfigurationのデストラクタを実行したあとで、多値を元の値に戻
-;; 	す必要がある。
-;; 
 ;; 	* lisp : fix long-operation.
 ;; 	long-operationの戻り値がprog1相当になっているのをprogn相当になるよ
 ;; 	うに修正。
 ;; 	xyzzy Part10 470
 ;; 
 (deftest fix-long-operation ()
+  "long-operationの戻り値がprog1相当になっているのをprogn相当になるよ
+うに修正。"
   (long-operation
     1
     2)
@@ -806,7 +962,6 @@
 ;; 	* src : update zlib.
 ;; 	zlibをバージョン1.2.3にアップデート。
 ;; 
-;; FIXME: テストする方法が思いつかない、というかテスト必要なんだろうか
 
 ;; 2009-12-17  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -880,7 +1035,6 @@
 ;; 	* src : fix format "~n@A".
 ;; 	http://d.hatena.ne.jp/bowbow99/20090829/1251547986
 ;;
-;; NOTE: merge されてなさげ（これは外したのかも）
 (deftest fix-format-n@A ()
   (format t "~10@A" "foo")
   >>        foo
@@ -891,8 +1045,10 @@
 ;; 	* src : add "*brackets-is-wildcard-character*" to history-variable.
 ;; 	共通設定の「[...]はワイルドカード」の設定が保存されないので、対応す
 ;; 	る変数をヒストリに追加。
-;; 
+;;
 (deftest add-*brackets-is-wildcard-character*-to-history-variable ()
+  "共通設定の「[...]はワイルドカード」の設定が保存されないので、対応す
+る変数をヒストリに追加。"
   (member '*brackets-is-wildcard-character* ed::*history-variable-list*))
 
 ;; 	* src : fix dump hash-table.
@@ -919,12 +1075,43 @@
 ;; 	トのアドレスが異なり、同一のハッシュ値にならないのが原因。
 ;; 
 ;; 	ダンプファイルをロードしたあとにrehashするように修正。
-;; 
+;;
+
+;; FIXME: ダミーの site-lisp/siteinit.l を用意してやらにゃならんらしい。
+; (deftest fix-dump-hash-table ()
+;   (progn
+;     (with-another-xyzzy (:options "-q")
+;       (defparameter *hash* (make-hash-table))
+;       (dolist (i '((aaa . abab) (bbb . bcbc) (ccc . cdcd)))
+;         (setf (gethash (car i) *hash*) (cdr i)))
+;       (dump-xyzzy (merge-pathnames "dump-image-for-test.wxp" (si:system-root))))
+;     (let ((image-name (merge-pathnames "dump-image-for-test.wxp" (si:system-root))))
+;       (unless (file-exist-p image-name)
+;         (error "Failed to create dump-image."))
+;       (multiple-value-prog1
+;           (with-another-xyzzy (:options (format nil "-image ~S -q" image-name))
+;             (gethash 'aaa *hash*))
+;         ;(delete-file image-name)
+;         )))
+;   => abab
+;   => t)
+
 ;; 	* lisp : fix defpackage.
 ;; 	defpackageマクロで:exportオプションを指定できない不具合を修正。
 ;; 	[xyzzy:09241]
 ;; 
-
+(deftest fix-depackage-export ()
+  "defpackageマクロで:exportオプションを指定できない不具合を修正。"
+  (defpackage :example
+    (:export #:foo))
+  == (eval-when (:compile-toplevel :load-toplevel :execute)
+       (let* ((package (or (find-package "example")
+                           (make-package "example"))))
+         (export (mapcar #'(lambda (lisp::x)
+                             (intern lisp::x package))
+                   '("foo"))
+                 package)
+         package)))
 
 ;; 	* lisp : fix shell-alternate-send-input.
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F15
@@ -933,6 +1120,7 @@
 (require "shell")
 
 (deftest fix-shell-alternate-send-input ()
+  "shell-alternate-send-input は改行コードをスイッチするように修正"
   (labels ((mocked-shell-send-input ()
              *shell-ret*))
     (let ((original-shell-send-input #'shell-send-input))
@@ -955,14 +1143,17 @@
     (svref v day)))
 
 (deftest fix-calendar-01 ()
+  "calendar の祝日を現行法に合わせる"
   (calendar-japanese-holiday-spec 2007 4 29)
   => "昭和の日")
 
 (deftest fix-calendar-02 ()
+  "calendar の祝日を現行法に合わせる"
   (calendar-japanese-holiday-spec 2007 5 4)
   => "みどりの日")
 
 (deftest fix-calendar-03 ()
+  "calendar の祝日を現行法に合わせる"
   (calendar-japanese-holiday-spec 2008 5 6)
   => "振替休日")
 
@@ -970,12 +1161,14 @@
 ;; 	* lisp : fix typo in lisp/timestmp.l.
 ;; 	コメントのtypoを修正。
 ;; 	[xyzzy:09158]
-;; 
+;;
+
 ;; 	* lisp : fix typo in lisp/encoding.l.
 ;; 	provideのtypoを修正。
 ;; 	[xyzzy:09158]
 ;;
 (deftest fix-typo-in-lisp/encoding.l ()
+  "lisp/encoding.l で provide しているモジュール名の typo を修正"
   (modulep "encoding"))
 
 ;; 	* lisp : fix typo in lisp/css-mode.l.
@@ -983,6 +1176,7 @@
 ;; 	[xyzzy:09158]
 ;;
 (deftest fix-typo-in-lisp/css-mode.l ()
+  "lisp/css-mode.l で provide しているモジュール名の typo を修正"
   (progn
     (require "css-mode")
     (and (modulep "css-mode")
@@ -993,54 +1187,67 @@
 ;; 	[xyzzy:09158]
 ;;
 (deftest fix-typo-in-lisp/builtin--sort ()
+  "builtin.l の typo を修正: sort"
   (get 'sort 'si::builtin-function-argument #1='#:undefined)
   => (sequence lisp::predicate &key :key))
 
 (deftest fix-typo-in-lisp/builtin--rename-file ()
+  "builtin.l の typo を修正: rename-file"
   (get 'rename-file 'si::builtin-function-argument #1='#:undefined)
   => (lisp::file lisp::new-name &key :if-exists :if-access-denied))
 
 (deftest fix-typo-in-lisp/builtin--copy-file ()
+  "builtin.l の typo を修正: copy-file"
   (get 'copy-file 'si::builtin-function-argument #1='#:undefined)
   => (lisp::file lisp::new-file &key :if-exists :copy-attributes :if-access-denied))
 
 (deftest fix-typo-in-lisp/builtin--dump-image-path ()
+  "builtin.l の typo を修正: si:dump-image-path"
   (get 'system:dump-image-path 'si::builtin-function-argument #1='#:undefined)
   => nil)
 
 (deftest fix-typo-in-lisp/builtin--char-before ()
+  "builtin.l の typo を修正: char-before"
   (get 'char-before 'si::builtin-function-argument #1='#:undefined)
   => (point &optional editor::not-used))
 
 (deftest fix-typo-in-lisp/builtin--file-name-dialog ()
+  "builtin.l の typo を修正: file-name-dialog"
   (get 'file-name-dialog 'si::builtin-function-argument #1='#:undefined)
   => (&key :char-encoding :eol-code :filter :filter-index :title :default :extension :save :multiple :must-exist :explorer :hide-read-only :initial-directory))
 
 (deftest fix-typo-in-lisp/builtin--directory-name-dialog ()
+  "builtin.l の typo を修正: directory-name-dialog"
   (get 'directory-name-dialog 'si::builtin-function-argument #1='#:undefined)
   => (&key :title :default))
 
 (deftest fix-typo-in-lisp/builtin--make-iso2022-encoding ()
+  "builtin.l の typo を修正: make-iso2022-ecnoding"
   (get 'make-iso2022-encoding 'si::builtin-function-argument #1='#:undefined)
   => (editor::name editor::display-name &key :g0 :g1 :g2 :g3 :ascii-eol :ascii-control :7bits :locking-shift :short-form :no-escape :cjk :use-cns11643 :vender))
 
 (deftest fix-typo-in-lisp/builtin--make-utf16-encoding ()
+  "builtin.l の typo を修正: make-utf16-encoding"
   (get 'make-utf16-encoding 'si::builtin-function-argument #1='#:undefined)
   => (editor::name editor::display-name &key :signature :byte-order :windows :cjk))
 
 (deftest fix-typo-in-lisp/builtin--make-utf8-encoding ()
+  "builtin.l の typo を修正: make-utf8-encoding"
   (get 'make-utf8-encoding 'si::builtin-function-argument #1='#:undefined)
   => (editor::name editor::display-name &key :signature :windows :cjk))
 
 (deftest fix-typo-in-lisp/builtin--make-utf7-encoding ()
+  "builtin.l の typo を修正: make-utf7-encoding"
   (get 'make-utf7-encoding 'si::builtin-function-argument #1='#:undefined)
   => (editor::name editor::display-name &key :windows :imap4 :white :set-o :cjk))
 
 (deftest fix-typo-in-lisp/builtin--make-utf5-encoding ()
+  "builtin.l の typo を修正: make-utf5-encoding"
   (get 'make-utf5-encoding 'si::builtin-function-argument #1='#:undefined)
   => (editor::name editor::display-name &key :windows :imap4 :white :set-o :cjk))
 
 (deftest fix-typo-in-lisp/builtin--parse-char-encoding-string ()
+  "builtin.l の typo を修正: parse-char-encoding-string"
   (get 'parse-char-encoding-string 'si::builtin-function-argument #1='#:undefined)
   => (editor::accept-char-encoding string &key :start :end))
 
@@ -1058,7 +1265,9 @@
 ;; 	via http://fixdap.com/p/xyzzy/8379/
 ;; 	via http://d.hatena.ne.jp/miyamuko/20080304/xyzzy_ole_method_bug
 ;;
+;; NOTE: miyamuko さんからの頂き物; thx
 (deftest fix-ole-method ()
+  "ole-method で文字列を渡すと余計な 0x00 が付く問題"
   (flet ((ole-create-file (content)
            (let ((tmp (make-temp-file-name)))
              (unwind-protect
@@ -1083,6 +1292,7 @@
 ;; 	via http://d.hatena.ne.jp/miyamuko/20070509/p1
 ;;
 (deftest fix-for-FFI-c-function-return-doubl/float-00 ()
+  "戻り値が double, float の C 関数を呼ぶとクラッシュする"
   (with-another-xyzzy (:options "-q" :timeout 6)
     (labels ((c (name) (find-symbol name :c)))
       (require "foreign")
@@ -1098,19 +1308,25 @@
 ;; 	* src : fix start-timer.
 ;; 	http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F21
 ;; 
-; ;; FIXME: *scratch* では動くんだけどテストにすると返ってこなくなるっぽい
-; (let ((n 0)
-;         (start (get-internal-real-time))
-;         thunk
-;         (finish nil))
-;     (setf thunk (lambda ()
-;                   (when (>= (incf n) 3)
-;                     (stop-timer thunk)
-;                     (setf finish (get-internal-real-time)))))
-;     (start-timer 1 thunk)
-;     (while (not finish)
-;       (sleep-for 0.2))
-;     (> (- finish start) 2900))
+
+;; NOTE: タイマーからバックグラウンドでテスト実行すると sleep-for しても
+;; start-timer した関数が実行されないので返ってこなくなる。のでタイムアウト
+;; させてる。
+(deftest fix-start-timer ()
+  (let ((n 0)
+        (start (get-internal-real-time))
+        thunk
+        (finish nil))
+    (setf thunk (lambda ()
+                  (when (>= (incf n) 3)
+                    (stop-timer thunk)
+                    (setf finish (get-internal-real-time)))))
+    (start-timer 0.5 thunk)
+    (while (not finish)
+      (sleep-for 0.2)
+      (when (> (- (get-internal-real-time) start) 6000)
+        (error "fix-start-timer test timeout.")))
+    (> (- finish start) 1400)))
 
 ;; 	* src : fix format "~G".
 ;; 	[xyzzy:09204]
