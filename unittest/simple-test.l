@@ -701,16 +701,17 @@ Returns list of failures."
         (nreverse failures)))))
 
 (defun report-test-failures (test finished &optional (out (ssn-report-output)))
-  (let ((desc (test-description test)))
-    (when desc (format out "~{  ;; ~A~%~}" (split-string desc #\LFD))))
-  (dolist (example/failures finished)
-    (let ((example  (car example/failures))
-          (failures (cdr example/failures)))
-      (format out "  * ~S~%" (car example)) ; form
-      (dolist (failure failures)
-        (let ((report (with-output-to-string (*standard-output*)
-                        (report-failure failure))))
-          (format out "~{  ~A~%~}" (split-string report #\LFD)))))))
+  (let ((desc (test-description test))
+        (*print-circle* t))
+    (when desc (format out "~{  ;; ~A~%~}" (split-string desc #\LFD)))
+    (dolist (example/failures finished)
+      (let ((example  (car example/failures))
+            (failures (cdr example/failures)))
+        (format out "  * ~S~%" (car example)) ; form
+        (dolist (failure failures)
+          (let ((report (with-output-to-string (*standard-output*)
+                          (report-failure failure))))
+            (format out "~{  ~A~%~}" (split-string report #\LFD))))))))
 
 (defun run-current-test ()
   (assert-in-session)
