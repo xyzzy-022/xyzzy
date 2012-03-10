@@ -432,7 +432,7 @@ Fpackage_shadowing_symbols (lisp package)
 lisp
 Flist_all_packages ()
 {
-  return xsymbol_value (Vpackage_list);
+  return Fcopy_list (xsymbol_value (Vpackage_list));
 }
 
 lisp
