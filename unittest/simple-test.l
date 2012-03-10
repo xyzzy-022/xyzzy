@@ -439,6 +439,7 @@ only when ACTUAL-RESULTS does not match expectation."
           (cond ((eql compare-fn :true)
                  (unless (second actual-results)
                    (list :results :false)))
+                ((eql compare-fn :normally) nil)
                 (t (let* ((actual-values (cdr actual-results))
                           (nexpected (length expected-values))
                           (nactuals  (length actual-values)))
@@ -451,7 +452,7 @@ only when ACTUAL-RESULTS does not match expectation."
          (:error  (let ((error (second actual-results)))
                     (return-from check-results
                       (list :results :unexpected-error
-                            expected-values
+                            (if (eql compare-fn :normally) :normally expected-values)
                             error)))))))
     (:error
      (let ((expected-error-name (second expected-results)))
@@ -488,6 +489,11 @@ only when ACTUAL-RESULTS does not match expectation."
                    `(:results :unexpected-error (1) ,error))))
   (ASSERT (equal (check-results '(:return :true) '(:return nil))
                  `(:results :false)))
+  (ASSERT (equal (check-results '(:return :normally) '(:return t))
+                 nil))
+  (let ((error (make-condition 'type-error)))
+    (ASSERT (equal (check-results '(:return :normally) `(:error ,error))
+                   `(:results :unexpected-error :normally ,error))))
   ;; expecting error
   (ASSERT (null  (check-results '(:error type-error) `(:error ,(make-condition 'type-error)))))
   (ASSERT (equal (check-results '(:error type-error) '(:return 1))
@@ -521,7 +527,9 @@ only when ACTUAL-RESULTS does not match expectation."
 
 (define-failure-reporter :results :unexpected-error (expected-values error)
   (format t "Evaluation result (return values):~%")
-  (format t "  Expected:~%~{  => ~S~%~}" expected-values)
+  (if (eql expected-values :normally)
+    (format t "  Expected:~%  ;; return normally~%")
+    (format t "  Expected:~%~{  => ~S~%~}" expected-values))
   (format t "  Actually:~%  !! ~S: ~A~%"
         (si:*structure-definition-name (si:*structure-definition error))
         error))
