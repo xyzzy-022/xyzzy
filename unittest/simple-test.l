@@ -6,7 +6,7 @@
    load file: ${XYZZY}/unittest/simple-test.l
 2. M-x load-test-file
    test file: ${XYZZY}/unittest/nanri-master-change-tests.l
-3. M-x change-tests
+3. M-x test-changes
 
 で *Test Results* だかいう名前のバッファが開いて結果が表示される。
 |#
@@ -193,16 +193,20 @@
       ;(values r o))
     ))
 
-(defun expand-deftest (name options form expectations)
+(defun expand-deftest (name options doc form expectations)
   (multiple-value-bind (expected-result expected-output)
       (parse-expectations name expectations options)
     `(setf *change-tests*
-           (acons ',name ,(make-test-thunk name form expected-result expected-output)
+           (cons (list ',name ,doc ,(make-test-thunk name form expected-result expected-output))
                   (remove ',name *change-tests* :key 'car)))))
 
 
 (defmacro deftest (name (&rest options) form &rest expected)
-  (expand-deftest name options form expected))
+  (multiple-value-bind (doc form expected)
+      (if (stringp form)
+        (values form (car expected) (cdr expected))
+        (values "" form expected))
+    (expand-deftest name options doc form expected)))
 (setf (get 'deftest 'ed:lisp-indent-hook) 2)
 
 
@@ -219,12 +223,17 @@
     (pop-to-buffer buffer)
     (with-output-to-buffer (buffer)
       (dolist (x *change-tests*)
-        (message "running test: ~S..." (car x))
-        (case (funcall (cdr x))
-          (:pass (incf pass-count))
-          (:fail (incf fail-count) (ding))
-          (:error (incf error-count) (ding)))
-        (refresh-screen))
+        (multiple-value-bind (name doc thunk) (values-list x)
+          (message "running test: ~S..." name)
+          (let ((test-result (funcall thunk)))
+            (case test-result
+              (:pass (incf pass-count))
+              (:fail (incf fail-count) (ding))
+              (:error (incf error-count) (ding)))
+            (when (and doc (not (eql test-result :pass)))
+              (format t "  Test Documentation:~%~{    ~A~%~}"
+                    (split-string doc #\LFD))))
+          (refresh-screen)))
       (format t "----------------------------------------------------------------------~%")
       (format t "total ~D tests, ~D passed, ~D failed, ~D Errors"
             (+ pass-count fail-count error-count) pass-count fail-count error-count)
