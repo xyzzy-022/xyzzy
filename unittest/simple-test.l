@@ -720,6 +720,7 @@ Returns list of failures."
     (let ((example (first (remaining))))
       (cond ((eql (first example) :break)
              ;; FIXME: just stop (pause) execution properly.
+             (setf (remaining) (rest (remaining)))
              (error "BREAK"))
             ((null (remaining))
              (let* ((finished (nreverse (finished)))
