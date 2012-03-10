@@ -435,15 +435,19 @@ only when ACTUAL-RESULTS does not match expectation."
      (let ((compare-fn (second expected-results))
            (expected-values (cddr expected-results)))
        (case (first actual-results)
-         (:return (let* ((actual-values (cdr actual-results))
-                         (nexpected (length expected-values))
-                         (nactuals  (length actual-values)))
-                    (let ((failure (cond ((< nactuals nexpected) :too-few-values)
-                                         ((> nactuals nexpected) :too-many-values)
-                                         ((not (every compare-fn expected-values actual-values))
-                                          :wrong-values))))
-                      (when failure
-                        (list :results failure expected-values actual-values compare-fn)))))
+         (:return
+          (cond ((eql compare-fn :true)
+                 (unless (second actual-results)
+                   (list :results :false)))
+                (t (let* ((actual-values (cdr actual-results))
+                          (nexpected (length expected-values))
+                          (nactuals  (length actual-values)))
+                     (let ((failure (cond ((< nactuals nexpected) :too-few-values)
+                                          ((> nactuals nexpected) :too-many-values)
+                                          ((not (every compare-fn expected-values actual-values))
+                                           :wrong-values))))
+                       (when failure
+                         (list :results failure expected-values actual-values compare-fn)))))))
          (:error  (let ((error (second actual-results)))
                     (return-from check-results
                       (list :results :unexpected-error
@@ -501,6 +505,8 @@ only when ACTUAL-RESULTS does not match expectation."
   (format t "  Actually:~%")
   (print-return-values actual-values))
 
+(define-failure-reporter :results :false ()
+  (format t "Evaluation result (true):~%  Expected:~%  => #<non-nil>~%  Actually:~%  => nil~%"))
 
 (define-failure-reporter :results :too-few-values (expected-values actual-values compare-fn)
   (report-return-values expected-values actual-values))
