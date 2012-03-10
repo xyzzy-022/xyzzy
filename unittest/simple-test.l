@@ -486,6 +486,8 @@ only when ACTUAL-RESULTS does not match expectation."
   (let ((error (make-condition 'type-error)))
     (ASSERT (equal (check-results '(:return equal 1) `(:error ,error))
                    `(:results :unexpected-error (1) ,error))))
+  (ASSERT (equal (check-results '(:return :true) '(:return nil))
+                 `(:results :false)))
   ;; expecting error
   (ASSERT (null  (check-results '(:error type-error) `(:error ,(make-condition 'type-error)))))
   (ASSERT (equal (check-results '(:error type-error) '(:return 1))
