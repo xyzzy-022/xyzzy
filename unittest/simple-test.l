@@ -451,8 +451,8 @@ only when ACTUAL-RESULTS does not match expectation."
          (:error  (let ((error (second actual-results)))
                     (return-from check-results
                       (list :results :unexpected-error
-                            expected-values
-                            error)))))))
+                            error
+                            expected-values)))))))
     (:error
      (let ((expected-error-name (second expected-results)))
        (case (first actual-results)
@@ -469,6 +469,8 @@ only when ACTUAL-RESULTS does not match expectation."
                         (list :results :wrong-error
                               expected-error-name
                               actual-error))))))))
+    ((nil) (when (eql (first actual-results) :error)
+             (list :results :enexpected-error (second actual-results))))
     (t (error "Invalid expected results: ~S" expected-results))))
 
 #+unittest-meta-test
@@ -517,9 +519,11 @@ only when ACTUAL-RESULTS does not match expectation."
 (define-failure-reporter :results :wrong-values (expected-values actual-values compare-fn)
   (report-return-values expected-values actual-values "~S" compare-fn))
 
-(define-failure-reporter :results :unexpected-error (expected-values error)
+(define-failure-reporter :results :unexpected-error (error &optional expected-values)
   (format t "Evaluation result (return values):~%")
-  (format t "  Expected:~%~{  => ~S~%~}" expected-values)
+  (if expected-values
+    (format t "  Expected:~%~{  => ~S~%~}" expected-values)
+    (format t "  Expected:~%  ;; Return normally~%"))
   (format t "  Actually:~%  !! ~S: ~A~%"
         (si:*structure-definition-name (si:*structure-definition error))
         error))
