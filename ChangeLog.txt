@@ -12,8 +12,6 @@
 	        (*print-level* 1))
 	    (ed::write-session-file "1ssn.l")))
 
-2011-12-21  NANRI Masaoki  <southly@gmail.com>
-
 	* lisp : fix saving history-file.
 	ヒストリファイル書き込み時に *print-length* などの影響を受けるのを修正。
 
@@ -78,8 +76,6 @@
 	execute-shell-command の第二引数に文字列・nil以外の引数を渡すとファイル
 	名が空のファイルを開こうとするので、エラーになっていた模様。
 
-2011-01-21  NANRI Masaoki  <southly@gmail.com>
-
 	* src : fix multiple binding of special variables in let, let*.
 	http://d.hatena.ne.jp/bowbow99/20101127/1290818576
 	let や let* で同一のスペシャル変数に対して複数回の束縛を作ったときの値
@@ -136,8 +132,6 @@
 	hhctrl.ocx のロードは静的変数の初期化時に行われるため、先の修正の効果が
 	及ばない。よって、ロードのタイミングを関数 html-help 呼び出し時に変更。
 
-2010-12-13  NANRI Masaoki  <southly@gmail.com>
-
 	* src : fix DLL loading.
 	JVNVU#707943: Windows プログラムの DLL 読み込みに脆弱性
 	http://jvn.jp/cert/JVNVU707943/index.html
@@ -151,12 +145,8 @@
 	* src : update zlib(version 1.2.5).
 	zlibをバージョン1.2.5にアップデート。
 
-2010-12-12  NANRI Masaoki  <southly@gmail.com>
-
 	* lisp : support lzma and xz in filer.
 	lzma および xz の圧縮と展開をファイラから利用できるように修正。
-
-2010-12-12  NANRI Masaoki  <southly@gmail.com>
 
 	* src : support lzma and xz.
 	tar32.dll Ver2.35 から利用できるようになった lzma および xz の圧縮と展
@@ -196,8 +186,6 @@
 	=> (setq x (cons 1 x))
 	=> nil
 
-2010-12-01  NANRI Masaoki  <southly@gmail.com>
-
 	* src : fix flet, labels, macrolet.
 	http://twitter.com/bowbow99/status/8011887295856640
 	引数のチェックがおかしかったのを修正。
@@ -207,8 +195,6 @@
 	(labels ())     => nil
 	(macrolet () 3) => 3
 	(macrolet ())   => nil
-
-2010-12-01  NANRI Masaoki  <southly@gmail.com>
 
 	* src : add "listp" Macro.
 	オブジェクトが cons である、又は nil であるかどうか調べる listp マクロ
@@ -226,8 +212,6 @@
 	引数にdotted listを渡したときのエラーメッセージがいまいちだが、
 	とりあえずそのまま。
 
-2010-11-09  NANRI Masaoki  <southly@gmail.com>
-
 	* src : fix nthcdr given dotted list.
 	http://twitter.com/bowbow99/status/1746294087352320
 	(nthcdr 0 '()) => nil
@@ -239,8 +223,6 @@
 	(nthcdr 3 '(0 . 1)) => nil
 
 	最後のケースはエラーにすべきだけど、とりあえずそのまま。
-
-2010-11-09  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix single-float-epsilon, single-float-negative-epsilon.
 	http://twitter.com/TwilightClover/status/26251344464
@@ -302,14 +284,10 @@
 	定義を削除。
 	とりあえずVC2010でのみ削除。
 
-2010-09-11  NANRI Masaoki  <southly@gmail.com>
-
 	* src : remove pragma optimize.
 	「internal compiler error」対策とのコメントがあるが、Microsoft Visual
 	C++ 2010 ではエラーが発生しないので削除。
 	とりあえずVC2010でのみ削除。
-
-2010-09-11  NANRI Masaoki  <southly@gmail.com>
 
 	* src : add si:putenv.
 	si:putenv を追加。
@@ -329,14 +307,10 @@
 	(format nil "~0,1T")
 	=> " "
 
-2010-07-14  NANRI Masaoki  <southly@gmail.com>
-
 	* src : fox format "~VT" in the case of being provided '() as a prefix parameter.
 	Vに引数としてnilを渡したときの動作を修正。
 	(format t "~VA" nil 'x)
 	== (format t "~A" 'x)
-
-2010-07-14  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix for VC2010.
 	Microsoft Visual C++ 2010 でのビルド用に修正。
@@ -347,8 +321,6 @@
 	* src : fix "*load-pathname*" initialization.
 	ダンプ作成時にロードしたファイル名がそのままダンプファイルに保存される
 	ようなので、起動時にも初期化するように修正。
-
-2010-03-01  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix format "~F".
 	formatの"~F"の第一パラメータwを指定しないと第三パラメータkが機能しない
@@ -398,8 +370,6 @@
 	applyhook, *applyhook* をローカル関数に対応させた。
 	call_applyhookの第一引数にクロージャを渡すように変更した。
 
-2010-02-21  NANRI Masaoki  <southly@gmail.com>
-
 	* src : add "*read-eval*".
 	スペシャル変数*read-eval*が機能するようにした。
 	*read-eval*の出力への影響の理解が怪しい。
@@ -411,8 +381,6 @@
 	* src : fix for VC2008.
 	Microsoft Visual C++ 2008 でのビルド用に修正。
 	http://xyzzy.s53.xrea.com/wiki/index.php?Memo%2F%A5%BD%A1%BC%A5%B9%A4%AB%A4%E9%A5%D3%A5%EB%A5%C9%A4%B7%A4%C6%A4%DF%A4%EB3
-
-2010-01-23  NANRI Masaoki  <southly@gmail.com>
 
 	* src : add get-buffer-colors.
 	関数get-buffer-colorsを追加。
@@ -434,8 +402,6 @@
 	WindowConfigurationのデストラクタ内でLispのコードが実行されるので、
 	WindowConfigurationのデストラクタを実行したあとで、多値を元の値に戻
 	す必要がある。
-
-2010-01-11  NANRI Masaoki  <southly@gmail.com>
 
 	* lisp : fix long-operation.
 	long-operationの戻り値がprog1相当になっているのをprogn相当になるよ
@@ -463,13 +429,9 @@
 	花が　　　　　　春
 	時間を　　　　　
 
-2009-12-16  NANRI Masaoki  <southly@gmail.com>
-
 	* src : fix set-buffer-modified-p.
 	(set-buffer-modified-p nil) をした時に以前更新なし状態だった点が更
 	新無し状態のままなのを修正。
-
-2009-12-16  NANRI Masaoki  <southly@gmail.com>
 
 	* src : fix inverse-cursor-line.
 	(setq inverse-cursor-line t)
