@@ -4,10 +4,14 @@
   (previous-pseudo-frame)
   => nil)
 
+(defun make-test-package (&rest options)
+  (let ((name (format nil "temporary-package-for-test-~D" (test-uid))))
+    (apply #'make-package name options)))
+
 (deftest fix-list-all-packages-test ()
   "(list-all-packages) should return 'a copy of' system package list."
-  (let* ((name :temporary-package-for-test)
-	 (pkg (make-package name))
+  (let* ((pkg (make-test-package))
+         (name (package-name pkg))
 	 (pkglist (list-all-packages)))
     (delete pkg pkglist)
     (eq pkg (find-package name)))

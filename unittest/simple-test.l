@@ -39,10 +39,14 @@
 
 (set-macro-character #\> 'expected-output-reader t *test-file-readtable*)
 
+(defvar *test-files* nil)
+
 (defun load-test-file (filename)
   (interactive "ftest file: ")
   (let ((*readtable* *test-file-readtable*))
-    (load-file filename)))
+    (load-file filename))
+  (setf *test-files* (acons filename (file-write-time filename)
+                            (remove filename *test-files* :key #'car))))
 
 #+unittest-meta-test
 (progn
@@ -164,7 +168,8 @@ EXPANSION = FORM"
        (when (find ',name *tests* :key 'car)
          (warn "テスト再定義してる: ~S" ',name))
        (setf *tests*
-             (cons (list ',name ,doc ',form ,thunk-form ',expectations)
+             (cons (list ',name ,doc ',form ,thunk-form ',expectations
+                         *load-pathname*)
                    (delete ',name *tests* :key 'car)))
        ',name)))
 
@@ -513,8 +518,11 @@ Output (*trace-output*):
             (check (check-output expected-output actual-output))))
         failures))))
 
-(defun run-all-tests ()
+(defvar *last-test-list* nil)
+
+(defun run-tests (&optional (test-list (or *last-test-list* *tests*)))
   (interactive)
+  (setf *last-test-list* test-list)
   (let ((buffer (get-buffer-create "*Test Results*"))
         (pass-count 0)
         (fail-count 0)
@@ -523,7 +531,7 @@ Output (*trace-output*):
     (erase-buffer buffer)
     (pop-to-buffer buffer)
     (with-output-to-buffer (buffer)
-      (dolist (test *tests*)
+      (dolist (test test-list)
         (multiple-value-bind (name doc form thunk expectations) (values-list test)
           (progn
             (format t "~&~S..." name)
@@ -555,9 +563,33 @@ Output (*trace-output*):
                 total pass-count fail-count (unless (zerop error-count) error-count))))
       (goto-char (point-max)))))
 
+(defun run-all-tests ()
+  (interactive)
+  (run-tests *tests*))
+
+(defvar *run-tests-from-file-history* nil)
+
+(setf (get 'run-tests-from-file 'ed::minibuffer-history-variable) '*run-tests-from-file-history*)
+
+(defun run-tests-from-file (testfile)
+  (interactive "ftestfile: "
+    :history0 'run-tests-from-file
+    :default0 (car *run-tests-from-file-history*))
+  (let ((loaded (assoc testfile *test-files* :test #'path-equal)))
+    (when (or (not loaded)
+              (> (file-write-time testfile) (cdr loaded)))
+      (load-test-file testfile)))
+  (run-tests (remove-if-not (lambda (tests)
+                              (path-equal (sixth tests) testfile))
+                            *tests*)))
+
 
 
 ;;;; utilities
+(defvar *test-uid-counter* 0)
+(defun test-uid ()
+  (incf *test-uid-counter*))
+
 
 
 ;;;;; load and run tests automatically
@@ -622,17 +654,34 @@ Output (*trace-output*):
                              (kill-xyzzy)))))))
            (let ((tmpbuf (create-new-buffer "*Temp*")))
              (setup-temp-buffer tmpbuf)
-             (unwind-protect
-                 (let ((proc (make-process command-string :output tmpbuf)))
+             (let ((proc (make-process command-string :output tmpbuf)))
+               (unwind-protect
                    ;; wait for finish.
                    (while (eql (process-status proc) :run)
                      (sleep-for 0.1)
                      (when (> (get-universal-time) (+ create-time ,timeout))
-                       (kill-process proc)
+                       (signal-process proc)
                        (error "with-another-xyzzy timeout.")))
-                   ;; NOTE: xyzzy always exit with code 0?
-                   )
-               (delete-buffer tmpbuf)))
+                 ;; FIXME: when another xyzzy doesn't close properly, it stay
+                 ;; in front so user can't see test progress.
+                 (activate-xyzzy-window (si:*instance-number))
+                 (handler-case
+                     (delete-buffer tmpbuf)
+                   (error ()
+                     (labels ((delete-tmpbuf ()
+                                (labels ((again () (start-timer 1 #'delete-tmpbuf t)))
+                                  (cond ((deleted-buffer-p tmpbuf)
+                                         (message "tmpbuf deleted successfully."))
+                                        ((eql (process-status proc) :exit)
+                                         (handler-case
+                                             (delete-buffer tmpbuf)
+                                           (error () (again))))
+                                        ((> (get-internal-real-time)
+                                            (+ create-time 180000))
+                                         (message "give up to delete tmpbuf ~S, sorry."
+                                                  (buffer-name tmpbuf)))
+                                        (t (again))))))
+                       (start-timer 6 #'delete-tmpbuf t)))))))
            (with-open-file (in tmpfile :direction :input)
              (case (read in nil '#1=#:eof)
                (:return (let ((values '()) r)
