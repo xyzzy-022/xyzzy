@@ -156,6 +156,34 @@
 		       package)
       (values symbol (and found maybe-symbol)))))
 
+(defun calc-lisp-indent-method (package)
+  (multiple-value-bind (symbol found pkg-marker-p)
+      (calc-lisp-indent-current-symbol package)
+    (when pkg-marker-p
+      (return-from calc-lisp-indent-method 'package-marker))
+    (when found
+      (or (let ((method (get symbol 'lisp-indent-handler)))
+	    (and method
+		 (save-excursion
+		   (and (up-list -1 t)
+			(forward-list -1 t)
+			(up-list -1 t)
+			(progn
+			  (forward-char 1)
+			  (multiple-value-bind (symbol found)
+			      (calc-lisp-indent-current-symbol package)
+			    (eq symbol 'handler-case)))))
+		 method))
+	  (get symbol 'lisp-indent-hook)
+	  (let ((args (cadr (macro-function symbol))))
+	    (when (consp args)
+	      (let ((p (position '&body args))
+		    (ep (position '&environment args)))
+		(when p
+		  (and (eq (car args) '&whole) (decf p 2))
+		  (and ep (< ep p) (decf p 2))
+		  p))))))))
+
 (defun calc-lisp-indent (opoint)
   (protect-match-data
     (let ((begin-paren (and lisp-indent-close-paren
@@ -188,43 +216,27 @@
 		 (return-from calc-lisp-indent (+ (current-column) *lisp-body-indention*)))
 	       (let ((column (progn
 			       (forward-char 1)
-			       (current-column))))
-		 (multiple-value-bind (symbol found pkg-marker-p)
-		     (calc-lisp-indent-current-symbol package)
-		   (when pkg-marker-p
-		     (return-from calc-lisp-indent column))
-		   (let ((method (when found
-				   (or (let ((method (get symbol 'lisp-indent-handler)))
-					 (and method
-					      (save-excursion
-						(and (up-list -1 t)
-						     (forward-list -1 t)
-						     (up-list -1 t)
-						     (progn
-						       (forward-char 1)
-						       (multiple-value-bind (symbol found)
-							   (calc-lisp-indent-current-symbol package)
-							 (eq symbol 'handler-case)))))
-					      method))
-				       (get symbol 'lisp-indent-hook)))))
-		     (cond ((numberp method)
-			    (let ((count -1))
-			      (while (< (point) opoint)
-				(skip-white-forward)
-				(setq count (+ count 1))
-				(or (forward-sexp 1 t)
-				    (return)))
-			      (+ column -1 (if (< count method)
-					       (* *lisp-body-indent* 2)
-					     *lisp-body-indent*))))
-			   (method
-			    (+ column -1 *lisp-body-indention*))
-			   (t (skip-chars-forward " \t")
-			      (if (or (eolp) (looking-for ";"))
-				  (if *lisp-indent-offset*
-				      (+ column *lisp-indent-offset*)
-				    column)
-				(current-column)))))))))))))
+			       (current-column)))
+		     (method (calc-lisp-indent-method package)))
+		 (cond ((eq method 'package-marker) column)
+		       ((numberp method)
+			(let ((count -1))
+			  (while (< (point) opoint)
+			    (skip-white-forward)
+			    (setq count (+ count 1))
+			    (or (forward-sexp 1 t)
+				(return)))
+			  (+ column -1 (if (< count method)
+					   (* *lisp-body-indent* 2)
+					 *lisp-body-indent*))))
+		       (method
+			(+ column -1 *lisp-body-indention*))
+		       (t (skip-chars-forward " \t")
+			  (if (or (eolp) (looking-for ";"))
+			      (if *lisp-indent-offset*
+				  (+ column *lisp-indent-offset*)
+				column)
+			    (current-column)))))))))))
 
 (defun lisp-indent-line ()
   (interactive "*")

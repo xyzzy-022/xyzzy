@@ -63,3 +63,27 @@ even if there is only one window."
     (handler-case
 	(progn (scroll-down-both-window) t)
       (range-error (c) nil))))
+
+
+(defmacro with-lispmode-bed (&body body)
+  `(with-temp-buffer
+     (lisp-mode)
+     ,@body))
+
+(defmacro user::smart-indentation-test (&whole whole &environment env vars &body body)
+  `(prog ,vars ,@body))
+
+(deftest lispmode-smart-indentation-for-macro-form-test ()
+  "smart indentation for macro function symbol without
+lisp-indent-hook property"
+  (let ((*lisp-body-indent* 2)
+	(*lisp-body-indention* 2))
+    (with-lispmode-bed
+      (setq *buffer-package* "user")
+      (insert "(smart-indentation-test (a b)")
+      (goto-char 23)
+      #0=(lisp-newline-and-indent)
+      (values #1=(current-column)
+	      (and (goto-char (point-max)) #0# #1#))))
+  => 4
+  => 2)
