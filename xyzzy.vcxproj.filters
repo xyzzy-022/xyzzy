@@ -1,0 +1,740 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\privctrl">
+      <UniqueIdentifier>{2964c179-259c-47e1-bf1c-37d0fb357430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\ed">
+      <UniqueIdentifier>{282bcb49-5681-42df-8436-6778ef06d902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\gen">
+      <UniqueIdentifier>{0d65a759-4f87-4663-9a97-bc02a4fc65fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\privctrl">
+      <UniqueIdentifier>{6c2577ed-1ae6-4589-9819-49eee3f6dd75}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\chtab.cc">
+      <Filter>ソース ファイル\gen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dumpver.cc">
+      <Filter>ソース ファイル\gen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\msgdef.cc">
+      <Filter>ソース ファイル\gen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\symtable.cc">
+      <Filter>ソース ファイル\gen</Filter>
+    </ClCompile>
+    <ClCompile Include="privctrl\listviewex.cc">
+      <Filter>ソース ファイル\privctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="privctrl\privctrl.cc">
+      <Filter>ソース ファイル\privctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="privctrl\url.cc">
+      <Filter>ソース ファイル\privctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\array.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wstream.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\backq.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bignum.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binfo.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\buffer-bar.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Buffer.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\byte-stream.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bytecode.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ces.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\char.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ChooseFont.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chunk.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ColorDialog.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\colors.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\com.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\conf.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dde.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dialogs.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\disp.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dll.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DnD.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\doc.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dockbar.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\edict.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encdec.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoding.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\environ.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\eval.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\except.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fileio.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\filer.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fnkey.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\font.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glob.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gzip.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hash.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\init.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\insdel.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kanji.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kbd.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\keymap.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ldialog.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lex.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\list.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\listen.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lprint.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lread.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\menu.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\minibuf.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mouse.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\move.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\msgbox.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\number.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oledata.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\package.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pane.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pathname.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\popup.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\popupl.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pred.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\preview.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\print.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\printdlg.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\process.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\regex.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\search.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sequence.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\signal.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\statarea.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdctl.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StrBuf.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stream.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\string.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\structure.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\symbol.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\syntax.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thread.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\toplev.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\undo.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\usertab.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\usertool.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utimer.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vector.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vfs.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\winhelp.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xlist.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\alloc.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\arc-if.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\assert.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chname.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gime.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\guid.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipc.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\largeint.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\md5c.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mman.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sha1.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sysdep.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ucs2.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\version.cc">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wheel.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\data.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ctl3d.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\archiver.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdde.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hashpjw.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resolver.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sock.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sockinet.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\xyzzy.gen.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\array.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\arc-if.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\archiver.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\alloc.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\binfo.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bignum.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\buffer-bar.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Buffer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cdecl.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\char.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\charset.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ChooseFont.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\chtype.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utimer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vector.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\version.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vfs.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vwin32.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\waitobj.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wheel.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Window.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wm.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wstream.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xcolor.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xdde.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xlist.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xstrlist.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kanji.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kbd.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\largeint.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ldialog.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lex.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lisp.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\list.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\listen.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mainframe.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\md5.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\message.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mman.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mouse.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mousemsg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\msgbox.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\number.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ofn.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oleconv.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oledata.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\package.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pane.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pathname.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\preview.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\print.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\printdlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\process.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\random.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\readtab.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\reconv.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\regex.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resolver.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\safe_ptr.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sequence.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sha1.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\signal.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sock.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sockinet.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\statarea.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StrBuf.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stream.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\string.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\structure.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\symbol.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\symtable.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\syntax.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\syntaxinfo.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sysdep.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thread.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\closure.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorDialog.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\colors.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\com.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\comm-arc.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conf.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cons.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ctxmenu.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\data.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dataP.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dialogs.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dll.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DnD.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dockbar.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dyn-handle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ed.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\encoding.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\environ.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\error.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\except.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\filer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fnkey.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fns.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\font.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\function.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gime.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glob.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hash.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ipc.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ces.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\chunk.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\byte-stream.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="privctrl\privctlimpl.h">
+      <Filter>ヘッダー ファイル\privctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="privctrl\privctrl.h">
+      <Filter>ヘッダー ファイル\privctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="privctrl\mousemsg.h">
+      <Filter>ヘッダー ファイル\privctrl</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,458 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0267AF5C-C0AC-43FF-87F9-F1C181012AB4}</ProjectGuid>
+    <RootNamespace>xyzzy</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir)privctrl;$(SolutionDir)gen\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG;STRICT;WIN32;_WIN32;_MT;__XYZZY__;PRIVCTRL_NODLL;HAVE_DIMM_H;DEBUG_GC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <CallingConvention>StdCall</CallingConvention>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)gen\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)src\zlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <StackReserveSize>33554432</StackReserveSize>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(SolutionDir)privctrl;$(SolutionDir)gen\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>STRICT;WIN32;_WIN32;_MT;__XYZZY__;PRIVCTRL_NODLL;HAVE_DIMM_H;DEBUG_GC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <CallingConvention>StdCall</CallingConvention>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)gen\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)src\zlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <StackReserveSize>33554432</StackReserveSize>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\alloc.cc" />
+    <ClCompile Include="src\arc-if.cc" />
+    <ClCompile Include="src\archiver.cc" />
+    <ClCompile Include="src\array.cc" />
+    <ClCompile Include="src\assert.cc" />
+    <ClCompile Include="src\backq.cc" />
+    <ClCompile Include="src\bignum.cc" />
+    <ClCompile Include="src\binfo.cc" />
+    <ClCompile Include="src\buffer-bar.cc" />
+    <ClCompile Include="src\Buffer.cc" />
+    <ClCompile Include="src\byte-stream.cc" />
+    <ClCompile Include="src\bytecode.cc" />
+    <ClCompile Include="src\ces.cc" />
+    <ClCompile Include="src\char.cc" />
+    <ClCompile Include="src\chname.cc" />
+    <ClCompile Include="src\ChooseFont.cc" />
+    <ClCompile Include="src\chunk.cc" />
+    <ClCompile Include="src\ColorDialog.cc" />
+    <ClCompile Include="src\colors.cc" />
+    <ClCompile Include="src\com.cc" />
+    <ClCompile Include="src\conf.cc" />
+    <ClCompile Include="src\ctl3d.cc" />
+    <ClCompile Include="src\data.cc" />
+    <ClCompile Include="src\dde.cc" />
+    <ClCompile Include="src\dialogs.cc" />
+    <ClCompile Include="src\disp.cc" />
+    <ClCompile Include="src\dll.cc" />
+    <ClCompile Include="src\DnD.cc" />
+    <ClCompile Include="src\doc.cc" />
+    <ClCompile Include="src\dockbar.cc" />
+    <ClCompile Include="src\edict.cc" />
+    <ClCompile Include="src\encdec.cc" />
+    <ClCompile Include="src\encoding.cc" />
+    <ClCompile Include="src\environ.cc" />
+    <ClCompile Include="src\eval.cc" />
+    <ClCompile Include="src\except.cc" />
+    <ClCompile Include="src\fileio.cc" />
+    <ClCompile Include="src\filer.cc" />
+    <ClCompile Include="src\fnkey.cc" />
+    <ClCompile Include="src\font.cc" />
+    <ClCompile Include="src\gime.cc" />
+    <ClCompile Include="src\glob.cc" />
+    <ClCompile Include="src\guid.cc" />
+    <ClCompile Include="src\gzip.cc" />
+    <ClCompile Include="src\hash.cc" />
+    <ClCompile Include="src\hashpjw.cc" />
+    <ClCompile Include="src\init.cc" />
+    <ClCompile Include="src\insdel.cc" />
+    <ClCompile Include="src\ipc.cc" />
+    <ClCompile Include="src\kanji.cc" />
+    <ClCompile Include="src\kbd.cc" />
+    <ClCompile Include="src\keymap.cc" />
+    <ClCompile Include="src\largeint.cc" />
+    <ClCompile Include="src\ldialog.cc" />
+    <ClCompile Include="src\lex.cc" />
+    <ClCompile Include="src\list.cc" />
+    <ClCompile Include="src\listen.cc" />
+    <ClCompile Include="src\lprint.cc" />
+    <ClCompile Include="src\lread.cc" />
+    <ClCompile Include="src\md5c.cc" />
+    <ClCompile Include="src\menu.cc" />
+    <ClCompile Include="src\minibuf.cc" />
+    <ClCompile Include="src\mman.cc" />
+    <ClCompile Include="src\mouse.cc" />
+    <ClCompile Include="src\move.cc" />
+    <ClCompile Include="src\msgbox.cc" />
+    <ClCompile Include="src\number.cc" />
+    <ClCompile Include="src\oledata.cc" />
+    <ClCompile Include="src\package.cc" />
+    <ClCompile Include="src\pane.cc" />
+    <ClCompile Include="src\pathname.cc" />
+    <ClCompile Include="src\popup.cc" />
+    <ClCompile Include="src\popupl.cc" />
+    <ClCompile Include="src\pred.cc" />
+    <ClCompile Include="src\preview.cc" />
+    <ClCompile Include="src\print.cc" />
+    <ClCompile Include="src\printdlg.cc" />
+    <ClCompile Include="src\process.cc" />
+    <ClCompile Include="src\random.cc" />
+    <ClCompile Include="src\regex.cc" />
+    <ClCompile Include="src\resolver.cc" />
+    <ClCompile Include="src\search.cc" />
+    <ClCompile Include="src\sequence.cc" />
+    <ClCompile Include="src\sha1.cc" />
+    <ClCompile Include="src\signal.cc" />
+    <ClCompile Include="src\sock.cc" />
+    <ClCompile Include="src\sockinet.cc" />
+    <ClCompile Include="src\statarea.cc" />
+    <ClCompile Include="src\stdctl.cc" />
+    <ClCompile Include="src\StrBuf.cc" />
+    <ClCompile Include="src\stream.cc" />
+    <ClCompile Include="src\string.cc" />
+    <ClCompile Include="src\structure.cc" />
+    <ClCompile Include="src\symbol.cc" />
+    <ClCompile Include="src\syntax.cc" />
+    <ClCompile Include="src\sysdep.cc" />
+    <ClCompile Include="src\thread.cc" />
+    <ClCompile Include="src\toplev.cc" />
+    <ClCompile Include="src\ucs2.cc" />
+    <ClCompile Include="src\undo.cc" />
+    <ClCompile Include="src\usertab.cc" />
+    <ClCompile Include="src\usertool.cc" />
+    <ClCompile Include="src\utils.cc" />
+    <ClCompile Include="src\utimer.cc" />
+    <ClCompile Include="src\vector.cc" />
+    <ClCompile Include="src\version.cc" />
+    <ClCompile Include="src\vfs.cc" />
+    <ClCompile Include="src\wheel.cc" />
+    <ClCompile Include="src\Window.cc" />
+    <ClCompile Include="src\winhelp.cc" />
+    <ClCompile Include="src\wstream.cc" />
+    <ClCompile Include="src\xdde.cc" />
+    <ClCompile Include="src\xlist.cc" />
+    <ClCompile Include="src\chtab.cc" />
+    <ClCompile Include="src\dumpver.cc" />
+    <ClCompile Include="src\msgdef.cc" />
+    <ClCompile Include="src\symtable.cc" />
+    <ClCompile Include="privctrl\listviewex.cc" />
+    <ClCompile Include="privctrl\privctrl.cc" />
+    <ClCompile Include="privctrl\url.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\xyzzy.gen.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="gen\dpp.vcxproj">
+      <Project>{a2c59236-6e41-487f-ab4a-e988d1c627d8}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-char-width.vcxproj">
+      <Project>{7558425f-6f8c-4bdc-9d85-40e18e7e3f95}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-ctab.vcxproj">
+      <Project>{39aa1e32-6e74-4e03-8821-58534eee1996}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-fontrange.vcxproj">
+      <Project>{826320de-2c42-4d81-a389-cb4000044b1a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-ibmext.vcxproj">
+      <Project>{aea9aa5e-4a48-490e-97db-8839b0bb21d0}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-iso2022state.vcxproj">
+      <Project>{3cabbe7a-3e4d-4119-a864-6a885d5e414a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-jisx0212-hash.vcxproj">
+      <Project>{51e2c591-5983-4628-a681-9c78388fe5e6}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-jisx0212-width.vcxproj">
+      <Project>{2d27de14-c4eb-4e45-8936-c58514ba3104}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-ktab.vcxproj">
+      <Project>{e6fd9f8d-cb71-4afb-a86b-7b8ec9d9ecdb}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-lucida-width.vcxproj">
+      <Project>{405eb36d-fe42-4e78-ac5f-0db0422673a4}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-msg.vcxproj">
+      <Project>{009d9799-3749-4f66-bbc4-83976e5ea7a7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-syms.vcxproj">
+      <Project>{ffbb3683-9116-4d7e-84a9-a51337a17d64}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-ucs2tab.vcxproj">
+      <Project>{0bb0913d-1945-4c2a-9e0c-ca56f622dc4e}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-utf2sjis.vcxproj">
+      <Project>{f3cc8760-6c73-4299-a3ad-3ab9683a62e7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="gen\gen-vinf.vcxproj">
+      <Project>{160082da-390d-4dd3-ae60-9db800c56502}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="privctrl\mousemsg.h" />
+    <ClInclude Include="privctrl\privctlimpl.h" />
+    <ClInclude Include="privctrl\privctrl.h" />
+    <ClInclude Include="src\alloc.h" />
+    <ClInclude Include="src\arc-if.h" />
+    <ClInclude Include="src\archiver.h" />
+    <ClInclude Include="src\array.h" />
+    <ClInclude Include="src\bignum.h" />
+    <ClInclude Include="src\binfo.h" />
+    <ClInclude Include="src\buffer-bar.h" />
+    <ClInclude Include="src\Buffer.h" />
+    <ClInclude Include="src\byte-stream.h" />
+    <ClInclude Include="src\cdecl.h" />
+    <ClInclude Include="src\ces.h" />
+    <ClInclude Include="src\char.h" />
+    <ClInclude Include="src\charset.h" />
+    <ClInclude Include="src\ChooseFont.h" />
+    <ClInclude Include="src\chtype.h" />
+    <ClInclude Include="src\chunk.h" />
+    <ClInclude Include="src\closure.h" />
+    <ClInclude Include="src\ColorDialog.h" />
+    <ClInclude Include="src\colors.h" />
+    <ClInclude Include="src\com.h" />
+    <ClInclude Include="src\comm-arc.h" />
+    <ClInclude Include="src\conf.h" />
+    <ClInclude Include="src\cons.h" />
+    <ClInclude Include="src\ctxmenu.h" />
+    <ClInclude Include="src\data.h" />
+    <ClInclude Include="src\dataP.h" />
+    <ClInclude Include="src\dialogs.h" />
+    <ClInclude Include="src\dll.h" />
+    <ClInclude Include="src\DnD.h" />
+    <ClInclude Include="src\dockbar.h" />
+    <ClInclude Include="src\dyn-handle.h" />
+    <ClInclude Include="src\ed.h" />
+    <ClInclude Include="src\encoding.h" />
+    <ClInclude Include="src\environ.h" />
+    <ClInclude Include="src\error.h" />
+    <ClInclude Include="src\except.h" />
+    <ClInclude Include="src\filer.h" />
+    <ClInclude Include="src\fnkey.h" />
+    <ClInclude Include="src\fns.h" />
+    <ClInclude Include="src\font.h" />
+    <ClInclude Include="src\function.h" />
+    <ClInclude Include="src\gime.h" />
+    <ClInclude Include="src\glob.h" />
+    <ClInclude Include="src\hash.h" />
+    <ClInclude Include="src\ipc.h" />
+    <ClInclude Include="src\kanji.h" />
+    <ClInclude Include="src\kbd.h" />
+    <ClInclude Include="src\largeint.h" />
+    <ClInclude Include="src\ldialog.h" />
+    <ClInclude Include="src\lex.h" />
+    <ClInclude Include="src\lisp.h" />
+    <ClInclude Include="src\list.h" />
+    <ClInclude Include="src\listen.h" />
+    <ClInclude Include="src\mainframe.h" />
+    <ClInclude Include="src\md5.h" />
+    <ClInclude Include="src\message.h" />
+    <ClInclude Include="src\mman.h" />
+    <ClInclude Include="src\mouse.h" />
+    <ClInclude Include="src\mousemsg.h" />
+    <ClInclude Include="src\msgbox.h" />
+    <ClInclude Include="src\number.h" />
+    <ClInclude Include="src\ofn.h" />
+    <ClInclude Include="src\oleconv.h" />
+    <ClInclude Include="src\oledata.h" />
+    <ClInclude Include="src\package.h" />
+    <ClInclude Include="src\pane.h" />
+    <ClInclude Include="src\pathname.h" />
+    <ClInclude Include="src\preview.h" />
+    <ClInclude Include="src\print.h" />
+    <ClInclude Include="src\printdlg.h" />
+    <ClInclude Include="src\process.h" />
+    <ClInclude Include="src\random.h" />
+    <ClInclude Include="src\readtab.h" />
+    <ClInclude Include="src\reconv.h" />
+    <ClInclude Include="src\regex.h" />
+    <ClInclude Include="src\resolver.h" />
+    <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\safe_ptr.h" />
+    <ClInclude Include="src\sequence.h" />
+    <ClInclude Include="src\sha1.h" />
+    <ClInclude Include="src\signal.h" />
+    <ClInclude Include="src\sock.h" />
+    <ClInclude Include="src\sockinet.h" />
+    <ClInclude Include="src\statarea.h" />
+    <ClInclude Include="src\StrBuf.h" />
+    <ClInclude Include="src\stream.h" />
+    <ClInclude Include="src\string.h" />
+    <ClInclude Include="src\structure.h" />
+    <ClInclude Include="src\symbol.h" />
+    <ClInclude Include="src\symtable.h" />
+    <ClInclude Include="src\syntax.h" />
+    <ClInclude Include="src\syntaxinfo.h" />
+    <ClInclude Include="src\sysdep.h" />
+    <ClInclude Include="src\thread.h" />
+    <ClInclude Include="src\timer.h" />
+    <ClInclude Include="src\trace.h" />
+    <ClInclude Include="src\utils.h" />
+    <ClInclude Include="src\utimer.h" />
+    <ClInclude Include="src\vector.h" />
+    <ClInclude Include="src\version.h" />
+    <ClInclude Include="src\vfs.h" />
+    <ClInclude Include="src\vwin32.h" />
+    <ClInclude Include="src\waitobj.h" />
+    <ClInclude Include="src\wheel.h" />
+    <ClInclude Include="src\Window.h" />
+    <ClInclude Include="src\wm.h" />
+    <ClInclude Include="src\wstream.h" />
+    <ClInclude Include="src\xcolor.h" />
+    <ClInclude Include="src\xdde.h" />
+    <ClInclude Include="src\xlist.h" />
+    <ClInclude Include="src\xstrlist.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <Target Name="MergeResourceFiles" Inputs="$(SolutionDir)src\xyzzy.rc;$(SolutionDir)src\version.h;$(SolutionDir)gen\$(Configuration)\verinfo.h" Outputs="$(SolutionDir)src\xyzzy.gen.rc">
+    <Exec Command="type $(SolutionDir)src\xyzzy.rc $(SolutionDir)gen\$(Configuration)\verinfo.h &gt; $(SolutionDir)src\xyzzy.gen.rc 2&gt; nul" />
+  </Target>
+  <Target Name="BeforeResourceCompile" DependsOnTargets="MergeResourceFiles" />
+  <ItemGroup>
+    <LispFiles Include="$(SolutionDir)lisp\**\*.*" />
+    <EtcFiles Include="$(SolutionDir)etc\**\*.*" />
+  </ItemGroup>
+  <PropertyGroup>
+    <LispOutputFiles>@(LispFiles->'$(TargetDir)lisp\%(RecursiveDir)%(Filename)%(Extension)')</LispOutputFiles>
+    <EtcOutputFiles>@(EtcFiles->'$(TargetDir)etc\%(RecursiveDir)%(Filename)%(Extension)')</EtcOutputFiles>
+    <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</EmbedManifest>
+  </PropertyGroup>
+  <Target Name="CopyLispFiles" Inputs="@(LispFiles)" Outputs="$(LispOutputFiles)">
+    <Message Text="Copying $(SolutionDir)lisp to $(TargetDir)lisp" Importance="high" />
+    <Copy SourceFiles="@(LispFiles)" DestinationFiles="$(LispOutputFiles)" />
+  </Target>
+  <Target Name="CopyEtcFiles" Inputs="@(EtcFiles)" Outputs="$(EtcOutputFiles)">
+    <Message Text="Copying $(SolutionDir)etc to $(TargetDir)etc" Importance="high" />
+    <Copy SourceFiles="@(EtcFiles)" DestinationFiles="$(EtcOutputFiles)" />
+  </Target>
+  <Target Name="DeleteXyzzyDumpFile">
+    <Delete Files="$(TargetDir)xyzzy.wxp" Condition="Exists('$(TargetDir)xyzzy.wxp')" />
+  </Target>
+  <Target Name="AfterBuild" DependsOnTargets="CopyLispFiles;CopyEtcFiles;DeleteXyzzyDumpFile" />
+  <Target Name="BeforeClean" DependsOnTargets="DeleteXyzzyDumpFile">
+    <Delete Files="$(SolutionDir)src\xyzzy.gen.rc" Condition="Exists('$(SolutionDir)src\xyzzy.gen.rc')" />
+    <RemoveDir Directories="$(TargetDir)lisp;$(TargetDir)etc" />
+  </Target>
+</Project>
