@@ -5390,6 +5390,8 @@ set-window します。
           t)
       (program-error (c)
         nil)))
+補足2：
+  xyzzy 0.2.2.236 で deleted-window-p が追加されました。
 </description>
 <seealso>set-window</seealso>
 <seealso>delete-other-windows</seealso>
@@ -5397,6 +5399,26 @@ set-window します。
 <seealso>delete-buffer</seealso>
 <seealso>deleted-buffer-p</seealso>
 <link></link>
+<section>ウィンドウ</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>deleted-window-p</title>
+<type>Function</type>
+<arguments>deleted-window-p WINDOW</arguments>
+<package>editor</package>
+<description>
+ウィンドウが削除されているかどうかを調べます。
+WINDOWにはウィンドウ型のものしか指定できません。
+
+  t   指定されたウィンドウは既に削除されています。
+  nil 指定されたウィンドウは未だ削除されていません。
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<seealso>delete-window</seealso>
 <section>ウィンドウ</section>
 <file>builtin.l</file>
 </chapter>
@@ -16874,7 +16896,7 @@ make-variable-buffer-localとは異なり、現在のバッファだけです。
 <chapter>
 <title>make-process</title>
 <type>Function</type>
-<arguments>make-process COMMAND-LINE &amp;key :environ :output :exec-directory :incode :outcode :eol-code</arguments>
+<arguments>make-process COMMAND-LINE &amp;key :environ :output :exec-directory :incode :outcode :eol-code :show</arguments>
 <package>editor</package>
 <description>
 プロセスを起動します。
@@ -16888,6 +16910,13 @@ make-variable-buffer-localとは異なり、現在のバッファだけです。
   :incode         : プロセスの入力の文字コードを指定します。
   :outcode        : プロセスの出力の文字コードを指定します。
   :eol-code       : 改行コードを指定します。
+  :show           : 外部プログラムの実行時の表示を指定します。
+                    :show      通常のウィンドウ
+                    :no-active 非アクティブ
+                    :minimize  最小化
+                    :maximize  最大化
+                    :hide      非表示
+                    上記以外   通常のウィンドウ
 
 プロセスへの入力はprocess-send-stringを使用します。
 プロセスはバッファに関連付けられ、プロセスの出力がバッファにそのまま出力されます。
@@ -16905,6 +16934,9 @@ make-variable-buffer-localとは異なり、現在のバッファだけです。
   (make-process *eshell* :output (selected-buffer))
   (process-send-string (buffer-process (selected-buffer))
                        (concatenate 'string cmd *shell-ret*))
+
+補足：
+  :show パラメータの指定は xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>call-process</seealso>
 <seealso>execute-subprocess</seealso>
@@ -23472,7 +23504,28 @@ get-buffer-file-nameの戻り値がnilの場合）に限り、
 
   COLORS : BGRを表す数値をベクタで指定します。
 </description>
+<seealso>get-buffer-colors</seealso>
 <section>バッファ</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>get-buffer-colors</title>
+<type>Function</type>
+<arguments>get-buffer-colors &amp;optional BUFFER</arguments>
+<package>editor</package>
+<description>
+バッファの色をBGRを表す数値をベクタで返します。
+
+使用例：
+  (ed:get-buffer-colors)
+  =&gt; #(0 16777215 12639424 16777215 16750899 16711680 8421376 8388736 32768 128 255 8388736 0 128 0 0 0 15790320)
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<section>バッファ</section>
+<seealso>set-buffer-colors</seealso>
 <file>builtin.l</file>
 </chapter>
 
@@ -25433,6 +25486,37 @@ Base64エンコードします。
 </description>
 <seealso>user-name</seealso>
 <seealso>machine-name</seealso>
+<seealso>si:putenv</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:putenv</title>
+<type>Function</type>
+<arguments>putenv VARIABLE &amp;optional VALUE</arguments>
+<package>system</package>
+<description>
+環境変数に値を設定します。
+
+  VARIABLE：環境変数名
+  VALUE   ：環境変数値
+
+VALUE を省略した場合や nil を指定した場合は環境変数を削除します。
+
+環境変数の設定に成功した場合は設定した値を、環境変数を削除した場合
+または設定に失敗した場合は nil を返します。
+
+使用例：
+  ;;; 環境変数PATHに$XYZZY/binを追加する
+  (si:putenv "PATH" (format nil "~A;~A"
+                            (merge-pathnames "bin" (si:system-root))
+                            (si:getenv "PATH")))
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<seealso>si:getenv</seealso>
 <section>システム</section>
 <file>builtin.l</file>
 </chapter>
