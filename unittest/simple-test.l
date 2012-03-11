@@ -206,6 +206,8 @@
                  '((form-1 (=> t))
                    (form-2 (>> "hi") (=> t))))))
 
+(defparameter +non-nil-mark+ (gensym "non-nil-"))
+
 (defun make-examples-form (name options forms-and-expectations)
   (let ((compare-fn (getf options :compare 'equal))
         (output-stream-var (getf options :output '*standard-output*)))
@@ -220,12 +222,15 @@
                  (dolist (y (rest x))
                    ;(format t "y = ~S~%" y)
                    (case (car y)
-                     (=> (case expected-result-type
-                           (:return (push (second y) expected-result-datum))
-                           (:error  (error "Don't expect return and error at same time: ~S" name))
-                           (#1#     (setf expected-result-type :return
-                                          expected-result-datum (list (second y))))
-                           (otherwise (error "Unknown type of expected result: ~S" name))))
+                     (=> (let ((value (if (eql (second y) 'non-nil)
+                                        +non-nil-mark+
+                                        (second y))))
+                           (case expected-result-type
+                             (:return (push value expected-result-datum))
+                             (:error  (error "Don't expect return and error at same time: ~S" name))
+                             (#1#     (setf expected-result-type :return
+                                            expected-result-datum (list value)))
+                             (otherwise (error "Unknown type of expected result: ~S" name)))))
                      (!! (case expected-result-type
                            (:return (error "Don't expect return and error at same time: ~S" name))
                            (:error  (error "Don't expect more than one error: ~S" name))
@@ -245,21 +250,7 @@
                         ,(case expected-result-type
                            (:return `'(:return ,compare-fn ,@(nreverse expected-result-datum)))
                            (:error  `'(:error ,expected-result-datum))
-                           ;; TODO: default expected-results - true? or ignore?
-                           ;; With former implementation, you could have just one
-                           ;; example form and default expected-results for that
-                           ;; form was return true (non-nil).
-                           ;; Since we now can have multiple example forms in a
-                           ;; test, I doubt this is desirable for all forms. That
-                           ;; is when it is just a preparation for actual test form
-                           ;; return values shouldn't matter. I want to write just
-                           ;; preparation form with no expectation to ignore any
-                           ;; results in such case. But error might be a different
-                           ;; story. Also, different behaviour for last form and
-                           ;; non-last form may cause confusion.
-                           ;; So, I haven't decided yet. Following is just to shut
-                           ;; quick-test up.
-                           (#1#     `'(:return :true))
+                           (#1#     `'(:return :normally))
                            (otherwise (error "Unknown type of expected result: ~S" name)))
                         '(,output-stream-var ,expected-output-string)))))
       `(list ,@(mapcar #'make-example-1
@@ -432,9 +423,6 @@ Macro expansion:
 
 (defun check-return-values (expected-values actual-values compare-fn)
   (cond ((eql compare-fn :normally) nil)
-        ((eql compare-fn :true)
-         (unless (first actual-values)
-           `(:results :false)))
         (t
          (labels ((FAIL (type)
                     (list :results type
@@ -443,7 +431,10 @@ Macro expansion:
                  (n-actuals  (length actual-values)))
              (cond ((< n-actuals n-expected) (FAIL :too-few-values))
                    ((> n-actuals n-expected) (FAIL :too-many-values))
-                   ((not (every compare-fn
+                   ((not (every (lambda (expected actual)
+                                  (or (funcall compare-fn expected actual)
+                                      (and (eql expected +non-nil-mark+)
+                                           actual)))
                                 expected-values
                                 actual-values))
                     (FAIL :wrong-values))))))))
@@ -501,8 +492,8 @@ only when ACTUAL-RESULTS does not match expectation."
   (let ((error (make-condition 'type-error)))
     (ASSERT (equal (check-results '(:return equal 1) `(:error ,error))
                    `(:results :unexpected-error (1) ,error))))
-  (ASSERT (equal (check-results '(:return :true) '(:return nil))
-                 `(:results :false)))
+  (ASSERT (equal (check-results `(:return equal ,+non-nil-mark+) '(:return nil))
+                 `(:results :wrong-values (,+non-nil-mark+) (nil) equal)))
   (ASSERT (equal (check-results '(:return :normally) '(:return t))
                  nil))
   (let ((error (make-condition 'type-error)))
@@ -519,7 +510,10 @@ only when ACTUAL-RESULTS does not match expectation."
 
 
 (defun print-return-values (values)
-  (format t "~{  => ~S~%~}" values))
+  (dolist (x values)
+    (if (eql x +non-nil-mark+)
+      (princ "  => non-nil\n")
+      (format t "  => ~S~%" x))))
 
 (defun report-return-values (expected-values actual-values &optional fmt &rest args)
   (format t "Evaluation result (return values~@[, ~?~]):~%" fmt args)
@@ -527,9 +521,6 @@ only when ACTUAL-RESULTS does not match expectation."
   (print-return-values expected-values)
   (format t "  Actually:~%")
   (print-return-values actual-values))
-
-(define-failure-reporter :results :false ()
-  (format t "Evaluation result (true):~%  Expected:~%  => #<non-nil>~%  Actually:~%  => nil~%"))
 
 (define-failure-reporter :results :too-few-values (expected-values actual-values compare-fn)
   (report-return-values expected-values actual-values))
