@@ -9,6 +9,11 @@
 
 (defun undefined-p (x) (eq x +undefined+))
 
+(defmacro lambda-bind (lambda-list list &body body)
+  "Poor man's destructuring-bind"
+  `(apply (lambda ,lambda-list ,@body) ,list))
+(setf (get 'lambda-bind 'ed:lisp-indent-hook) 2)
+
 #+unittest-meta-test
 (defmacro ASSERT (form)
   `(unless ,form
@@ -425,52 +430,61 @@ Macro expansion:
 ;;; :: expected-results = (:return COMPARE-FN . VALUES) | (:error ERROR-TYPE)
 ;;; :: actual-results   = (:retrun . VALUES) | (:error ERROR)
 
+(defun check-return-values (expected-values actual-values compare-fn)
+  (cond ((eql compare-fn :normally) nil)
+        ((eql compare-fn :true)
+         (unless (first actual-values)
+           `(:results :false)))
+        (t
+         (labels ((FAIL (type)
+                    (list :results type
+                          expected-values actual-values compare-fn)))
+           (let ((n-expected (length expected-values))
+                 (n-actuals  (length actual-values)))
+             (cond ((< n-actuals n-expected) (FAIL :too-few-values))
+                   ((> n-actuals n-expected) (FAIL :too-many-values))
+                   ((not (every compare-fn
+                                expected-values
+                                actual-values))
+                    (FAIL :wrong-values))))))))
+
 (defun check-results (expected-results actual-results)
   "check result of execution (ACTUAL-RESULTS) against EXPECTED-RESULTS.
 Results are either returned values or signalled error described by list.
 Returns a list describing how ACTUAL-RESULTS differ from EXPECTED-RESULTS
 only when ACTUAL-RESULTS does not match expectation."
-  (case (first expected-results)
-    (:return
-     (let ((compare-fn (second expected-results))
-           (expected-values (cddr expected-results)))
-       (case (first actual-results)
-         (:return
-          (cond ((eql compare-fn :true)
-                 (unless (second actual-results)
-                   (list :results :false)))
-                ((eql compare-fn :normally) nil)
-                (t (let* ((actual-values (cdr actual-results))
-                          (nexpected (length expected-values))
-                          (nactuals  (length actual-values)))
-                     (let ((failure (cond ((< nactuals nexpected) :too-few-values)
-                                          ((> nactuals nexpected) :too-many-values)
-                                          ((not (every compare-fn expected-values actual-values))
-                                           :wrong-values))))
-                       (when failure
-                         (list :results failure expected-values actual-values compare-fn)))))))
-         (:error  (let ((error (second actual-results)))
-                    (return-from check-results
-                      (list :results :unexpected-error
-                            (if (eql compare-fn :normally) :normally expected-values)
-                            error)))))))
-    (:error
-     (let ((expected-error-name (second expected-results)))
-       (case (first actual-results)
-         (:return (let ((actual-values (cdr actual-results)))
-                    (return-from check-results
-                      (list :results :unexpected-return
-                            expected-error-name
-                            actual-values))))
-         (:error  (let ((actual-error (second actual-results)))
-                    (unless (si:*structure-subtypep
-                             (si:*structure-definition actual-error)
-                             (get expected-error-name 'si:structure-definition))
-                      (return-from check-results
-                        (list :results :wrong-error
-                              expected-error-name
-                              actual-error))))))))
-    (t (error "Invalid expected results: ~S" expected-results))))
+  (labels ((FAIL (type &rest args)
+             (list* :results type args)))
+    (case (first expected-results)
+      (:return
+       (lambda-bind (#:type compare-fn &rest expected-values)
+           expected-results
+         (case (first actual-results)
+           (:return
+            (check-return-values expected-values
+                                 (cdr actual-results)
+                                 compare-fn))
+           (:error
+            (let ((actual-error (second actual-results)))
+              (FAIL :unexpected-error
+                    (if (eql compare-fn :normally) :normally expected-values)
+                    actual-error))))))
+      (:error
+       (let ((expected-error-type (second expected-results)))
+         (case (first actual-results)
+           (:return
+            (let ((actual-values (cdr actual-results)))
+              (FAIL :unexpected-return
+                    expected-error-type actual-values)))
+           (:error
+            (let ((actual-error (second actual-results)))
+              (unless (si:*structure-subtypep
+                       (si:*structure-definition actual-error)
+                       (get expected-error-type 'si:structure-definition))
+                (FAIL :wrong-error
+                      expected-error-type actual-error)))))))
+      (t
+       (error "Invalid expected results: ~S" expected-results)))))
 
 #+unittest-meta-test
 (progn
@@ -502,6 +516,7 @@ only when ACTUAL-RESULTS does not match expectation."
     (ASSERT (equal (check-results '(:error type-error) `(:error ,error))
                    `(:results :wrong-error type-error ,error))))
   )
+
 
 (defun print-return-values (values)
   (format t "~{  => ~S~%~}" values))
