@@ -93,6 +93,9 @@
 (setf (get 'with-package-iterator 'lisp-indent-hook) 1)
 (setf (get 'with-hash-table-iterator 'lisp-indent-hook) 1)
 
+(defvar *lisp-keyword-hash-table* nil)
+(defvar *lisp-keyword-file* "Lisp")
+
 (defvar *lisp-mode-syntax-table* nil)
 (unless *lisp-mode-syntax-table*
   (setq *lisp-mode-syntax-table* (make-syntax-table))
@@ -524,6 +527,13 @@
   (setq tags-find-point #'lisp-tags-find-point)
   (make-local-variable 'build-summary-function)
   (setq build-summary-function 'lisp-build-summary-of-functions)
+  (and *lisp-keyword-file*
+       (null *lisp-keyword-hash-table*)
+       (setq *lisp-keyword-hash-table*
+	     (load-keyword-file *lisp-keyword-file*)))
+  (when *lisp-keyword-hash-table*
+    (make-local-variable 'keyword-hash-table)
+    (setq keyword-hash-table *lisp-keyword-hash-table*))
   (setq *local-abbrev-table* *lisp-mode-abbrev-table*)
   (setq comment-start "; ")
   (setq comment-end "")
