@@ -669,9 +669,10 @@ init_environ ()
 
     case Sysdep::WINTYPE_WINDOWS_NT:
     case Sysdep::WINTYPE_WINDOWS_NT5:
+    case Sysdep::WINTYPE_WINDOWS_NT6:
       xsymbol_value (Vos_platform) = Vwindows_nt;
       xsymbol_value (Vfeatures) = xcons (Kwindows_nt, xsymbol_value (Vfeatures));
-      if (sysdep.wintype == Sysdep::WINTYPE_WINDOWS_NT5)
+      if (sysdep.Win5p ())
         {
           xsymbol_value (Vos_platform) = Vwindows_2000;
           xsymbol_value (Vfeatures) = xcons (Kwindows_2000, xsymbol_value (Vfeatures));
@@ -679,6 +680,21 @@ init_environ ()
             {
               xsymbol_value (Vos_platform) = Vwindows_xp;
               xsymbol_value (Vfeatures) = xcons (Kwindows_xp, xsymbol_value (Vfeatures));
+            }
+        }
+      if (sysdep.Win6p ())
+        {
+          xsymbol_value (Vos_platform) = Vwindows_vista;
+          xsymbol_value (Vfeatures) = xcons (Kwindows_vista, xsymbol_value (Vfeatures));
+          if (sysdep.version () >= Sysdep::WIN7_VERSION)
+            {
+              xsymbol_value (Vos_platform) = Vwindows_7;
+              xsymbol_value (Vfeatures) = xcons (Kwindows_7, xsymbol_value (Vfeatures));
+            }
+          if (sysdep.version () >= Sysdep::WIN8_VERSION)
+            {
+              xsymbol_value (Vos_platform) = Vwindows_8;
+              xsymbol_value (Vfeatures) = xcons (Kwindows_8, xsymbol_value (Vfeatures));
             }
         }
       break;
