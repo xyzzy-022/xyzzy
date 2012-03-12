@@ -47,7 +47,8 @@ struct Sysdep
       WINTYPE_WINDOWS_95,
       WINTYPE_WINDOWS_98,
       WINTYPE_WINDOWS_NT,
-      WINTYPE_WINDOWS_NT5
+      WINTYPE_WINDOWS_NT5,
+      WINTYPE_WINDOWS_NT6,
     };
 
   windows_type wintype;
@@ -89,6 +90,8 @@ public:
       WIN98_VERSION = PACK_VERSION (4, 10),
       WINME_VERSION = PACK_VERSION (4, 90),
       WINXP_VERSION = PACK_VERSION (5, 1),
+      WIN7_VERSION = PACK_VERSION (6, 1),
+      WIN8_VERSION = PACK_VERSION (6, 2),
     };
   DWORD version () const
     {return PACK_VERSION (os_ver.dwMajorVersion, os_ver.dwMinorVersion);}
@@ -97,6 +100,8 @@ public:
     {return os_ver.dwMajorVersion >= 4;}
   int Win5p () const
     {return os_ver.dwMajorVersion >= 5;}
+  int Win6p () const
+    {return os_ver.dwMajorVersion >= 6;}
   int Win95p () const
     {return wintype == WINTYPE_WINDOWS_95;}
   int Win98p () const

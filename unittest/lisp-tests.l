@@ -17,6 +17,38 @@
     (eq pkg (find-package name)))
   => t)
 
+(let ((os-version (list (os-major-version) (os-minor-version))))
+  ;; Windows Vista
+  (when (equalp '(6 0) os-version)
+    (deftest os-features-vista-test ()
+      "*features* contains :windows-vista, :windows-xp, :windows-2000, :windows-nt"
+      (mapcar #'featurep '(:windows-vista :windows-xp :windows-2000))
+      => '(t t t))
+    (deftest os-features-vista-test ()
+      "(os-platform) should return :windows-vista"
+      (os-platform)
+      => windows-vista))
+  ;; Windows 7
+  (when (equalp '(6 1) os-version)
+    (deftest os-features-7-test ()
+      "*features* contains :windows-vista, :windows-xp, :windows-2000, :windows-nt"
+      (mapcar #'featurep '(:windows-7 :windows-vista :windows-xp :windows-2000))
+      => '(t t t t))
+    (deftest os-features-7-test ()
+      "(os-platform) should return :windows-7"
+      (os-platform)
+      => windows-7))
+  ;; Windows 8
+  (when (equalp '(6 2) os-version)
+    (deftest os-features-8-test ()
+      "*features* contains :windows-vista, :windows-xp, :windows-2000, :windows-nt"
+      (mapcar #'featurep '(:windows-8 :windows-7 :windows-vista :windows-xp :windows-2000))
+      => '(t t t t t))
+    (deftest os-features-8-test ()
+      "(os-platform) should return :windows-8"
+      (os-platform)
+      => windows-8))
+  )
 
 (defmacro with-lispmode-bed (&body body)
   `(with-temp-buffer
