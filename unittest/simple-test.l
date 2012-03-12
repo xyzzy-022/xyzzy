@@ -742,7 +742,6 @@ Returns list of failures."
              (remaining () `(third (ssn-current-test))))
     (let ((example (first (remaining))))
       (cond ((eql (first example) :break)
-             ;; FIXME: just stop (pause) execution properly.
              (setf (remaining) (rest (remaining)))
              (message "running test: ~S...break" (test-name (test))))
             ((null (remaining))
@@ -790,9 +789,9 @@ Returns list of failures."
          (null (setf *current-session* nil)))))
 
 (defparameter *run-tests-continue/rerun/cancel-message*
-  "前回のテスト実行が一時停止されたまま終わっていません。どうする？
+  "前回のテスト実行が途中で中断されたまま終わっていません。どうする？
 
-[続ける] 一時停止されたテストの続きから続行する
+[続ける] 中断されたテストの続きから続行する
 [やり直し] 前回と同じテストを最初からやり直す
 [キャンセル] 何もしない")
 
