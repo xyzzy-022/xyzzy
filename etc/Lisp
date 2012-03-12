@@ -1625,6 +1625,7 @@ zerop
 *query-kill-xyzzy-hook*
 *quotation-prefix*
 *random-state*
+*read-eval*
 *readtable*
 *rectangle-kill-buffer*
 *save-history*
