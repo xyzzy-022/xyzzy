@@ -19550,6 +19550,9 @@ OSの種類を返します。OSが95とNTで動作を変えたいときなどに
   WindowsNT     windows-nt
   Windows2000   windows-2000
   WindowsXP     windows-xp
+  WindowsVista  windows-vista
+  Windows7      windows-7
+  Windows8      windows-8
 
 使用例：
   (os-platform)
