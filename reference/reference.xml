@@ -2051,6 +2051,33 @@ xyzzy終了時に実行されます。このフック変数の実行がnilだと
 </chapter>
 
 <chapter>
+<title>*read-eval*<title>
+<type>Variable</type>
+<arguments></arguments>
+<package>lisp</package>
+<description>
+読み取り時評価(read-time evaluation)を制御します。
+*read-eval*がnon-nilなら #. リーダマクロは通常どうりに動作します。
+nilならreader-errorが発生します。
+
+標準はtです。
+
+(let ((*read-eval* nil))
+  (read-from-string "#.(+ 1 1)"))
+=&gt; Line 1: リード時の評価が許されていません
+
+(let ((*read-eval* t))
+  (read-from-string "#.(+ 1 1)"))
+=&gt; 2
+   9
+</description>
+<seealso></seealso>
+<link></link>
+<section>変数と定数</section>
+<file></file>
+</chapter>
+
+<chapter>
 <title>*save-buffer-no-filenames-hook*</title>
 <type>Variable</type>
 <arguments></arguments>
