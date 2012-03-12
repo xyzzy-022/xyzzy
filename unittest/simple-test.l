@@ -744,7 +744,7 @@ Returns list of failures."
       (cond ((eql (first example) :break)
              ;; FIXME: just stop (pause) execution properly.
              (setf (remaining) (rest (remaining)))
-             (error "BREAK"))
+             (message "running test: ~S...break" (test-name (test))))
             ((null (remaining))
              (let* ((finished (nreverse (finished)))
                     (passed-p (every #'null (mapcar #'cdr finished))))
@@ -767,6 +767,7 @@ Returns list of failures."
                (run-current-test)))))))
 
 (defun continue-run-tests ()
+  (interactive)
   (assert-in-session)
   (cond ((ssn-current-test)
          (run-current-test))
@@ -788,11 +789,25 @@ Returns list of failures."
                    total all-passed-p pass (not all-passed-p) fail))
          (null (setf *current-session* nil)))))
 
+(defparameter *run-tests-continue/rerun/cancel-message*
+  "前回のテスト実行が一時停止されたまま終わっていません。どうする？
+
+[続ける] 一時停止されたテストの続きから続行する
+[やり直し] 前回と同じテストを最初からやり直す
+[キャンセル] 何もしない")
+
 (defun run-tests (&optional (test-list (or *last-test-list* *tests*)))
   (interactive)
-  (unless (or (null *current-session*)
-              (yes-or-no-p "Last run of tests is not finished. Abort that and run new tests?"))
-    (return-from run-tests nil))
+  (unless (null *current-session*)
+    (case (message-box *run-tests-continue/rerun/cancel-message*
+                       "実行中のテストがあります"
+                       '(:exclamation :button1)
+                       :button1 "続ける"
+                       :button2 "やり直し"
+                       :button3 "キャンセル")
+      (:button1 (return-from run-tests (continue-run-tests)))
+      (:button2 (setf *current-session* nil))
+      (:button3 (quit))))
   (setf *last-test-list* test-list
         *current-session* (make-session :remaining-tests test-list))
   (continue-run-tests))
