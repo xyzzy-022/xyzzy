@@ -1021,16 +1021,6 @@
 ;;
 ;; FIXME: テストする方法が思いつかない
 
-;; 2009-12-10  NANRI Masaoki  <southly@gmail.com>
-;; 
-;; 	* src : fix format "~n@A".
-;; 	http://d.hatena.ne.jp/bowbow99/20090829/1251547986
-;;
-(deftest fix-format-n@A ()
-  (format t "~10@A" "foo")
-  >>        foo
-  => nil)
-
 ;; 2009-12-09  NANRI Masaoki  <southly@gmail.com>
 ;; 
 ;; 	* src : add "*brackets-is-wildcard-character*" to history-variable.
