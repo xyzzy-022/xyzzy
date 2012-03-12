@@ -671,7 +671,7 @@ Output (*trace-output*):
   (let ((buffer (get-buffer-create "*Test Results*")))
     (setup-temp-buffer buffer)
     (erase-buffer buffer)
-    (set-buffer buffer)
+    (pop-to-buffer buffer)
     (make-buffer-stream buffer)))
 
 (defparameter *current-session* nil)
@@ -785,7 +785,10 @@ Returns list of failures."
                 (out (ssn-report-output)))
            (format out "~&----------------------------------------------------------------------~%")
            (format out "Total ~D tests: ~:[~D~;~*All~] passed~@[~*, ~A failed~]~%"
-                   total all-passed-p pass (not all-passed-p) fail))
+                   total all-passed-p pass (not all-passed-p) fail)
+           (let ((buffer (buffer-stream-buffer (ssn-report-output))))
+             (pop-to-buffer buffer)
+             (goto-char (point-max))))
          (null (setf *current-session* nil)))))
 
 (defparameter *run-tests-continue/rerun/cancel-message*
