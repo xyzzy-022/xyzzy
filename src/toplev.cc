@@ -47,6 +47,17 @@ quit_thread_entry (void *p)
           case WM_TIMER:
             hwnd_fg = GetForegroundWindow ();
             msg.wParam = hwnd_fg ? GetWindowThreadProcessId (hwnd_fg, 0) == parent : 0;
+            if (!msg.wParam)
+              {
+                // may be ghost window.
+                if (IsHungAppWindow (hwnd_fg))
+                  {
+                    if (IsHungAppWindow (app.toplev))
+                      {
+                        msg.wParam = 1;
+                      }
+                  }
+              }
             /* fall thru... */
           case WM_ACTIVATEAPP:
           case WM_PRIVATE_ACTIVATEAPP:
