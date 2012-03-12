@@ -5,7 +5,7 @@
 (when (fboundp 'stop-watch-test-file)
   (stop-watch-test-file))
 
-(defparameter +undefined+ '#:undefined)
+(defconstant +undefined+ '#:undefined)
 
 (defun undefined-p (x) (eq x +undefined+))
 
@@ -206,7 +206,7 @@
                  '((form-1 (=> t))
                    (form-2 (>> "hi") (=> t))))))
 
-(defparameter +non-nil-mark+ (gensym "non-nil-"))
+(defconstant +non-nil-mark+ (gensym "non-nil-"))
 
 (defun make-examples-form (name options forms-and-expectations)
   (let ((compare-fn (getf options :compare 'equal))
