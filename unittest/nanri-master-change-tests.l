@@ -27,7 +27,8 @@
               (*print-length* 1)
               (*print-level* 1))
           (ed::write-session-file ssn))
-        t))))
+        t)))
+  => non-nil)
 
 ;; 	* lisp : fix saving history-file.
 ;; 	ヒストリファイル書き込み時に *print-length* などの影響を受けるのを修正。
@@ -59,7 +60,8 @@
               (*print-length* 1)
               (*print-level* 1))
           (ed::save-history-file))
-        t))))
+        t)))
+  => non-nil)
 
 ;; 2011-12-20  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -118,7 +120,8 @@
   "lisp/compile.l の関数名 typo を修正（s/nineth/ninth/）。"
   (progn
     (require "compile")
-    (functionp (get 'ninth (find-symbol "optimize-form" :compiler)))))
+    (functionp (get 'ninth (find-symbol "optimize-form" :compiler))))
+  => non-nil)
 
 ;; 2011-01-30  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -310,7 +313,8 @@
 (deftest lzma-support-in-filer-00 ()
   "lzma の圧縮と展開をファイラから利用できるように修正。"
   (member "*.lzma" (cdr (assoc "アーカイブ" ed:*filer-path-masks* :test #'string=))
-          :test #'string=))
+          :test #'string=)
+  => non-nil)
 
 (deftest lzma-support-in-filer-01 ()
   (with-fake-functions ((dialog-box (&rest args)
@@ -326,7 +330,8 @@
 (deftest xz-support-in-filer-00 ()
   "xz の圧縮と展開をファイラから利用できるように修正。"
   (member "*.xz" (cdr (assoc "アーカイブ" ed:*filer-path-masks* :test #'string=))
-          :test #'string=))
+          :test #'string=)
+  => non-nil)
 
 (deftest xz-support-in-filer-01 ()
   (with-fake-functions ((dialog-box (&rest args)
@@ -576,7 +581,8 @@
 (deftest add-deleted-window-p-00 ()
   "削除された window なら t を返す deleted-window-p を追加。
 関数かどうかチェック。"
-  (fboundp 'deleted-window-p))
+  (fboundp 'deleted-window-p)
+  => non-nil)
 
 ;; NOTE: 自前で用意してた場合 pass してしまう。
 (deftest add-deleted-window-p-01 ()
@@ -586,12 +592,14 @@
         (new     (save-window-excursion
                    (split-window -1)
                    (selected-window))))
-    (deleted-window-p new)))
+    (deleted-window-p new))
+  => non-nil)
 
 (deftest add-deleted-window-p-02 ()
   "削除された window なら t を返す deleted-window-p を追加。
 ビルトイン関数かどうかチェック。"
-  (si:*builtin-function-p (symbol-function 'deleted-window-p)))
+  (si:*builtin-function-p (symbol-function 'deleted-window-p))
+  => non-nil)
 
 ;; 2010-09-12  MIYAMUKO Katsuyuki  <miyamuko@gmail.com>
 ;; 
@@ -616,7 +624,8 @@
 
 (deftest add-putend-01 ()
   "関数 si:putenv を追加＆引数を (VARNAME &optional VALUE) に"
-  (fboundp (find-symbol "putenv" :system)))
+  (fboundp (find-symbol "putenv" :system))
+  => non-nil)
 
 (deftest add-putenv-02 ()
   "関数 si:putenv を追加＆引数を (VARNAME &optional VALUE) に"
@@ -842,7 +851,8 @@
   "applyhook, *applyhook* をローカル関数に対応させた。"
   (let ((*applyhook* (lambda (fn args)
                        (functionp fn))))
-    (car 1)))
+    (car 1))
+  => non-nil)
 
 ;; 	* src : add "*read-eval*".
 ;; 	スペシャル変数*read-eval*が機能するようにした。
@@ -852,7 +862,8 @@
 ;; 
 (deftest add-*read-eval*-00 ()
   "スペシャル変数*read-eval*が機能するようにした。"
-  (si:*specialp '*read-eval*))
+  (si:*specialp '*read-eval*)
+  => non-nil)
 
 (deftest add-*read-eval*-01 ()
   "スペシャル変数*read-eval*が機能するようにした。"
@@ -876,7 +887,8 @@
 ;;
 (deftest add-get-buffer-colors-00 ()
   "関数get-buffer-colorsを追加。"
-  (fboundp 'get-buffer-colors))
+  (fboundp 'get-buffer-colors)
+  => non-nil)
 
 ;; NOTE: NANRI さんからの頂き物; thx
 (deftest add-get-buffer-colors-01 ()
@@ -895,7 +907,8 @@
               (progn
                 (set-buffer-colors colors)
                 (equalp colors (get-buffer-colors buf)))
-            (delete-buffer buf)))))))
+            (delete-buffer buf))))))
+  => non-nil)
 
 ;; 2010-01-22  NANRI Masaoki  <southly@gmail.com>
 ;; 
@@ -1030,7 +1043,8 @@
 (deftest add-*brackets-is-wildcard-character*-to-history-variable ()
   "共通設定の「[...]はワイルドカード」の設定が保存されないので、対応す
 る変数をヒストリに追加。"
-  (member '*brackets-is-wildcard-character* ed::*history-variable-list*))
+  (member '*brackets-is-wildcard-character* ed::*history-variable-list*)
+  => non-nil)
 
 ;; 	* src : fix dump hash-table.
 ;; 	シンボルがキーのハッシュテーブルをダンプファイルに入れた場合、
@@ -1150,7 +1164,8 @@
 ;;
 (deftest fix-typo-in-lisp/encoding.l ()
   "lisp/encoding.l で provide しているモジュール名の typo を修正"
-  (modulep "encoding"))
+  (modulep "encoding")
+  => non-nil)
 
 ;; 	* lisp : fix typo in lisp/css-mode.l.
 ;; 	provideのtypoを修正。
@@ -1161,7 +1176,8 @@
   (progn
     (require "css-mode")
     (and (modulep "css-mode")
-         (not (modulep "cssmode")))))
+         (not (modulep "cssmode"))))
+  => non-nil)
 
 ;; 	* lisp : fix typo in lisp/builtin.l.
 ;; 	主に引数のtypoを修正。
@@ -1305,7 +1321,8 @@
       (sleep-for 0.2)
       (when (> (- (get-internal-real-time) start) 6000)
         (error "fix-start-timer test timeout.")))
-    (> (- finish start) 1400)))
+    (> (- finish start) 1400))
+  => non-nil)
 
 ;; 	* src : fix format "~G".
 ;; 	[xyzzy:09204]
