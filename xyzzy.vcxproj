@@ -435,7 +435,6 @@
   <ItemGroup>
     <LispFiles Include="$(SolutionDir)lisp\**\*.*" />
     <EtcFiles Include="$(SolutionDir)etc\**\*.*" />
-    <ExeOutputFiles Include="$(TargetDir)*.exe" />
   </ItemGroup>
   <PropertyGroup>
     <LispOutputFiles>@(LispFiles->'$(TargetDir)lisp\%(RecursiveDir)%(Filename)%(Extension)')</LispOutputFiles>
@@ -453,14 +452,18 @@
     <Message Text="Copying $(SolutionDir)etc to $(TargetDir)etc" Importance="high" />
     <Copy SourceFiles="@(EtcFiles)" DestinationFiles="$(EtcOutputFiles)" />
   </Target>
+  <Target Name="CopyExeFiles">
+    <CreateItem Include="$(TargetDir)*.exe">
+      <Output TaskParameter="Include" ItemName="ExeOutputFiles" />
+    </CreateItem>
+    <Copy SourceFiles="@(ExeOutputFiles)" DestinationFolder="$(SolutionDir)" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  </Target>
   <Target Name="DeleteXyzzyDumpFile">
     <Delete Files="$(TargetDir)xyzzy.wxp" Condition="Exists('$(TargetDir)xyzzy.wxp')" />
     <Delete Files="$(SolutionDir)xyzzy.wxp" Condition="Exists('$(SolutionDir)xyzzy.wxp')" />
   </Target>
   <Target Name="BeforeClCompile" DependsOnTargets="UpdateVersionDescribe" />
-  <Target Name="AfterBuild" DependsOnTargets="CopyLispFiles;CopyEtcFiles;DeleteXyzzyDumpFile">
-    <Copy SourceFiles="@(ExeOutputFiles)" DestinationFolder="$(SolutionDir)" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-  </Target>
+  <Target Name="AfterBuild" DependsOnTargets="CopyLispFiles;CopyEtcFiles;CopyExeFiles;DeleteXyzzyDumpFile" />
   <Target Name="BeforeClean" DependsOnTargets="DeleteXyzzyDumpFile">
     <Delete Files="$(SolutionDir)src\xyzzy.gen.rc" Condition="Exists('$(SolutionDir)src\xyzzy.gen.rc')" />
     <RemoveDir Directories="$(TargetDir)lisp;$(TargetDir)etc" />
