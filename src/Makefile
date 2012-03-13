@@ -12,6 +12,7 @@ DnD.cc \
 StrBuf.cc \
 Window.cc \
 alloc.cc \
+appid.cc \
 arc-if.cc \
 archiver.cc \
 array.cc \

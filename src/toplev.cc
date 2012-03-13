@@ -1,6 +1,7 @@
 #include "ed.h"
 #include <imm.h>
 #include <process.h>
+#include "appid.h"
 #include "ctl3d.h"
 #include "environ.h"
 #include "fnkey.h"
@@ -591,6 +592,7 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   switch (msg)
     {
     case WM_CREATE:
+      appid::set ();
       app.toplev = hwnd;
       app.hwnd_sw = CreateStatusWindow ((SBARS_SIZEGRIP | WS_CHILD | WS_VISIBLE
                                          | WS_CLIPCHILDREN | WS_CLIPSIBLINGS),

@@ -1222,6 +1222,7 @@ show-winhelp
 shrink-window
 shrink-window-horizontally
 si:*activate-toplevel
+si:*app-user-model-id
 si:*builtin-function-p
 si:*load-library
 si:*set-readtable-case

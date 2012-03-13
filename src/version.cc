@@ -37,3 +37,4 @@ const char VersionString[] = PROGRAM_VERSION;
 const char DisplayVersionString[] = DISPLAY_VERSION_STRING;
 const char ProgramName[] = PROGRAM_NAME;
 const char ProgramNameWithVersion[] = PROGRAM_NAME " version " PROGRAM_VERSION;
+const char ProgramAppUserModelId[] = PROGRAM_NAME;

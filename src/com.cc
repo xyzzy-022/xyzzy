@@ -1,5 +1,6 @@
 #include "ed.h"
 #include <shlobj.h>
+#include <propkey.h>
 #include "com.h"
 #include "oleconv.h"
 
@@ -17,6 +18,29 @@ set_args (IShellLink *sl, lisp largs)
   char *b = (char *)alloca (xstring_length (largs) * 2 + 1);
   w2s (b, largs);
   ole_error (sl->SetArguments (b));
+}
+
+static void
+set_appid (IShellLink *sl, lisp lappid)
+{
+  char *b = (char *)alloca (xstring_length (lappid) * 2 + 1);
+  w2s (b, lappid);
+
+  int l = (strlen (b) + 1);
+  wchar_t *w = (wchar_t *)alloca (l * sizeof (wchar_t));
+  MultiByteToWideChar (CP_ACP, 0, b, -1, w, l);
+
+  safe_com <IPropertyStore> store;
+  ole_error (sl->QueryInterface (IID_PPV_ARGS(&store)));
+
+  PROPVARIANT pv;
+  PropVariantClear (&pv);
+
+  pv.vt = VT_LPWSTR;
+  pv.pwszVal = w;
+
+  ole_error (store->SetValue (PKEY_AppUserModel_ID, pv));
+  ole_error (store->Commit ());
 }
 
 lisp
@@ -43,6 +67,9 @@ Fcreate_shortcut (lisp lobject, lisp llink, lisp keys)
     show = SW_SHOWMINIMIZED;
   else
     show = SW_SHOWNORMAL;
+  lisp lappid = find_keyword (Kappid, keys, 0);
+  if (lappid)
+    check_string (lappid);
 
   safe_com <IShellLink> sl;
   ole_error (CoCreateInstance (CLSID_ShellLink, 0, CLSCTX_INPROC_SERVER,
@@ -82,6 +109,8 @@ Fcreate_shortcut (lisp lobject, lisp llink, lisp keys)
     }
   if (lshow)
     ole_error (sl->SetShowCmd (show));
+  if (lappid)
+    set_appid (sl, lappid);
 
   safe_com <IPersistFile> pf;
   ole_error (sl->QueryInterface (IID_IPersistFile, (void **)&pf));

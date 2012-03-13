@@ -843,6 +843,10 @@ static symbols sys[] =
   SI_DEFUN3 (*activate-toplevel, 0, 0, 0),
   SI_DEFVAR2 (*paste-hook*),
 
+  /* appid.cc */
+  MAKE_SYMBOL2Q (app-user-model-id),
+  SI_DEFUN3 (*app-user-model-id, 0, 0, 0),
+
   /* buffer.cc */
   SI_DEFUN3 (*create-wait-object, 0, 0, 0),
   SI_DEFUN3 (*add-wait-object, 1, 1, 0),
@@ -1243,6 +1247,7 @@ static symbols kwd[] =
   DEFKWD2 (start-menu),
   DEFKWD2 (startup),
   DEFKWD2 (templates),
+  DEFKWD2 (appid),
   DEFKWD2 (int8),
   DEFKWD2 (uint8),
   DEFKWD2 (int16),

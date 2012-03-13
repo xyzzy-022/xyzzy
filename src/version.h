@@ -16,5 +16,6 @@ extern const char VersionString[];
 extern const char DisplayVersionString[];
 extern const char ProgramName[];
 extern const char ProgramNameWithVersion[];
+extern const char ProgramAppUserModelId[];
 
 #endif

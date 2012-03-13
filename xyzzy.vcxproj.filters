@@ -387,6 +387,9 @@
     <ClCompile Include="src\sockinet.cc">
       <Filter>ソース ファイル\ed</Filter>
     </ClCompile>
+    <ClCompile Include="src\appid.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\xyzzy.gen.rc">
@@ -735,6 +738,9 @@
     </ClInclude>
     <ClInclude Include="privctrl\mousemsg.h">
       <Filter>ヘッダー ファイル\privctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\appid.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -602,6 +602,7 @@
 (si::defun-builtin get-documentation-string (symbol indicator apropos-p path))
 (si::defun-builtin delete-registry-tree ())
 (si::defun-builtin performance-counter ())
+(si::defun-builtin *app-user-model-id ())
 
 (gc)
 
@@ -1189,7 +1190,7 @@
 (si::defun-builtin archiver-dll-config-dialog (dll &optional mode))
 (si::defun-builtin convert-to-SFX (archive-file &optional option-string))
 (si::defun-builtin get-special-folder-location (place))
-(si::defun-builtin *create-shortcut (from-filename to-filename &key :description :arguments :working-directory :show))
+(si::defun-builtin *create-shortcut (from-filename to-filename &key :description :arguments :working-directory :show :appid))
 (si::defun-builtin resolve-shortcut (pathname))
 (si::defun-builtin ole-drop-files (path clsid-string directory files))
 (si::defun-builtin set-function-bar-label (char label))
