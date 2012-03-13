@@ -442,6 +442,9 @@
     <EtcOutputFiles>@(EtcFiles->'$(TargetDir)etc\%(RecursiveDir)%(Filename)%(Extension)')</EtcOutputFiles>
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</EmbedManifest>
   </PropertyGroup>
+  <Target Name="UpdateVersionDescribe">
+    <Exec Command="$(SolutionDir)misc\update_version_describe.bat" />
+  </Target>
   <Target Name="CopyLispFiles" Inputs="@(LispFiles)" Outputs="$(LispOutputFiles)">
     <Message Text="Copying $(SolutionDir)lisp to $(TargetDir)lisp" Importance="high" />
     <Copy SourceFiles="@(LispFiles)" DestinationFiles="$(LispOutputFiles)" />
@@ -454,6 +457,7 @@
     <Delete Files="$(TargetDir)xyzzy.wxp" Condition="Exists('$(TargetDir)xyzzy.wxp')" />
     <Delete Files="$(SolutionDir)xyzzy.wxp" Condition="Exists('$(SolutionDir)xyzzy.wxp')" />
   </Target>
+  <Target Name="BeforeClCompile" DependsOnTargets="UpdateVersionDescribe" />
   <Target Name="AfterBuild" DependsOnTargets="CopyLispFiles;CopyEtcFiles;DeleteXyzzyDumpFile">
     <Copy SourceFiles="@(ExeOutputFiles)" DestinationFolder="$(SolutionDir)" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
   </Target>
