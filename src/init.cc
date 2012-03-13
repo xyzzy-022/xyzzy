@@ -432,6 +432,8 @@ init_symbol_value_once ()
   xsymbol_value (Vthis_command) = Qnil;
   xsymbol_value (Vlast_command) = Qnil;
 
+  xsymbol_value (Qapp_user_model_id) =
+    make_string (ProgramAppUserModelId);
   xsymbol_value (Qsoftware_type) = make_string (ProgramName);
   xsymbol_value (Qsoftware_version) = make_string (VersionString);
   xsymbol_value (Qsoftware_version_display_string) =

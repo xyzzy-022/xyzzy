@@ -8007,6 +8007,7 @@ ITEMとのテストを満足するSEQUENCE中の要素数を返します。結�
                             :show      標準のサイズで起動
                             :maximize  最大化状態で起動
                             :minimize  最小化状態で起動
+     :appid              アプリケーションID
 
 使用例：
   ;;; スタートメニューにショートカットを作成する。
@@ -8020,8 +8021,21 @@ ITEMとのテストを満足するSEQUENCE中の要素数を返します。結�
   =&gt; t
   (delete-file (merge-pathnames "xyzzy.exe.lnk" (get-special-folder-location :send-to)))
   =&gt; t
+
+  ;;; xyzzyと同じアプリケーションIDを指定してデスクトップにxyzzycliを登録する。
+  ;;; このショートカットから起動するとWindows 7のタスクバー上で一つにまとめらます。
+  (create-shortcut (merge-pathnames "xyzzycli.exe" (si:system-root))
+                   (get-special-folder-location :desktop)
+                   :appid (si:*app-user-model-id))
+  =&gt; t
+  (delete-file (merge-pathnames "xyzzycli.exe.lnk" (get-special-folder-location :desktop)))
+  =&gt; t
+
+補足：
+  :appid引数は xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>resolve-shortcut</seealso>
+<seealso>si:*app-user-model-id</seealso>
 <section>ファイルシステム</section>
 <file>files.l</file>
 </chapter>
@@ -25349,6 +25363,24 @@ define-command-bar/show-command-barを使います。
 xyzzyを他のウィンドウの最前面に表示します。
 </description>
 <seealso></seealso>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:*app-user-model-id</title>
+<type>Function</type>
+<arguments>*app-user-model-id</arguments>
+<package>system</package>
+<description>
+xyzzyのアプリケーションIDを返します。
+Windows 7以降のタスクバーではこのアプリケーションIDを元に
+ウィンドウをグループ化して管理します。
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<seealso>create-shortcut</seealso>
 <section>その他</section>
 <file>builtin.l</file>
 </chapter>

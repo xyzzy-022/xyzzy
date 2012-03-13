@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\alloc.cc" />
+    <ClCompile Include="src\appid.cc" />
     <ClCompile Include="src\arc-if.cc" />
     <ClCompile Include="src\archiver.cc" />
     <ClCompile Include="src\array.cc" />
@@ -314,6 +315,7 @@
     <ClInclude Include="privctrl\privctlimpl.h" />
     <ClInclude Include="privctrl\privctrl.h" />
     <ClInclude Include="src\alloc.h" />
+    <ClInclude Include="src\appid.h" />
     <ClInclude Include="src\arc-if.h" />
     <ClInclude Include="src\archiver.h" />
     <ClInclude Include="src\array.h" />
