@@ -1,5 +1,6 @@
 #include "cdecl.h"
 #include "version.h"
+#include "version-describe.gen.h"
 
 #if !PROGRAM_PATCH_LEVEL
 # if !PROGRAM_MINOR_REVISION
@@ -23,9 +24,8 @@
       "." _TOSTR (PROGRAM_PATCH_LEVEL)
 #endif /* PROGRAM_PATCH_LEVEL */
 
-#if (PROGRAM_MAJOR_VERSION == 0 && PROGRAM_MINOR_VERSION == 2 \
-     && PROGRAM_MAJOR_REVISION == 1 && PROGRAM_MINOR_REVISION == 176)
-# define DISPLAY_VERSION_STRING "0.2.1.0xB0" // ”±‚ç‚µ‚¢
+#if defined(PROGRAM_VERSION_DESCRIBE_STRING)
+# define DISPLAY_VERSION_STRING PROGRAM_VERSION_DESCRIBE_STRING
 #else
 # define DISPLAY_VERSION_STRING PROGRAM_VERSION
 #endif
