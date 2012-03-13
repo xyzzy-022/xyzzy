@@ -735,6 +735,20 @@ Returns list of failures."
                           (report-failure failure))))
             (format out "~{  ~A~%~}" (split-string report #\LFD))))))))
 
+;; NOTE: concern about running tests via timer
+;; Execution of lisp code via `start-timer` sometimes works differently
+;; than normal exeuction. To my knowledge, combination of `start-timer`
+;; and `sleep-for` is one case.
+;; A test that hits this difference might cause some strange problem or
+;; reports faulty results (pass/fail).
+;; While I concern the problem of running tests via timer, I want to
+;; run tests in automated manner (e.g. automatically run tests when
+;; some files get updated) and running tests via timer is almost inevitable
+;; to accomplish these automation.
+
+(defparameter *auto-continue-after-break* t
+  "*If non-nil, continue run of tests automatically after :break via timer.")
+
 (defun run-current-test ()
   (assert-in-session)
   (macrolet ((test      () `(first (ssn-current-test)))
@@ -743,6 +757,8 @@ Returns list of failures."
     (let ((example (first (remaining))))
       (cond ((eql (first example) :break)
              (setf (remaining) (rest (remaining)))
+             (when *auto-continue-after-break*
+               (start-timer 1 'continue-run-tests))
              (message "running test: ~S...break" (test-name (test))))
             ((null (remaining))
              (let* ((finished (nreverse (finished)))
@@ -788,7 +804,10 @@ Returns list of failures."
                    total all-passed-p pass (not all-passed-p) fail)
            (let ((buffer (buffer-stream-buffer (ssn-report-output))))
              (pop-to-buffer buffer)
-             (goto-char (point-max))))
+             (goto-char (point-max))
+             (unless (interactive-p)
+               (refresh-screen))))
+         (while (stop-timer 'continue-run-tests))
          (null (setf *current-session* nil)))))
 
 (defparameter *run-tests-continue/rerun/cancel-message*
