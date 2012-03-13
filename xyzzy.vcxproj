@@ -463,6 +463,7 @@
   </Target>
   <Target Name="BeforeClean" DependsOnTargets="DeleteXyzzyDumpFile">
     <Delete Files="$(SolutionDir)src\xyzzy.gen.rc" Condition="Exists('$(SolutionDir)src\xyzzy.gen.rc')" />
+    <Delete Files="$(SolutionDir)src\version-describe.gen.h" Condition="Exists('$(SolutionDir)src\version-describe.gen.h')" />
     <RemoveDir Directories="$(TargetDir)lisp;$(TargetDir)etc" />
   </Target>
 </Project>
