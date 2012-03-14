@@ -5,9 +5,14 @@
 (when (fboundp 'stop-watch-test-file)
   (stop-watch-test-file))
 
-(defparameter +undefined+ '#:undefined)
+(defconstant +undefined+ '#:undefined)
 
 (defun undefined-p (x) (eq x +undefined+))
+
+(defmacro lambda-bind (lambda-list list &body body)
+  "Poor man's destructuring-bind"
+  `(apply (lambda ,lambda-list ,@body) ,list))
+(setf (get 'lambda-bind 'ed:lisp-indent-hook) 2)
 
 #+unittest-meta-test
 (defmacro ASSERT (form)
@@ -58,16 +63,54 @@
                    '(:expected-output "hello")))))
 
 
-;;;; macro deftest
+;;;; Macro deftest
+;;
+;; You can define a "test" with this macro. A test consists of NAME,
+;; DESCRIPTION and series of example FORM and EXPECTATIONS for that
+;; form.
+;; They are packed in a list and stored in variable `*tests*`.
+;;
+;; :: test = (NAME DESCRIPTION . EXAMPLES)
 
 (defparameter *tests* nil)
+
+(defun store-test (name description source examples)
+  (when (member name *tests* :key #'car)
+    (warn "Overwriting a test: ~S" name))
+  (setf *tests*
+        (cons (list* name description source examples)
+              (remove name *tests* :key #'car)))
+  name)
+
+(defun find-test (name)
+  (assoc name *tests*))
+
+(defun test-name (test) (first test))
+(defun test-description (test) (second test))
+(defun test-source (test) (third test))
+(defun test-examples (test) (cdddr test))
+
+
+;;;;; test thunk
+;;;
+;;; Test thunk is a function (lexical closure) which returns actual
+;;; behaviour of FORM.
+;;; It returns followings as multiple values:
+;;; - macro expansion if FORM is a macro call
+;;; - result of evaluation of FORM, either returned one or more values
+;;;   or signalled an error
+;;; - output string printed to OUTPUT-STREAM-VAR
 
 (defparameter *output-capture-stream* nil)
 
 (defun make-test-thunk-form (form output-stream-var)
   `(lambda ()
      (let ((*output-capture-stream* (make-string-output-stream)))
-       (values (handler-case
+       (values (multiple-value-bind (expn-1 expanded-p)
+                   (macroexpand-1 ',form)  ; TODO: env?
+                 (when expanded-p
+                   (list expn-1 (macroexpand ',form))))
+               (handler-case
                    (list* :return
                           (,@(if output-stream-var
                                `(let ((,output-stream-var *output-capture-stream*)))
@@ -83,103 +126,184 @@
   (ASSERT (equal (make-test-thunk-form '(+ 1 2) nil)
                  `(lambda ()
                     (let ((*output-capture-stream* (make-string-output-stream)))
-                      (values (handler-case
+                      (values (multiple-value-bind (expn-1 expanded-p)
+                                  (macroexpand-1 '(+ 1 2))
+                                (when expanded-p
+                                  (list expn-1 (macroexpand '(+ 1 2)))))
+                              (handler-case
                                   (list* :return (progn (multiple-value-list (+ 1 2))))
                                 (error (error) (list :error error)))
                               nil)))))
   (ASSERT (equal (make-test-thunk-form '(princ :hello) '*standard-output*)
                  `(lambda ()
                     (let ((*output-capture-stream* (make-string-output-stream)))
-                      (values (handler-case
+                      (values (multiple-value-bind (expn-1 expanded-p)
+                                  (macroexpand-1 '(princ :hello))
+                                (when expanded-p
+                                  (list expn-1 (macroexpand '(princ :hello)))))
+                              (handler-case
                                   (list* :return
                                          (let ((*standard-output* *output-capture-stream*))
                                            (multiple-value-list (princ :hello))))
                                 (error (error) (list :error error)))
                               (get-output-stream-string *output-capture-stream*)))))))
 
+
+;;;;; example forms and corresponding expectations
+;;;
+;;; Each example form and corresponding expectations (expressed by
+;;; things like `=> VALUE`) is called "example" here.
+;;; 
+;;; :: EXAMPLE = (FORM THUNK EXPECTED-EXPANSION EXPECTED-RESULTS EXPECTED-OUTPUT)
+
 (defun non-nil-p (#:ignore actual) actual)
 
-(defun parse-expectations (name expectations options)
-  "Return a list describing expected behaviour.
-=> (RESULT OUTPUT EXPANSION)
-RESULT = (:return COMPARE-FN . VALUES) | (:error ERROR-TYPE)
-OUTPUT = (STREAM-VAR . OUTPUT-STRING)
-EXPANSION = FORM"
-  (let ((result-type nil)
-        (result-data '())
-        (output nil)
-        (dest   (getf options :output '*standard-output*))
-        (state  nil)
-        (expansion +undefined+))
-    (dolist (x expectations)
-      (cond
-       ((member x '(=> !! ==)) (setf state x))
-       ((and (consp x) (eql (first x) :expected-output))
-        (setf output (if output (format nil "~A~%~A" output (second x)) (second x))))
-       (t (case state
-            (=> (case result-type
-                  ((nil) (setf result-type :return))
-                  (:return)
-                  (:error (error "Don't expect both return value(s) and error: ~S" name)))
-                (push x result-data))
-            (!! (case result-type
-                  (:return (error "Don't expect both return value(s) and error: ~S" name))
-                  (:error  (error "Don't expect multiple errors: ~S" name)))
-                (unless (symbolp x)
-                  (error 'type-error :datum x :expected-type 'symbol))
-                (setf result-type :error
-                      result-data x))
-            (== (setf expansion x))))))
-    (list (case result-type
-            (:return (list* :return (getf options :compare 'equal) (nreverse result-data)))
-            (:error  (list  :error result-data))
-            ((nil)   (list  :return 'non-nil-p ':non-nil))
-            (t (error "parse-expectations - unknown result-type: ~S: ~S" result-type name)))
-          (when output (list dest output))
-          expansion)))
+;; This is helper function for `make-examples-form`.
+;; In macro `deftest` example forms and corresponding expectations
+;; appear with no grouping. More badly, some of them must be paired
+;; (e.g. `=>` and following value form) while expected output is
+;; being a single list.
+;; To make it easier to manipulate farther in `make-examples-form`,
+;; they are grouped by example forms. Eache example form and corres-
+;; ponding expectations are packed into a list of form:
+;;
+;;     (FORM EXPECTATION-0 EXPECTATION-1 .. EXPECTATION-N)
+;;
+;; where EXPECTATION-X is also a list of form:
+;;
+;;     ({=>,!!,>>,==} DATUM)
+;;
+(defun group-examples (forms-and-expectations)
+  (labels ((output-expectation-p (x)
+             (and (consp x) (eql (car x) :expected-output)))
+           (recur (rest current examples)
+             (let ((head (first rest))
+                   (next (second rest)))
+               (cond ((null rest)
+                      (nreverse (cons (nreverse current) examples)))
+                     ((member head '(=> !! ==))
+                      (recur (cddr rest)
+                             (cons (list head next) current)
+                             examples))
+                     ((output-expectation-p head)
+                      (recur (cdr rest)
+                             (cons (list '>> (second head)) current)
+                             examples))
+                     (t (recur (cdr rest)
+                               (list head)
+                               (cons (nreverse current) examples)))))))
+    (let ((head (first forms-and-expectations)))
+      (when (or (member head '(=> !! ==))
+                (output-expectation-p head))
+        (error "テスト式なしに期待とな！？: ~S" forms-and-expectations))
+      (recur (cdr forms-and-expectations) (list head) nil))))
 
 #+unittest-meta-test
 (progn
-  ;; results (return values)
-  (ASSERT (equal (parse-expectations 'example '(=> 3) nil)
-                 `((:return equal 3) nil ,+undefined+)))
-  (ASSERT (equal (parse-expectations 'example '(=> 3 => 4) nil)
-                 `((:return equal 3 4) nil ,+undefined+)))
-  ;; results (error)
-  (ASSERT (equal (parse-expectations 'example '(!! type-error) nil)
-                 `((:error type-error) nil ,+undefined+)))
-  ;; output
-  (ASSERT (equal (parse-expectations 'example '((:expected-output "hello")) nil)
-                 `((:return non-nil-p :non-nil)
-                   (*standard-output* "hello")
-                   ,+undefined+)))
-  ;; expansion
-  (ASSERT (equal (parse-expectations 'example '(== (a b c)) nil)
-                 `((:return non-nil-p :non-nil) nil (a b c))))
-  )
+  (ASSERT (equal (group-examples '(form-1 => t))
+                 '((form-1 (=> t)))))
+  (ASSERT (equal (group-examples '(form-1 => t form-2 (:expected-output "hi") => t))
+                 '((form-1 (=> t))
+                   (form-2 (>> "hi") (=> t))))))
 
+(defconstant +non-nil-mark+ (gensym "non-nil-"))
 
-(defun expand-deftest (name options doc form expectations)
-  (let* ((expectations (parse-expectations name expectations options))
-         (expected-output-dest (when (second expectations)
-                                 (car (second expectations))))
-         (thunk-form   (make-test-thunk-form form expected-output-dest)))
-    `(progn
-       (when (find ',name *tests* :key 'car)
-         (warn "テスト再定義してる: ~S" ',name))
-       (setf *tests*
-             (cons (list ',name ,doc ',form ,thunk-form ',expectations
-                         *load-pathname*)
-                   (delete ',name *tests* :key 'car)))
-       ',name)))
+(defun make-examples-form (name options forms-and-expectations)
+  (let ((compare-fn (getf options :compare 'equal))
+        (output-stream-var (getf options :output '*standard-output*)))
+    (labels ((make-example-1 (x)
+               ;(format t "x = ~S~%" x)
+               (let ((form (first x))
+                     (expectations (rest x))
+                     (expected-expansion +undefined+)
+                     (expected-output-string nil)
+                     (expected-result-type '#1=#:undefined)
+                     (expected-result-datum nil))
+                 (dolist (y (rest x))
+                   ;(format t "y = ~S~%" y)
+                   (case (car y)
+                     (=> (let ((value (if (eql (second y) 'non-nil)
+                                        +non-nil-mark+
+                                        (second y))))
+                           (case expected-result-type
+                             (:return (push value expected-result-datum))
+                             (:error  (error "Don't expect return and error at same time: ~S" name))
+                             (#1#     (setf expected-result-type :return
+                                            expected-result-datum (list value)))
+                             (otherwise (error "Unknown type of expected result: ~S" name)))))
+                     (!! (case expected-result-type
+                           (:return (error "Don't expect return and error at same time: ~S" name))
+                           (:error  (error "Don't expect more than one error: ~S" name))
+                           (#1#     (setf expected-result-type :error
+                                          expected-result-datum (second y)))
+                           (otherwise (error "Unknown type of expected result: ~S" name))))
+                     (>> (setf expected-output-string
+                               (format nil "~@[~A~%~]~A"
+                                       expected-output-string
+                                       (second y))))
+                     (== (unless (undefined-p expected-expansion)
+                           (error "Just one expansion of form, please: ~S" name))
+                         (setf expected-expansion (second y)))
+                     (otherwise (error "Unknown type of expectation: ~S: ~S" y name))))
+                 `(list ',form ,(make-test-thunk-form form output-stream-var)
+                        ',expected-expansion
+                        ,(case expected-result-type
+                           (:return `'(:return ,compare-fn ,@(nreverse expected-result-datum)))
+                           (:error  `'(:error ,expected-result-datum))
+                           (#1#     `'(:return :normally))
+                           (otherwise (error "Unknown type of expected result: ~S" name)))
+                        '(,output-stream-var ,expected-output-string)))))
+      `(list ,@(mapcar #'make-example-1
+                       (group-examples forms-and-expectations))))))
 
-(defmacro deftest (name (&rest options) form &rest expected)
-  (multiple-value-bind (doc form expected)
-      (if (stringp form)
-        (values form (car expected) (cdr expected))
-        (values nil form expected))
-    (expand-deftest name options doc form expected)))
+#+unittest-meta-test
+(let* ((examples-src
+         (make-examples-form 'hi nil
+                             '(form-1 => 1 => 2
+                               form-2 == (expansion (of form-2)) => t
+                               form-3 (:expected-output "hi")
+                               form-4 (:expected-output "hi") (:expected-output "ho") => nil
+                               form-5 !! type-error)))
+       (examples (eval examples-src))
+       ;; I need destructuring-bind...
+       (1st (first examples))
+       (2nd (second examples))
+       (3rd (third examples))
+       (4th (fourth examples))
+       (5th (fifth examples)))
+  (labels ((expected-expansion (example) (third example))
+           (expected-results   (example) (fourth example))
+           (expected-output    (example) (fifth example)))
+    ;; form-1 => 1 => 2
+    (ASSERT (equal (expected-results 1st)
+                   '(:return equal 1 2)))
+    ;; form-2 == (expansion (of form-2)) => t
+    (ASSERT (equal (expected-expansion 2nd)
+                   '(expansion (of form-2))))
+    (ASSERT (equal (expected-results 2nd)
+                   '(:return equal t)))
+    ;; form-3 (:expected-output "hi")
+    (ASSERT (equal (expected-output 3rd)
+                   '(*standard-output* "hi")))
+    ;; form-4 (:expected-output "hi") (:expected-output "ho") => nil
+    (ASSERT (equal (expected-output 4th)
+                   '(*standard-output* "hi\nho")))
+    (ASSERT (equal (expected-results 4th)
+                   '(:return equal nil)))
+    ;; form-5 !! type-error
+    (ASSERT (equal (expected-results 5th)
+                   '(:error type-error)))
+    ))
+
+(defmacro deftest (name options doc &rest forms-and-expectations)
+  (multiple-value-bind (doc forms-and-expectations)
+      (if (stringp doc)
+        (values doc forms-and-expectations)
+        (values nil (cons doc forms-and-expectations)))
+    `(store-test ',name ,doc *load-pathname*
+                 ,(make-examples-form name options forms-and-expectations))))
 (setf (get 'deftest 'ed:lisp-indent-hook) 2)
+
 
 
 ;;;; check actual behaviour against expected one
@@ -199,6 +323,9 @@ EXPANSION = FORM"
 
 
 ;;;;; macro expansion
+;;;
+;;; :: expected-expansion = EXPANSION
+;;; :: actual-expansion   = (EXPANSION-1 EXPANSION) | nil
 
 (defun form-equal (expected actual)
   (let ((seen (make-hash-table :test #'equal)))
@@ -230,31 +357,32 @@ EXPANSION = FORM"
                       `(,(gensym) ,(gensym))))
   )
 
-(defun check-macro-expansion (expected-expn form)
+(defun check-macro-expansion (expected-expn actual-expns)
   "check macro expansion of FORM satisfies EXPECTED-EXPansioN.
 Return nil if FORM expanded as expected. Otherwise, return a list describing
 how actual expansion differs."
   (unless (undefined-p expected-expn)
-    (multiple-value-bind (actual-expn1 ep actual-expn)
-        (macroexpand-1 form) ; TODO: env
-      (unless ep
-        (return-from check-macro-expansion
-          (list :expansion :not-expanded
-                expected-expn)))
-      (setq actual-expn (macroexpand form))
-      (unless (or (form-equal expected-expn actual-expn1)
-                  (form-equal expected-expn actual-expn))
-        (return-from check-macro-expansion
-          (list :expansion :wrong-expansion
-                expected-expn
-                actual-expn1 actual-expn))))))
+    (cond ((null actual-expns)
+           (list :expansion :not-expanded expected-expn))
+          ((or (form-equal expected-expn (first actual-expns))
+               (form-equal expected-expn (second actual-expns)))
+           nil)
+          (t
+           (list :expansion :wrong-expansion
+                 expected-expn
+                 (first actual-expns)
+                 (second actual-expns))))))
 
 #+unittest-meta-test
-(progn
-  (ASSERT (null  (check-macro-expansion '(setq x 1) '(setf x 1))))
-  (ASSERT (equal (check-macro-expansion '(setq x 1) '(setq x 1))
+(labels ((expn (form)
+           (multiple-value-bind (expn expanded-p)
+               (macroexpand-1 form)
+             (when expanded-p
+               (list expn (macroexpand form))))))
+  (ASSERT (null  (check-macro-expansion '(setq x 1) (expn '(setf x 1)))))
+  (ASSERT (equal (check-macro-expansion '(setq x 1) (expn '(setq x 1)))
                  `(:expansion :not-expanded (setq x 1))))
-  (ASSERT (equal (check-macro-expansion '(set x 1) '(setf x 1))
+  (ASSERT (equal (check-macro-expansion '(set x 1) (expn '(setf x 1)))
                  `(:expansion :wrong-expansion (set x 1) (setq x 1) (setq x 1)))))
 
 (define-failure-reporter :expansion :not-expanded (expected-expn)
@@ -289,48 +417,65 @@ Macro expansion:
 
 
 ;;;;; results (return values, or error)
+;;;
+;;; :: expected-results = (:return COMPARE-FN . VALUES) | (:error ERROR-TYPE)
+;;; :: actual-results   = (:retrun . VALUES) | (:error ERROR)
+
+(defun check-return-values (expected-values actual-values compare-fn)
+  (cond ((eql compare-fn :normally) nil)
+        (t
+         (labels ((FAIL (type)
+                    (list :results type
+                          expected-values actual-values compare-fn)))
+           (let ((n-expected (length expected-values))
+                 (n-actuals  (length actual-values)))
+             (cond ((< n-actuals n-expected) (FAIL :too-few-values))
+                   ((> n-actuals n-expected) (FAIL :too-many-values))
+                   ((not (every (lambda (expected actual)
+                                  (or (funcall compare-fn expected actual)
+                                      (and (eql expected +non-nil-mark+)
+                                           actual)))
+                                expected-values
+                                actual-values))
+                    (FAIL :wrong-values))))))))
 
 (defun check-results (expected-results actual-results)
   "check result of execution (ACTUAL-RESULTS) against EXPECTED-RESULTS.
 Results are either returned values or signalled error described by list.
 Returns a list describing how ACTUAL-RESULTS differ from EXPECTED-RESULTS
 only when ACTUAL-RESULTS does not match expectation."
-  (case (first expected-results)
-    (:return
-     (let ((compare-fn (second expected-results))
-           (expected-values (cddr expected-results)))
-       (case (first actual-results)
-         (:return (let* ((actual-values (cdr actual-results))
-                         (nexpected (length expected-values))
-                         (nactuals  (length actual-values)))
-                    (let ((failure (cond ((< nactuals nexpected) :too-few-values)
-                                         ((> nactuals nexpected) :too-many-values)
-                                         ((not (every compare-fn expected-values actual-values))
-                                          :wrong-values))))
-                      (when failure
-                        (list :results failure expected-values actual-values compare-fn)))))
-         (:error  (let ((error (second actual-results)))
-                    (return-from check-results
-                      (list :results :unexpected-error
-                            expected-values
-                            error)))))))
-    (:error
-     (let ((expected-error-name (second expected-results)))
-       (case (first actual-results)
-         (:return (let ((actual-values (cdr actual-results)))
-                    (return-from check-results
-                      (list :results :unexpected-return
-                            expected-error-name
-                            actual-values))))
-         (:error  (let ((actual-error (second actual-results)))
-                    (unless (si:*structure-subtypep
-                             (si:*structure-definition actual-error)
-                             (get expected-error-name 'si:structure-definition))
-                      (return-from check-results
-                        (list :results :wrong-error
-                              expected-error-name
-                              actual-error))))))))
-    (t (error "Invalid expected results: ~S" expected-results))))
+  (labels ((FAIL (type &rest args)
+             (list* :results type args)))
+    (case (first expected-results)
+      (:return
+       (lambda-bind (#:type compare-fn &rest expected-values)
+           expected-results
+         (case (first actual-results)
+           (:return
+            (check-return-values expected-values
+                                 (cdr actual-results)
+                                 compare-fn))
+           (:error
+            (let ((actual-error (second actual-results)))
+              (FAIL :unexpected-error
+                    (if (eql compare-fn :normally) :normally expected-values)
+                    actual-error))))))
+      (:error
+       (let ((expected-error-type (second expected-results)))
+         (case (first actual-results)
+           (:return
+            (let ((actual-values (cdr actual-results)))
+              (FAIL :unexpected-return
+                    expected-error-type actual-values)))
+           (:error
+            (let ((actual-error (second actual-results)))
+              (unless (si:*structure-subtypep
+                       (si:*structure-definition actual-error)
+                       (get expected-error-type 'si:structure-definition))
+                (FAIL :wrong-error
+                      expected-error-type actual-error)))))))
+      (t
+       (error "Invalid expected results: ~S" expected-results)))))
 
 #+unittest-meta-test
 (progn
@@ -347,6 +492,13 @@ only when ACTUAL-RESULTS does not match expectation."
   (let ((error (make-condition 'type-error)))
     (ASSERT (equal (check-results '(:return equal 1) `(:error ,error))
                    `(:results :unexpected-error (1) ,error))))
+  (ASSERT (equal (check-results `(:return equal ,+non-nil-mark+) '(:return nil))
+                 `(:results :wrong-values (,+non-nil-mark+) (nil) equal)))
+  (ASSERT (equal (check-results '(:return :normally) '(:return t))
+                 nil))
+  (let ((error (make-condition 'type-error)))
+    (ASSERT (equal (check-results '(:return :normally) `(:error ,error))
+                   `(:results :unexpected-error :normally ,error))))
   ;; expecting error
   (ASSERT (null  (check-results '(:error type-error) `(:error ,(make-condition 'type-error)))))
   (ASSERT (equal (check-results '(:error type-error) '(:return 1))
@@ -356,8 +508,12 @@ only when ACTUAL-RESULTS does not match expectation."
                    `(:results :wrong-error type-error ,error))))
   )
 
+
 (defun print-return-values (values)
-  (format t "~{  => ~S~%~}" values))
+  (dolist (x values)
+    (if (eql x +non-nil-mark+)
+      (princ "  => non-nil\n")
+      (format t "  => ~S~%" x))))
 
 (defun report-return-values (expected-values actual-values &optional fmt &rest args)
   (format t "Evaluation result (return values~@[, ~?~]):~%" fmt args)
@@ -365,7 +521,6 @@ only when ACTUAL-RESULTS does not match expectation."
   (print-return-values expected-values)
   (format t "  Actually:~%")
   (print-return-values actual-values))
-
 
 (define-failure-reporter :results :too-few-values (expected-values actual-values compare-fn)
   (report-return-values expected-values actual-values))
@@ -378,7 +533,9 @@ only when ACTUAL-RESULTS does not match expectation."
 
 (define-failure-reporter :results :unexpected-error (expected-values error)
   (format t "Evaluation result (return values):~%")
-  (format t "  Expected:~%~{  => ~S~%~}" expected-values)
+  (if (eql expected-values :normally)
+    (format t "  Expected:~%  ;; return normally~%")
+    (format t "  Expected:~%~{  => ~S~%~}" expected-values))
   (format t "  Actually:~%  !! ~S: ~A~%"
         (si:*structure-definition-name (si:*structure-definition error))
         error))
@@ -449,10 +606,13 @@ Evaluation result (error):
 
 
 ;;;;; output
+;;;
+;;; :: expected-output = (STREAM-VAR OUTPUT-STRING)
+;;; :: actual-output   = OUTPUT-STRING
 
 (defun check-output (expected-output actual-output)
   "Check ACTUAL-OUTPUT is same as EXPECTED-OUTPUT."
-  (unless expected-output (return-from check-output nil))
+  (unless (second expected-output) (return-from check-output nil))
   (cond ((string= actual-output "")
          (list :output :nothing-printed expected-output))
         ((not (string= actual-output (second expected-output)))
@@ -502,66 +662,179 @@ Output (*trace-output*):
   >> what?
 "))
 
-(defun run-test-1 (test)
-  (multiple-value-bind (name doc form thunk expectations)
-      (values-list test)
-    (multiple-value-bind (expected-results expected-output expected-expansion)
-        (values-list expectations)
-      (let ((failures '()))
-        (macrolet ((check (form)
-                     `(let ((failure ,form))
-                        (when failure (push failure failures)))))
-          (check (check-macro-expansion expected-expansion form))
-          (multiple-value-bind (actual-results actual-output)
-              (funcall thunk)
-            (check (check-results expected-results actual-results))
-            (check (check-output expected-output actual-output))))
-        failures))))
+
+;;;; running tests
 
 (defvar *last-test-list* nil)
 
-(defun run-tests (&optional (test-list (or *last-test-list* *tests*)))
-  (interactive)
-  (setf *last-test-list* test-list)
-  (let ((buffer (get-buffer-create "*Test Results*"))
-        (pass-count 0)
-        (fail-count 0)
-        (error-count 0))
+(defun get-report-buffer-stream ()
+  (let ((buffer (get-buffer-create "*Test Results*")))
     (setup-temp-buffer buffer)
     (erase-buffer buffer)
     (pop-to-buffer buffer)
-    (with-output-to-buffer (buffer)
-      (dolist (test test-list)
-        (multiple-value-bind (name doc form thunk expectations) (values-list test)
-          (progn
-            (format t "~&~S..." name)
-            (message "Running test: ~S..." name))
-          (handler-case
-              (let ((failures (run-test-1 test)))
-                (cond ((null failures) ; passed
-                       (incf pass-count)
-                       (format t "OK~%"))
-                      (t ; failed
-                       (incf fail-count) (ding)
-                       (format t "Failed~%")
-                       (when doc (format t "  Description:~%~{    ~A~%~}" (split-string doc #\LFD)))
-                       (dolist (failure failures)
-                         (let ((report (with-output-to-string (*standard-output*)
-                                         (report-failure failure))))
-                           (format t "~{  ~A~%~}" (split-string report #\LFD)))))))
-            (error (error)
-              (incf error-count)
-              (format t "~&***  Error occured while running test ~S.~%    ~A~%" name error)
-              (format t "  ;; This is not error from test code, but (most likely)~%")
-              (format t "  ;; bug in testing framework.")))
-          (refresh-screen)))
-      (format t "----------------------------------------------------------------------------~%")
-      (let ((total (+ pass-count fail-count error-count)))
-        (if (= total pass-count)
-          (format t "total ~D tests: ALL passed." total)
-          (format t "total ~D tests: ~D passed, ~D failed~@[, ~D errors~]~%"
-                total pass-count fail-count (unless (zerop error-count) error-count))))
-      (goto-char (point-max)))))
+    (make-buffer-stream buffer)))
+
+(defparameter *current-session* nil)
+
+(defstruct session
+  (report-output (get-report-buffer-stream))
+  (pass-count 0)
+  (fail-count 0)
+  finished-tests
+  current-test
+  remaining-tests)
+
+(defun assert-in-session ()
+  (unless *current-session*
+    (error "Not in a run-tests session.")))
+
+(macrolet ((def (slot)
+             (let ((name (intern (format nil "ssn-~A" slot)))
+                   (acc  (find-symbol (format nil "session-~A" slot))))
+               `(defmacro ,name (&optional (session '*current-session*))
+                  `(,',acc ,session)))))
+  ;; (defmacro ssn-report-output (&optional (session '*current-session*))
+  ;;   `(session-report-output ,session))
+  (def report-output)
+  (def pass-count)
+  (def fail-count)
+  (def finished-tests)
+  (def current-test)
+  (def remaining-tests))
+
+;; :: ssn-finished-test = ((TEST (EXAMPLE . FAILURES))...)
+;; :: ssn-current-test = (TEST FINISHED-EXAMPLES REMAINING-EXAMPLES)
+;; :: FINISHED-EXAMPLES = ((EXAMPLE . FAILURES)...) // in reverse order
+
+(defun run-one-example (example)
+  "Execute and inspect EXAMPLE form and check if it is as expected.
+Returns list of failures."
+  (let ((failures '()))
+    (multiple-value-bind (form thunk expected-expansion expected-results expected-output)
+        (values-list example)
+      (macrolet ((check (x)
+                   `(let ((failure ,x))
+                      (when failure (push failure failures)))))
+        (multiple-value-bind (actual-expansion actual-results actual-output)
+            (funcall thunk)
+          (check (check-macro-expansion expected-expansion actual-expansion))
+          (check (check-results expected-results actual-results))
+          (check (check-output expected-output actual-output)))
+        (nreverse failures)))))
+
+(defun report-test-failures (test finished &optional (out (ssn-report-output)))
+  (let ((desc (test-description test))
+        (*print-circle* t))
+    (when desc (format out "~{  ;; ~A~%~}" (split-string desc #\LFD)))
+    (dolist (example/failures finished)
+      (let ((example  (car example/failures))
+            (failures (cdr example/failures)))
+        (format out "  * ~S~%" (car example)) ; form
+        (dolist (failure failures)
+          (let ((report (with-output-to-string (*standard-output*)
+                          (report-failure failure))))
+            (format out "~{  ~A~%~}" (split-string report #\LFD))))))))
+
+;; NOTE: concern about running tests via timer
+;; Execution of lisp code via `start-timer` sometimes works differently
+;; than normal exeuction. To my knowledge, combination of `start-timer`
+;; and `sleep-for` is one case.
+;; A test that hits this difference might cause some strange problem or
+;; reports faulty results (pass/fail).
+;; While I concern the problem of running tests via timer, I want to
+;; run tests in automated manner (e.g. automatically run tests when
+;; some files get updated) and running tests via timer is almost inevitable
+;; to accomplish these automation.
+
+(defparameter *auto-continue-after-break* t
+  "*If non-nil, continue run of tests automatically after :break via timer.")
+
+(defun run-current-test ()
+  (assert-in-session)
+  (macrolet ((test      () `(first (ssn-current-test)))
+             (finished  () `(second (ssn-current-test)))
+             (remaining () `(third (ssn-current-test))))
+    (let ((example (first (remaining))))
+      (cond ((eql (first example) :break)
+             (setf (remaining) (rest (remaining)))
+             (when *auto-continue-after-break*
+               (start-timer 1 'continue-run-tests))
+             (message "running test: ~S...break" (test-name (test))))
+            ((null (remaining))
+             (let* ((finished (nreverse (finished)))
+                    (passed-p (every #'null (mapcar #'cdr finished))))
+               (format (ssn-report-output) "~:[Failed~;OK~]~%" passed-p)
+               (message "running test: ~S...~:[Failed~;OK~]" (test-name (test)) passed-p)
+               (if passed-p
+                 (incf (ssn-pass-count))
+                 (progn
+                   (incf (ssn-fail-count))
+                   (ding)
+                   (report-test-failures (test) finished)))
+               (push (cons (test) finished) (ssn-finished-tests))
+               (setf (ssn-current-test) nil)
+               (refresh-screen)
+               (continue-run-tests)))
+            (t
+             (let ((failures (run-one-example example)))
+               (setf (remaining) (rest (remaining)))
+               (push (cons example failures) (finished))
+               (run-current-test)))))))
+
+(defun continue-run-tests ()
+  (interactive)
+  (assert-in-session)
+  (cond ((ssn-current-test)
+         (run-current-test))
+        ((ssn-remaining-tests)
+         (let ((next (first (ssn-remaining-tests))))
+           (format (ssn-report-output) "~&~S..." (test-name next))
+           (message "running test: ~S..." (test-name next))
+           (setf (ssn-current-test) (list next nil (test-examples next))
+                 (ssn-remaining-tests) (rest (ssn-remaining-tests))))
+         (continue-run-tests))
+        (t ;; all tests finished. Report and die.
+         (let* ((pass (ssn-pass-count))
+                (fail (ssn-fail-count))
+                (total (+ pass fail))
+                (all-passed-p (zerop fail))
+                (out (ssn-report-output)))
+           (format out "~&----------------------------------------------------------------------~%")
+           (format out "Total ~D tests: ~:[~D~;~*All~] passed~@[~*, ~A failed~]~%"
+                   total all-passed-p pass (not all-passed-p) fail)
+           (let ((buffer (buffer-stream-buffer (ssn-report-output))))
+             (pop-to-buffer buffer)
+             (goto-char (point-max))
+             (unless (interactive-p)
+               (refresh-screen))))
+         (while (stop-timer 'continue-run-tests))
+         (null (setf *current-session* nil)))))
+
+(defparameter *run-tests-continue/rerun/cancel-message*
+  "前回のテスト実行が途中で中断されたまま終わっていません。どうする？
+
+[続ける] 中断されたテストの続きから続行する
+[やり直し] 前回と同じテストを最初からやり直す
+[キャンセル] 何もしない")
+
+(defun run-tests (&optional (test-list (or *last-test-list* *tests*)))
+  (interactive)
+  (unless (null *current-session*)
+    (case (message-box *run-tests-continue/rerun/cancel-message*
+                       "実行中のテストがあります"
+                       '(:exclamation :button1)
+                       :button1 "続ける"
+                       :button2 "やり直し"
+                       :button3 "キャンセル")
+      (:button1 (return-from run-tests (continue-run-tests)))
+      (:button2 (setf *current-session* nil))
+      (:button3 (quit))))
+  (setf *last-test-list* test-list
+        *current-session* (make-session :remaining-tests test-list))
+  (continue-run-tests))
+
+
+;;;;; convenience commands to run tests
 
 (defun run-all-tests ()
   (interactive)
@@ -579,8 +852,8 @@ Output (*trace-output*):
     (when (or (not loaded)
               (> (file-write-time testfile) (cdr loaded)))
       (load-test-file testfile)))
-  (run-tests (remove-if-not (lambda (tests)
-                              (path-equal (sixth tests) testfile))
+  (run-tests (remove-if-not (lambda (test)
+                              (path-equal (test-source test) testfile))
                             *tests*)))
 
 
