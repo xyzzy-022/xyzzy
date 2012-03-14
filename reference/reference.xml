@@ -2051,7 +2051,7 @@ xyzzy終了時に実行されます。このフック変数の実行がnilだと
 </chapter>
 
 <chapter>
-<title>*read-eval*<title>
+<title>*read-eval*</title>
 <type>Variable</type>
 <arguments></arguments>
 <package>lisp</package>
