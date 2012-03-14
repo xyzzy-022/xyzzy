@@ -2,6 +2,7 @@
 #include "print.h"
 #include "preview.h"
 #include "conf.h"
+#include "version.h"
 
 HGLOBAL printer_device::pd_devmode;
 HGLOBAL printer_device::pd_devnames;

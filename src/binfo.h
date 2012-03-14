@@ -1,6 +1,8 @@
 #ifndef _binfo_h_
 #define _binfo_h_
 
+#include "version.h"
+
 class buffer_info
 {
   const Window *const b_wp;

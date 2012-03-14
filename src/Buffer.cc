@@ -3,6 +3,7 @@
 #include "filer.h"
 #include "binfo.h"
 #include "buffer-bar.h"
+#include "version.h"
 
 fixed_heap Chunk::c_heap (sizeof (Char) * TEXT_SIZE);
 fixed_heap Chunk::c_breaks_heap (BREAKS_SIZE);
