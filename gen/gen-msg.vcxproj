@@ -64,10 +64,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>
-    <PostBuildEvent>
-      <Command>"$(TargetPath)" -enum &gt; "$(TargetDir)msgcode.h"
-"$(TargetPath)" -c &gt; "$(TargetDir)msgdef.gen.cc"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -88,10 +84,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Command>"$(TargetPath)" -enum &gt; "$(TargetDir)msgcode.h"
-"$(TargetPath)" -c &gt; "$(TargetDir)msgdef.gen.cc"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\gen-msg.cc" />
@@ -110,4 +102,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <PropertyGroup>
+    <GenerateTargetPath>$(TargetDir)msgcode.h;$(TargetDir)msgdef.gen.cc</GenerateTargetPath>
+  </PropertyGroup>
+  <Target Name="GenerateSource" Inputs="$(TargetPath)" Outputs="$(GenerateTargetPath)">
+    <Exec Command="&quot;$(TargetPath)&quot; -enum &gt; &quot;$(TargetDir)msgcode.h&quot;" />
+    <Exec Command="&quot;$(TargetPath)&quot; -c &gt; &quot;$(TargetDir)msgdef.gen.cc&quot;" />
+  </Target>
+  <Target Name="AfterBuild" DependsOnTargets="GenerateSource" />
+  <Target Name="BeforeClean" DependsOnTargets="DeleteGeneratedSource" />
 </Project>
