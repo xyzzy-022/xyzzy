@@ -277,6 +277,9 @@ $(OUTDIR)\xyzzy.rc: xyzzy.rc version-rc.h
 	type xyzzy.rc > $@
 	type version-rc.h >> $@
 
+version-describe.gen.h:
+	..\misc\update_version_describe.bat
+
 vars-decl.h: gen-syms.exe
 	-@if exist $@ del $@ > nul
 	.\gen-syms -vars > $(TMPFILE)
@@ -486,7 +489,7 @@ $(OUTDIR)/usertab.obj: $(MAINFRAME_H) colors.h
 $(OUTDIR)/usertool.obj: $(MAINFRAME_H)
 $(OUTDIR)/ucs2.obj: ucs2tab.h char-width.h
 $(OUTDIR)/vector.obj: sequence.h
-$(OUTDIR)/version.obj: version.h
+$(OUTDIR)/version.obj: version.h version-describe.gen.h
 $(OUTDIR)/wheel.obj: wheel.h
 $(OUTDIR)/wstream.obj: StrBuf.h wstream.h
 $(OUTDIR)/xdde.obj: xdde.h
