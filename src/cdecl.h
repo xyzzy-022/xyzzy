@@ -166,6 +166,8 @@ int assert_failed (const char *, int);
 
 # define __TOSTR(X) #X
 # define _TOSTR(X) __TOSTR(X)
+# define __TOWSTR(X) L##X
+# define _TOWSTR(X) __TOWSTR (X)
 
 # define THREADLOCAL __declspec (thread)
 

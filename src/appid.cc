@@ -21,5 +21,5 @@ appid::set ()
   if (!SetAppId)
     return;
 
-  SetAppId (L"xyzzy");
+  SetAppId (_TOWSTR (PROGRAM_APP_USER_MODEL_ID));
 }
