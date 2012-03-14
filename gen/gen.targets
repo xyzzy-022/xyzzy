@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="GenerateSource" Inputs="$(TargetPath)" Outputs="$(GenerateTargetPath)">
+    <Exec Command="&quot;$(TargetPath)&quot; &gt; &quot;$(GenerateTargetPath)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+  </Target>
+  <Target Name="DeleteGeneratedSource">
+    <Delete Files="$(GenerateTargetPath)" Condition="Exists('$(GenerateTargetPath)')" />
+  </Target>
+</Project>

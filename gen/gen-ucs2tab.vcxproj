@@ -65,10 +65,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>
-    <PostBuildEvent>
-      <Command>cd "$(SolutionDir)src"
-"$(TargetPath)" &gt; "$(TargetDir)ucs2tab.h"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -90,10 +86,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Command>cd "$(SolutionDir)src"
-"$(TargetPath)" &gt; "$(TargetDir)ucs2tab.h"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\gen-ucs2tab.cc" />
@@ -111,4 +103,11 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <Import Project="$(ProjectDir)gen.targets" />
+  <PropertyGroup>
+    <GenerateTargetPath>$(TargetDir)ucs2tab.h</GenerateTargetPath>
+    <GenerateWorkingDirectory>$(SolutionDir)src</GenerateWorkingDirectory>
+  </PropertyGroup>
+  <Target Name="AfterBuild" DependsOnTargets="GenerateSource" />
+  <Target Name="BeforeClean" DependsOnTargets="DeleteGeneratedSource" />
 </Project>

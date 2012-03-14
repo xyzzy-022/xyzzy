@@ -167,7 +167,7 @@ CFG=r
 
 OUTDIR=d
 OBJS=$(OBJS: = d/)
-CXXFLAGS=-Od -Gz -Gs -Gy -Gi -Gm $(CXXOPT) -W3 -MTd -Zi $(INC) $(DEFS) -DDEBUG -Fo$(OUTDIR)/
+CXXFLAGS=-Od -Gz -Gs -Gy -Gm $(CXXOPT) -W3 -MTd -Zi $(INC) $(DEFS) -DDEBUG -Fo$(OUTDIR)/
 LDFLAGS=-debug -stack:0x2000000 -incremental:yes
 FINAL_TARGET=$(OUTDIR)/$(BUILD)
 
@@ -175,7 +175,7 @@ FINAL_TARGET=$(OUTDIR)/$(BUILD)
 
 OUTDIR=r
 OBJS=$(OBJS: = r/)
-CXXFLAGS=-Ob1 -Og -Oi -Ot -Oy -G5 -Gs -Gy -Gz $(CXXOPT) -W3 -MT -vmb $(INC) $(DEFS) -Fo$(OUTDIR)/
+CXXFLAGS=-Ob1 -Oi -Ot -Oy -Gs -Gy -Gz $(CXXOPT) -W3 -MT -vmb $(INC) $(DEFS) -Fo$(OUTDIR)/
 LDFLAGS=-stack:0x2000000 -map:$(OUTDIR)/xyzzy.map -incremental:no -fixed -opt:ref
 FINAL_TARGET=../$(BUILD)
 
