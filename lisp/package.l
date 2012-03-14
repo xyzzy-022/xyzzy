@@ -24,7 +24,7 @@
 (defun coerce-to-package (x)
   (let ((p (find-package x)))
     (unless p
-      (error "パッケージが見つかりません: ~S" p))
+      (error "パッケージが見つかりません: ~S" x))
     p))
 
 (defun string-or-symbol (x)
