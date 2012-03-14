@@ -2,6 +2,7 @@
 # define _version_h_
 
 # define PROGRAM_NAME "xyzzy"
+# define PROGRAM_APP_USER_MODEL_ID PROGRAM_NAME
 # define PROGRAM_COPYRIGHT "Copyright (C) 1996-2005 T.Kamei"
 
 # define PROGRAM_MAJOR_VERSION 0
