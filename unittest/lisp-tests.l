@@ -69,6 +69,78 @@
       => "wxp"))
   )
 
+(deftest test-cl-char-Backspace ()
+  (values
+   (char= #\Backspace #\C-h)
+   (char-code #\Backspace)
+   (char-name #\Backspace))
+  => t
+  => 8
+  => "backspace")
+
+(deftest test-cl-char-Tab ()
+  (values
+   (char= #\Tab #\TAB)
+   (char-code #\Tab)
+   (char-name #\Tab))
+  => t
+  => 9
+  => "horizontal_tabulation")
+
+(deftest test-cl-char-Newline ()
+  (values
+   (char= #\Newline #\LFD)
+   (char-code #\Newline)
+   (char-name #\Newline))
+  => t
+  => 10
+  => "line_feed")
+
+(deftest test-cl-char-Linefeed ()
+  (values
+   (char= #\Linefeed #\LFD)
+   (char-code #\Linefeed)
+   (char-name #\Linefeed))
+  => t
+  => 10
+  => "line_feed")
+
+(deftest test-cl-char-Page ()
+  (values
+   (char= #\Page #\C-l)
+   (char-code #\Page)
+   (char-name #\Page))
+  => t
+  => 12
+  => "form_feed")
+
+(deftest test-cl-char-Return ()
+  (values
+   (char= #\Return #\RET)
+   (char-code #\Return)
+   (char-name #\Return))
+  => t
+  => 13
+  => "carriage_return")
+
+(deftest test-cl-char-Space ()
+  (values
+   (char= #\Space #\SPC)
+   (char-code #\Space)
+   (char-name #\Space))
+  => t
+  => 32
+  => "space")
+
+(deftest test-cl-char-Rubout ()
+  (values
+   (char= #\Rubout #\DEL)
+   (char-code #\Rubout)
+   (char-name #\Rubout))
+  => t
+  => 127
+  => "delete")
+
 (defmacro with-lispmode-bed (&body body)
   `(with-temp-buffer
      (lisp-mode)

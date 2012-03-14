@@ -3160,10 +3160,23 @@ set-extended-key-translate-table を参照して下さい。
   (eq #\ESC #\C-[) =&gt; t
   (eq #\DEL #\C-?) =&gt; t
   (eq #\NUL #\C-@) =&gt; t
+
+xyzzy 0.2.2.236 からCommon Lispと同様の文字も利用可能です。
+このような文字は以下のとおりです。
+
+  (eq #\Backspace #\C-h) =&gt; t
+  (eq #\Tab       #\TAB) =&gt; t
+  (eq #\Newline   #\LFD) =&gt; t
+  (eq #\Linefeed  #\LFD) =&gt; t
+  (eq #\Page      #\C-l) =&gt; t
+  (eq #\Return    #\RET) =&gt; t
+  (eq #\Space     #\SPC) =&gt; t
+  (eq #\Rubout    #\DEL) =&gt; t
 </description>
 <seealso>global-set-key</seealso>
 <seealso>define-key</seealso>
 <seealso>*kbd-translate-table*</seealso>
+<link>http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/Body/sec_13-1-7.html</link>
 <section>キーマップ</section>
 <file></file>
 </chapter>

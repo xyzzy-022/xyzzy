@@ -18,6 +18,16 @@ static const print_char_name standard_char_names[] =
   X ("ESC", CC_ESC),
   X ("DEL", CC_DEL),
   X ("NUL", 0),
+
+  // Common Lisp compat char name
+  X ("Backspace", CC_BS),
+  X ("Tab", CC_TAB),
+  X ("Newline", CC_NL),
+  X ("Linefeed", CC_NL),
+  X ("Page", CC_FF),
+  X ("Return", CC_CR),
+  X ("Space", CC_SPC),
+  X ("Rubout", CC_DEL),
 };
 
 static const print_char_name function_char_names[] =
