@@ -1700,7 +1700,7 @@ spec-map
 t
 title-bar-format
 
-;*1
+;**c
 *create-shortcut
 *ime-register-word-dialog
 *keymap-char-index
