@@ -8008,6 +8008,10 @@ ITEMとのテストを満足するSEQUENCE中の要素数を返します。結�
                             :maximize  最大化状態で起動
                             :minimize  最小化状態で起動
      :appid              アプリケーションID
+                         ショートカットのアプリケーションIDを指定します。
+                         Windows 7以降ではアプリケーションIDを元に
+                         タスクバー上でアイコンがグループ化されます。
+                         Vista 以前ではこの引数は単純に無視されます。
 
 使用例：
   ;;; スタートメニューにショートカットを作成する。
@@ -8023,7 +8027,8 @@ ITEMとのテストを満足するSEQUENCE中の要素数を返します。結�
   =&gt; t
 
   ;;; xyzzyと同じアプリケーションIDを指定してデスクトップにxyzzycliを登録する。
-  ;;; このショートカットから起動するとWindows 7のタスクバー上で一つにまとめらます。
+  ;;; このショートカットをタスクバーに登録することで、ジャンプリストが利用
+  ;;; できるようになる。
   (create-shortcut (merge-pathnames "xyzzycli.exe" (si:system-root))
                    (get-special-folder-location :desktop)
                    :appid (si:*app-user-model-id))
