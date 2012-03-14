@@ -16,6 +16,7 @@
 #include "sock.h"
 #include "conf.h"
 #include "colors.h"
+#include "version.h"
 #ifdef DEBUG
 # include "mainframe.h"
 # include <crtdbg.h>

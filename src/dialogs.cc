@@ -6,6 +6,7 @@
 #include <process.h>
 #include "thread.h"
 #include "xstrlist.h"
+#include "version.h"
 
 void
 set_window_icon (HWND hwnd)

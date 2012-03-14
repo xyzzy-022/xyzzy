@@ -10,6 +10,7 @@
 #include "thread.h"
 #include "xstrlist.h"
 #include "vwin32.h"
+#include "version.h"
 
 static lisp
 file_error_condition (int e)

@@ -1,5 +1,6 @@
-#include "ed.h"
+#include "lisp.h"
 #include "appid.h"
+#include "version.h"
 
 lisp
 Fsi_app_user_model_id ()

@@ -1,5 +1,6 @@
 #include "ed.h"
 #include "except.h"
+#include "version.h"
 
 #define MAX_LISP_CALL_STACK_DEPTH 64
 

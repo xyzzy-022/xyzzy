@@ -1,6 +1,7 @@
 #include "ed.h"
 #include "wstream.h"
 #include "sock.h"
+#include "version.h"
 #include <math.h>
 #include <float.h>
 #include <stdarg.h>
