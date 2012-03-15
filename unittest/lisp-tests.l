@@ -280,6 +280,305 @@
       (simple-error-format-arguments c)))
   => (:shadow :shadowing-import-from "car"))
 
+
+(deftest test-defstruct-print-function-1 ()
+  "print-function を事前に定義。0.2.2.235 でもパスする"
+  (let* ((struct-name (gensym "struct-"))
+         (print-function-name (gensym "print-function-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     `(defun ,print-function-name (o s p)
+        (format s "#<test>")))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:print-function ,print-function-name))
+                           '(a b c)))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test>")
+
+(deftest test-defstruct-print-function-2 ()
+  "print-function を lambda form で定義。0.2.2.235 でもパスする"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     `(let ((v 1))
+        ,(si::defstruct-helper `(,struct-name
+                                 (:print-function (lambda (o s p) (format s "#<test ~A>" v))))
+                               '(a b c))))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test 1>")
+
+(deftest test-defstruct-print-function-3 ()
+  "print-function をクロージャで定義した場合、警告が出る"
+  (let* ((struct-name (gensym "struct-"))
+         (print-function-name (gensym "print-function-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     `(defun ,print-function-name (o s p)
+        (format s "#<test>")))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:print-function #',print-function-name))
+                           '(a b c)))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test>")
+
+(deftest test-defstruct-print-function-4 ()
+  "print-function をクロージャ (lambda form) で定義した場合、警告が出る"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     `(let ((v 1))
+        ,(si::defstruct-helper `(,struct-name
+                                 (:print-function #'(lambda (o s p) (format s "#<test ~A>" v))))
+                               '(a b c))))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test 1>")
+
+(deftest test-defstruct-print-function-5 ()
+  "print-function を後で定義する場合"
+  (let* ((struct-name (gensym "struct-"))
+         (print-function-name (gensym "print-function-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:print-function ,print-function-name))
+                           '(a b c)))
+    (eval
+     `(defun ,print-function-name (o s p)
+        (format s "#<test>")))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test>")
+
+(deftest test-defstruct-print-function-6 ()
+  "print-function を再定義する場合"
+  (let* ((struct-name (gensym "struct-"))
+         (print-function-name (gensym "print-function-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     `(defun ,print-function-name (o s p)
+        (format s "#<test>")))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:print-function ,print-function-name))
+                           '(a b c)))
+    (eval
+     `(defun ,print-function-name (o s p)
+        (format s "#<test2>")))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test2>")
+
+
+(deftest test-defstruct-parent-print-function-1 ()
+  "親の print-function を継承しない場合コンパイルできる。0.2.2.235 でもパスする"
+  (let* ((struct-name1 (gensym "struct-"))
+         (struct-name2 (gensym "struct-")))
+    (eval
+     (si::defstruct-helper `(,struct-name1
+                             (:print-function (lambda (o s p) (format o "#<test>"))))
+                           '(a b c)))
+    (compile nil `(lambda ()
+                    ,@(si::defstruct-helper `(,struct-name2
+                                              (:print-function (lambda (o s p) (format o "#<test2>")))
+                                              (:include ,struct-name1))
+                                            '(d)))))
+  => non-nil)
+
+(deftest test-defstruct-parent-print-function-2 ()
+  "親の print-function を継承する場合コンパイルできる (lambda form)"
+  (let* ((struct-name1 (gensym "struct-"))
+         (struct-name2 (gensym "struct-")))
+    (declare (special struct-name1 struct-name2))
+    (eval
+     (si::defstruct-helper `(,struct-name1
+                             (:print-function (lambda (o s p) (format o "#<test>"))))
+                           '(a b c)))
+    (compile nil `(lambda ()
+                    ,@(si::defstruct-helper `(,struct-name2
+                                              (:include ,struct-name1))
+                                            '(d)))))
+  => non-nil)
+
+(deftest test-defstruct-parent-print-function-3 ()
+  "親の print-function を継承する場合コンパイルできる (symbol)"
+  (let* ((struct-name1 (gensym "struct-"))
+         (struct-name2 (gensym "struct-"))
+         (print-function-name1 (gensym "print-function-"))
+         (ctor2 (intern (format nil "make-~A" struct-name2))))
+    (declare (special struct-name1 struct-name2))
+    (eval
+     `(defun ,print-function-name1 (o s p)
+        (format s "#<test>")))
+    (eval
+     (si::defstruct-helper `(,struct-name1
+                             (:print-function ,print-function-name1))
+                           '(a b c)))
+    (compile nil `(lambda ()
+                    ,@(si::defstruct-helper `(,struct-name2
+                                              (:include ,struct-name1))
+                                            '(d)))))
+  => non-nil)
+
+
+(deftest test-defstruct-default-constructor-1 ()
+  ":constructor 指定がない場合デフォルトコンストラクタが作成される"
+  (let* ((struct-name (gensym "struct-"))
+         (default-ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name)
+                           '(a b c)))
+    (values
+     (fboundp default-ctor)
+     (typep (eval `(,default-ctor)) struct-name)))
+  => t
+  => t)
+
+(deftest test-defstruct-default-constructor-2 ()
+  ":constructor 指定がない場合デフォルトコンストラクタが作成される"
+  (let* ((struct-name (gensym "struct-"))
+         (default-ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor))
+                           '(a b c)))
+    (values
+     (fboundp default-ctor)
+     (typep (eval `(,default-ctor)) struct-name)))
+  => t
+  => t)
+
+(deftest test-defstruct-default-constructor-3 ()
+  "デフォルトコンストラクタと違う名前で :constructor 指定がある場合、
+デフォルトコンストラクタは作成されない"
+  (let* ((struct-name (gensym "struct-"))
+         (default-ctor (intern (format nil "make-~A" struct-name)))
+         (other-ctor (intern (format nil "make-~A-2" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,other-ctor))
+                           '(a b c)))
+    (values
+     (fboundp default-ctor)
+     (fboundp other-ctor)
+     (typep (eval `(,other-ctor)) struct-name)))
+  => nil
+  => t
+  => t)
+
+(deftest test-defstruct-default-constructor-4 ()
+  "デフォルトコンストラクタと同じ名前で :constructor 指定がある場合、
+デフォルトコンストラクタは作成されない"
+  (let* ((struct-name (gensym "struct-"))
+         (default-ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,default-ctor (a b c)))
+                           '(a b c)))
+    (values
+     (fboundp default-ctor)
+     (typep (eval `(,default-ctor 1 2 3)) struct-name)))
+  => t
+  => t)
+
+
+(deftest test-defstruct-constructor-arg-1 ()
+  "コンストラクタで引数をすべて指定した場合。0.2.2.235 でもパスする"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A-2" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a b c)))
+                           '(a b c)))
+    (let ((o (eval `(,ctor 1 2 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c))))
+  => (1 2 3))
+
+(deftest test-defstruct-constructor-arg-2 ()
+  "コンストラクタで引数を一部指定した場合"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A-2" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a c)))
+                           '(a b c)))
+    (let ((o (eval `(,ctor 1 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c))))
+  => (1 nil 3))
+
+(deftest test-defstruct-constructor-arg-3 ()
+  "コンストラクタで引数を指定した場合 (&optional)"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A-2" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a &optional c (d 4))))
+                           '(a b c d)))
+    (let ((o (eval `(,ctor 1 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d))))
+  => (1 nil 3 4))
+
+(deftest test-defstruct-constructor-arg-4 ()
+  "コンストラクタで引数を指定した場合 (&key)"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A-2" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a &key (c 3) d)))
+                           '(a b c d)))
+    (let ((o (eval `(,ctor 1 :d 4))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d))))
+  => (1 nil 3 4))
+
+
+(deftest test-defstruct-default-constructor-arg-1 ()
+  "コンストラクタで引数をすべて指定した場合"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a b c)))
+                           '(a b c)))
+    (let ((o (eval `(,ctor 1 2 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c))))
+  => (1 2 3))
+
+(deftest test-defstruct-default-constructor-arg-2 ()
+  "コンストラクタで引数を一部指定した場合"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a c)))
+                           '(a b c)))
+    (let ((o (eval `(,ctor 1 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c))))
+  => (1 nil 3))
+
+(deftest test-defstruct-default-constructor-arg-3 ()
+  "コンストラクタで引数を指定した場合 (&optional)"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a &optional c (d 4))))
+                           '(a b c d)))
+    (let ((o (eval `(,ctor 1 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d))))
+  => (1 nil 3 4))
+
+(deftest test-defstruct-default-constructor-arg-4 ()
+  "コンストラクタで引数を指定した場合 (&key)"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a &key (c 3) d)))
+                           '(a b c d)))
+    (let ((o (eval `(,ctor 1 :d 4))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d))))
+  => (1 nil 3 4))
+
+
 (defmacro with-lispmode-bed (&body body)
   `(with-temp-buffer
      (lisp-mode)
