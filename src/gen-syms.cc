@@ -663,6 +663,9 @@ static symbols lsp[] =
   DEFVAR2 (*garbage-collection-messages*),
 
   /* environ.cc */
+  DEFUN3 (machine-instance, 0, 0, 0),
+  DEFUN3 (machine-type, 0, 0, 0),
+  DEFUN3 (machine-version, 0, 0, 0),
   DEFUN3 (get-decoded-time, 0, 0, 0),
   DEFUN3 (get-universal-time, 0, 0, 0),
   DEFUN3 (decode-universal-time, 1, 1, 0),
@@ -1431,6 +1434,8 @@ static symbols unint[] =
   MAKE_SYMBOL2Q (user-config-path),
   MAKE_SYMBOL2 (user-name),
   MAKE_SYMBOL2 (machine-name),
+  MAKE_SYMBOL2 (machine-type),
+  MAKE_SYMBOL2 (machine-version),
   MAKE_SYMBOL2 (os-major-version),
   MAKE_SYMBOL2 (os-minor-version),
   MAKE_SYMBOL2 (os-build-number),

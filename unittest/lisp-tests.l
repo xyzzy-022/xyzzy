@@ -69,6 +69,20 @@
       => "wxp"))
   )
 
+
+(deftest machine-instance ()
+  (string= (machine-instance) (machine-name))
+  => t)
+
+(deftest machine-type ()
+  (machine-type)
+  => #+x86 "x86" #+x64 "x64" #+ia64 "IA64")
+
+(deftest machine-version ()
+  (string= (machine-version) (si:getenv "PROCESSOR_IDENTIFIER"))
+  => t)
+
+
 (deftest test-cl-char-Backspace ()
   "Backspace •¶Žš‚ªŽg‚¦‚é‚©"
   (let ((c (read-from-string "#\\Backspace")))
