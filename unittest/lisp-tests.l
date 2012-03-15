@@ -141,6 +141,129 @@
   => 127
   => "delete")
 
+(deftest test-coerce-to-package ()
+  (let ((name (gensym "no-such-package-name")))
+    (handler-case
+        (lisp::coerce-to-package name)
+      (simple-error (c)
+        (equal `(,name) (simple-error-format-arguments c)))))
+  => t)
+
+(deftest test-defpackage-parse-options-1 ()
+  (lisp::defpackage-parse-options
+   :foo
+   '((:shadowing-import-from :lisp :car)
+     (:shadowing-import-from :lisp :cadr)
+     (:shadow :caddr)))
+  => nil
+  => ("caddr")
+  => (car cadr)
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil)
+
+(deftest test-defpackage-parse-options-2 ()
+  (handler-case
+      (lisp::defpackage-parse-options
+       :foo
+       '((:import-from :lisp :cadr)
+         (:shadowing-import-from :lisp :car)
+         (:shadow :car)))
+    (simple-error (c)
+      (simple-error-format-arguments c)))
+  => (:shadow :shadowing-import-from "car"))
+
+(deftest test-defpackage-parse-options-3 ()
+  (handler-case
+      (lisp::defpackage-parse-options
+       :foo
+       '((:import-from :lisp :car)
+         (:shadowing-import-from :lisp :car)
+         (:shadow :caddr)))
+    (simple-error (c)
+      (simple-error-format-arguments c)))
+  => (:shadowing-import-from :import-from "car"))
+
+(deftest test-defpackage-parse-options-4 ()
+  (handler-case
+      (lisp::defpackage-parse-options
+       :foo
+       '((:import-from :lisp :car)
+         (:shadowing-import-from :lisp :cadr)
+         (:shadow :car)))
+    (simple-error (c)
+      (simple-error-format-arguments c)))
+  => (:shadow :import-from "car"))
+
+(deftest test-defpackage-parse-options-5 ()
+  (handler-case
+      (lisp::defpackage-parse-options
+       :foo
+       '((:import-from :lisp :cadr)
+         (:shadowing-import-from :lisp :car)
+         (:shadow :car)))
+    (simple-error (c)
+      (simple-error-format-arguments c)))
+  => (:shadow :shadowing-import-from "car"))
+
+(deftest test-defpackage-parse-options-6 ()
+  (handler-case
+      (lisp::defpackage-parse-options
+       :foo
+       '((:import-from :lisp :cdr :car)
+         (:shadowing-import-from :lisp :cddr :car)
+         (:shadow :cdddr :car)))
+    (simple-error (c)
+      (simple-error-format-arguments c)))
+  => (:shadow :shadowing-import-from "car"))
+
+(deftest test-defpackage-parse-options-7 ()
+  (handler-case
+      (lisp::defpackage-parse-options
+       :foo
+       '((:import-from :lisp :car)
+         (:shadowing-import-from :lisp :car)))
+    (simple-error (c)
+      (simple-error-format-arguments c)))
+  => (:shadowing-import-from :import-from "car"))
+
+(deftest test-defpackage-parse-options-8 ()
+  (handler-case
+      (lisp::defpackage-parse-options
+       :foo
+       '((:import-from :lisp :cdr)
+         (:import-from :lisp :car)
+         (:import-from :lisp :car)))
+    (simple-error (c)
+      (simple-error-format-arguments c)))
+  => (:import-from :import-from "car"))
+
+(deftest test-defpackage-parse-options-9 ()
+  (handler-case
+      (lisp::defpackage-parse-options
+       :foo
+       '((:import-from :lisp :cdr)
+         (:import-from :lisp :car)
+         (:shadowing-import-from :lisp :cddr)
+         (:shadowing-import-from :lisp :car)))
+    (simple-error (c)
+      (simple-error-format-arguments c)))
+  => (:shadowing-import-from :import-from "car"))
+
+(deftest test-defpackage-parse-options-10 ()
+  (handler-case
+      (lisp::defpackage-parse-options
+       :foo
+       '((:shadow :cdr :car :cddr)
+         (:shadowing-import-from :lisp :cdddr)
+         (:shadowing-import-from :lisp :car)))
+    (simple-error (c)
+      (simple-error-format-arguments c)))
+  => (:shadow :shadowing-import-from "car"))
+
 (defmacro with-lispmode-bed (&body body)
   `(with-temp-buffer
      (lisp-mode)
