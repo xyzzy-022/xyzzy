@@ -21,7 +21,6 @@ static const print_char_name standard_char_names[] =
 
   // Common Lisp compat char name
   X ("Backspace", CC_BS),
-  X ("Tab", CC_TAB),
   X ("Newline", CC_NL),
   X ("Linefeed", CC_NL),
   X ("Page", CC_FF),
