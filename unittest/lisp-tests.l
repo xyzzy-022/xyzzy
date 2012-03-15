@@ -280,6 +280,146 @@
       (simple-error-format-arguments c)))
   => (:shadow :shadowing-import-from "car"))
 
+
+(deftest test-defstruct-print-function-1 ()
+  "print-function を事前に定義。0.2.2.235 でもパスする"
+  (let* ((struct-name (gensym "struct-"))
+         (print-function-name (gensym "print-function-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     `(defun ,print-function-name (o s p)
+        (format s "#<test>")))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:print-function ,print-function-name))
+                           '(a b c)))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test>")
+
+(deftest test-defstruct-print-function-2 ()
+  "print-function を lambda form で定義。0.2.2.235 でもパスする"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     `(let ((v 1))
+        ,(si::defstruct-helper `(,struct-name
+                                 (:print-function (lambda (o s p) (format s "#<test ~A>" v))))
+                               '(a b c))))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test 1>")
+
+(deftest test-defstruct-print-function-3 ()
+  "print-function をクロージャで定義した場合、警告が出る"
+  (let* ((struct-name (gensym "struct-"))
+         (print-function-name (gensym "print-function-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     `(defun ,print-function-name (o s p)
+        (format s "#<test>")))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:print-function #',print-function-name))
+                           '(a b c)))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test>")
+
+(deftest test-defstruct-print-function-4 ()
+  "print-function をクロージャ (lambda form) で定義した場合、警告が出る"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     `(let ((v 1))
+        ,(si::defstruct-helper `(,struct-name
+                                 (:print-function #'(lambda (o s p) (format s "#<test ~A>" v))))
+                               '(a b c))))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test 1>")
+
+(deftest test-defstruct-print-function-5 ()
+  "print-function を後で定義する場合"
+  (let* ((struct-name (gensym "struct-"))
+         (print-function-name (gensym "print-function-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:print-function ,print-function-name))
+                           '(a b c)))
+    (eval
+     `(defun ,print-function-name (o s p)
+        (format s "#<test>")))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test>")
+
+(deftest test-defstruct-print-function-6 ()
+  "print-function を再定義する場合"
+  (let* ((struct-name (gensym "struct-"))
+         (print-function-name (gensym "print-function-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     `(defun ,print-function-name (o s p)
+        (format s "#<test>")))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:print-function ,print-function-name))
+                           '(a b c)))
+    (eval
+     `(defun ,print-function-name (o s p)
+        (format s "#<test2>")))
+    (format nil "~A" (eval `(,ctor))))
+  => "#<test2>")
+
+
+(deftest test-defstruct-parent-print-function-1 ()
+  "親の print-function を継承しない場合コンパイルできる。0.2.2.235 でもパスする"
+  (let* ((struct-name1 (gensym "struct-"))
+         (struct-name2 (gensym "struct-")))
+    (eval
+     (si::defstruct-helper `(,struct-name1
+                             (:print-function (lambda (o s p) (format o "#<test>"))))
+                           '(a b c)))
+    (compile nil `(lambda ()
+                    ,@(si::defstruct-helper `(,struct-name2
+                                              (:print-function (lambda (o s p) (format o "#<test2>")))
+                                              (:include ,struct-name1))
+                                            '(d)))))
+  => non-nil)
+
+(deftest test-defstruct-parent-print-function-2 ()
+  "親の print-function を継承する場合コンパイルできる (lambda form)"
+  (let* ((struct-name1 (gensym "struct-"))
+         (struct-name2 (gensym "struct-")))
+    (declare (special struct-name1 struct-name2))
+    (eval
+     (si::defstruct-helper `(,struct-name1
+                             (:print-function (lambda (o s p) (format o "#<test>"))))
+                           '(a b c)))
+    (compile nil `(lambda ()
+                    ,@(si::defstruct-helper `(,struct-name2
+                                              (:include ,struct-name1))
+                                            '(d)))))
+  => non-nil)
+
+(deftest test-defstruct-parent-print-function-3 ()
+  "親の print-function を継承する場合コンパイルできる (symbol)"
+  (let* ((struct-name1 (gensym "struct-"))
+         (struct-name2 (gensym "struct-"))
+         (print-function-name1 (gensym "print-function-"))
+         (ctor2 (intern (format nil "make-~A" struct-name2))))
+    (declare (special struct-name1 struct-name2))
+    (eval
+     `(defun ,print-function-name1 (o s p)
+        (format s "#<test>")))
+    (eval
+     (si::defstruct-helper `(,struct-name1
+                             (:print-function ,print-function-name1))
+                           '(a b c)))
+    (compile nil `(lambda ()
+                    ,@(si::defstruct-helper `(,struct-name2
+                                              (:include ,struct-name1))
+                                            '(d)))))
+  => non-nil)
+
+
 (defmacro with-lispmode-bed (&body body)
   `(with-temp-buffer
      (lisp-mode)

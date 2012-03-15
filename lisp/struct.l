@@ -354,14 +354,36 @@
 		forms)))
       (incf i))))
 
+(defun create-print-function (print-function)
+  (when print-function
+    (labels ((rec (pf)
+	       (cond ((si:*closurep pf)
+		      ;; 親から継承した場合
+		      pf)
+		     ((symbolp pf)
+		      ;; :print-function foo の場合
+		      `',pf)
+		     ((eq (safe-car pf) 'lambda)
+		      ;; :print-function (lambda (o s p) ...) の場合
+		      `#',pf)
+		     ((eq (safe-car pf) 'function)
+		      ;; :print-function #'foo または
+		      ;; :print-function #'(lambda (o s p) ...) の場合
+		      ;; 警告を出して #' を外す
+		      (warn ":print-functionに関数が指定されました。~%~S の代わりに ~S を指定してください"
+			    print-function (cadr pf))
+		      (rec (cadr pf)))
+		     (t
+		      (error "不正な:print-functionです: ~S" print-function)))))
+      (rec print-function))))
+
 (defun define-structure (name doc conc-name constructors copier predicate
 			 include slots print-function)
   (let ((def (gensym)))
     `(eval-when (:compile-toplevel :load-toplevel :execute)
        (let ((,def (*make-structure-definition ',name nil ,include
 					       ',constructors
-					       ,(when print-function
-						  `#',print-function)
+					       ,(create-print-function print-function)
 					       nil ',slots)))
 	 (setf (get ',name 'structure-definition) ,def)
 	 (setf (get ',name 'lisp::structure-documentation) ,doc)
