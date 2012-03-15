@@ -420,6 +420,67 @@
   => non-nil)
 
 
+(deftest test-defstruct-default-constructor-1 ()
+  ":constructor 指定がない場合デフォルトコンストラクタが作成される"
+  (let* ((struct-name (gensym "struct-"))
+         (default-ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name)
+                           '(a b c)))
+    (values
+     (fboundp default-ctor)
+     (typep (eval `(,default-ctor)) struct-name)))
+  => t
+  => t)
+
+(deftest test-defstruct-default-constructor-2 ()
+  ":constructor 指定がない場合デフォルトコンストラクタが作成される"
+  (let* ((struct-name (gensym "struct-"))
+         (default-ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor))
+                           '(a b c)))
+    (values
+     (fboundp default-ctor)
+     (typep (eval `(,default-ctor)) struct-name)))
+  => t
+  => t)
+
+(deftest test-defstruct-default-constructor-3 ()
+  "デフォルトコンストラクタと違う名前で :constructor 指定がある場合、
+デフォルトコンストラクタは作成されない"
+  (let* ((struct-name (gensym "struct-"))
+         (default-ctor (intern (format nil "make-~A" struct-name)))
+         (other-ctor (intern (format nil "make-~A-2" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,other-ctor))
+                           '(a b c)))
+    (values
+     (fboundp default-ctor)
+     (fboundp other-ctor)
+     (typep (eval `(,other-ctor)) struct-name)))
+  => nil
+  => t
+  => t)
+
+(deftest test-defstruct-default-constructor-4 ()
+  "デフォルトコンストラクタと同じ名前で :constructor 指定がある場合、
+デフォルトコンストラクタは作成されない"
+  (let* ((struct-name (gensym "struct-"))
+         (default-ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,default-ctor (a b c)))
+                           '(a b c)))
+    (values
+     (fboundp default-ctor)
+     (typep (eval `(,default-ctor 1 2 3)) struct-name)))
+  => t
+  => t)
+
+
 (defmacro with-lispmode-bed (&body body)
   `(with-temp-buffer
      (lisp-mode)

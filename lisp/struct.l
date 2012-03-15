@@ -68,14 +68,14 @@
 		 ((null (car v)) (setq conc-name ""))
 		 (t (setq conc-name (string (car v))))))
 	  (:constructor
-	   (cond ((endp v))
-		 ((null (car v))
-		  (setq default-constructor nil))
-		 ((endp (cdr v))
+	   (cond ((endp v))           ; :constructor Žw’è‚È‚µ
+		 ((null (car v)))     ; (:constructor)
+		 ((endp (cdr v))      ; (:constructor make-foo)
 		  (push (car v) constructors)
 		  (setq default-constructor nil))
-		 (t
-		  (push v constructors))))
+		 (t                   ; (:constructor make-foo (args...))
+		  (push v constructors)
+		  (setq default-constructor nil))))
 	  (:copier
 	   (cond ((endp v))
 		 ((null (car v)) (setq copier nil))
