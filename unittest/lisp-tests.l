@@ -481,6 +481,104 @@
   => t)
 
 
+(deftest test-defstruct-constructor-arg-1 ()
+  "コンストラクタで引数をすべて指定した場合。0.2.2.235 でもパスする"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A-2" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a b c)))
+                           '(a b c)))
+    (let ((o (eval `(,ctor 1 2 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c))))
+  => (1 2 3))
+
+(deftest test-defstruct-constructor-arg-2 ()
+  "コンストラクタで引数を一部指定した場合"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A-2" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a c)))
+                           '(a b c)))
+    (let ((o (eval `(,ctor 1 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c))))
+  => (1 nil 3))
+
+(deftest test-defstruct-constructor-arg-3 ()
+  "コンストラクタで引数を指定した場合 (&optional)"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A-2" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a &optional c (d 4))))
+                           '(a b c d)))
+    (let ((o (eval `(,ctor 1 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d))))
+  => (1 nil 3 4))
+
+(deftest test-defstruct-constructor-arg-4 ()
+  "コンストラクタで引数を指定した場合 (&key)"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A-2" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a &key (c 3) d)))
+                           '(a b c d)))
+    (let ((o (eval `(,ctor 1 :d 4))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d))))
+  => (1 nil 3 4))
+
+
+(deftest test-defstruct-default-constructor-arg-1 ()
+  "コンストラクタで引数をすべて指定した場合"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a b c)))
+                           '(a b c)))
+    (let ((o (eval `(,ctor 1 2 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c))))
+  => (1 2 3))
+
+(deftest test-defstruct-default-constructor-arg-2 ()
+  "コンストラクタで引数を一部指定した場合"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a c)))
+                           '(a b c)))
+    (let ((o (eval `(,ctor 1 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c))))
+  => (1 nil 3))
+
+(deftest test-defstruct-default-constructor-arg-3 ()
+  "コンストラクタで引数を指定した場合 (&optional)"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a &optional c (d 4))))
+                           '(a b c d)))
+    (let ((o (eval `(,ctor 1 3))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d))))
+  => (1 nil 3 4))
+
+(deftest test-defstruct-default-constructor-arg-4 ()
+  "コンストラクタで引数を指定した場合 (&key)"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a &key (c 3) d)))
+                           '(a b c d)))
+    (let ((o (eval `(,ctor 1 :d 4))))
+      (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d))))
+  => (1 nil 3 4))
+
+
 (defmacro with-lispmode-bed (&body body)
   `(with-temp-buffer
      (lisp-mode)

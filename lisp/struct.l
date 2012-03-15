@@ -327,14 +327,12 @@
 		 (defstruct-parse-lambda-list (cadr c) slots)
 	       (push `(defun ,(car c) ,lambda-list
 			(let ((,object (*make-structure-data ,def)))
-			  ,@(let ((inits '())
-				  (i 0))
+			  ,@(let ((inits '()))
 			      (dolist (desc slots inits)
 				(let ((v (member (car desc) init-vars :test #'string=)))
 				  (when v
-				    (push `(*set-index-slot-value ,object ,i ,(car v))
-					  inits)
-				    (incf i)))))
+				    (push `(*set-slot-value ,object ,(car desc) ,(car v))
+					  inits)))))
 			  ,object))
 		     forms)))))
     forms))
