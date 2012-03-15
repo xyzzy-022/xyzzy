@@ -16414,6 +16414,78 @@ CHAR が小文字なら t 、そうでなければ nil を返します。
 </description>
 <seealso>user-name</seealso>
 <seealso>si:getenv</seealso>
+<seealso>machine-type</seealso>
+<seealso>machine-instance</seealso>
+<seealso>machine-version</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>machine-instance</title>
+<type>Function</type>
+<arguments>machine-instance</arguments>
+<package>lisp</package>
+<description>
+マシン名を返します。
+
+使用例：
+  (machine-instance)
+  =&gt; "WS4849"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<seealso>machine-name</seealso>
+<seealso>machine-type</seealso>
+<seealso>machine-version</seealso>
+<seealso>*features*</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>machine-type</title>
+<type>Function</type>
+<arguments>machine-type</arguments>
+<package>lisp</package>
+<description>
+マシンのアーキテクチャを返します。
+
+使用例：
+  (machine-type)
+  =&gt; "x64"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<seealso>machine-name</seealso>
+<seealso>machine-instance</seealso>
+<seealso>machine-version</seealso>
+<seealso>*features*</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>machine-version</title>
+<type>Function</type>
+<arguments>machine-version</arguments>
+<package>lisp</package>
+<description>
+CPU のバージョンを返します。
+
+使用例：
+  (machine-version)
+  =&gt; "Intel64 Family 6 Model 23 Stepping 10, GenuineIntel"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<seealso>machine-name</seealso>
+<seealso>machine-instance</seealso>
+<seealso>machine-type</seealso>
+<seealso>*features*</seealso>
 <section>システム</section>
 <file>builtin.l</file>
 </chapter>

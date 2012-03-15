@@ -429,6 +429,9 @@
 (si::defun-builtin get-internal-real-time ())
 (si::defun-builtin software-type ())
 (si::defun-builtin software-version ())
+(si::defun-builtin machine-instance ())
+(si::defun-builtin machine-type ())
+(si::defun-builtin machine-version ())
 
 (gc)
 

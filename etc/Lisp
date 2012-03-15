@@ -715,7 +715,10 @@ lookup-key-command
 lookup-keymap
 loop
 lower-case-p
+machine-instance
 machine-name
+machine-type
+machine-version
 macro-function
 macroexpand
 macroexpand-1

@@ -304,6 +304,24 @@ Fsi_delete_registry_tree ()
 }
 
 lisp
+Fmachine_instance ()
+{
+  return xsymbol_value (Vmachine_name);
+}
+
+lisp
+Fmachine_type ()
+{
+  return xsymbol_value (Vmachine_type);
+}
+
+lisp
+Fmachine_version ()
+{
+  return xsymbol_value (Vmachine_version);
+}
+
+lisp
 Fget_decoded_time ()
 {
   SYSTEMTIME s;
@@ -640,6 +658,12 @@ init_environ ()
   else
     xsymbol_value (Vmachine_name) = make_string ("unknown");
 
+  char *processor_id = getenv ("PROCESSOR_IDENTIFIER");
+  if (processor_id)
+    xsymbol_value (Vmachine_version) = make_string (processor_id);
+  else
+    xsymbol_value (Vmachine_version) = Qnil;
+
   xsymbol_value (Vos_major_version) = make_fixnum (sysdep.os_ver.dwMajorVersion);
   xsymbol_value (Vos_minor_version) = make_fixnum (sysdep.os_ver.dwMinorVersion);
   xsymbol_value (Vos_build_number) = make_fixnum (sysdep.os_ver.dwBuildNumber);
@@ -708,12 +732,17 @@ init_environ ()
     {
     case Sysdep::MACHINETYPE_X86:
       xsymbol_value (Vfeatures) = xcons (Kx86, xsymbol_value (Vfeatures));
+      xsymbol_value (Vmachine_type) = make_string ("x86");
       break;
     case Sysdep::MACHINETYPE_X64:
       xsymbol_value (Vfeatures) = xcons (Kx64, xsymbol_value (Vfeatures));
+      xsymbol_value (Vmachine_type) = make_string ("x64");
       break;
     case Sysdep::MACHINETYPE_IA64:
       xsymbol_value (Vfeatures) = xcons (Kia64, xsymbol_value (Vfeatures));
+      xsymbol_value (Vmachine_type) = make_string ("IA64");
+    case Sysdep::MACHINETYPE_UNKNOWN:
+      xsymbol_value (Vmachine_type) = Qnil;
       break;
     }
 
