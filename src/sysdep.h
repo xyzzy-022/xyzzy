@@ -58,12 +58,32 @@ struct Sysdep
   HFONT hfont_ruler;
   SIZE ruler_ext;
 
+  enum machine_type
+    {
+      MACHINETYPE_UNKNOWN,
+      MACHINETYPE_X86,
+      MACHINETYPE_X64,
+      MACHINETYPE_IA64,
+    };
+
+  machine_type machine_type;
+
+  enum process_type
+    {
+      PROCESSTYPE_UNKNOWN,
+      PROCESSTYPE_NATIVE,
+      PROCESSTYPE_WOW64,
+    };
+
+  process_type process_type;
 private:
   HFONT hfont_ui;
   HFONT hfont_ui90;
   HFONT hfont_ui270;
   static HFONT create_ui_font (int);
   void init_wintype ();
+  void init_machine_type ();
+  void init_process_type ();
 public:
   HFONT ui_font ();
   HFONT ui_font90 ();

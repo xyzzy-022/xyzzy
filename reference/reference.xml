@@ -32278,17 +32278,45 @@ FEATURE が *features* の要素であればそれ以降のリストを返しま
 実装の特徴を表すキーワードをリストとして格納しています。
 #+ と #- の評価に影響します。
 
+候補：
+  :xyzzy
+  :ieee-floating-point
+  :win32s
+  :windows-95
+  :windows-98
+  :windows-me
+  :windows-nt
+  :windows-2000
+  :windows-xp
+  :windows-vista
+  :windows-7
+  :windows-8
+  :x86
+  :x64
+  :ia64
+  :wow64
+
 使用例：
   (+ 2 #+xyzzy 3 #+foo 4)
   =&gt; 5
   (push :foo *features*)
-  =&gt; (:foo :windows-me :windows-98 :xyzzy :ieee-floating-point)
+  =&gt; (:foo :wow64 :x64 :windows-7 :windows-vista :windows-xp :windows-2000 :windows-nt :xyzzy :ieee-floating-point)
   (+ 2 #+xyzzy 3 #+foo 4)
   =&gt; 9
   (pop *features*)
   =&gt; :foo
   (+ 2 #+xyzzy 3 #+foo 4)
   =&gt; 5
+
+備考：
+  以下の値は xyzzy 0.2.2.236 から利用可能です。
+  :windows-vista
+  :windows-7
+  :windows-8
+  :x86
+  :x64
+  :ia64
+  :wow64
 </description>
 <seealso>featurep</seealso>
 <link></link>
