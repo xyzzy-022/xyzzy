@@ -22,6 +22,9 @@
 # pragma warning (disable: 4610)
 
 # define alloca _alloca
+# define memicmp _memicmp
+# define strdup _strdup
+# define stricmp _stricmp
 
 # define BITS_PER_SHORT (sizeof (short) * CHAR_BIT)
 # define BITS_PER_INT (sizeof (int) * CHAR_BIT)
