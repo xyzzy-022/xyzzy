@@ -75,7 +75,7 @@
   => "xyzzy")
 
 (deftest lisp-implementation-version ()
-  (= (software-version) (lisp-implementation-version))
+  (string= (software-version) (lisp-implementation-version))
   => t)
 
 
