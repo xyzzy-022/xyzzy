@@ -31,8 +31,8 @@
 (in-package :makelc)
 (export '(compile-package
 	  compile-files
-          reload-files
-          ))
+	  reload-files
+	  ))
 
 (defmacro time (form)
   `(let ((start (get-internal-real-time))
@@ -73,28 +73,36 @@
      (terpri))))
 
 (defun compile-files (&key (dir (merge-pathnames "lisp" (si:system-root)))
-                           force-recompile)
+			   force-recompile)
   (let ((files (directory dir :absolute t :wild "*.l" :recursive t)))
     (format t "compiling ~D files ...~%" (length files))
     (time
      (dolist (src files)
        (let ((bin (compile-file-pathname src)))
-         (when (or force-recompile
-                   (file-newer-than-file-p src bin))
-           (compile-file src)))))))
+	 (when (or force-recompile
+		   (file-newer-than-file-p src bin))
+	   (byte-compile-file src)
+	   (refresh)
+	   ))))))
 
 (defun reload-files ()
   (labels ((lisp-module-p (module)
-             (file-exist-p (merge-pathnames (format nil "lisp/~A.l" module)
-                                            (si:system-root)))))
+	     (file-exist-p (merge-pathnames (format nil "lisp/~A.l" module)
+					    (si:system-root)))))
     (let ((lisp-modules (remove-if-not #'lisp-module-p *modules*)))
       (setf *modules* (remove-if #'lisp-module-p *modules*))
       (format t "reloading ~D modules ...~%" (length lisp-modules))
       (time
        (dolist (module lisp-modules)
-         (load-library module))))))
+	 (load-library module)
+	 (refresh)
+	 )))))
 
-(defun user::makelc ()
+(defun refresh ()
+  (goto-char (point-max))
+  (refresh-screen))
+
+(defun user::makelc (&optional (force-recompile *prefix-args*))
   (interactive)
   (let ((buf (create-new-buffer "*compile log*")))
     (set-buffer buf)
@@ -102,13 +110,13 @@
     (with-output-to-buffer (buf)
       (compile-package :compiler)
       (compile-package :lisp)
-      (compile-files :force-recompile *prefix-args*)
+      (compile-files :force-recompile force-recompile)
       (reload-files)
+      (format t "DONE.~%")
+      (refresh)
       (let ((dump (si:dump-image-path)))
-        (when (file-exist-p dump)
-          (delete-file dump)))
-      (goto-char (point-max))
-      (refresh-screen)
+	(when (file-exist-p dump)
+	  (delete-file dump)))
       )))
 
 (provide "makelc")
