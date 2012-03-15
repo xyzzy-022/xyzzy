@@ -11,6 +11,8 @@ Sysdep::Sysdep ()
   GetVersionEx (&os_ver);
 
   init_wintype ();
+  init_machine_type ();
+  init_process_type ();
 
   GetCurrentDirectory (sizeof curdir, curdir);
   if (*curdir == '\\')
@@ -139,6 +141,47 @@ Sysdep::init_wintype ()
       windows_short_name = "unk";
       break;
     }
+}
+
+void
+Sysdep::init_machine_type ()
+{
+  SYSTEM_INFO info;
+  GetNativeSystemInfo(&info);
+  switch (info.wProcessorArchitecture)
+    {
+    case PROCESSOR_ARCHITECTURE_INTEL:
+      machine_type = MACHINETYPE_X86;
+      break;
+    case PROCESSOR_ARCHITECTURE_AMD64:
+      machine_type = MACHINETYPE_X64;
+      break;
+    case PROCESSOR_ARCHITECTURE_IA64:
+      machine_type = MACHINETYPE_IA64;
+      break;
+    case PROCESSOR_ARCHITECTURE_UNKNOWN:
+      machine_type = MACHINETYPE_UNKNOWN;
+      break;
+    }
+}
+
+void
+Sysdep::init_process_type ()
+{
+  typedef BOOL (WINAPI *ISWOW64PROCESS) (HANDLE, PBOOL);
+  ISWOW64PROCESS IsWow64Process = (ISWOW64PROCESS)GetProcAddress (GetModuleHandle ("kernel32"),
+                                                                  "IsWow64Process");
+  BOOL isWow64 = FALSE;
+  if (!IsWow64Process || !IsWow64Process (GetCurrentProcess (), &isWow64))
+    {
+      process_type = PROCESSTYPE_UNKNOWN;
+      return;
+    }
+
+  if (isWow64)
+    process_type = PROCESSTYPE_WOW64;
+  else
+    process_type = PROCESSTYPE_NATIVE;
 }
 
 HFONT

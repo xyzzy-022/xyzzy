@@ -703,6 +703,26 @@ init_environ ()
       xsymbol_value (Vos_platform) = Qnil;
       break;
     }
+
+  switch (sysdep.machine_type)
+    {
+    case Sysdep::MACHINETYPE_X86:
+      xsymbol_value (Vfeatures) = xcons (Kx86, xsymbol_value (Vfeatures));
+      break;
+    case Sysdep::MACHINETYPE_X64:
+      xsymbol_value (Vfeatures) = xcons (Kx64, xsymbol_value (Vfeatures));
+      break;
+    case Sysdep::MACHINETYPE_IA64:
+      xsymbol_value (Vfeatures) = xcons (Kia64, xsymbol_value (Vfeatures));
+      break;
+    }
+
+  switch (sysdep.process_type)
+    {
+    case Sysdep::PROCESSTYPE_WOW64:
+      xsymbol_value (Vfeatures) = xcons (Kwow64, xsymbol_value (Vfeatures));
+      break;
+    }
 }
 
 lisp
