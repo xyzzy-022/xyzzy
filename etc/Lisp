@@ -671,6 +671,8 @@ length
 let
 let*
 lisp-complete-symbol
+lisp-implementation-type
+lisp-implementation-version
 list
 list*
 list-all-packages

@@ -674,6 +674,8 @@ static symbols lsp[] =
   DEFUN3 (software-type, 0, 0, 0),
   DEFUN3 (software-version, 0, 0, 0),
   DEFUN3 (software-version-display-string, 0, 0, 0),
+  DEFUN3 (lisp-implementation-type, 0, 0, 0),
+  DEFUN3 (lisp-implementation-version, 0, 0, 0),
 
   /* structure.cc */
   MAKE_SYMBOL (structure, Qstructure),
