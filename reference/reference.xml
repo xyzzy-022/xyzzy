@@ -36481,6 +36481,44 @@ apply と違って多値で返された二番目以降の戻り値も渡しま�
 </chapter>
 
 <chapter>
+<title>lisp-implementation-type</title>
+<type>Function</type>
+<arguments>lisp-implementation-type</arguments>
+<package>lisp</package>
+<description>
+Lisp 処理系の実装名を返します。
+
+使用例：
+  (lisp-implementation-type)
+  =&gt; "xyzzy"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>lisp-implementation-version</title>
+<type>Function</type>
+<arguments>lisp-implementation-version</arguments>
+<package>lisp</package>
+<description>
+Lisp 処理系のバージョンを返します。
+
+使用例：
+  (lisp-implementation-version)
+  =&gt; "0.2.2.236"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>get-alternate-file-buffer</title>
 <type>Function</type>
 <arguments>get-alternate-file-buffer FILENAME &amp;key (:test #'equalp)</arguments>

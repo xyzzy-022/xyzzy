@@ -595,6 +595,18 @@ Fsoftware_version ()
 }
 
 lisp
+Flisp_implementation_type ()
+{
+  return xsymbol_value (Qsoftware_type);
+}
+
+lisp
+Flisp_implementation_version ()
+{
+  return xsymbol_value (Qsoftware_version);
+}
+
+lisp
 Fsoftware_version_display_string ()
 {
   return xsymbol_value (Qsoftware_version_display_string);
