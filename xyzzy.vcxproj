@@ -349,6 +349,7 @@
     <ClInclude Include="src\dyn-handle.h" />
     <ClInclude Include="src\ed.h" />
     <ClInclude Include="src\encoding.h" />
+    <ClInclude Include="src\endian.h" />
     <ClInclude Include="src\environ.h" />
     <ClInclude Include="src\error.h" />
     <ClInclude Include="src\except.h" />

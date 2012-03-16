@@ -36,40 +36,9 @@
  *
  */
 
-#if HAVE_NBTOOL_CONFIG_H
-#include "nbtool_config.h"
-#endif
-
-#include <sys/cdefs.h>
-
-#if defined(_KERNEL) || defined(_STANDALONE)
-__KERNEL_RCSID(0, "$NetBSD: sha2.c,v 1.21 2010/01/24 21:11:18 joerg Exp $");
-
-#include <sys/param.h>	/* XXX: to pull <machine/macros.h> for vax memset(9) */
-#include <lib/libkern/libkern.h>
-
-#else
-
-#if defined(LIBC_SCCS) && !defined(lint)
-__RCSID("$NetBSD: sha2.c,v 1.21 2010/01/24 21:11:18 joerg Exp $");
-#endif /* LIBC_SCCS and not lint */
-
-#include "namespace.h"
-#include <string.h>
-
-#endif
-
-#include <sys/types.h>
-#include <sys/sha2.h>
-
-#if HAVE_NBTOOL_CONFIG_H
-#  if HAVE_SYS_ENDIAN_H
-#    include <sys/endian.h>
-#  else
-#   undef htobe32
-#   undef htobe64
-#   undef be32toh
-#   undef be64toh
+#include "cdecl.h"
+#include "endian.h"
+#include "sha2.h"
 
 static uint32_t
 htobe32(uint32_t x)
@@ -104,8 +73,6 @@ be64toh(uint64_t x)
 {
 	return htobe64(x);
 }
-#  endif
-#endif
 
 /*** SHA-256/384/512 Various Length Definitions ***********************/
 /* NOTE: Most of these are in sha2.h */
@@ -752,7 +719,7 @@ void
 SHA512_Transform(SHA512_CTX *context, const uint64_t *data)
 {
 	uint64_t	a, b, c, d, e, f, g, h, s0, s1;
-	uint64_t	T1, T2, *W512 = (void *)context->buffer;
+	uint64_t	T1, T2, *W512 = (uint64_t *)context->buffer;
 	int		j;
 
 	/* Initialize registers with the prev. intermediate value */
@@ -876,7 +843,7 @@ SHA512_Update(SHA512_CTX *context, const uint8_t *data, size_t len)
 		while (len >= SHA512_BLOCK_LENGTH) {
 			memcpy(context->buffer, data, SHA512_BLOCK_LENGTH);
 			SHA512_Transform(context,
-			    (const void *)context->buffer);
+			    (const uint64_t *)context->buffer);
 			ADDINC128(context->bitcount, SHA512_BLOCK_LENGTH << 3);
 			len -= SHA512_BLOCK_LENGTH;
 			data += SHA512_BLOCK_LENGTH;
