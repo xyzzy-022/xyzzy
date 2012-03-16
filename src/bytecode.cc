@@ -92,6 +92,7 @@
 #define BCnreverse 33289
 #define BCsvref 33290
 #define BCsvset 33291
+#define BCaref 33292
 #define BCchar 33294
 #define BCset_char 33295
 #define BCschar 33296
@@ -1216,6 +1217,17 @@ after_jump:
 
         case BCsvset:
           CALL_3 (Fsi_svset);
+          break;
+
+        case BCaref:
+          n = fetch ();
+          if (n < 2)
+            FEtoo_few_arguments (); // •K—v?
+          y = Qnil;
+          while (n-- > 1)
+            y = xcons (pop (), y);
+          x = top ();
+          top () = Faref (x, y);
           break;
 
         case BCchar:

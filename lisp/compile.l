@@ -1560,6 +1560,7 @@
   (defconstant byte-code-nreverse 33289)
   (defconstant byte-code-svref 33290)
   (defconstant byte-code-svset 33291)
+  (defconstant byte-code-aref 33292)
   (defconstant byte-code-char 33294)
   (defconstant byte-code-set-char 33295)
   (defconstant byte-code-schar 33296)
@@ -1683,6 +1684,7 @@
 
   (setf (get 'svref 'inline) '(byte-code-svref . 2))
   (setf (get 'si:*svset 'inline) '(byte-code-svset . 3))
+  (setf (get 'aref 'inline) '(byte-code-aref . *))
   (setf (get 'char 'inline) '(byte-code-char . 2))
   (setf (get 'si:*set-char 'inline) '(byte-code-set-char . 3))
   (setf (get 'schar 'inline) '(byte-code-schar . 2))
