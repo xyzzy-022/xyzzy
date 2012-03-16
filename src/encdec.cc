@@ -2,6 +2,7 @@
 #include "byte-stream.h"
 #include "md5.h"
 #include "sha1.h"
+#include "sha2.h"
 
 static void
 copy_xstream (xfilter_stream <u_char, u_char> &is, byte_output_stream &os)
@@ -198,6 +199,58 @@ public:
     {SHA1Final (digest, &m_ctx);}
 };
 
+class sha224: public hash_method
+{
+protected:
+  SHA224_CTX m_ctx;
+public:
+  sha224 () : hash_method (512 / 8, 224 / 8) {}
+  virtual void init () {SHA224_Init (&m_ctx);}
+  virtual void update (const u_char *data, size_t size)
+    {SHA224_Update (&m_ctx, data, size);}
+  virtual void final (u_char *digest)
+    {SHA224_Final (digest, &m_ctx);}
+};
+
+class sha256: public hash_method
+{
+protected:
+  SHA256_CTX m_ctx;
+public:
+  sha256 () : hash_method (512 / 8, 256 / 8) {}
+  virtual void init () {SHA256_Init (&m_ctx);}
+  virtual void update (const u_char *data, size_t size)
+    {SHA256_Update (&m_ctx, data, size);}
+  virtual void final (u_char *digest)
+    {SHA256_Final (digest, &m_ctx);}
+};
+
+class sha384: public hash_method
+{
+protected:
+  SHA384_CTX m_ctx;
+public:
+  sha384 () : hash_method (1024 / 8, 384 / 8) {}
+  virtual void init () {SHA384_Init (&m_ctx);}
+  virtual void update (const u_char *data, size_t size)
+    {SHA384_Update (&m_ctx, data, size);}
+  virtual void final (u_char *digest)
+    {SHA384_Final (digest, &m_ctx);}
+};
+
+class sha512: public hash_method
+{
+protected:
+  SHA512_CTX m_ctx;
+public:
+  sha512 () : hash_method (1024 / 8, 512 / 8) {}
+  virtual void init () {SHA512_Init (&m_ctx);}
+  virtual void update (const u_char *data, size_t size)
+    {SHA512_Update (&m_ctx, data, size);}
+  virtual void final (u_char *digest)
+    {SHA512_Final (digest, &m_ctx);}
+};
+
 void
 hash_method::update (lisp input)
 {
@@ -295,6 +348,34 @@ lisp
 Fsi_sha_1 (lisp input)
 {
   sha1 x;
+  return x.apply (input);
+}
+
+lisp
+Fsi_sha_224 (lisp input)
+{
+  sha224 x;
+  return x.apply (input);
+}
+
+lisp
+Fsi_sha_256 (lisp input)
+{
+  sha256 x;
+  return x.apply (input);
+}
+
+lisp
+Fsi_sha_384 (lisp input)
+{
+  sha384 x;
+  return x.apply (input);
+}
+
+lisp
+Fsi_sha_512 (lisp input)
+{
+  sha512 x;
   return x.apply (input);
 }
 
