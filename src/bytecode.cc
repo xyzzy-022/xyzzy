@@ -132,6 +132,12 @@
 #define BCchar_code 33331
 #define BCcode_char 33332
 
+#define BCindex_slot_value 33400
+#define BCslot_value 33401
+#define BCslot_index 33402
+#define BCset_index_slot_value 33403
+#define BCset_slot_value 33404
+
 #define BCbobp 33536
 #define BCeobp 33537
 #define BCbolp 33538
@@ -1374,6 +1380,26 @@ after_jump:
 
         case BCcode_char:
           top () = make_char (Char (fixnum_value (top ())));
+          break;
+
+        case BCindex_slot_value:
+          CALL_2 (Fsi_index_slot_value);
+          break;
+
+        case BCslot_value:
+          CALL_2 (Fsi_slot_value);
+          break;
+
+        case BCslot_index:
+          CALL_2 (Fsi_slot_index);
+          break;
+
+        case BCset_index_slot_value:
+          CALL_3 (Fsi_set_index_slot_value);
+          break;
+
+        case BCset_slot_value:
+          CALL_3 (Fsi_set_slot_value);
           break;
 
         case BCbobp:

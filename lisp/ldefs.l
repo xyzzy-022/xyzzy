@@ -7,6 +7,8 @@
 
 (in-package "lisp")
 
+(export 'optimize-form)
+
 (export 'compile-file)
 (autoload 'compile-file "compile")
 
