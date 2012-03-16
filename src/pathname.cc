@@ -716,9 +716,9 @@ Ftruename (lisp pathname)
           if (WINFS::get_file_data (path, fd))
             t = stpcpy (t, fd.cFileName);
           else if (p)
-            memcpy (t, sl, p - sl);
+            t = stpncpy (t, sl, p - sl);
           else
-            strcpy (t, sl);
+            t = stpcpy (t, sl);
           if (!p)
             break;
           *p = '\\';
