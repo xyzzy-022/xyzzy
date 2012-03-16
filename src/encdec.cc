@@ -392,3 +392,31 @@ Fsi_hmac_sha_1 (lisp key, lisp input)
   sha1 x;
   return x.hmac (key, input);
 }
+
+lisp
+Fsi_hmac_sha_224 (lisp key, lisp input)
+{
+  sha224 x;
+  return x.hmac (key, input);
+}
+
+lisp
+Fsi_hmac_sha_256 (lisp key, lisp input)
+{
+  sha256 x;
+  return x.hmac (key, input);
+}
+
+lisp
+Fsi_hmac_sha_384 (lisp key, lisp input)
+{
+  sha384 x;
+  return x.hmac (key, input);
+}
+
+lisp
+Fsi_hmac_sha_512 (lisp key, lisp input)
+{
+  sha512 x;
+  return x.hmac (key, input);
+}

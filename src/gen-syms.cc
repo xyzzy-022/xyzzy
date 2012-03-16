@@ -973,6 +973,10 @@ static symbols sys[] =
   SI_DEFUN3 (sha-512, 1, 0, 0),
   SI_DEFUN3 (hmac-md5, 2, 0, 0),
   SI_DEFUN3 (hmac-sha-1, 2, 0, 0),
+  SI_DEFUN3 (hmac-sha-224, 2, 0, 0),
+  SI_DEFUN3 (hmac-sha-256, 2, 0, 0),
+  SI_DEFUN3 (hmac-sha-384, 2, 0, 0),
+  SI_DEFUN3 (hmac-sha-512, 2, 0, 0),
 
   /* lread.cc */
   SI_DEFUN3 (*load-library, 1, 0, FFneed_rest),
