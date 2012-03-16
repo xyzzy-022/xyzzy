@@ -624,3 +624,35 @@ lisp-indent-hook property"
 	      (and (goto-char (point-max)) #0# #1#))))
   => 4
   => 2)
+
+(deftest fix-truename-1 ()
+  (let ((path (merge-pathnames "drivers/etc/hosts" (get-system-directory))))
+    (path-equal path (truename path)))
+  => t)
+
+(deftest fix-truename-2 ()
+  (let ((path (merge-pathnames "drivers/etc" (get-system-directory))))
+    (path-equal path (truename path)))
+  => t)
+
+(deftest fix-truename-3 ()
+  (let ((path (merge-pathnames "drivers" (get-system-directory))))
+    (path-equal path (truename path)))
+  => t)
+
+(deftest fix-truename-4 ()
+  (let ((path (merge-pathnames "System32" (si:getenv "SystemRoot"))))
+    (path-equal path (truename path)))
+  => t)
+
+#+wow64
+(deftest fix-truename-5 ()
+  (let ((path (merge-pathnames "SysWOW64" (si:getenv "SystemRoot"))))
+    (path-equal path (truename path)))
+  => t)
+
+#+wow64
+(deftest fix-truename-6 ()
+  (let ((path (merge-pathnames "Sysnative" (si:getenv "SystemRoot"))))
+    (path-equal path (truename path)))
+  => t)
