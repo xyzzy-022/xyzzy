@@ -25762,6 +25762,102 @@ MD5ハッシュ値を得ます。
 </chapter>
 
 <chapter>
+<title>si:sha-224</title>
+<type>Function</type>
+<arguments>sha-224 INPUT-STRING-OR-STREAM</arguments>
+<package>system</package>
+<description>
+SHA224 ハッシュ値を得ます。
+
+  INPUT-STRING-OR-STREAM : 入力の文字列または入力ストリームを指定します。
+
+使用例：
+  (si:sha-224 "ほげほげ")
+  =&gt; "310aa231065ce5c0cd397c2de10dba942fc6580e3631b6354446664d"
+</description>
+<seealso>si:md5</seealso>
+<seealso>si:sha-1</seealso>
+<seealso>si:sha-256</seealso>
+<seealso>si:sha-384</seealso>
+<seealso>si:sha-512</seealso>
+<link></link>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:sha-256</title>
+<type>Function</type>
+<arguments>sha-256 INPUT-STRING-OR-STREAM</arguments>
+<package>system</package>
+<description>
+SHA256 ハッシュ値を得ます。
+
+  INPUT-STRING-OR-STREAM : 入力の文字列または入力ストリームを指定します。
+
+使用例：
+  (si:sha-256 "ほげほげ")
+  =&gt; "2f33a6ce8c3ebaf0f3af2f7c6e90d532dcb0e733c8ef2e4f55485302d64de910"
+</description>
+<seealso>si:md5</seealso>
+<seealso>si:sha-1</seealso>
+<seealso>si:sha-224</seealso>
+<seealso>si:sha-384</seealso>
+<seealso>si:sha-512</seealso>
+<link></link>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:sha-384</title>
+<type>Function</type>
+<arguments>sha-384 INPUT-STRING-OR-STREAM</arguments>
+<package>system</package>
+<description>
+SHA384 ハッシュ値を得ます。
+
+  INPUT-STRING-OR-STREAM : 入力の文字列または入力ストリームを指定します。
+
+使用例：
+  (si:sha-384 "ほげほげ")
+  =&gt; "a54809e2c52b54e5832ad827dd397a25f73c2997027f7d0da102a2090bc64d29db9f5a95c301abfc5aa62ea35ca9a612"
+</description>
+<seealso>si:md5</seealso>
+<seealso>si:sha-1</seealso>
+<seealso>si:sha-224</seealso>
+<seealso>si:sha-256</seealso>
+<seealso>si:sha-512</seealso>
+<link></link>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:sha-512</title>
+<type>Function</type>
+<arguments>sha-512 INPUT-STRING-OR-STREAM</arguments>
+<package>system</package>
+<description>
+SHA512 ハッシュ値を得ます。
+
+  INPUT-STRING-OR-STREAM : 入力の文字列または入力ストリームを指定します。
+
+使用例：
+  (si:sha-512 "ほげほげ")
+  =&gt; "ae86321f351722bc915b1c5b75262e086bcf074aa8bdd496773d55f267b07d7ce8b58b29680ca821ee3e68c2b50ebe070ac7f183e2663af6b4226e0d400fd782"
+</description>
+<seealso>si:md5</seealso>
+<seealso>si:sha-1</seealso>
+<seealso>si:sha-224</seealso>
+<seealso>si:sha-256</seealso>
+<seealso>si:sha-384</seealso>
+<link></link>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>si:quoted-printable-decode</title>
 <type>Function</type>
 <arguments>quoted-printable-decode INPUT-STRING-OR-STREAM &amp;optional OUTPUT-STREAM UNDERSCORE-TO-SPACE</arguments>

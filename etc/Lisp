@@ -1243,6 +1243,10 @@ si:make-string-chunk
 si:md5
 si:putenv
 si:quoted-printable-decode
+si:sha-224
+si:sha-256
+si:sha-384
+si:sha-512
 si:system-root
 si:unpack-string
 si:uudecode
