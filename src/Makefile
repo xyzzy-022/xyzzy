@@ -95,6 +95,7 @@ resolver.cc \
 search.cc \
 sequence.cc \
 sha1.cc \
+sha2.cc \
 signal.cc \
 sock.cc \
 sockinet.cc \

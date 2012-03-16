@@ -390,6 +390,9 @@
     <ClCompile Include="src\appid.cc">
       <Filter>ソース ファイル\ed</Filter>
     </ClCompile>
+    <ClCompile Include="src\sha2.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\xyzzy.gen.rc">
@@ -740,6 +743,9 @@
       <Filter>ヘッダー ファイル\privctrl</Filter>
     </ClInclude>
     <ClInclude Include="src\appid.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sha2.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

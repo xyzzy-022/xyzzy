@@ -212,6 +212,7 @@
     <ClCompile Include="src\search.cc" />
     <ClCompile Include="src\sequence.cc" />
     <ClCompile Include="src\sha1.cc" />
+    <ClCompile Include="src\sha2.cc" />
     <ClCompile Include="src\signal.cc" />
     <ClCompile Include="src\sock.cc" />
     <ClCompile Include="src\sockinet.cc" />
@@ -395,6 +396,7 @@
     <ClInclude Include="src\safe_ptr.h" />
     <ClInclude Include="src\sequence.h" />
     <ClInclude Include="src\sha1.h" />
+    <ClInclude Include="src\sha2.h" />
     <ClInclude Include="src\signal.h" />
     <ClInclude Include="src\sock.h" />
     <ClInclude Include="src\sockinet.h" />
