@@ -92,6 +92,7 @@
 #define BCnreverse 33289
 #define BCsvref 33290
 #define BCsvset 33291
+#define BCaref 33292
 #define BCchar 33294
 #define BCset_char 33295
 #define BCschar 33296
@@ -131,6 +132,12 @@
 #define BCchar_not_lessp 33330
 #define BCchar_code 33331
 #define BCcode_char 33332
+
+#define BCindex_slot_value 33400
+#define BCslot_value 33401
+#define BCslot_index 33402
+#define BCset_index_slot_value 33403
+#define BCset_slot_value 33404
 
 #define BCbobp 33536
 #define BCeobp 33537
@@ -1218,6 +1225,17 @@ after_jump:
           CALL_3 (Fsi_svset);
           break;
 
+        case BCaref:
+          n = fetch ();
+          if (n < 2)
+            FEtoo_few_arguments (); // •K—v?
+          y = Qnil;
+          while (n-- > 1)
+            y = xcons (pop (), y);
+          x = top ();
+          top () = Faref (x, y);
+          break;
+
         case BCchar:
           CALL_2 (Fchar);
           break;
@@ -1374,6 +1392,26 @@ after_jump:
 
         case BCcode_char:
           top () = make_char (Char (fixnum_value (top ())));
+          break;
+
+        case BCindex_slot_value:
+          CALL_2 (Fsi_index_slot_value);
+          break;
+
+        case BCslot_value:
+          CALL_2 (Fsi_slot_value);
+          break;
+
+        case BCslot_index:
+          CALL_2 (Fsi_slot_index);
+          break;
+
+        case BCset_index_slot_value:
+          CALL_3 (Fsi_set_index_slot_value);
+          break;
+
+        case BCset_slot_value:
+          CALL_3 (Fsi_set_slot_value);
           break;
 
         case BCbobp:

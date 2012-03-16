@@ -1560,6 +1560,7 @@
   (defconstant byte-code-nreverse 33289)
   (defconstant byte-code-svref 33290)
   (defconstant byte-code-svset 33291)
+  (defconstant byte-code-aref 33292)
   (defconstant byte-code-char 33294)
   (defconstant byte-code-set-char 33295)
   (defconstant byte-code-schar 33296)
@@ -1599,6 +1600,12 @@
   (defconstant byte-code-char-not-lessp 33330)
   (defconstant byte-code-char-code 33331)
   (defconstant byte-code-code-char 33332)
+
+  (defconstant byte-code-index-slot-value 33400)
+  (defconstant byte-code-slot-value 33401)
+  (defconstant byte-code-slot-index 33402)
+  (defconstant byte-code-set-index-slot-value 33403)
+  (defconstant byte-code-set-slot-value 33404)
 
   (defconstant byte-code-bobp 33536)
   (defconstant byte-code-eobp 33537)
@@ -1683,6 +1690,7 @@
 
   (setf (get 'svref 'inline) '(byte-code-svref . 2))
   (setf (get 'si:*svset 'inline) '(byte-code-svset . 3))
+  (setf (get 'aref 'inline) '(byte-code-aref . *))
   (setf (get 'char 'inline) '(byte-code-char . 2))
   (setf (get 'si:*set-char 'inline) '(byte-code-set-char . 3))
   (setf (get 'schar 'inline) '(byte-code-schar . 2))
@@ -1723,6 +1731,12 @@
   (setf (get 'char-not-lessp 'inline) '(byte-code-char-not-lessp . 2))
   (setf (get 'char-code 'inline) '(byte-code-char-code . 1))
   (setf (get 'code-char 'inline) '(byte-code-code-char . 1))
+
+  (setf (get 'si:*index-slot-value 'inline) '(byte-code-index-slot-value . 2))
+  (setf (get 'si:*slot-value 'inline) '(byte-code-slot-value . 2))
+  (setf (get 'si:*slot-index 'inline) '(byte-code-slot-index . 2))
+  (setf (get 'si:*set-index-slot-value 'inline) '(byte-code-set-index-slot-value . 3))
+  (setf (get 'si:*set-slot-value 'inline) '(byte-code-set-slot-value . 3))
 
   (setf (get 'bobp 'inline) '(byte-code-bobp . 0))
   (setf (get 'eobp 'inline) '(byte-code-eobp . 0))
