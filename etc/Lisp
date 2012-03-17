@@ -3108,6 +3108,7 @@ si:*make-structure-data
 si:*make-structure-definition
 si:*make-vector
 si:*minibuffer-message
+si:*package-documentation
 si:*package-external
 si:*package-internal
 si:*package-summary
@@ -3125,6 +3126,7 @@ si:*set-elt
 si:*set-fill-pointer
 si:*set-function-name
 si:*set-index-slot-value
+si:*set-package-documentation
 si:*set-schar
 si:*set-slot-value
 si:*set-symbol-plist
