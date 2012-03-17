@@ -831,6 +831,8 @@ static symbols sys[] =
   SI_DEFUN3 (*package-internal, 1, 0, 0),
   SI_DEFUN3 (*package-external, 1, 0, 0),
   SI_DEFUN3 (*package-summary, 1, 0, 0),
+  SI_DEFUN3 (*package-documentation, 1, 0, 0),
+  SI_DEFUN3 (*set-package-documentation, 2, 0, 0),
 
   /* lprint.cc */
   SI_DEFUN3 (*print-condition, 1, 0, 0),

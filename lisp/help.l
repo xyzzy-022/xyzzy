@@ -37,14 +37,18 @@
   (si:*snarf-documentation (documentation-path)
 			   *documentation-prop-list*))
 
-(defun documentation (symbol doc-type)
-  (if (and (consp symbol)
-	   (eq (car symbol) 'setf)
-	   (eq doc-type 'function))
-      (si:get-documentation-string (cadr symbol) 'setf-documentation
-				   nil (documentation-path))
-    (si:get-documentation-string symbol (get doc-type 'documentation-type)
-				 nil (documentation-path))))
+(defun documentation (x doc-type)
+  (cond ((packagep x)
+	 (check-type doc-type (member t))
+	 (si:*package-documentation x))
+	((and (consp x)
+	      (eq (car x) 'setf)
+	      (eq doc-type 'function))
+	 (si:get-documentation-string (cadr x) 'setf-documentation
+				      nil (documentation-path)))
+	(t
+	 (si:get-documentation-string x (get doc-type 'documentation-type)
+				      nil (documentation-path)))))
 
 (in-package "editor")
 
