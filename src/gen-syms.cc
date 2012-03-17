@@ -967,6 +967,10 @@ static symbols sys[] =
   SI_DEFUN3 (binhex-decode, 1, 1, 0),
   SI_DEFUN3 (md5, 1, 0, 0),
   SI_DEFUN3 (sha-1, 1, 0, 0),
+  SI_DEFUN3 (sha-224, 1, 0, 0),
+  SI_DEFUN3 (sha-256, 1, 0, 0),
+  SI_DEFUN3 (sha-384, 1, 0, 0),
+  SI_DEFUN3 (sha-512, 1, 0, 0),
   SI_DEFUN3 (hmac-md5, 2, 0, 0),
   SI_DEFUN3 (hmac-sha-1, 2, 0, 0),
 

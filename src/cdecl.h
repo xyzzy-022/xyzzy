@@ -5,6 +5,7 @@
 # pragma warning (disable: 4201)
 
 # include <stdio.h>
+# include <stdint.h>
 # include <limits.h>
 # include <windows.h>
 # include <winreg.h>
@@ -38,9 +39,6 @@ typedef unsigned short u_short;
 typedef unsigned int u_int;
 typedef unsigned long u_long;
 
-typedef char int8_t;
-typedef short int16_t;
-typedef long int32_t;
 typedef u_char u_int8_t;
 typedef u_short u_int16_t;
 typedef u_long u_int32_t;
