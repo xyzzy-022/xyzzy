@@ -156,7 +156,7 @@ of SHA-384 and SHA-512)."
   (si:*set-package-documentation (find-package :lisp) :foo)
   !! type-error)
 
-(deftest set-package-documentation-type-error-2 ()
+(deftest set-package-documentation ()
   (let ((pkg (make-package (gensym))))
     (si:*set-package-documentation pkg "test package")
     (si:*package-documentation pkg))
