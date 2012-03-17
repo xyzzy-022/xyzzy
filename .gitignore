@@ -26,12 +26,15 @@ GTAGS
 # xyzzy files
 *.lc
 *.ssn
+\#unnamed.*
+.xyzzy
 etc/DOC
 xyzzy.exe
 xyzzycli.exe
 xyzzyenv.exe
 xyzzy.wxp
 xyzzy.BUG
+.netinst/
 usr/
 site-lisp/
 
