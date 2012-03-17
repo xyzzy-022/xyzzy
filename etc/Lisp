@@ -1238,6 +1238,7 @@ si:canonicalize-type
 si:closure-variable
 si:dump-image-path
 si:getenv
+si:hmac-md5
 si:hmac-sha-224
 si:hmac-sha-256
 si:hmac-sha-384
@@ -3206,7 +3207,6 @@ si:copy-chunk
 si:delete-registry-tree
 si:fill-chunk
 si:get-documentation-string
-si:hmac-md5
 si:hmac-sha-1
 si:inflate-stream
 si:load-dll-module
