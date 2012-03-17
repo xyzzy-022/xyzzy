@@ -25858,6 +25858,31 @@ SHA512 ハッシュ値を得ます。
 </chapter>
 
 <chapter>
+<title>si:hmac-md5</title>
+<type>Function</type>
+<arguments>hmac-md5 KEY INPUT-STRING-OR-STREAM</arguments>
+<package>system</package>
+<description>
+MD5 関数を利用してメッセージ認証コード値を得ます。
+
+  KEY                    : 秘密鍵
+  INPUT-STRING-OR-STREAM : 入力の文字列または入力ストリームを指定します。
+
+使用例：
+  (si:hmac-md5 "secret" "ほげほげ")
+  =&gt; "12a092046e2629830aca05cc2c85b3af"
+</description>
+<seealso>si:hmac-sha-1</seealso>
+<seealso>si:hmac-sha-224</seealso>
+<seealso>si:hmac-sha-256</seealso>
+<seealso>si:hmac-sha-384</seealso>
+<seealso>si:hmac-sha-512</seealso>
+<link></link>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>si:hmac-sha-224</title>
 <type>Function</type>
 <arguments>hmac-sha-224 KEY INPUT-STRING-OR-STREAM</arguments>
