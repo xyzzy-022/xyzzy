@@ -1238,6 +1238,10 @@ si:canonicalize-type
 si:closure-variable
 si:dump-image-path
 si:getenv
+si:hmac-sha-224
+si:hmac-sha-256
+si:hmac-sha-384
+si:hmac-sha-512
 si:make-chunk
 si:make-string-chunk
 si:md5
