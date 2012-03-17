@@ -12,6 +12,7 @@ public:
   lisp shadowings;
   lisp internal;
   lisp external;
+  lisp documentation;
 };
 
 # define packagep(X) typep ((X), Tpackage)
@@ -71,6 +72,13 @@ xpackage_external (lisp x)
   return ((lpackage *)x)->external;
 }
 
+inline lisp &
+xpackage_documentation (lisp x)
+{
+  assert (packagep (x));
+  return ((lpackage *)x)->documentation;
+}
+
 inline lpackage *
 make_package ()
 {
@@ -82,6 +90,7 @@ make_package ()
   p->shadowings = Qnil;
   p->internal = Qnil;
   p->external = Qnil;
+  p->documentation = Qnil;
   return p;
 }
 

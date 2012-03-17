@@ -579,6 +579,7 @@ gc_mark_object (lisp object)
           gc_mark_object (xpackage_used_by_list (object));
           gc_mark_object (xpackage_shadowings (object));
           gc_mark_object (xpackage_external (object));
+          gc_mark_object (xpackage_documentation (object));
           object = xpackage_internal (object);
           break;
 

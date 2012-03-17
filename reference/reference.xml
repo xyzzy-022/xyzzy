@@ -8997,8 +8997,16 @@ BODYをインチキなBNFで書くと以下の様になります。
 <description>
 新しくパッケージを作ります。
 
-  :internal-size  内部シンボルのハッシュサイズ
-  :external-size  外部シンボルのハッシュサイズ
+  :nicknames              パッケージの別名 (複数指定可能)
+  :documentation          パッケージのドキュメント (docstring)
+  :use                    useするパッケージのリスト
+  :shadow                 shadowするシンボルのリスト
+  :shadowing-import-from  指定したパッケージからshadowing-importするシンボルのリスト
+  :import-from            指定したパッケージからimportするシンボルのリスト
+  :export                 exportするシンボルのリスト
+  :intern                 internするシンボルのリスト
+  :internal-size          内部シンボルのハッシュサイズ
+  :external-size          外部シンボルのハッシュサイズ
 
 :internal-size 及び :external-size の大きさは、だいたい登録するシンボル
 数の1/3ぐらいの値でいいでしょう。この値が足らないからといって、新しいシ
@@ -9012,11 +9020,16 @@ BODYをインチキなBNFで書くと以下の様になります。
   ;;; lisp, editorをuseしています。
   (defpackage "henmi"
      (:use "lisp" "editor")
+     (:documentation "henmi's package")
      (:internal-size 200)
      (:external-size 10))
+  =&gt; #<package: henmi>
+
+  (documentation (find-package "henmi") t)
+  =&gt; "henmi's package"
 
 互換性:
-  :internal-size, :external-size はcommonにはない。
+  :internal-size, :external-size はCommon Lispにはない。
 </description>
 <seealso>make-package</seealso>
 <seealso>find-package</seealso>

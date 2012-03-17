@@ -478,6 +478,8 @@
 (si::defun-builtin *package-internal (package))
 (si::defun-builtin *package-external (package))
 (si::defun-builtin *package-summary (package))
+(si::defun-builtin *package-documentation (package))
+(si::defun-builtin *set-package-documentation (package documentation))
 (si::defun-builtin *print-condition (condition))
 (si::defun-builtin *condition-string (condition))
 (si::defun-builtin *stream-column (&optional stream))

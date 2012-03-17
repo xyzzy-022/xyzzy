@@ -136,3 +136,28 @@ of SHA-384 and SHA-512)."
   => "9b09ffa71b942fcb27635fbcd5b0e944bfdc63644f0713938a7f51535c3a35e2"
   => "6617178e941f020d351e2f254e8fd32c602420feb0b8fb9adccebb82461e99c5a678cc31e799176d3860e6110c46523e"
   => "e37b6a775dc87dbaa4dfa9f96e5e3ffddebd71f8867289865df5a32d20cdc944b6022cac3c4982b10d5eeb55c3e4de15134676fb6de0446065c97440fa8c6a58")
+
+
+;;; package documentation
+
+(deftest set-package-documentation-type-error-1 ()
+  (si:*set-package-documentation (find-package :lisp) nil)
+  !! type-error)
+
+(deftest set-package-documentation-type-error-2 ()
+  (si:*set-package-documentation (find-package :lisp) 123)
+  !! type-error)
+
+(deftest set-package-documentation-type-error-3 ()
+  (si:*set-package-documentation (find-package :lisp) '(foo))
+  !! type-error)
+
+(deftest set-package-documentation-type-error-4 ()
+  (si:*set-package-documentation (find-package :lisp) :foo)
+  !! type-error)
+
+(deftest set-package-documentation-type-error-2 ()
+  (let ((pkg (make-package (gensym))))
+    (si:*set-package-documentation pkg "test package")
+    (si:*package-documentation pkg))
+  => "test package")
