@@ -30,6 +30,7 @@ cd %BUILDDIR%
 call git clone %GIT_REPO% %BUILDDIR% || exit /b 1
 call git checkout %TAG% || git tag; exit /b 1
 call build.bat || exit /b 1
+call bytecompile.bat || exit /b 1
 
 xcopy /F /G /H /R /K /Y *.exe %DISTDIR%
 xcopy /F /G /H /R /K /Y /S /E lisp %DISTDIR%\lisp\
