@@ -25762,6 +25762,30 @@ MD5ハッシュ値を得ます。
 </chapter>
 
 <chapter>
+<title>si:sha-1</title>
+<type>Function</type>
+<arguments>sha-1 INPUT-STRING-OR-STREAM</arguments>
+<package>system</package>
+<description>
+SHA1 ハッシュ値を得ます。
+
+  INPUT-STRING-OR-STREAM : 入力の文字列または入力ストリームを指定します。
+
+使用例：
+  (si:sha-1 "ほげほげ")
+  =&gt; "ac4dfa2e4d091a8636ea740e326bb72e6e7749a0"
+</description>
+<seealso>si:md5</seealso>
+<seealso>si:sha-224</seealso>
+<seealso>si:sha-256</seealso>
+<seealso>si:sha-384</seealso>
+<seealso>si:sha-512</seealso>
+<link></link>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>si:sha-224</title>
 <type>Function</type>
 <arguments>sha-224 INPUT-STRING-OR-STREAM</arguments>
@@ -25873,6 +25897,31 @@ MD5 関数を利用してメッセージ認証コード値を得ます。
   =&gt; "12a092046e2629830aca05cc2c85b3af"
 </description>
 <seealso>si:hmac-sha-1</seealso>
+<seealso>si:hmac-sha-224</seealso>
+<seealso>si:hmac-sha-256</seealso>
+<seealso>si:hmac-sha-384</seealso>
+<seealso>si:hmac-sha-512</seealso>
+<link></link>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:hmac-sha-1</title>
+<type>Function</type>
+<arguments>hmac-sha-1 KEY INPUT-STRING-OR-STREAM</arguments>
+<package>system</package>
+<description>
+SHA1 関数を利用してメッセージ認証コード値を得ます。
+
+  KEY                    : 秘密鍵
+  INPUT-STRING-OR-STREAM : 入力の文字列または入力ストリームを指定します。
+
+使用例：
+  (si:hmac-sha-1 "secret" "ほげほげ")
+  =&gt; "79b224aa36871315b272fa2d62197b54566f5580"
+</description>
+<seealso>si:hmac-md5</seealso>
 <seealso>si:hmac-sha-224</seealso>
 <seealso>si:hmac-sha-256</seealso>
 <seealso>si:hmac-sha-384</seealso>

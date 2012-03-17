@@ -1239,6 +1239,7 @@ si:closure-variable
 si:dump-image-path
 si:getenv
 si:hmac-md5
+si:hmac-sha-1
 si:hmac-sha-224
 si:hmac-sha-256
 si:hmac-sha-384
@@ -1248,6 +1249,7 @@ si:make-string-chunk
 si:md5
 si:putenv
 si:quoted-printable-decode
+si:sha-1
 si:sha-224
 si:sha-256
 si:sha-384
@@ -3207,7 +3209,6 @@ si:copy-chunk
 si:delete-registry-tree
 si:fill-chunk
 si:get-documentation-string
-si:hmac-sha-1
 si:inflate-stream
 si:load-dll-module
 si:make-c-callable
@@ -3224,7 +3225,6 @@ si:pack-uint8
 si:performance-counter
 si:plugin-arg
 si:quoted-printable-encode
-si:sha-1
 si:unpack-double
 si:unpack-float
 si:unpack-int16
