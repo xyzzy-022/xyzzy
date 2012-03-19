@@ -418,6 +418,8 @@ completion::do_completion (lisp candidate, int igcase)
   if (l < c_target_len)
     return 0;
 
+  if (memq (candidate, c_matches_list))
+    return 1;
   c_matches_list = Fcons (candidate, c_matches_list);
   c_nmatches++;
 

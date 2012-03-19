@@ -15,3 +15,13 @@
   => "like"
   => "like"
   => "susi")
+
+(deftest fix-do-completion-dup ()
+  "import したシンボルと export したシンボルが補完時に重複しないこと"
+  (let ((pkg (make-package (gensym) :use :lisp)))
+    (export 'caaaar pkg)
+    (let ((*package* pkg))
+      (*do-completion "caaaa" :function-name)))
+  => "caaaar"
+  => ("caaaar")
+  => nil)
