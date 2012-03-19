@@ -25,3 +25,25 @@
   => "caaaar"
   => ("caaaar")
   => nil)
+
+(deftest do-completion-package-name-1 ()
+  "パッケージ名の補完ができること"
+  (multiple-value-bind (result list prefix)
+      (*do-completion "s" :function-name)
+    (values
+     (member "system" list :test #'string=)
+     (member "sys" list :test #'string=)
+     (member "si" list :test #'string=)))
+  => non-nil
+  => non-nil
+  => non-nil)
+
+(deftest do-completion-package-name-2 ()
+  "パッケージ名の補完ができること"
+  (multiple-value-bind (result list prefix)
+      (*do-completion "e" :function-name)
+    (values
+     (member "editor" list :test #'string=)
+     (member "ed" list :test #'string=)))
+  => non-nil
+  => non-nil)

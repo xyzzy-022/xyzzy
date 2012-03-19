@@ -556,6 +556,15 @@ completion::complete_symbol ()
           complete_symbol (xpackage_external (package));
       }
 
+  if (!mss.pkg_end ())
+    for (lisp p = xsymbol_value (Vpackage_list); consp (p); p = xcdr (p))
+      {
+        lisp x = xcar (p);
+        do_completion (xpackage_name (x), 0);
+        for (lisp q = xpackage_nicknames (x); consp (q); q = xcdr (q))
+          do_completion (xcar (q), 0);
+      }
+
   fix_match_len ();
   if (mss.pkg_end ())
     adjust_prefix (c_prefix);
