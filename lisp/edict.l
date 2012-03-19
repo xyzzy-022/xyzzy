@@ -45,8 +45,11 @@
 
 (defun edict-lookup-word (fn)
   (apply fn (save-excursion
-	      (list (progn
-		      (forward-word 1)
+              (list (flet ((end-of-word-p (&optional (pt (point)))
+			     (and (syntax-word-p (char-before pt))
+				  (not (syntax-word-p (char-after pt))))))
+		      (unless (end-of-word-p)
+			(forward-word 1))
 		      (point))
 		    (progn
 		      (forward-word -1)
