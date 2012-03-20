@@ -983,14 +983,13 @@ Returns list of failures."
                          (t (again)))))
           (start-timer 6 #'delete-tmpbuf t))))))
 
-(defmacro with-another-xyzzy ((&key (options "") (timeout 60) (show :show))
-                              &body body)
-  `(let* ((tmpfile (make-temp-file-name))
+(defun with-another-xyzzy (body &key (options "") (timeout 60) (show :show))
+  (let* ((tmpfile (make-temp-file-name))
           (create-time (file-write-time tmpfile)))
      (unwind-protect
          (let ((command-string
                  (with-another-xyzzy--make-command-string
-                  ',body ,options tmpfile)))
+                  body options tmpfile)))
            (let ((tmpbuf (create-new-buffer "*Temp*")))
              (setup-temp-buffer tmpbuf)
              (let ((proc (make-process command-string :output tmpbuf)))
@@ -998,7 +997,7 @@ Returns list of failures."
                    ;; wait for finish.
                    (while (eql (process-status proc) :run)
                      (sleep-for 0.1)
-                     (when (> (get-universal-time) (+ create-time ,timeout))
+                     (when (> (get-universal-time) (+ create-time timeout))
                        (signal-process proc)
                        (error "with-another-xyzzy timeout.")))
                  ;; FIXME: when another xyzzy doesn't close properly, it stay
