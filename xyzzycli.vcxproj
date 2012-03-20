@@ -100,7 +100,7 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
   </Target>
-  <Target Name="BeforeClean" DependsOnTargets="DeleteXyzzyDumpFile">
+  <Target Name="BeforeClean">
     <Delete Files="$(SolutionDir)$(TargetName)$(TargetExt)" Condition="Exists('$(SolutionDir)$(TargetName)$(TargetExt)')" />
   </Target>
 </Project>

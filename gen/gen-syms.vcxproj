@@ -94,6 +94,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <Import Project="$(ProjectDir)gen.targets" />
   <PropertyGroup>
     <GenerateTargetPath>$(TargetDir)vars-decl.h;$(TargetDir)fns-decl.h;$(TargetDir)symtable.gen.cc;$(TargetDir)dumpver.gen.cc</GenerateTargetPath>
   </PropertyGroup>

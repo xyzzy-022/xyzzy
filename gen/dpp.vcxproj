@@ -89,6 +89,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <Import Project="$(ProjectDir)gen.targets" />
   <PropertyGroup>
     <GenerateTargetPath>$(TargetDir)num-arith.h</GenerateTargetPath>
   </PropertyGroup>
