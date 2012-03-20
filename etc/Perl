@@ -29,6 +29,9 @@ exists
 ref
 require
 reset
+package
+next
+local
 break
 import
 lock
@@ -65,6 +68,7 @@ le
 ne
 not
 or
+cmp
 
 ;*2
 abs
@@ -82,7 +86,6 @@ chr
 chroot
 close
 closedir
-cmp
 connect
 cos
 crypt
@@ -153,7 +156,6 @@ lcfirst
 length
 link
 listen
-local
 localtime
 log
 login
@@ -167,13 +169,11 @@ msgsnd
 netbyaddr
 netbyname
 netent
-next
 oct
 open
 opendir
 ord
 pack
-package
 peername
 pgrp
 pipe
