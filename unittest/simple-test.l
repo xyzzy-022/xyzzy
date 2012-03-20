@@ -985,27 +985,27 @@ Returns list of failures."
 
 (defun with-another-xyzzy (body &key (options "") (timeout 60) (show :show))
   (let* ((tmpfile (make-temp-file-name))
-          (create-time (file-write-time tmpfile)))
-     (unwind-protect
-         (let ((command-string
-                 (with-another-xyzzy--make-command-string
-                  body options tmpfile)))
-           (let ((tmpbuf (create-new-buffer "*Temp*")))
-             (setup-temp-buffer tmpbuf)
-             (let ((proc (make-process command-string :output tmpbuf)))
-               (unwind-protect
-                   ;; wait for finish.
-                   (while (eql (process-status proc) :run)
-                     (sleep-for 0.1)
-                     (when (> (get-universal-time) (+ create-time timeout))
-                       (signal-process proc)
-                       (error "with-another-xyzzy timeout.")))
-                 ;; FIXME: when another xyzzy doesn't close properly, it stay
-                 ;; in front so user can't see test progress.
-                 (activate-xyzzy-window (si:*instance-number))
-                 (with-another-xyzzy--delete-tmpbuf tmpbuf (+ create-time 180000)))))
-           (with-another-xyzzy--read-results tmpfile))
-       (delete-file tmpfile))))
+         (create-time (file-write-time tmpfile)))
+    (unwind-protect
+        (let ((command-string
+                (with-another-xyzzy--make-command-string
+                 body options tmpfile)))
+          (let ((tmpbuf (create-new-buffer "*Temp*")))
+            (setup-temp-buffer tmpbuf)
+            (let ((proc (make-process command-string :output tmpbuf)))
+              (unwind-protect
+                  ;; wait for finish.
+                  (while (eql (process-status proc) :run)
+                    (sleep-for 0.1)
+                    (when (> (get-universal-time) (+ create-time timeout))
+                      (signal-process proc)
+                      (error "with-another-xyzzy timeout.")))
+                ;; FIXME: when another xyzzy doesn't close properly, it stay
+                ;; in front so user can't see test progress.
+                (activate-xyzzy-window (si:*instance-number))
+                (with-another-xyzzy--delete-tmpbuf tmpbuf (+ create-time 180000)))))
+          (with-another-xyzzy--read-results tmpfile))
+      (delete-file tmpfile))))
 (setf (get 'with-another-xyzzy 'ed:lisp-indent-hook) 1)
 
 #+unittest-meta-test
