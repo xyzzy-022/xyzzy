@@ -29,6 +29,11 @@ exists
 ref
 require
 reset
+break
+import
+lock
+our
+state
 
 ;*1
 __DATA__
@@ -41,6 +46,9 @@ BEGIN
 CORE
 DESTROY
 END
+INIT
+CHECK
+UNITCHECK
 
 EQ
 GE
@@ -98,6 +106,32 @@ fork
 format
 formline
 get
+getc
+getgrent
+getgrgid
+getgrnam
+gethostbyaddr
+gethostbyname
+gethostent
+getlogin
+getnetbyaddr
+getnetbyname
+getnetent
+getpeername
+getpgrp
+getppid
+getpriority
+getprotobyname
+getprotobynumber
+getprotoent
+getpwent
+getpwnam
+getpwuid
+getservbyname
+getservbyport
+getservent
+getsockname
+getsockopt
 glob
 gmtime
 grent
@@ -146,6 +180,7 @@ pipe
 pop
 pos
 ppid
+say
 print
 printf
 priority
@@ -158,6 +193,7 @@ pwent
 pwnam
 pwuid
 qq
+qr
 quotemeta
 qw
 qx
