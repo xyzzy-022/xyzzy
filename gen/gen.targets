@@ -4,6 +4,6 @@
     <Exec Command="&quot;$(TargetPath)&quot; &gt; &quot;$(GenerateTargetPath)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
   </Target>
   <Target Name="DeleteGeneratedSource">
-    <Delete Files="$(GenerateTargetPath)" Condition="Exists('$(GenerateTargetPath)')" />
+    <Delete Files="$(GenerateTargetPath)" />
   </Target>
 </Project>
