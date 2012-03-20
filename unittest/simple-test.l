@@ -966,6 +966,7 @@ Returns list of failures."
   (handler-case
       (delete-buffer tmpbuf)
     (error ()
+      (let ((proc (buffer-process tmpbuf)))
       (labels ((again ()
                  (start-timer 1 #'delete-tmpbuf t))
                (delete-tmpbuf ()
@@ -980,7 +981,7 @@ Returns list of failures."
                         (message "give up to delete tmpbuf ~S, sorry."
                                  (buffer-name tmpbuf)))
                        (t (again)))))
-        (start-timer 6 #'delete-tmpbuf t)))))
+        (start-timer 6 #'delete-tmpbuf t))))))
 
 (defmacro with-another-xyzzy ((&key (options "") (timeout 60) (show :show))
                               &body body)
