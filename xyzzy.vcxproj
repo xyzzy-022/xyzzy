@@ -152,6 +152,7 @@
     <ClCompile Include="src\ctl3d.cc" />
     <ClCompile Include="src\data.cc" />
     <ClCompile Include="src\dde.cc" />
+    <ClCompile Include="src\debug.cc" />
     <ClCompile Include="src\dialogs.cc" />
     <ClCompile Include="src\disp.cc" />
     <ClCompile Include="src\dll.cc" />
@@ -342,6 +343,7 @@
     <ClInclude Include="src\ctxmenu.h" />
     <ClInclude Include="src\data.h" />
     <ClInclude Include="src\dataP.h" />
+    <ClInclude Include="src\debug.h" />
     <ClInclude Include="src\dialogs.h" />
     <ClInclude Include="src\dll.h" />
     <ClInclude Include="src\DnD.h" />
