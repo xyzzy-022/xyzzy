@@ -929,6 +929,25 @@ Returns list of failures."
 ;;; - readable に印字できないものが BODY に含まれているとアウト
 ;;; - 戻り値も readable に印字できないものはアウト
 ;;; - レキシカル変数を持ち込めない...
+
+(defun with-another-xyzzy--make-command-string (body options result-filename)
+  (let ((out (gensym "tmpfile-stream-")))
+    (format nil "~A ~A -e ~S"
+            (merge-pathnames "xyzzy.exe" (si:system-root))
+            options
+            (let ((*print-circle* t))
+              (prin1-to-string
+               `(progn
+                  (with-open-file (,out ,result-filename
+                                   :direction :output
+                                   :if-does-not-exist :create)
+                    (handler-case
+                        (let ((values (multiple-value-list (progn ,@body))))
+                          (format ,out ":return~%~{~S~%~}" values))
+                      (error (error)
+                        (format ,out ":error~%~S" error))))
+                  (kill-xyzzy)))))))
+
 (defmacro with-another-xyzzy ((&key (options "") (timeout 60) (show :show))
                               &body body)
   `(let* ((tmpfile (make-temp-file-name))
@@ -936,21 +955,8 @@ Returns list of failures."
           (out (gensym "tmpfile-stream-")))
      (unwind-protect
          (let ((command-string
-                 (format nil "~A ~A -e ~S"
-                       (merge-pathnames "xyzzy.exe" (si:system-root))
-                       ,options
-                       (let ((*print-circle* t))
-                         (prin1-to-string
-                          `(progn
-                             (with-open-file (,out ,tmpfile
-                                              :direction :output
-                                              :if-does-not-exist :create)
-                               (handler-case
-                                   (let ((values (multiple-value-list (progn ,@',body))))
-                                     (format ,out ":return~%~{~S~%~}" values))
-                                 (error (error)
-                                   (format ,out ":error~%~S" error))))
-                             (kill-xyzzy)))))))
+                 (with-another-xyzzy--make-command-string
+                  ',body ,options tmpfile)))
            (let ((tmpbuf (create-new-buffer "*Temp*")))
              (setup-temp-buffer tmpbuf)
              (let ((proc (make-process command-string :output tmpbuf)))
