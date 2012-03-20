@@ -1,3 +1,4 @@
+;; C# Keywords
 abstract
 as
 base
@@ -73,16 +74,45 @@ ushort
 using
 virtual
 void
+volatile
 while
+
+;; Contextual Keywords
+add
+alias
+ascending
+async
+await
+descending
+dynamic
+from
+get
+global
+group
+into
+join
+let
+orderby
+partial
+remove
+select
+set
+value
+var
+where
+yield
+
+;; C# Preprocessor Directives
 ;*2
 #define
-#undef
-#if
 #elif
 #else
 #endif
-#error
-#warning
-#region
 #endregion
+#error
+#if
 #line
+#pragma
+#region
+#undef
+#warning

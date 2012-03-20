@@ -1,3 +1,6 @@
+_Bool
+_Complex
+_Imaginary
 auto
 break
 case
@@ -17,6 +20,7 @@ if
 int
 long
 register
+restrict
 return
 short
 signed
