@@ -192,6 +192,7 @@
     <ClCompile Include="src\menu.cc" />
     <ClCompile Include="src\minibuf.cc" />
     <ClCompile Include="src\mman.cc" />
+    <ClCompile Include="src\monitor.cc" />
     <ClCompile Include="src\mouse.cc" />
     <ClCompile Include="src\move.cc" />
     <ClCompile Include="src\msgbox.cc" />
@@ -376,6 +377,7 @@
     <ClInclude Include="src\md5.h" />
     <ClInclude Include="src\message.h" />
     <ClInclude Include="src\mman.h" />
+    <ClInclude Include="src\monitor.h" />
     <ClInclude Include="src\mouse.h" />
     <ClInclude Include="src\mousemsg.h" />
     <ClInclude Include="src\msgbox.h" />

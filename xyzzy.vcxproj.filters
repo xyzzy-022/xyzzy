@@ -198,6 +198,9 @@
     <ClCompile Include="src\minibuf.cc">
       <Filter>ソース ファイル\ed</Filter>
     </ClCompile>
+    <ClCompile Include="src\monitor.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
     <ClCompile Include="src\mouse.cc">
       <Filter>ソース ファイル\ed</Filter>
     </ClCompile>
@@ -524,6 +527,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\mman.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\mouse.h">
