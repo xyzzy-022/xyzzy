@@ -101,7 +101,7 @@ nullptr
 static_assert
 where
 
-;*1
+;*2
 ;; Preprocessor Directives
 #define
 #elif
@@ -118,7 +118,7 @@ where
 #undef
 #using
 
-;*2
+;*1
 ;; VC++ Specific keywords
 _alignof
 __alignof
