@@ -942,7 +942,7 @@ Returns list of failures."
                                    :direction :output
                                    :if-does-not-exist :create)
                     (handler-case
-                        (let ((values (multiple-value-list (progn ,@body))))
+                        (let ((values (multiple-value-list (progn ,body))))
                           (format ,out ":return~%~{~S~%~}" values))
                       (error (error)
                         (format ,out ":error~%~S" error))))
