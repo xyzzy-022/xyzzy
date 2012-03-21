@@ -32,6 +32,7 @@ Monitor::get_workarea_from_monitor (const HMONITOR& monitor, LPRECT lpworkarea)
     return false;
 
   *lpworkarea = info.rcWork;
+  return true;
 }
 
 Monitor monitor;
