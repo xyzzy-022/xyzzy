@@ -993,7 +993,6 @@ Returns list of failures."
                    (setup-temp-buffer buffer)
                    buffer))
          (proc (make-process command-string :output tmpbuf)))
-    (setup-temp-buffer tmpbuf)
     (unwind-protect
         (progn
           ;; wait for finish.
