@@ -7,6 +7,8 @@
 
 (in-package "lisp")
 
+(export '(** *** // /// ++ +++))
+
 (export 'compile-file)
 (autoload 'compile-file "compile")
 
