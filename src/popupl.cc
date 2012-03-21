@@ -1,4 +1,5 @@
 #include "ed.h"
+#include "monitor.h"
 
 static const char csPopupList[] = "PopupList";
 static WNDPROC org_wndproc;
@@ -199,7 +200,7 @@ Fpopup_list (lisp list, lisp callback, lisp lpoint)
   sz.cy = r.bottom - r.top;
 
   RECT wk;
-  SystemParametersInfo (SPI_GETWORKAREA, 0, &wk, 0);
+  monitor.get_workarea_from_point (pos, &wk);
 
   if (pos.y + app.text_font.cell ().cy + sz.cy <= wk.bottom)
     pos.y += app.text_font.cell ().cy;

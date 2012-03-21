@@ -1,4 +1,5 @@
 #include "ed.h"
+#include "monitor.h"
 
 static char *popup_text;
 static RECT popup_rect;
@@ -51,7 +52,7 @@ static void
 set_text (const char *text, const RECT &pos)
 {
   RECT scr;
-  SystemParametersInfo (SPI_GETWORKAREA, 0, &scr, 0);
+  monitor.get_workarea_from_rect (&pos, &scr);
   scr.left += 16;
   scr.top += 16;
   scr.right -= 16;

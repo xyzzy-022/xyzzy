@@ -7,6 +7,7 @@
 #include "thread.h"
 #include "xstrlist.h"
 #include "version.h"
+#include "monitor.h"
 
 void
 set_window_icon (HWND hwnd)
@@ -34,7 +35,7 @@ center_window (HWND hwnd)
               - (dr.bottom - dr.top) / 3);
 
   RECT work;
-  SystemParametersInfo (SPI_GETWORKAREA, 0, &work, 0);
+  monitor.get_workarea_from_window (owner, &work);
 
   left = min (max (left, work.left), work.right - (dr.right - dr.left));
   top = min (max (top, work.top), work.bottom - (dr.bottom - dr.top));

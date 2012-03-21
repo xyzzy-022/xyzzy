@@ -1,5 +1,6 @@
 #include "ed.h"
 #include "msgbox.h"
+#include "monitor.h"
 
 void
 XMessageBox::add_button (UINT id, const char *caption)
@@ -138,7 +139,7 @@ XMessageBox::init_dialog ()
     }
 
   RECT warea;
-  SystemParametersInfo (SPI_GETWORKAREA, 0, &warea, 0);
+  monitor.get_workarea_from_window (app.toplev, &warea);
 
   LONG maxw = (warea.right - warea.left) * 4 / 5;
   LONG maxh = (warea.bottom - warea.top) * 3 / 4;
