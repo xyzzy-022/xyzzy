@@ -983,12 +983,12 @@ Returns list of failures."
                          (t (again)))))
           (start-timer 6 #'delete-tmpbuf t))))))
 
-(defun eval-in-another-xyzzy (body &key (options "") (timeout 60))
+(defun eval-in-another-xyzzy (form &key (options "") (timeout 60))
   (let* ((tmpfile (make-temp-file-name))
          (create-time (file-write-time tmpfile))
          (command-string
            (with-another-xyzzy--make-command-string
-            body options tmpfile))
+            form options tmpfile))
          (tmpbuf (let ((buffer (create-new-buffer "*Temp*")))
                    (setup-temp-buffer buffer)
                    buffer))
