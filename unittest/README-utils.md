@@ -29,12 +29,12 @@ BODY をコンパイルしてから実行します。
 - 実装上の都合で `compile-and-eval` の外にあるレキシカル変数などは参照
   できなくなります。
 
-Macro `with-another-xyzzy` (&key OPTIONS) &body BODY
------------------------------------------------------
+Function `eval-in-another-xyzzy` FORM &key OPTIONS TIMEOUT
+----------------------------------------------------------
 テストを実行してる xyzzy とは別にもう一つ xyzzy を起動して、そちらで
-BODY を評価します。
-BODY が正常に終了すれば BODY の返した値を返します。
-BODY がエラーで終了すれば、そのエラーを投げます。
+FORM を評価します。
+FORM が正常に終了すれば FORM の返した値を返します。
+FORM がエラーで終了すれば、そのエラーを投げます。
 
 xyzzy が落ちたり固まったりしてしまうようなテストをする場合や、クリーン
 な状態からテストしたい場合に使います。
@@ -43,7 +43,7 @@ OPTIONS にはキーワード引数で何か設定できます。
 
 - :options コマンドライン引数（文字列）
   - もう一つの xyzzy に渡すコマンドライン引数
-  - コマンドラインは $XYZZY/xyzzy.exe <コマンドライン引数> -e <BODY>
+  - コマンドラインは $XYZZY/xyzzy.exe <コマンドライン引数> -e <FORM>
     のようになります。
   - 参考 [xyzzyの役に立たないReadme](http://www.jsdlab.co.jp/~kei/download/00README.html)
 - :timeout タイムアウト[秒]
@@ -53,10 +53,10 @@ OPTIONS にはキーワード引数で何か設定できます。
   - タイムアウトした場合は、`simple-error` を投げます
 
 ### 注意事項
-- `with-another-xyzzy` は BODY や戻り値やエラーを文字列にして受け渡す
+- `eval-in-another-xyzzy` は FORM や戻り値やエラーを文字列にして受け渡す
   ので...
   - `with-another-xyzzy` の外にある変数は参照できません
-  - BODY や戻り値やエラーには、読み込み可能な形で出力できるものしか
+  - FORM や戻り値やエラーには、読み込み可能な形で出力できるものしか
     使えません。
 
 Macro `with-fake-functions` ((NAME FAKE-LAMBDA-LIST &body FAKE-BODY)*) &body BODY)
