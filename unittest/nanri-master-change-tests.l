@@ -392,9 +392,10 @@
 ;;
 (deftest |fix (cdr '#1='#1#) printing| ()
   "「(cdr '#1='#1#)」の評価結果の印字でスタックオーバーフローするのを修正。"
-  (with-another-xyzzy (:options "-q")
-    (with-output-to-string (*standard-output*)
-      (write (cdr '#1='#1#) :circle t)))
+  (eval-in-another-xyzzy
+   '(with-output-to-string (*standard-output*)
+     (write (cdr '#1='#1#) :circle t))
+   :options "-q")
   => "#1=((quote . #1#))")
 
 ;; 2010-12-01  NANRI Masaoki  <southly@gmail.com>
@@ -749,8 +750,9 @@
   "ダンプ作成時にロードしたファイル名がそのままダンプファイルに保存される
 ようなので、起動時にも初期化するように修正。"
   ;; FIXME: ダンプイメージがまだ無い場合 pass ってしまう。
-  (with-another-xyzzy (:options "-q")
-    *load-pathname*)
+  (eval-in-another-xyzzy
+   `*load-pathname*
+   :options "-q")
   => nil
   )
 
@@ -1288,14 +1290,15 @@
 ;;
 (deftest fix-for-FFI-c-function-return-doubl/float-00 ()
   "戻り値が double, float の C 関数を呼ぶとクラッシュする"
-  (with-another-xyzzy (:options "-q" :timeout 6)
-    (labels ((c (name) (find-symbol name :c)))
-      (require "foreign")
-      (eval `(,(c "define-dll-entry")
-              ,(c "double")
-              strtod (,(c "char*") (,(c "char*") *))
-              "msvcrt"))
-      (strtod (si:make-string-chunk "123") 0)))
+  (eval-in-another-xyzzy
+    `(labels ((c (name) (find-symbol name :c)))
+       (require "foreign")
+       (eval `(,(c "define-dll-entry")
+               ,(c "double")
+               strtod (,(c "char*") (,(c "char*") *))
+               "msvcrt"))
+       (strtod (si:make-string-chunk "123") 0))
+    :options "-q" :timeout 6)
   => 123.0d0
   )
 

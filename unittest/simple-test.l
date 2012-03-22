@@ -929,83 +929,99 @@ Returns list of failures."
 ;;; - readable に印字できないものが BODY に含まれているとアウト
 ;;; - 戻り値も readable に印字できないものはアウト
 ;;; - レキシカル変数を持ち込めない...
-(defmacro with-another-xyzzy ((&key (options "") (timeout 60) (show :show))
-                              &body body)
-  `(let* ((tmpfile (make-temp-file-name))
-          (create-time (file-write-time tmpfile))
-          (out (gensym "tmpfile-stream-")))
-     (unwind-protect
-         (let ((command-string
-                 (format nil "~A ~A -e ~S"
-                       (merge-pathnames "xyzzy.exe" (si:system-root))
-                       ,options
-                       (let ((*print-circle* t))
-                         (prin1-to-string
-                          `(progn
-                             (with-open-file (,out ,tmpfile
-                                              :direction :output
-                                              :if-does-not-exist :create)
-                               (handler-case
-                                   (let ((values (multiple-value-list (progn ,@',body))))
-                                     (format ,out ":return~%~{~S~%~}" values))
-                                 (error (error)
-                                   (format ,out ":error~%~S" error))))
-                             (kill-xyzzy)))))))
-           (let ((tmpbuf (create-new-buffer "*Temp*")))
-             (setup-temp-buffer tmpbuf)
-             (let ((proc (make-process command-string :output tmpbuf)))
-               (unwind-protect
-                   ;; wait for finish.
-                   (while (eql (process-status proc) :run)
-                     (sleep-for 0.1)
-                     (when (> (get-universal-time) (+ create-time ,timeout))
-                       (signal-process proc)
-                       (error "with-another-xyzzy timeout.")))
-                 ;; FIXME: when another xyzzy doesn't close properly, it stay
-                 ;; in front so user can't see test progress.
-                 (activate-xyzzy-window (si:*instance-number))
-                 (handler-case
-                     (delete-buffer tmpbuf)
-                   (error ()
-                     (labels ((delete-tmpbuf ()
-                                (labels ((again () (start-timer 1 #'delete-tmpbuf t)))
-                                  (cond ((deleted-buffer-p tmpbuf)
-                                         (message "tmpbuf deleted successfully."))
-                                        ((eql (process-status proc) :exit)
-                                         (handler-case
-                                             (delete-buffer tmpbuf)
-                                           (error () (again))))
-                                        ((> (get-internal-real-time)
-                                            (+ create-time 180000))
-                                         (message "give up to delete tmpbuf ~S, sorry."
-                                                  (buffer-name tmpbuf)))
-                                        (t (again))))))
-                       (start-timer 6 #'delete-tmpbuf t)))))))
-           (with-open-file (in tmpfile :direction :input)
-             (case (read in nil '#1=#:eof)
-               (:return (let ((values '()) r)
-                          (while (not (eq (setq r (read in nil '#1#)) '#1#))
-                            (push r values))
-                          (values-list (nreverse values))))
-               (:error  (let ((error (read in nil nil)))
-                          (if (si:*structurep error)
-                            (error error)
-                            (error "unknown error~@[: ~S~]" error))))
-               (#1#     (error "result not sent.")))))
-       (delete-file tmpfile))))
-(setf (get 'with-another-xyzzy 'ed:lisp-indent-hook) 1)
+
+(defun eval-in-another-xyzzy--make-command-string (form options result-filename)
+  (let ((out (gensym "tmpfile-stream-")))
+    (format nil "~A ~A -e ~S"
+            (merge-pathnames "xyzzy.exe" (si:system-root))
+            options
+            (let ((*print-circle* t))
+              (prin1-to-string
+               `(progn
+                  (with-open-file (,out ,result-filename
+                                   :direction :output
+                                   :if-does-not-exist :create)
+                    (handler-case
+                        (let ((values (multiple-value-list ,form)))
+                          (format ,out ":return~%~{~S~%~}" values))
+                      (error (error)
+                        (format ,out ":error~%~S" error))))
+                  (kill-xyzzy)))))))
+
+(defun eval-in-another-xyzzy--read-results (result-filename)
+  (with-open-file (in result-filename
+                   :direction :input)
+    (case (read in nil '#1=#:eof)
+      (:return (let ((values '()) r)
+                 (while (not (eq (setq r (read in nil '#1#)) '#1#))
+                   (push r values))
+                 (values-list (nreverse values))))
+      (:error  (let ((error (read in nil nil)))
+                 (if (si:*structurep error)
+                   (error error)
+                   (error "unknown error~@[: ~S~]" error))))
+      (#1#     (error "result not sent.")))))
+
+(defun eval-in-another-xyzzy--delete-tmpbuf (tmpbuf time-limit)
+  (handler-case
+      (delete-buffer tmpbuf)
+    (error ()
+      (let ((proc (buffer-process tmpbuf)))
+        (labels ((again ()
+                   (start-timer 1 #'delete-tmpbuf t))
+                 (delete-tmpbuf ()
+                   (cond ((deleted-buffer-p tmpbuf)
+                          (message "tmpbuf deleted successfully."))
+                         ((eql (process-status proc) :exit)
+                          (handler-case
+                              (delete-buffer tmpbuf)
+                            (error ()
+                              (again))))
+                         ((> (get-internal-real-time) time-limit)
+                          (message "give up to delete tmpbuf ~S, sorry."
+                                   (buffer-name tmpbuf)))
+                         (t (again)))))
+          (start-timer 6 #'delete-tmpbuf t))))))
+
+(defun eval-in-another-xyzzy (form &key (options "") (timeout 60))
+  (let* ((tmpfile (make-temp-file-name))
+         (create-time (file-write-time tmpfile))
+         (command-string
+           (eval-in-another-xyzzy--make-command-string
+            form options tmpfile))
+         (tmpbuf (let ((buffer (create-new-buffer "*Temp*")))
+                   (setup-temp-buffer buffer)
+                   buffer))
+         (proc (make-process command-string :output tmpbuf)))
+    (unwind-protect
+        (progn
+          ;; wait for finish.
+          (while (eql (process-status proc) :run)
+            (sleep-for 0.1)
+            (when (> (get-universal-time) (+ create-time timeout))
+              (signal-process proc)
+              (error "eval-in-another-xyzzy timeout.")))
+          (eval-in-another-xyzzy--read-results tmpfile))
+      ;; FIXME: when another xyzzy doesn't close properly, it stays
+      ;; in front so user can't see test progress.
+      (activate-xyzzy-window (si:*instance-number))
+      (eval-in-another-xyzzy--delete-tmpbuf tmpbuf (+ create-time 180000))
+      (delete-file tmpfile))))
 
 #+unittest-meta-test
 (progn
   (ASSERT (equal (multiple-value-list
-                  (with-another-xyzzy (:options "-q")
-                    (values 1 2 3)))
+                  (eval-in-another-xyzzy
+                   `(values 1 2 3)
+                   :options "-q"))
                  '(1 2 3)))
   (ASSERT (typep (handler-case
-                     (with-another-xyzzy (:options "-q")
-                       (error "Bah!!"))
+                     (eval-in-another-xyzzy
+                      `(error "Bah!!")
+                      :options "-q")
                    (error (e) e))
                  'simple-error)))
+
 
 
 ;;;;; faking function definition
