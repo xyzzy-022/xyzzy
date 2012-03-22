@@ -2,6 +2,7 @@
 #include "environ.h"
 #include "conf.h"
 #include "fnkey.h"
+#include "monitor.h"
 
 const char Registry::base[] = "Software\\Free Software\\Xyzzy\\";
 const char Registry::Settings[] = "Settings";
@@ -811,12 +812,8 @@ environ::load_geometry (int cmdshow, POINT *point, SIZE *size)
   point->x = point->y = CW_USEDEFAULT;
   size->cx = size->cy = CW_USEDEFAULT;
 
-  SIZE scr;
-  scr.cx = GetSystemMetrics (SM_CXSCREEN);
-  scr.cy = GetSystemMetrics (SM_CYSCREEN);
-
   char name[64];
-  sprintf (name, "%dx%d", scr.cx, scr.cy);
+  make_geometry_key (name, sizeof name, 0);
   WINDOWPLACEMENT w;
   if (read_conf (cfgMisc, name, w)
       && w.rcNormalPosition.left < w.rcNormalPosition.right
@@ -827,25 +824,14 @@ environ::load_geometry (int cmdshow, POINT *point, SIZE *size)
           cmdshow = w.showCmd;
           size->cx = w.rcNormalPosition.right - w.rcNormalPosition.left;
           size->cy = w.rcNormalPosition.bottom - w.rcNormalPosition.top;
-          size->cx = min (size->cx, scr.cx);
-          size->cy = min (size->cy, scr.cy);
         }
       if (environ::restore_window_position)
         {
           point->x = w.rcNormalPosition.left;
           point->y = w.rcNormalPosition.top;
-          if (point->x >= scr.cx)
-            point->x = scr.cx / 2;
-          point->x = max (point->x, LONG (-scr.cx / 2));
-          if (point->y >= scr.cy)
-            point->y = scr.cy / 2;
-          point->y = max (point->y, LONG (-scr.cy / 2));
-          if (environ::restore_window_size)
+          if (!monitor.get_monitor_from_point (*point))
             {
-              if (point->x + size->cx < 10)
-                point->x = 0;
-              if (point->y + size->cy < 10)
-                point->y = 0;
+              point->x = point->y = CW_USEDEFAULT;
             }
         }
     }
@@ -866,8 +852,7 @@ environ::save_geometry ()
       if (GetWindowPlacement (app.toplev, &w))
         {
           char name[256];
-          sprintf (name, "%dx%d",
-                   GetSystemMetrics (SM_CXSCREEN), GetSystemMetrics (SM_CYSCREEN));
+          make_geometry_key (name, sizeof name, 0);
           if (!save_window_size || !save_window_position)
             {
               WINDOWPLACEMENT ow;

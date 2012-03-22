@@ -249,9 +249,7 @@ conf_load_geometry (HWND hwnd, const char *section,
   RECT cr (w.rcNormalPosition);
 
   char b[64];
-  sprintf (b, "%s%dx%d", prefix ? prefix : "",
-           GetSystemMetrics (SM_CXSCREEN),
-           GetSystemMetrics (SM_CYSCREEN));
+  make_geometry_key (b, sizeof b, prefix);
   if (!read_conf (section, b, w))
     return 0;
 
@@ -275,9 +273,7 @@ conf_save_geometry (HWND hwnd, const char *section,
   if (!GetWindowPlacement (hwnd, &w))
     return;
   char b[64];
-  sprintf (b, "%s%dx%d", prefix ? prefix : "",
-           GetSystemMetrics (SM_CXSCREEN),
-           GetSystemMetrics (SM_CYSCREEN));
+  make_geometry_key (b, sizeof b, prefix);
 
   if (!posp || !sizep)
     {
@@ -287,6 +283,15 @@ conf_save_geometry (HWND hwnd, const char *section,
     }
 
   write_conf (section, b, w);
+}
+
+void
+make_geometry_key (char* buf, size_t bufsize, const char *prefix)
+{
+  _snprintf_s (buf, bufsize, _TRUNCATE,
+               "%s%dx%d", prefix ? prefix : "",
+               GetSystemMetrics (SM_CXSCREEN),
+               GetSystemMetrics (SM_CYSCREEN));
 }
 
 #define CONF_SZ           0x10000
