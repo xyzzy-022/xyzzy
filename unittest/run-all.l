@@ -4,6 +4,8 @@
   (load-file (merge-pathnames "simple-test.l" dir))
   (load-test-file (merge-pathnames "nanri-master-change-tests.l" dir))
   (load-test-file (merge-pathnames "lisp-tests.l" dir))
+  (load-test-file (merge-pathnames "editor-tests.l" dir))
+  (load-test-file (merge-pathnames "system-tests.l" dir))
   ;(test-changes)
   (run-all-tests)
   )
