@@ -4,29 +4,33 @@
 
 /* random state */
 
-struct Random
+#include "dsfmt/dSFMT.h"
+
+class Random
 {
-  enum {INDEX_MAX = 55};
-  enum {DEFAULT_SEED = 1};
-  enum {RANDOM_BITS = BITS_PER_LONG - 1};
-  enum {RANDOM_MAX = LONG_MAX & ~1};
+public:
+  enum {INDEX_MAX = (DSFMT_N + 1) * 4};
 
-  int index;
-  long X[INDEX_MAX];
-
-  void store ();
-  void store_initial (long);
-  Random (long = DEFAULT_SEED);
-//  Random (Random &);
+  void alloc_random_state ();
+  void free_random_state ();
+  void init_random_state (const Random& random);
+  int & index () const;
+  uint32_t * state () const;
+  uint32_t & state (int index) const;
 
   void srandom (long);
-  long random ();
+  double random ();
+
+private:
+  dsfmt_t *dsfmt;
 };
 
 class lrandom_state: public lisp_object
 {
 public:
   Random object;
+
+  ~lrandom_state () {object.free_random_state ();}
 };
 
 # define random_state_p(X) typep ((X), Trandom_state)
@@ -47,7 +51,9 @@ xrandom_state_object (lisp x)
 inline lrandom_state *
 make_random_state ()
 {
-  return ldata <lrandom_state, Trandom_state>::lalloc ();
+  lrandom_state *p = ldata <lrandom_state, Trandom_state>::lalloc ();
+  p->object.alloc_random_state ();
+  return p;
 }
 
 lisp make_random_state (lisp);
