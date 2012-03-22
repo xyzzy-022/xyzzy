@@ -1513,6 +1513,8 @@ zap-to-char
 zerop
 
 ;*2
+**
+***
 *activate-hook*
 *apropos-no-regexp*
 *auto-encoding-alist*
@@ -1667,6 +1669,8 @@ zerop
 *this-command*
 *unicode-to-half-width*
 *wrap-search*
+//
+///
 :case-fold
 :key
 :no-dup
@@ -1676,6 +1680,8 @@ zerop
 :tail
 :test
 :test-not
+++
++++
 auto-fill-hook
 auto-save
 buffer-mode
