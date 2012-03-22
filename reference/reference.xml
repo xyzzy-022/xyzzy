@@ -9026,13 +9026,16 @@ BODYをインチキなBNFで書くと以下の様になります。
      (:documentation "henmi's package")
      (:internal-size 200)
      (:external-size 10))
-  =&gt; #<package: henmi>
+  =&gt; #&lt;package: henmi&gt;
 
   (documentation (find-package "henmi") t)
   =&gt; "henmi's package"
 
 互換性:
   :internal-size, :external-size はCommon Lispにはない。
+
+補足：
+  :documentation引数は xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>make-package</seealso>
 <seealso>find-package</seealso>
