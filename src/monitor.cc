@@ -1,5 +1,10 @@
-#include <windows.h>
 #include "monitor.h"
+
+HMONITOR
+Monitor::get_monitor_from_point (POINT point)
+{
+  return MonitorFromPoint (point, MONITOR_DEFAULTTONULL);
+}
 
 bool
 Monitor::get_workarea_from_point (POINT point, LPRECT lpworkarea)
