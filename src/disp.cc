@@ -6,7 +6,6 @@
 #include "jisx0212-hash.h"
 #include "mainframe.h"
 #include "regex.h"
-#include <list>
 
 class color_caret
 {
@@ -3249,108 +3248,45 @@ calc_point_width (int l, int c)
   return e - b;
 }
 
-static void
-format_percent(char* buf, int size, int percent)
-{
-  sprintf_s(buf, size, "%d", percent);
-}
-
-bool
-mode_line_percent_painter::need_repaint_all ()
-{
-	char buf[32];
-	format_percent(buf, 32, m_percent);
-	return m_point_pixel >= 0 && strlen(buf) != m_last_width;
-
-}
-
 int
-mode_line_percent_painter::calc_percent (Buffer* bufp, point_t point)
+Window::paint_mode_line_point (HDC hdc)
 {
-  if(bufp->b_nchars > 0)
-    return (100*point) / bufp->b_nchars;
-  if(point == 0) // 0/0, treat as 0.
-	return 0;
-  return -1;
-}
-
-
-int
-mode_line_percent_painter::paint_percent (HDC hdc)
-{
-
-  RECT r;
-  r.top = 1;
-  r.bottom = m_ml_size.cy - 1;
-  r.left = m_point_pixel;
-
-  char nb[32];
-  format_percent(nb, 32, m_percent);
-  m_last_width = strlen(nb);
-
-  SIZE size;
-  GetTextExtentPoint32 (hdc, nb, m_last_width, &size);
-
-  long right = size.cx + r.left;
-  r.right = min(right, m_ml_size.cx - 1);
-
-  ExtTextOut (hdc,
-              m_point_pixel ,
-              1 + m_modeline_paramp->m_exlead,
-              ETO_OPAQUE | ETO_CLIPPED, &r, nb, m_last_width, 0);
-  m_last_percent = m_percent;
-  
-
-  return (int)right;
-}
-
-
-bool
-mode_line_point_painter::need_repaint_all()
-{
-	return m_point_pixel >= 0 && calc_point_width (m_plinenum, m_column) != m_last_ml_point_width;
-}
-
-int
-mode_line_point_painter::paint_point (HDC hdc)
-{
-
-  if (m_point_pixel < 0)
+  if (w_point_pixel < 0)
     return 0;
-  if (m_column == m_last_ml_column && m_plinenum == m_last_ml_linenum)
+  if (w_column == w_last_ml_column && w_plinenum == w_last_ml_linenum)
     return 0;
 
   RECT r;
   r.top = 1;
-  r.bottom = m_ml_size.cy - 1;
+  r.bottom = w_ml_size.cy - 1;
 
   char nb[32];
-  format_point (nb, m_plinenum, m_column);
+  format_point (nb, w_plinenum, w_column);
   const char *b, *e;
   point_from_end (nb, b, e);
-  m_last_ml_point_width = e - b;
+  w_last_ml_point_width = e - b;
 
-  int x0 = (m_point_pixel + m_modeline_paramp->m_exts[1]
-            - m_modeline_paramp->m_exts[b - nb]);
-  int right = (x0 + m_modeline_paramp->m_exts[e - nb]
-               + m_modeline_paramp->m_exts[1]);
+  int x0 = (w_point_pixel + app.modeline_param.m_exts[1]
+            - app.modeline_param.m_exts[b - nb]);
+  int right = (x0 + app.modeline_param.m_exts[e - nb]
+               + app.modeline_param.m_exts[1]);
 
-  if (m_last_ml_linenum < 0)
+  if (w_last_ml_linenum < 0)
     {
-      r.left = m_point_pixel;
-      r.right = min (right, int (m_ml_size.cx - 1));
+      r.left = w_point_pixel;
+      r.right = min (right, int (w_ml_size.cx - 1));
     }
   else
     {
       char ob[32];
-      format_point (ob, m_last_ml_linenum, m_last_ml_column);
+      format_point (ob, w_last_ml_linenum, w_last_ml_column);
       int ib = b - nb, ie = e - nb;
       for (; ib < ie && ob[ib] == nb[ib]; ib++)
         ;
       for (; ie > ib && ob[ie - 1] == nb[ie - 1]; ie--)
         ;
-      r.left = x0 + m_modeline_paramp->m_exts[ib];
-      r.right = min (x0 + m_modeline_paramp->m_exts[ie], int (m_ml_size.cx - 1));
+      r.left = x0 + app.modeline_param.m_exts[ib];
+      r.right = min (x0 + app.modeline_param.m_exts[ie], int (w_ml_size.cx - 1));
       b = nb + ib;
       e = nb + ie;
     }
@@ -3361,21 +3297,19 @@ mode_line_point_painter::paint_point (HDC hdc)
     ;
 
   ExtTextOut (hdc,
-              x0 + m_modeline_paramp->m_exts[b - nb],
-              1 + m_modeline_paramp->m_exlead,
+              x0 + app.modeline_param.m_exts[b - nb],
+              1 + app.modeline_param.m_exlead,
               ETO_OPAQUE | ETO_CLIPPED, &r, b, e - b, 0);
-  m_last_ml_column = m_column;
-  m_last_ml_linenum = m_plinenum;
+  w_last_ml_column = w_column;
+  w_last_ml_linenum = w_plinenum;
   return right;
 }
-
 
 void
 Window::paint_mode_line (HDC hdc)
 {
   char *b0, *b;
   char *posp = 0;
-  char *percentp = 0;
 
   w_ime_mode_line = 0;
   lisp fmt = symbol_value (Vmode_line_format, w_bufp);
@@ -3386,7 +3320,7 @@ Window::paint_mode_line (HDC hdc)
       b = b0;
       *b++ = ' ';
 
-      buffer_info binfo (this, w_bufp, &posp, &w_ime_mode_line, &percentp);
+      buffer_info binfo (this, w_bufp, &posp, &w_ime_mode_line);
       b = binfo.format (fmt, b, b0 + l);
     }
   else
@@ -3418,73 +3352,26 @@ Window::paint_mode_line (HDC hdc)
   r.right = w_ml_size.cx - 1;
   r.bottom = w_ml_size.cy - 1;
 
-  std::list<mode_line_painter*> painters;
-  w_point_painter.set_posp(posp);
-  w_percent_painter.set_posp(percentp);
-  if(posp) {
-	  w_point_painter.setup_paint(&app.modeline_param, w_column, w_plinenum, w_ml_size);
-	  painters.push_back(&w_point_painter);
-  }
-  else
-  {
-	  w_point_painter.no_format_specifier();
-  }
-
-
-  if(percentp) {
-	  w_percent_painter.setup_paint(&app.modeline_param, mode_line_percent_painter::calc_percent(w_bufp, w_point.p_point), w_ml_size);
-
-	  if(posp && posp > percentp) // tenuki sort.
-		  painters.push_front(&w_percent_painter);
-	  else
-		  painters.push_back(&w_percent_painter);
-  }
-  else
-  {
-	  w_percent_painter.no_format_specifier();
-  }
-
-
-  if (painters.size() == 0)
+  if (!posp)
     {
+      w_point_pixel = -1;
       ExtTextOut (hdc, 1, 1 + app.modeline_param.m_exlead,
                   ETO_OPAQUE | ETO_CLIPPED, &r, b0, b - b0, 0);
     }
   else
     {
-	  char *b1 = b0;
-	  for(std::list<mode_line_painter*>::iterator it = painters.begin(); it != painters.end(); it++)
-	  {
-		  mode_line_painter * painter = *it;
-
-		  int point_start_px;
-
-		  if(painter->get_posp() - b1 == 0)
-		  {
-			  point_start_px = r.left;
-		  }
-		  else
-		  {
-			  SIZE size;
-			  GetTextExtentPoint32 (hdc, b1, painter->get_posp() - b1, &size);
-
-			  point_start_px = r.left + size.cx;
-
-			  r.right = min (point_start_px, int (w_ml_size.cx - 1));
-			  ExtTextOut (hdc, r.left, 1 + app.modeline_param.m_exlead,
-						  ETO_OPAQUE | ETO_CLIPPED, &r, b1, painter->get_posp() - b1, 0);
-		  }
-
-		  r.left = painter->first_paint(hdc, point_start_px);
-		  b1 = painter->get_posp();
-	  }
-
+      SIZE size;
+      GetTextExtentPoint32 (hdc, b0, posp - b0, &size);
+      w_point_pixel = 1 + size.cx;
+      r.right = min (w_point_pixel, int (r.right));
+      ExtTextOut (hdc, 1, 1 + app.modeline_param.m_exlead,
+                  ETO_OPAQUE | ETO_CLIPPED, &r, b0, posp - b0, 0);
+      w_last_ml_column = w_last_ml_linenum = -1;
+      r.left = paint_mode_line_point (hdc);
       r.right = w_ml_size.cx - 1;
       ExtTextOut (hdc, r.left, 1 + app.modeline_param.m_exlead,
-                  ETO_OPAQUE | ETO_CLIPPED, &r, b1, b - b1, 0);
+                  ETO_OPAQUE | ETO_CLIPPED, &r, posp, b - posp, 0);
     }
-
-
 
   SelectObject (hdc, of);
   SetTextColor (hdc, ofg);
@@ -3567,13 +3454,9 @@ Window::redraw_mode_line ()
   int r;
 
   HDC hdc = GetDC (w_hwnd_ml);
-  // a little slow. we can avoid this setup if we check validity.
-  w_point_painter.setup_paint(&app.modeline_param, w_column, w_plinenum, w_ml_size);
-  w_percent_painter.setup_paint(&app.modeline_param, mode_line_percent_painter::calc_percent(w_bufp, w_point.p_point), w_ml_size);
-
   if (w_disp_flags & WDF_MODELINE
-      || w_point_painter.need_repaint_all()
-	  || w_percent_painter.need_repaint_all())
+      || (w_point_pixel >= 0
+          && calc_point_width (w_plinenum, w_column) != w_last_ml_point_width))
     {
       paint_mode_line (hdc);
       w_disp_flags &= ~WDF_MODELINE;
@@ -3593,11 +3476,7 @@ Window::redraw_mode_line ()
           obg = SetBkColor (hdc, w_colors[WCOLOR_MODELINE_BG]);
         }
       HGDIOBJ of = SelectObject (hdc, app.modeline_param.m_hfont);
-
-	  // order is not important.
-	  w_point_painter.update_paint(hdc);
-	  w_percent_painter.update_paint(hdc);
-
+      paint_mode_line_point (hdc);
       SelectObject (hdc, of);
       SetTextColor (hdc, ofg);
       SetTextColor (hdc, obg);
