@@ -2070,6 +2070,9 @@ nilならreader-errorが発生します。
   (read-from-string "#.(+ 1 1)"))
 =&gt; 2
    9
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso></seealso>
 <link></link>
@@ -25848,6 +25851,9 @@ SHA224 ハッシュ値を得ます。
 使用例：
   (si:sha-224 "ほげほげ")
   =&gt; "310aa231065ce5c0cd397c2de10dba942fc6580e3631b6354446664d"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>si:md5</seealso>
 <seealso>si:sha-1</seealso>
@@ -25872,6 +25878,9 @@ SHA256 ハッシュ値を得ます。
 使用例：
   (si:sha-256 "ほげほげ")
   =&gt; "2f33a6ce8c3ebaf0f3af2f7c6e90d532dcb0e733c8ef2e4f55485302d64de910"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>si:md5</seealso>
 <seealso>si:sha-1</seealso>
@@ -25896,6 +25905,9 @@ SHA384 ハッシュ値を得ます。
 使用例：
   (si:sha-384 "ほげほげ")
   =&gt; "a54809e2c52b54e5832ad827dd397a25f73c2997027f7d0da102a2090bc64d29db9f5a95c301abfc5aa62ea35ca9a612"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>si:md5</seealso>
 <seealso>si:sha-1</seealso>
@@ -25920,6 +25932,9 @@ SHA512 ハッシュ値を得ます。
 使用例：
   (si:sha-512 "ほげほげ")
   =&gt; "ae86321f351722bc915b1c5b75262e086bcf074aa8bdd496773d55f267b07d7ce8b58b29680ca821ee3e68c2b50ebe070ac7f183e2663af6b4226e0d400fd782"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>si:md5</seealso>
 <seealso>si:sha-1</seealso>
@@ -25995,6 +26010,9 @@ SHA224 関数を利用してメッセージ認証コード値を得ます。
 使用例：
   (si:hmac-sha-224 "secret" "ほげほげ")
   =&gt; "6ae2369b6dbad816a088f000a0239511fc0ebec228048b3e27e69b17"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>si:hmac-md5</seealso>
 <seealso>si:hmac-sha-1</seealso>
@@ -26020,6 +26038,9 @@ SHA256 関数を利用してメッセージ認証コード値を得ます。
 使用例：
   (si:hmac-sha-256 "secret" "ほげほげ")
   =&gt; "b965ae8881656b71b29fbdab349fcfe7769d5cd26bce81cc9616205b4c7a9e6e"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>si:hmac-md5</seealso>
 <seealso>si:hmac-sha-1</seealso>
@@ -26045,6 +26066,9 @@ SHA384 関数を利用してメッセージ認証コード値を得ます。
 使用例：
   (si:hmac-sha-384 "secret" "ほげほげ")
   =&gt; "41a30b9a8e3dd864a20fb1af62b3baa58ddfaea64bc45c817e0803fd1b9ac7437049cd116a97145238cc1b6a0c06a9c5"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>si:hmac-md5</seealso>
 <seealso>si:hmac-sha-1</seealso>
@@ -26070,6 +26094,9 @@ SHA512 関数を利用してメッセージ認証コード値を得ます。
 使用例：
   (si:hmac-sha-512 "secret" "ほげほげ")
   =&gt; "84410143a5b046a25d9c508e1ac1cdfecff665ae580844fc13f2b22a374e0392ccdc54eb65934d93985ae2130a7e9948e4b8639c117a87f484b5033fd47871f4"
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>si:hmac-md5</seealso>
 <seealso>si:hmac-sha-1</seealso>
