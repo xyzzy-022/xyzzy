@@ -33,7 +33,8 @@ FKWin::FKWin ()
      : fk_hwnd (0), fk_nbuttons (fk_default_nbuttons),
        fk_cur_btn (-1), fk_cur_on (-1), fk_vkey (0)
 {
-  for (int i = 0; i < numberof (fk_divinfo); i++)
+  int i;
+  for (i = 0; i < numberof (fk_divinfo); i++)
     if (fk_nbuttons == fk_divinfo[i].nbuttons)
       break;
   if (i == numberof (fk_divinfo))
@@ -151,7 +152,8 @@ FKWin::OnSize (int cx, int cy)
   fk_sz.cx = cx;
   fk_sz.cy = cy;
 
-  for (int i = 0; i < numberof (fk_divinfo); i++)
+  int i;
+  for (i = 0; i < numberof (fk_divinfo); i++)
     if (fk_nbuttons == fk_divinfo[i].nbuttons)
       break;
   int ndiv = fk_divinfo[i].ndiv - 1;

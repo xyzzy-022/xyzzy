@@ -1578,7 +1578,8 @@ dock_frame::arrange_horz (const dock_bar_list &bars, LONG cx)
   for (dock_bar *bar = bars.head (); bar;)
     {
       LONG x = 0;
-      for (dock_bar *bb = bar, *be = bar->next ();
+      dock_bar *bb, *be;
+      for (bb = bar, be = bar->next ();
            be && be->rect ().top == bb->rect ().top;
            be = be->next ())
         ;
@@ -1623,7 +1624,8 @@ dock_frame::arrange_vert (const dock_bar_list &bars, LONG cy)
   for (dock_bar *bar = bars.head (); bar;)
     {
       LONG y = 0;
-      for (dock_bar *bb = bar, *be = bar->next ();
+      dock_bar *bb, *be;
+      for (bb = bar, be = bar->next ();
            be && be->rect ().left == bb->rect ().left;
            be = be->next ())
         ;
@@ -1891,7 +1893,8 @@ dock_frame::show (dock_bar *bar, int edge, const POINT *point, int horz_width)
       bar->rect ().top = point->y;
       if (!vert)
         {
-          for (dock_bar *b = f_bars[edge].head (); b; b = b->next ())
+          dock_bar *b;
+          for (b = f_bars[edge].head (); b; b = b->next ())
             if (bar->rect ().top < b->rect ().top
                 || (bar->rect ().top == b->rect ().top
                     && bar->rect ().left <= b->rect ().left))
@@ -1904,7 +1907,8 @@ dock_frame::show (dock_bar *bar, int edge, const POINT *point, int horz_width)
         }
       else
         {
-          for (dock_bar *b = f_bars[edge].head (); b; b = b->next ())
+          dock_bar *b;
+          for (b = f_bars[edge].head (); b; b = b->next ())
             if (bar->rect ().left < b->rect ().left
                 || (bar->rect ().left == b->rect ().left
                     && bar->rect ().top <= b->rect ().top))
@@ -2060,7 +2064,8 @@ dock_frame::move_bar (dock_bar *bar, RECT &r, int edge)
           int r1_3 = r.top + h / 3;
           int r2_3 = r.top + h * 2 / 3;
           bar->rect ().top = r.top;
-          for (dock_bar *b = f_bars[edge].head (); b; b = b->next ())
+          dock_bar *b;
+          for (b = f_bars[edge].head (); b; b = b->next ())
             if (r2_3 <= b->rect ().bottom)
               {
                 if ((b->prev ()
@@ -2100,7 +2105,8 @@ dock_frame::move_bar (dock_bar *bar, RECT &r, int edge)
           int r1_3 = r.left + w / 3;
           int r2_3 = r.left + w * 2 / 3;
           bar->rect ().left = r.left;
-          for (dock_bar *b = f_bars[edge].head (); b; b = b->next ())
+          dock_bar *b;
+          for (b = f_bars[edge].head (); b; b = b->next ())
             if (r2_3 <= b->rect ().right)
               {
                 if ((b->prev ()
@@ -2494,7 +2500,7 @@ tool_bm::load (const char *path, int &e)
         return p;
       }
 
-  p = new bm_node;
+  bm_node *p = new bm_node;
   p->b_path = strdup (path);
   if (p->b_path)
     {

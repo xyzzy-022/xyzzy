@@ -127,7 +127,8 @@ buffer_bar::tab_color (const Buffer *bp, COLORREF &fg, COLORREF &bg)
     }
   else
     {
-      for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
+      Window *wp;
+      for (wp = app.active_frame.windows; wp; wp = wp->w_next)
         if (wp->w_bufp == bp)
           {
             fg = get_misc_color (MC_BUFTAB_DISP_FG);
@@ -278,7 +279,7 @@ buffer_bar::update_ui ()
         {
           int i = 0;
           Buffer **buffers = (Buffer **)alloca (sizeof *buffers * nbuffers);
-          for (bp = Buffer::b_blist; bp; bp = bp->b_next)
+          for (Buffer *bp = Buffer::b_blist; bp; bp = bp->b_next)
             if (bp->b_buffer_bar_modified & Buffer::BUFFER_BAR_CREATED)
               {
                 if (!bp->internal_buffer_p ())
@@ -469,14 +470,14 @@ buffer_bar::buffer_list () const
   lisp r = Qnil;
   for (int i = 0, n = item_count (); i < n; i++)
     {
-      bp = nth (i);
+      Buffer *bp = nth (i);
       if (bp)
         {
           r = xcons (bp->lbp, r);
           bp->b_buffer_bar_modified |= Buffer::BUFFER_BAR_MARK;
         }
     }
-  for (bp = Buffer::b_blist; bp; bp = bp->b_next)
+  for (Buffer *bp = Buffer::b_blist; bp; bp = bp->b_next)
     if (bp->b_buffer_bar_modified & Buffer::BUFFER_BAR_MARK)
       bp->b_buffer_bar_modified &= ~Buffer::BUFFER_BAR_MARK;
     else

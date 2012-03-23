@@ -416,8 +416,7 @@ main ()
   printf ("\n};\n\n");
 
   printf ("static const Char ibmext_eucjp2sjis_table[] =\n{");
-  int j = 0;
-  for (i = 0; i < numberof (sjis2eucjp); i++)
+  for (int i = 0, j = 0; i < numberof (sjis2eucjp); i++)
     if (sjis2eucjp[i].eucjp >= 0x8ff3f3)
       {
         if (!(j % 8))
@@ -430,28 +429,28 @@ main ()
 
   Char w2i[65536];
 
-  for (i = 0; i < 65536; i++)
+  for (int i = 0; i < 65536; i++)
     w2i[i] = ucs2_t (-1);
 
-  for (i = 0x8740; i <= 0x879c; i++)
+  for (int i = 0x8740; i <= 0x879c; i++)
     {
       w2i[internal2wc_table[i]] = i;
       internal2wc_table[i] = ucs2_t (-1);
     }
-  for (i = 0xed40; i <= 0xeefc; i++)
+  for (int i = 0xed40; i <= 0xeefc; i++)
     {
       w2i[internal2wc_table[i]] = i;
       internal2wc_table[i] = ucs2_t (-1);
     }
-  for (i = 0x8100; i <= 0x9fff; i++)
+  for (int i = 0x8100; i <= 0x9fff; i++)
     w2i[internal2wc_table[i]] = i;
-  for (i = 0xe000; i <= 0xefff; i++)
+  for (int i = 0xe000; i <= 0xefff; i++)
     w2i[internal2wc_table[i]] = i;
   w2i[ucs2_t (-1)] = Char (-1);
 
   printf ("static const Char ibmext2necext_table[] =\n{");
 
-  for (i = 0; i < numberof (sjis2eucjp); i++)
+  for (int i = 0; i < numberof (sjis2eucjp); i++)
     {
       if (!(i % 8))
         printf ("\n ");

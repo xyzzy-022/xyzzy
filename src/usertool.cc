@@ -246,7 +246,8 @@ user_tool_bar::create (lisp bitmap, lisp items)
   pathname2cstr (bitmap, bm_path);
 
   u_nitems = 0;
-  for (lisp p = items; consp (p); p = xcdr (p), u_nitems++)
+  lisp p;
+  for (p = items; consp (p); p = xcdr (p), u_nitems++)
     {
       check_item (xcar (p));
       QUIT;
@@ -256,7 +257,8 @@ user_tool_bar::create (lisp bitmap, lisp items)
     FEprogram_error (Eno_tool_items);
 
   u_item = new tool_item[u_nitems];
-  for (int i = 0; i < u_nitems; i++)
+  int i;
+  for (i = 0; i < u_nitems; i++)
     u_item[i].ti_id = -1;
 
   int has_tooltips = 0;

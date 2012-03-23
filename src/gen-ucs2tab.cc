@@ -321,7 +321,7 @@ encode_diff (const char *name, const Char *const diff, int dsize)
 
   printf ("static const Char %s_diff_rest[] = {", name);
   int w = 0;
-  for (i = 0; i < fsize; i++)
+  for (int i = 0; i < fsize; i++)
     if (f[i])
       {
         if (!(w % 4))
@@ -345,7 +345,7 @@ output_diff (const Char *wc2int, const ucs2_t *int2wc, const char *name)
 
   Char diff[65536 * 2];
   int n = 0;
-  for (i = 0; i < 65536; i++)
+  for (int i = 0; i < 65536; i++)
     if (wc2int[i] != Char (-1) && wc2int[i] != wc2int_2[i])
       {
         diff[n++] = i;
@@ -514,7 +514,7 @@ read_big5 (ucs2_t *wbuf)
   int i;
   for (i = 0; i < BIG5_TABSIZE; i++)
     wbuf2[i + CCS_BIG5_MIN] = wbuf[i];
-  for (i = 0; i < 0x80; i++)
+  for (int i = 0; i < 0x80; i++)
     wbuf2[i] = i;
   output_diff (wc2cp950, wbuf2, "wc2big5");
 }
@@ -566,7 +566,7 @@ read_ksc5601 (ucs2_t *wbuf)
   int i;
   for (i = 0; i < 94 * 94; i++)
     wbuf2[i + CCS_KSC5601_MIN] = wbuf[i];
-  for (i = 0; i < 0x80; i++)
+  for (int i = 0; i < 0x80; i++)
     wbuf2[i] = i;
   output_diff (wc2cp949, wbuf2, "wc2ksc5601");
 }
@@ -618,7 +618,7 @@ read_gb2312 (ucs2_t *wbuf)
   int i;
   for (i = 0; i < 94 * 94; i++)
     wbuf2[i + CCS_GB2312_MIN] = wbuf[i];
-  for (i = 0; i < 0x80; i++)
+  for (int i = 0; i < 0x80; i++)
     wbuf2[i] = i;
   output_diff (wc2cp936, wbuf2, "wc2gb2312");
 }
@@ -701,7 +701,7 @@ make_cns_table (const char *name, const Char *p, int size)
   printf ("_START_CHAR 0x%04x\n\n", *pb);
 
   printf ("static const cns_table %s_tab[] =\n{", name);
-  for (i = 0; i < cp - cnstab; i++)
+  for (int i = 0; i < cp - cnstab; i++)
     {
       if (!(i % 4))
         printf ("\n ");
@@ -762,12 +762,12 @@ make_cns11643 (const ucs2_t *const big5, const ucs2_t *const gb2312)
   for (i = 0; i < 94 * 94; i++)
     if (gb2312[i] != ucs2_t (-1))
       wc2int[gb2312[i]] = i + CCS_GB2312_MIN;
-  for (i = 0; i < BIG5_TABSIZE; i++)
+  for (int i = 0; i < BIG5_TABSIZE; i++)
     if (big5[i] != ucs2_t (-1))
       wc2int[big5[i]] = i + CCS_BIG5_MIN;
 
   Char cns2int1[94 * 94], cns2int2[94 * 94];
-  for (i = 0; i < 94 * 94; i++)
+  for (int i = 0; i < 94 * 94; i++)
     {
       if (cns2wc1[i] != ucs2_t (-1))
         cns2int1[i] = wc2int[cns2wc1[i]];
@@ -796,19 +796,19 @@ make_cns11643 (const ucs2_t *const big5, const ucs2_t *const gb2312)
 #endif /* RUNTIME_TEST_CNS_TABLE */
 
   clear (wc2int, numberof (wc2int));
-  for (i = 0; i < 94 * 94; i++)
+  for (int i = 0; i < 94 * 94; i++)
     if (gb2312[i] != ucs2_t (-1))
       wc2int[gb2312[i]] = i / 94 * 256 + i % 94 + 0x2121 + BIG5CNS_GB2312;
-  for (i = 0; i < 94 * 94; i++)
+  for (int i = 0; i < 94 * 94; i++)
     if (cns2wc2[i] != ucs2_t (-1))
       wc2int[cns2wc2[i]] = i / 94 * 256 + i % 94 + 0x2121 + BIG5CNS_CNS11643_2;
-  for (i = 0; i < 94 * 94; i++)
+  for (int i = 0; i < 94 * 94; i++)
     if (cns2wc1[i] != ucs2_t (-1))
       wc2int[cns2wc1[i]] = i / 94 * 256 + i % 94 + 0x2121 + BIG5CNS_CNS11643_1;
 
   ucs2_t big5cns[BIG5_TABSIZE];
   clear (big5cns, numberof (big5cns));
-  for (i = 0; i < BIG5_TABSIZE; i++)
+  for (int i = 0; i < BIG5_TABSIZE; i++)
     big5cns[i] = wc2int[big5[i]];
 
   make_cns_table ("big5cns", big5cns, BIG5_TABSIZE);
@@ -849,7 +849,7 @@ make_wc2cp932 (ucs2_t *const wc2cp932)
           }
     }
 
-  for (i = CCS_UTF16_SURROGATE_HIGH_MIN; i <= CCS_UTF16_SURROGATE_LOW_MAX; i++)
+  for (int i = CCS_UTF16_SURROGATE_HIGH_MIN; i <= CCS_UTF16_SURROGATE_LOW_MAX; i++)
     wc2cp932[i] = ucs2_t (i);
 }
 
@@ -872,7 +872,7 @@ make_cp932 (ucs2_t *wbuf)
         wbuf[i] = wc;
     }
 
-  for (i = 0x8100; i <= 0x9fff; i++)
+  for (int i = 0x8100; i <= 0x9fff; i++)
     {
       mb[0] = i >> 8;
       mb[1] = i;
@@ -881,7 +881,7 @@ make_cp932 (ucs2_t *wbuf)
         wbuf[i] = wc;
     }
 
-  for (i = 0xe000; i <= 0xfcff; i++)
+  for (int i = 0xe000; i <= 0xfcff; i++)
     {
       mb[0] = i >> 8;
       mb[1] = i;
@@ -890,7 +890,7 @@ make_cp932 (ucs2_t *wbuf)
         wbuf[i] = wc;
     }
 
-  for (i = CCS_UTF16_SURROGATE_HIGH_MIN; i <= CCS_UTF16_SURROGATE_LOW_MAX; i++)
+  for (int i = CCS_UTF16_SURROGATE_HIGH_MIN; i <= CCS_UTF16_SURROGATE_LOW_MAX; i++)
     wbuf[i] = ucs2_t (i);
 
   ucs2_t wc2cp932[65536];
@@ -913,10 +913,10 @@ merge_unicode (ucs2_t *d)
   for (i = CCS_GEORGIAN_MIN; i <= CCS_GEORGIAN_MAX; i++)
     d[i] = i + (UNICODE_GEORGIAN_MIN - CCS_GEORGIAN_MIN);
   /* IPA Extensions */
-  for (i = CCS_IPA_MIN; i <= CCS_IPA_MAX; i++)
+  for (int i = CCS_IPA_MIN; i <= CCS_IPA_MAX; i++)
     d[i] = i + (UNICODE_IPA_MIN - CCS_IPA_MIN);
   /* Spacing Modifier Letters & Combining Diacritical Marks */
-  for (i = CCS_SMLCDM_MIN; i <= CCS_SMLCDM_MAX; i++)
+  for (int i = CCS_SMLCDM_MIN; i <= CCS_SMLCDM_MAX; i++)
     d[i] = i + (UNICODE_SMLCDM_MIN - CCS_SMLCDM_MIN);
 }
 
@@ -951,7 +951,7 @@ init_ulatin (ucs2_t *ulatin, ucs2_t (*iso8859)[128], int n)
         f[iso8859[i][j] / 8] |= 1 << iso8859[i][j] % 8;
 
   memset (r, 0, sizeof r);
-  for (i = 0; i < numberof (courier_new_range); i++)
+  for (int i = 0; i < numberof (courier_new_range); i++)
     if (courier_new_range[i].w == 8)
       r[courier_new_range[i].c / 8] |= 1 << courier_new_range[i].c % 8;
 
@@ -1023,18 +1023,18 @@ init_ujp (ucs2_t *int2wc)
       f[int2wc[i] / 8] |= 1 << int2wc[i] % 8;
 
   memset (r, 0, sizeof r);
-  for (i = 0; i < numberof (ms_gothic_range); i++)
+  for (int i = 0; i < numberof (ms_gothic_range); i++)
     if (ms_gothic_range[i].w == 8)
       r[ms_gothic_range[i].c / 8] |= 1 << ms_gothic_range[i].c % 8;
 
   init_ujp (int2wc, f, r, "half", CCS_UJP_HALF_MIN, CCS_UJP_HALF_MAX);
 
-  for (i = 0; i < 65536; i++)
+  for (int i = 0; i < 65536; i++)
     if (int2wc[i] != ucs2_t (-1))
       f[int2wc[i] / 8] |= 1 << int2wc[i] % 8;
 
   memset (r, 0, sizeof r);
-  for (i = 0; i < numberof (ms_gothic_range); i++)
+  for (int i = 0; i < numberof (ms_gothic_range); i++)
     if (ms_gothic_range[i].w != 8)
       r[ms_gothic_range[i].c / 8] |= 1 << ms_gothic_range[i].c % 8;
 
@@ -1090,7 +1090,7 @@ main ()
     read_wincp (wincp[i], wcp[i].file, wcp[i].name);
   printf ("\n");
 
-  for (i = 0; i < numberof (cs); i++)
+  for (int i = 0; i < numberof (cs); i++)
     read_iso8859 (iso8859[i], cs[i].file, cs[i].name,
                   i < numberof (wcp) && wcp[i].f ? wincp[i] : 0);
   printf ("\n");
@@ -1148,7 +1148,7 @@ main ()
   merge_int2wc (int2wc, ksc5601, numberof (ksc5601), CCS_KSC5601_MIN);
   merge_int2wc (int2wc, gb2312, numberof (gb2312), CCS_GB2312_MIN);
   merge_int2wc (int2wc, big5, numberof (big5), CCS_BIG5_MIN);
-  for (i = 0; i < numberof (cs); i++)
+  for (int i = 0; i < numberof (cs); i++)
     merge_int2wc (int2wc, iso8859[i], numberof (iso8859[i]), cs[i].charset << 7);
   merge_unicode (int2wc);
 

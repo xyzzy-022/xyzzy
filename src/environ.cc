@@ -500,7 +500,8 @@ decode_universal_time (lisp lutc, decoded_time *dt)
     }
   static const int days_in_month[] =
     {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-  for (int mon = 1; mon <= 12; mon++)
+  int mon;
+  for (mon = 1; mon <= 12; mon++)
     {
       int dom = days_in_month[mon];
       if (mon == 2 && leap_year_p (dt->year))

@@ -140,7 +140,7 @@ iset::find_topic (ifile *f)
     {
       char buf[300];
       int nchars = GETC ();
-      for (i = 0; i < nchars; i++)
+      for (int i = 0; i < nchars; i++)
         buf[i] = GETC ();
       if (help_index >= 0 && help_index < f->if_nfiles)
         {

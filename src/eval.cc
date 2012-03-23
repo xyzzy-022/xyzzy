@@ -304,7 +304,8 @@ declare_progn (lisp body, lex_env &lex, int can_doc)
     }
 
   int doc = can_doc;
-  for (lisp nbody = body; consp (nbody); nbody = xcdr (nbody))
+  lisp nbody;
+  for (nbody = body; consp (nbody); nbody = xcdr (nbody))
     {
       lisp x = xcar (nbody);
       if (doc && stringp (x))
@@ -343,9 +344,9 @@ declare_progn (lisp body, lex_env &lex, int can_doc)
   if (nspecials)
     {
       lisp var = Qnil;
-      for (e = lex.lex_var; e != lex.lex_ltail; e = xcdr (e))
+      for (lisp e = lex.lex_var; e != lex.lex_ltail; e = xcdr (e))
         var = xcons (xcar (e), var);
-      for (e = var; consp (e); e = xcdr (e))
+      for (lisp e = var; consp (e); e = xcdr (e))
         {
           lisp x = xcar (e);
           if (consp (x) && symbolp (xcar (x))
@@ -460,7 +461,7 @@ funcall_builtin (lisp f, lisp arglist)
       arglist = xcdr (arglist);
     }
 
-  for (i = xfunction_nopts (f); i > 0; i--)
+  for (int i = xfunction_nopts (f); i > 0; i--)
     {
       if (!consp (arglist))
         {
@@ -872,7 +873,8 @@ fast_funcall_p (lisp fn, int nargs)
 static int
 map_count (lisp lists)
 {
-  for (int nargs = 0, f_nil = 0; consp (lists); nargs++, lists = xcdr (lists))
+  int nargs, f_nil;
+  for (nargs = 0, f_nil = 0; consp (lists); nargs++, lists = xcdr (lists))
     {
       QUIT;
       if (xcar (lists) == Qnil)
@@ -1355,7 +1357,8 @@ Fmacrolet (lisp arg, lex_env &olex)
 lisp
 Fvalues_list (lisp list)
 {
-  for (int i = 0; consp (list); i++, list = xcdr (list))
+  int i;
+  for (i = 0; consp (list); i++, list = xcdr (list))
     {
       if (i == MULTIPLE_VALUES_LIMIT)
         FEtoo_many_arguments ();
@@ -1774,10 +1777,12 @@ process_interactive_string (lisp fmt, lisp args)
           c = *p++;
         }
 
-      for (const Char *p0 = p; p < pe && *p != '\n'; p++)
+      const Char *p0;
+      for (p0 = p; p < pe && *p != '\n'; p++)
         ;
 
-      for (lisp al = xsymbol_value (intr_alist);
+      lisp al;
+      for (al = xsymbol_value (intr_alist);
            consp (al); al = xcdr (al))
         {
           lisp x = xcar (al);

@@ -164,7 +164,8 @@ zip_next_file (HARC, INDIVIDUALINFO *v)
               + (atoi2 (zip_next - 37) << 5)
               + atoi2 (zip_next - 34));
   v->dwOriginalSize = atoi (zip_next - 68);
-  for (char *p = &zip_next[-68]; p > p0 && p[-1] == ' '; p--)
+  char *p;
+  for (p = &zip_next[-68]; p > p0 && p[-1] == ' '; p--)
     ;
   *p = 0;
   strcpy (v->szFileName, p0);

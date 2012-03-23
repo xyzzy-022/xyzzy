@@ -63,7 +63,7 @@ main ()
   memset (state, 0, sizeof state);
   int state_max = 0;
 
-  for (i = 0; i < numberof (escseq); i++)
+  for (int i = 0; i < numberof (escseq); i++)
     {
       int cur_state = 0;
       for (const char *p = escseq[i].s; *p; p++)
@@ -93,7 +93,7 @@ main ()
         }
     }
 
-  for (i = 0; i < numberof (escseq); i++)
+  for (int i = 0; i < numberof (escseq); i++)
     {
       int c = chars[*escseq[i].s];
       for (int j = 1; j <= state_max; j++)
@@ -101,7 +101,7 @@ main ()
           state[c][j] |= state[c][0];
     }
 
-  for (i = 0; i < numberof (intermediate_chars); i++)
+  for (int i = 0; i < numberof (intermediate_chars); i++)
     for (const char *p = intermediate_chars[i] + 1; *p; p++)
       chars[*p] = chars[intermediate_chars[i][0]];
 
@@ -110,7 +110,7 @@ main ()
   printf ("\n");
 
   printf ("static const u_char iso2022state_chars[] =\n{");
-  for (i = 0; i < 256; i++)
+  for (int i = 0; i < 256; i++)
     {
       if (!(i % 16))
         printf ("\n  ");
@@ -119,7 +119,7 @@ main ()
   printf ("\n};\n\n");
 
   printf ("static const u_char iso2022state[][%d] =\n{\n", state_max + 1);
-  for (i = 0; i < chars_max; i++)
+  for (int i = 0; i < chars_max; i++)
     {
       printf ("  {");
       for (int j = 0; j <= state_max; j++)

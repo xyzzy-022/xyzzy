@@ -41,7 +41,7 @@ file_masks::build_masks (lisp lmasks)
   char **b0 = (char **)xmalloc (sizeof (char *) * nfiles + nbytes);
   char **b = b0;
   char *s = (char *)b0 + sizeof (char *) * nfiles;
-  for (p = lmasks; consp (p); p = xcdr (p))
+  for (lisp p = lmasks; consp (p); p = xcdr (p))
     {
       lisp x = xcar (p);
       if (xstring_length (x))
@@ -67,7 +67,7 @@ file_masks::set_text (HWND hwnd) const
 
       char *b0 = (char *)alloca (nbytes);
       char *b = stpcpy (b0, "Mask:");
-      for (p = fm_masks; *p; p++)
+      for (char **p = fm_masks; *p; p++)
         {
           *b++ = ' ';
           b = stpcpy (b, *p);

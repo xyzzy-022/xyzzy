@@ -196,7 +196,7 @@ scan_key_slot (lisp keymap, Char c, int igcase)
   if (igcase && alpha_char_p (c))
     {
       cc = make_char (_char_transpose_case (c));
-      for (p = keymap; consp (p); p = xcdr (p))
+      for (lisp p = keymap; consp (p); p = xcdr (p))
         {
           lisp x = xcar (p);
           if (consp (x) && xcar (x) == cc)
@@ -400,7 +400,8 @@ command_shadow_p (const keyseq_list *p, lisp keymap)
 static int
 command_shadow_p (keyseq_list *tail, const lisp *shadow, int nshadow)
 {
-  for (keyseq_list *head = tail, *last = 0;
+  keyseq_list *head, *last;
+  for (head = tail, last = 0;
        (head->next = last), head->prev;
        last = head, head = head->prev)
     ;
@@ -451,7 +452,8 @@ Fcommand_keys (lisp command, lisp gmap, lisp lmap, lisp minor_map)
     minor_map = Qnil;
   int nmaps = xlist_length (minor_map) + 2;
   lisp *map = (lisp *)alloca (nmaps * sizeof *map);
-  for (lisp *p = map; consp (minor_map); minor_map = xcdr (minor_map))
+  lisp *p;
+  for (p = map; consp (minor_map); minor_map = xcdr (minor_map))
     *p++ = xcar (minor_map);
   *p++ = lmap;
   *p++ = gmap;
@@ -462,7 +464,8 @@ Fcommand_keys (lisp command, lisp gmap, lisp lmap, lisp minor_map)
       lisp r = command_keys (command, map[i], 0, map, i);
       if (consp (r))
         {
-          for (lisp x = r; consp (xcdr (x)); x = xcdr (x))
+          lisp x;
+          for (x = r; consp (xcdr (x)); x = xcdr (x))
             ;
           xcdr (x) = result;
           result = r;

@@ -134,7 +134,8 @@ paint_text (HDC hdc, char *s, int l, int fmt, const RECT &r,
         {
           w -= dots;
           int ll = l;
-          for (char *se = CharPrev (s, s + l); se > s; se = CharPrev (s, se))
+          char *se;
+          for (se = CharPrev (s, s + l); se > s; se = CharPrev (s, se))
             {
               GetTextExtentPoint32 (hdc, s, se - s, &ext);
               if (ext.cx <= w)

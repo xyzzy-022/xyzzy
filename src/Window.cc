@@ -356,12 +356,14 @@ glyph_rep::copy (const glyph_rep *src)
   if (src)
     {
       int h = min (gr_size.cy, src->gr_size.cy);
-      for (int y = 0; y < h; y++)
+      int y;
+      for (y = 0; y < h; y++)
         {
           int w = min (gr_size.cx, LONG (src->gr_oglyph[y]->gd_len));
           memcpy (gr_oglyph[y]->gd_cc, src->gr_oglyph[y]->gd_cc, sizeof (glyph_t) * w);
-          for (glyph_t *g = gr_oglyph[y]->gd_cc + w,
-               *ge = gr_oglyph[y]->gd_cc + gr_size.cx;
+          glyph_t *g, *ge;
+          for (g = gr_oglyph[y]->gd_cc + w,
+               ge = gr_oglyph[y]->gd_cc + gr_size.cx;
                g < ge; g++)
             *g = GLYPH_JUNK;
           *g = 0;
@@ -370,7 +372,8 @@ glyph_rep::copy (const glyph_rep *src)
 
       for (; y < gr_size.cy; y++)
         {
-          for (glyph_t *g = gr_oglyph[y]->gd_cc, *ge = g + gr_size.cx; g < ge; g++)
+          glyph_t *g, *ge;
+          for (g = gr_oglyph[y]->gd_cc, ge = g + gr_size.cx; g < ge; g++)
             *g = GLYPH_JUNK;
           *g = 0;
           gr_oglyph[y]->gd_len = short (gr_size.cx);
@@ -389,7 +392,8 @@ glyph_rep::copy (const glyph_rep *src)
     {
       for (int y = 0; y < gr_size.cy; y++)
         {
-          for (glyph_t *g = gr_oglyph[y]->gd_cc, *ge = g + gr_size.cx; g < ge; g++)
+          glyph_t *g, *ge;
+          for (g = gr_oglyph[y]->gd_cc, ge = g + gr_size.cx; g < ge; g++)
             *g = GLYPH_JUNK;
           *g = 0;
           gr_oglyph[y]->gd_len = short (gr_size.cx);
@@ -578,7 +582,8 @@ Window::change_color ()
   else
     cc = default_colors;
 
-  for (int i = 0; i < USER_DEFINABLE_COLORS; i++)
+  int i;
+  for (i = 0; i < USER_DEFINABLE_COLORS; i++)
     if (cc[i] != w_colors[i])
       break;
   if (i == USER_DEFINABLE_COLORS)
@@ -759,14 +764,14 @@ Window::create_default_windows ()
   mlcc[1] = XCOLORREF (sysdep.btn_text, COLOR_BTNTEXT);
 
   XCOLORREF fg[GLYPH_TEXTPROP_NCOLORS], bg[GLYPH_TEXTPROP_NCOLORS];
-  for (i = 0; i < GLYPH_TEXTPROP_NCOLORS; i++)
+  for (int i = 0; i < GLYPH_TEXTPROP_NCOLORS; i++)
     {
       fg[i] = w_textprop_forecolor[i];
       bg[i] = w_textprop_backcolor[i];
     }
 
   int c;
-  for (i = 0; i < USER_DEFINABLE_COLORS; i++)
+  for (int i = 0; i < USER_DEFINABLE_COLORS; i++)
     {
       if (read_conf (cfgColors, wcolor_index_names[i].name, c))
         cc[i] = c;
@@ -777,7 +782,7 @@ Window::create_default_windows ()
     mlcc[0] = c;
   if (read_conf (cfgColors, cfgModeLineBg, c))
     mlcc[1] = c;
-  for (i = 1; i < GLYPH_TEXTPROP_NCOLORS; i++)
+  for (int i = 1; i < GLYPH_TEXTPROP_NCOLORS; i++)
     {
       char b[32];
       sprintf (b, "%s%d", cfgFg, i);
@@ -872,7 +877,8 @@ compute_size (int *o, int n, int old_size, int new_size)
   if (new_size < 0)
     new_size = 0;
   int *const w = (int *)alloca (sizeof *w * n);
-  for (int i = 0; i < n; i++)
+  int i;
+  for (i = 0; i < n; i++)
     w[i] = o[i + 1] - o[i];
   int diff_size = new_size - old_size;
   if (!old_size)
@@ -922,7 +928,8 @@ Window::compute_geometry (const SIZE &old_size, int lcell)
 
   const SIZE &new_size = app.active_frame.size;
 
-  for (Window *wp = app.active_frame.windows; wp->w_next; wp = wp->w_next)
+  Window *wp;
+  for (wp = app.active_frame.windows; wp->w_next; wp = wp->w_next)
     ;
   wp->w_rect.left = 0;
   wp->w_rect.right = new_size.cx;
@@ -1045,7 +1052,7 @@ Window::move_all_windows (int update)
         }
     }
 
-  for (wp = app.active_frame.reserved; wp; wp = wp->w_next)
+  for (Window *wp = app.active_frame.reserved; wp; wp = wp->w_next)
     {
       MoveWindow (wp->w_hwnd, 0, 0, 0, 0, 1);
       if (wp->w_hwnd_ml)
@@ -1054,7 +1061,7 @@ Window::move_all_windows (int update)
 
   if (mod)
     {
-      for (wp = app.active_frame.windows; wp; wp = wp->w_next)
+      for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
         if (wp->w_bufp)
           wp->w_bufp->window_size_changed ();
 
@@ -1334,7 +1341,8 @@ Window::coerce_to_window (lisp object)
 Window *
 Window::minibuffer_window ()
 {
-  for (Window *wp = app.active_frame.windows; wp->w_next; wp = wp->w_next)
+  Window *wp;
+  for (wp = app.active_frame.windows; wp->w_next; wp = wp->w_next)
     ;
   return wp;
 }
@@ -1444,7 +1452,8 @@ Window::split (int nlines, int verticalp)
       w_rect.bottom = w_rect.top + pxl;
       wp->w_rect.top = w_rect.bottom;
 
-      for (Window *w = app.active_frame.windows; w->w_next; w = w->w_next)
+      Window *w;
+      for (w = app.active_frame.windows; w->w_next; w = w->w_next)
         if (w != wp && w->w_rect.top == wp->w_rect.top)
           {
             w_order.bottom = w->w_order.top;
@@ -1480,7 +1489,8 @@ Window::split (int nlines, int verticalp)
       w_rect.right = w_rect.left + pxl;
       wp->w_rect.left = w_rect.right;
 
-      for (Window *w = app.active_frame.windows; w->w_next; w = w->w_next)
+      Window *w;
+      for (w = app.active_frame.windows; w->w_next; w = w->w_next)
         if (w != wp && w->w_rect.left == wp->w_rect.left)
           {
             w_order.right = w->w_order.left;
@@ -1633,11 +1643,11 @@ Window::resize_edge (LONG RECT::*edge1, LONG RECT::*edge2,
         wp->w_rect.*edge1 = w_rect.*edge1;
       }
 
-  for (wp = app.active_frame.windows; wp; wp = wp->w_next)
+  for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
     if (!wp->minibuffer_window_p () && wp->w_order.*edge2 == w_order.*edge2)
       return;
 
-  for (wp = app.active_frame.windows; wp; wp = wp->w_next)
+  for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
     if (!wp->minibuffer_window_p ())
       {
         if (wp->w_order.*edge2 > w_order.*edge2)
@@ -1663,7 +1673,8 @@ Window::resize_edge (int f) const
 Window *
 Window::find_point_window (POINT &p)
 {
-  for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
+  Window *wp;
+  for (wp = app.active_frame.windows; wp; wp = wp->w_next)
     if (PtInRect (&wp->w_rect, p))
       break;
   return wp;
@@ -1672,7 +1683,8 @@ Window::find_point_window (POINT &p)
 Window *
 Window::find_scr_point_window (const POINT &pt, int ml, int *in_ml)
 {
-  for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
+  Window *wp;
+  for (wp = app.active_frame.windows; wp; wp = wp->w_next)
     {
       RECT r;
       GetWindowRect (wp->w_hwnd, &r);
@@ -1960,7 +1972,7 @@ Window::change_horiz_size (int bottom, int xmin, int xmax)
 
   for (int y = find_horiz_order (-1), order = 0;
        y >= 0; y = find_horiz_order (y), order++)
-    for (wp = app.active_frame.windows; wp; wp = wp->w_next)
+    for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
       {
         if (wp->w_rect.top == y)
           wp->w_order.top = order;
@@ -2003,7 +2015,7 @@ Window::change_vert_size (int right, int ymin, int ymax)
 
   for (int x = find_vert_order (-1), order = 0;
        x >= 0; x = find_vert_order (x), order++)
-    for (wp = app.active_frame.windows; wp; wp = wp->w_next)
+    for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
       {
         if (wp->w_rect.left == x)
           wp->w_order.left = order;
@@ -2051,12 +2063,13 @@ Window::enlarge_window (int n, int side)
     return 1;
   if (!side)
     {
-      for (Window *wp1 = app.active_frame.windows; wp1; wp1 = wp1->w_next)
+      Window *wp1, *wp2;
+      for (wp1 = app.active_frame.windows; wp1; wp1 = wp1->w_next)
         if (wp1->w_rect.bottom == w_rect.top
             && wp1->w_rect.left < w_rect.right
             && wp1->w_rect.right > w_rect.left)
           break;
-      for (Window *wp2 = app.active_frame.windows; wp2; wp2 = wp2->w_next)
+      for (wp2 = app.active_frame.windows; wp2; wp2 = wp2->w_next)
         if (wp2->w_rect.top == w_rect.bottom
             && wp2->w_rect.left < w_rect.right
             && wp2->w_rect.right > w_rect.left)
@@ -2070,7 +2083,8 @@ Window::enlarge_window (int n, int side)
     {
       if (enlarge_window_vert (n))
         return 1;
-      for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
+      Window *wp;
+      for (wp = app.active_frame.windows; wp; wp = wp->w_next)
         if (wp->w_rect.right == w_rect.left
             && wp->w_rect.top < w_rect.bottom
             && wp->w_rect.bottom > w_rect.top)
@@ -2378,7 +2392,7 @@ WindowConfiguration::~WindowConfiguration ()
 
   for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
     wp->w_disp_flags &= ~(Window::WDF_WINDOW | Window::WDF_MODELINE);
-  for (wp = app.active_frame.reserved; wp; wp = wp->w_next)
+  for (Window *wp = app.active_frame.reserved; wp; wp = wp->w_next)
     wp->w_disp_flags &= ~(Window::WDF_WINDOW | Window::WDF_MODELINE);
 
   for (int i = 0; i < wc_nwindows; i++)
@@ -2387,7 +2401,7 @@ WindowConfiguration::~WindowConfiguration ()
   Buffer *bp = Buffer::dlist_find ();
 
   Window *reserved = 0, *next;
-  for (wp = app.active_frame.windows; wp; wp = next)
+  for (Window *wp = app.active_frame.windows; wp; wp = next)
     {
       next = wp->w_next;
       if (!(wp->w_disp_flags & Window::WDF_WINDOW))
@@ -2396,7 +2410,7 @@ WindowConfiguration::~WindowConfiguration ()
           reserved = wp;
         }
     }
-  for (wp = app.active_frame.reserved; wp; wp = next)
+  for (Window *wp = app.active_frame.reserved; wp; wp = next)
     {
       next = wp->w_next;
       if (!(wp->w_disp_flags & Window::WDF_WINDOW))
@@ -2408,9 +2422,9 @@ WindowConfiguration::~WindowConfiguration ()
 
   app.active_frame.selected = wc_selected;
   app.active_frame.windows = wc_data[0].wp;
-  for (i = 0; i < wc_nwindows; i++)
+  for (int i = 0; i < wc_nwindows; i++)
     {
-      wp = wc_data[i].wp;
+      Window *wp = wc_data[i].wp;
       wp->w_prev = i ? wc_data[i - 1].wp : 0;
       wp->w_next = i != wc_nwindows - 1 ? wc_data[i + 1].wp : 0;
 
@@ -2448,7 +2462,7 @@ WindowConfiguration::~WindowConfiguration ()
   Window::compute_geometry (wc_size);
 
   app.active_frame.reserved = 0;
-  for (wp = reserved; wp; wp = next)
+  for (Window *wp = reserved; wp; wp = next)
     {
       next = wp->w_next;
       wp->close ();
@@ -2852,10 +2866,10 @@ wc_calc_order (winconf *conf, int nwindows,
 
   int *pixels = (int *)alloca (sizeof *pixels * (norders + 1));
 
-  for (i = 0; i <= norders; i++)
+  for (int i = 0; i <= norders; i++)
     pixels[i] = -1;
 
-  for (i = 0; i < nwindows; i++)
+  for (int i = 0; i < nwindows; i++)
     {
       if (pixels[conf[i].order.*edge1] == -1)
         pixels[conf[i].order.*edge1] = conf[i].rect.*edge1;
@@ -2870,7 +2884,7 @@ wc_calc_order (winconf *conf, int nwindows,
   if (pixels[0] || pixels[norders] > sz)
     FEprogram_error (Einvalid_window_configuration);
 
-  for (i = 1; i <= norders; i++)
+  for (int i = 1; i <= norders; i++)
     if (pixels[i] == -1 || pixels[i] < pixels[i - 1])
       FEprogram_error (Einvalid_window_configuration);
 
@@ -2890,7 +2904,7 @@ wc_check_order (winconf *conf, int nwindows, const SIZE &sz)
       for (int x = conf[i].order.left; x < conf[i].order.right; x++)
         if (f[y * nx + x]++)
           FEprogram_error (Einvalid_window_configuration);
-  for (i = 0; i < n; i++)
+  for (int i = 0; i < n; i++)
     if (!f[i])
       FEprogram_error (Einvalid_window_configuration);
 }
@@ -2930,13 +2944,14 @@ wc_restore (winconf *conf, int nwindows, const SIZE &size,
 
   app.active_frame.deleted = odeleted;
 
-  for (Window *wp = app.active_frame.windows; wp->w_next; wp = wp->w_next)
+  Window *wp;
+  for (wp = app.active_frame.windows; wp->w_next; wp = wp->w_next)
     wp->w_disp_flags &= ~(Window::WDF_WINDOW | Window::WDF_MODELINE);
   Window *const mini_wp = wp;
   for (wp = app.active_frame.reserved; wp; wp = wp->w_next)
     wp->w_disp_flags &= ~(Window::WDF_WINDOW | Window::WDF_MODELINE);
 
-  for (i = 0; i < nwindows; i++)
+  for (int i = 0; i < nwindows; i++)
     conf[i].wp->w_disp_flags |= (Window::WDF_WINDOW
                                  | Window::WDF_MODELINE
                                  | Window::WDF_GOAL_COLUMN);
@@ -2967,7 +2982,7 @@ wc_restore (winconf *conf, int nwindows, const SIZE &size,
   long ymax = -1;
   app.active_frame.selected = cur_wp ? cur_wp : conf[0].wp;
   app.active_frame.windows = conf[0].wp;
-  for (i = 0; i < nwindows; i++)
+  for (int i = 0; i < nwindows; i++)
     {
       wp = conf[i].wp;
       wp->w_prev = i ? conf[i - 1].wp : 0;

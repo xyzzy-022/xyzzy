@@ -21,7 +21,8 @@ Fmake_syntax_table ()
   p->comment_column = -1;
   xsyntax_table (x) = p;
 
-  for (int i = 0; i <= ' '; i++)
+  int i;
+  for (i = 0; i <= ' '; i++)
     xchar_syntax (p, i) = SCjunk;
   xchar_syntax (p, ' ') = SCwhite;
   xchar_syntax (p, '\t') = SCwhite;

@@ -139,7 +139,8 @@ Buffer::point_linenum (point_t goal) const
 {
   long linenum = 1;
   point_t point = 0;
-  for (const Chunk *cp = b_chunkb; point + cp->c_used < goal; cp = cp->c_next)
+  const Chunk *cp;
+  for (cp = b_chunkb; point + cp->c_used < goal; cp = cp->c_next)
     {
       if (cp->c_nlines == -1)
         ((Chunk *)cp)->c_nlines = cp->count_lines ();
@@ -1333,7 +1334,8 @@ Buffer::update_fold_chunk (point_t goal, update_fold_info &info) const
 {
   info.linenum = 1;
   info.point = 0;
-  for (Chunk *cp = b_chunkb; info.point + cp->c_used < goal; cp = cp->c_next)
+  Chunk *cp;
+  for (cp = b_chunkb; info.point + cp->c_used < goal; cp = cp->c_next)
     {
       parse_fold_chunk (cp);
       info.linenum += cp->c_nbreaks;
@@ -1442,7 +1444,8 @@ Buffer::folded_linenum_point (Point &pbuf, long goal)
             }
           else
             {
-              for (int o = cp->c_first_eol;; o++)
+              int o;
+              for (o = cp->c_first_eol;; o++)
                 if (cp->break_p (o) && ++linenum == goal)
                   break;
               pbuf.p_offset = o + 1;
@@ -1515,7 +1518,8 @@ Buffer::folded_go_bol_1 (Point &point) const
     {
       assert (cp->c_first_eol >= 0);
       assert (cp->break_p (cp->c_first_eol));
-      for (int o = point.p_offset - 1; !cp->break_p (o); o--)
+      int o;
+      for (o = point.p_offset - 1; !cp->break_p (o); o--)
         ;
       point.p_chunk = cp;
       point.p_offset = o + 1;
@@ -1581,7 +1585,8 @@ Buffer::folded_go_eol (Point &point) const
     {
       assert (cp->c_last_eol >= 0);
       assert (cp->break_p (cp->c_last_eol));
-      for (int o = point.p_offset; !cp->break_p (o); o++)
+      int o;
+      for (o = point.p_offset; !cp->break_p (o); o++)
         ;
       point.p_chunk = cp;
       point.p_offset = o;

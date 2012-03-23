@@ -73,7 +73,7 @@ Fsi_make_structure_definition (lisp name, lisp type, lisp include,
   xstrdef_read_only_p (def) = 0;
   xstrdef_important_p (def) = important && important != Qnil;
 
-  sl = slots;
+  lisp sl = slots;
   for (int i = 0; i < nslots; i++, sl = xcdr (sl))
     {
       lisp s = xcar (sl);

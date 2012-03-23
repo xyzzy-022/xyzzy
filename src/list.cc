@@ -4,7 +4,8 @@
 int
 xlist_length (lisp list)
 {
-  for (int l = 0; consp (list); l++, list = xcdr (list))
+  int l;
+  for (l = 0; consp (list); l++, list = xcdr (list))
     QUIT;
   return l;
 }

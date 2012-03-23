@@ -59,7 +59,8 @@ Fsi_snarf_documentation (lisp lpath, lisp symlist)
 static lisp
 apropos_doc (const Char *p, int l)
 {
-  for (const Char *p0 = p, *pe = p + l; p < pe && *p != '\n'; p++)
+  const Char *p0, *pe;
+  for (p0 = p, pe = p + l; p < pe && *p != '\n'; p++)
     ;
   return make_string (p0, p - p0);
 }
