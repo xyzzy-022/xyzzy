@@ -1287,7 +1287,7 @@ Buffer::refresh_title_bar () const
   if (stringp (fmt))
     {
       char buf[512 + 10];
-      buffer_info binfo (0, this, 0, 0);
+      buffer_info binfo (0, this, 0, 0, 0);
       *binfo.format (fmt, buf, buf + 512) = 0;
       SetWindowText (app.toplev, buf);
     }

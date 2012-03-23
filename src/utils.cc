@@ -59,8 +59,10 @@ char *
 stpncpy (char *d, const char *s, int n)
 {
   for (; n > 0; n--)
+  {
     if (!(*d++ = *s++))
       return d - 1;
+  }
   *d = 0;
   return d;
 }

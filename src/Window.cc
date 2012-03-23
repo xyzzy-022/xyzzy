@@ -416,10 +416,6 @@ Window::init (int minibufp, int temporary)
   w_inverse_mode_line = 0;
   w_ime_mode_line = 0;
 
-  w_point_pixel = -1;
-  w_last_ml_column = -1;
-  w_last_ml_linenum = -1;
-  w_last_ml_point_width = -1;
 
   w_cursor_line.ypixel = -1;
 

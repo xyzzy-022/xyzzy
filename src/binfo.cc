@@ -179,12 +179,32 @@ buffer_info::host_name (char *b, char *be, int pound) const
 }
 
 char *
+buffer_info::percent (char *b, char *be) const
+{
+  if (b_percentp)
+    *b_percentp = b;
+  else if (b_bufp && b_wp)
+    {
+      char tem[64];
+	  if(b_bufp->b_nchars > 0)
+	      sprintf_s (tem, 64, "%d", (100*b_wp->w_point.p_point) / b_bufp->b_nchars);
+	  else
+		  sprintf_s (tem, 64, "100");
+      b = stpncpy (b, tem, be - b);
+    }
+  return b;
+}
+
+
+char *
 buffer_info::format (lisp fmt, char *b, char *be) const
 {
   if (b_posp)
     *b_posp = 0;
   if (b_ime)
     *b_ime = 0;
+  if (b_percentp)
+	*b_percentp = 0;
 
   const Char *p = xstring_contents (fmt);
   const Char *const pe = p + xstring_length (fmt);
@@ -271,6 +291,10 @@ buffer_info::format (lisp fmt, char *b, char *be) const
             case 'P':
               b = position (b, be);
               break;
+
+			case '/':
+			  b = percent (b, be);
+			  break;
             }
         }
     }
