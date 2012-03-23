@@ -5,6 +5,7 @@ class environ
 {
 public:
   static int save_window_size;
+  static int save_window_snap_size;
   static int save_window_position;
   static int restore_window_size;
   static int restore_window_position;

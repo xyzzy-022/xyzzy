@@ -476,7 +476,7 @@
 
 (add-option-prop-page
  'misc2
- '(dialog 0 0 235 201
+ '(dialog 0 0 235 214
    (:caption "さまざま")
    (:control
     (:button nil "検索での表示" #x50000007 7 7 207 30)
@@ -495,6 +495,7 @@
     (:button rwinsize "起動時にウィンドウサイズを復元(&G)" #x50010003 7 158 118 10)
     (:button swinpos "終了時にウィンドウの位置を保存(&P)" #x50010003 7 171 119 10)
     (:button swinsize "終了時にウィンドウサイズを保存(&Z)" #x50010003 7 184 118 10)
+    (:button ssnapsize "エアロスナップで変更した場合も保存(&X)" #x50010003 14 197 118 10)
     (:button beepnever "いちいち音を鳴らすな(&B)" #x50010003 123 80 87 10)
     (:button errbeep "エラーのとき音を鳴らす(&E)" #x50010003 130 93 93 10)
     (:button warnbeep "警告のとき音を鳴らす(&W)" #x50010003 130 106 89 10)
@@ -517,9 +518,11 @@
 	   (cons 'non (null (or *select-match* *reverse-match*)))
 	   (cons 'swinpos *save-window-position*)
 	   (cons 'swinsize *save-window-size*)
+	   (cons 'ssnapsize *save-window-snap-size*)
 	   (cons 'rwinpos *restore-window-position*)
 	   (cons 'rwinsize *restore-window-size*)))
- '((beepnever :disable (errbeep warnbeep vbell)))
+ '((swinsize :enable (ssnapsize))
+   (beepnever :disable (errbeep warnbeep vbell)))
  #'(lambda (data)
      (cond ((cdr (assoc 'reverse data))
 	    (setq *reverse-match* t)
@@ -545,6 +548,8 @@
      (setq *support-mouse-wheel* (cdr (assoc 'wheel data)))
      (setq *save-window-position* (cdr (assoc 'swinpos data)))
      (setq *save-window-size* (cdr (assoc 'swinsize data)))
+     (when *save-window-size*
+       (setq *save-window-snap-size* (cdr (assoc 'ssnapsize data))))
      (setq *restore-window-position* (cdr (assoc 'rwinpos data)))
      (setq *restore-window-size* (cdr (assoc 'rwinsize data)))
    ))

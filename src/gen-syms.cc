@@ -2609,6 +2609,7 @@ static symbols ed[] =
   DEFVAR2 (*prefix-value*),
   DEFVAR2 (*prefix-args*),
   DEFVAR2 (*save-window-size*),
+  DEFVAR2 (*save-window-snap-size*),
   DEFVAR2 (*save-window-position*),
   DEFVAR2 (*restore-window-size*),
   DEFVAR2 (*restore-window-position*),

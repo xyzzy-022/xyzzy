@@ -310,6 +310,7 @@ struct conf
 static const conf misc[] =
 {
   {cfgSaveWindowSize, REG_DWORD, CONF_INT},
+  {cfgSaveWindowSnapSize, REG_DWORD, CONF_INT},
   {cfgSaveWindowPosition, REG_DWORD, CONF_INT},
   {cfgWindowFlags, REG_DWORD, CONF_HEX},
   {cfgFnkeyLabels, REG_DWORD, CONF_INT},
