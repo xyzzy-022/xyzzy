@@ -2041,6 +2041,7 @@ count-matches
 count-matches-dialog
 count-modified-buffers
 create-buffer-bar
+create-xyzzy-shortcut-dialog
 csharp-mode
 css-mode
 current-directory-datum
