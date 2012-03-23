@@ -16,7 +16,8 @@
 	  execute-subprocess-dialog pipe-command-dialog
 	  launch-application-dialog
 	  print-selected-buffer print-selected-buffer-dialog
-	  control-code-dialog-box select-xyzzy))
+	  control-code-dialog-box select-xyzzy
+	  create-xyzzy-shortcut-dialog))
 
 (defvar *regexp-search* nil)
 (defvar *replace-whole-buffer* nil)
@@ -427,3 +428,42 @@
 	(let ((x (find (cdr (assoc 'list data)) list :test #'equal :key #'cdr)))
 	  (when x
 	    (activate-xyzzy-window (car x))))))))
+
+(defun create-xyzzy-shortcut-dialog ()
+  (interactive)
+  (multiple-value-bind (result data)
+      (dialog-box `(dialog 0 0 200 120
+		    (:caption "ショートカットの作成")
+		    (:font 9 "MS UI Gothic")
+		    (:control
+		     (:button nil "プログラム:" #x50000007 7 7 186 30)
+		     (:button xyzzycli-exe "xyzzycli.exe (&C)" #x50030009 12 20 80 10)
+		     (:button xyzzy-exe "xyzzy.exe (&X)" #x50000009 102 20 80 10)
+		     (:button nil "ショートカットの作成先:" #x50000007 7 46 186 45)
+		     (:button :desktop "デスクトップ (&D)" #x50010003 12 59 90 10)
+		     (:button :send-to "送る (&T)" #x50010003 102 59 90 10)
+		     (:button :programs "プログラムメニュー (&P)" #x50010003 12 72 90 10)
+		     ,@(unless (featurep :windows-7)
+			 `((:button :start-menu "スタートメニュー (&S)" #x50010003 102 72 90 10)))
+		     (:button IDOK "OK" #x50010001 88 100 50 14)
+		     (:button IDCANCEL "キャンセル" #x50010000 144 100 50 14)))
+		  '((xyzzycli-exe . t))
+		  nil)
+    (when result
+      (let ((program (cond ((cdr (assoc 'xyzzycli-exe data))
+			    "xyzzycli.exe")
+			   ((cdr (assoc 'xyzzy-exe data))
+			    "xyzzy.exe")))
+	    dests)
+	(when program
+	  (dolist (k '(:desktop :start-menu :programs :send-to))
+	    (let ((v (cdr (assoc k data))))
+	      (when v
+		(create-shortcut (merge-pathnames program (si:system-root))
+				 (get-special-folder-location k)
+				 :appid (si:*app-user-model-id))
+		(push k dests)
+		)))
+	  (when dests
+	    (message "~Aのショートカットを~{~A~^、~}に作成しました。" program dests))
+	  )))))

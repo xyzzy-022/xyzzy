@@ -200,6 +200,7 @@
 (autoload 'print-selected-buffer "dialogs" t)
 (autoload 'control-code-dialog-box "dialogs" t)
 (autoload 'select-xyzzy "dialogs" t)
+(autoload 'create-xyzzy-shortcut-dialog "dialogs" t)
 
 (export 'grep-dialog)
 (autoload 'grep-dialog "grepd" t)
