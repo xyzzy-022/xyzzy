@@ -781,6 +781,7 @@ Fget_system_directory ()
 }
 
 int environ::save_window_size = 1;
+int environ::save_window_snap_size = 0;
 int environ::save_window_position = 1;
 int environ::restore_window_size;
 int environ::restore_window_position;
@@ -789,6 +790,7 @@ int
 environ::load_geometry (int cmdshow, POINT *point, SIZE *size)
 {
   read_conf (cfgMisc, cfgSaveWindowSize, save_window_size);
+  read_conf (cfgMisc, cfgSaveWindowSnapSize, save_window_snap_size);
   read_conf (cfgMisc, cfgSaveWindowPosition, save_window_position);
   read_conf (cfgMisc, cfgWindowFlags, Window::w_default_flags);
   restore_window_size = save_window_size;
@@ -844,6 +846,7 @@ void
 environ::save_geometry ()
 {
   save_window_size = xsymbol_value (Vsave_window_size) != Qnil;
+  save_window_snap_size = xsymbol_value (Vsave_window_snap_size) != Qnil;
   save_window_position = xsymbol_value (Vsave_window_position) != Qnil;
 
   if (save_window_size || save_window_position)
@@ -852,6 +855,14 @@ environ::save_geometry ()
       w.length = sizeof w;
       if (GetWindowPlacement (app.toplev, &w))
         {
+          RECT r;
+          if (save_window_snap_size && w.showCmd == SW_SHOWNORMAL && GetWindowRect (app.toplev, &r))
+            {
+              w.rcNormalPosition.left = r.left;
+              w.rcNormalPosition.top = r.top;
+              w.rcNormalPosition.right = r.right;
+              w.rcNormalPosition.bottom = r.bottom;
+            }
           char name[256];
           make_geometry_key (name, sizeof name, 0);
           if (!save_window_size || !save_window_position)
@@ -891,6 +902,7 @@ environ::save_geometry ()
     }
 
   write_conf (cfgMisc, cfgSaveWindowSize, save_window_size);
+  write_conf (cfgMisc, cfgSaveWindowSnapSize, save_window_snap_size);
   write_conf (cfgMisc, cfgSaveWindowPosition, save_window_position);
   write_conf (cfgMisc, cfgRestoreWindowSize,
               xsymbol_value (Vrestore_window_size) != Qnil);

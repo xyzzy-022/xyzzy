@@ -58,6 +58,7 @@ DECLARE_CONF (cfgRestoreWindowPosition, "restoreWindowPosition");
 DECLARE_CONF (cfgRestoreWindowSize, "restoreWindowSize");
 DECLARE_CONF (cfgSaveWindowPosition, "saveWindowPosition");
 DECLARE_CONF (cfgSaveWindowSize, "saveWindowSize");
+DECLARE_CONF (cfgSaveWindowSnapSize, "saveWindowSnapSize");
 DECLARE_CONF (cfgScale, "scale");
 DECLARE_CONF (cfgSortLeft, "sortLeft");
 DECLARE_CONF (cfgSortRight, "sortRight");
