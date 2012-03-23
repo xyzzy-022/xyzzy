@@ -603,6 +603,62 @@
   => (1 nil 3 4))
 
 
+(deftest test-defstruct-constructor-with-slots-1 ()
+  "コンストラクタを指定してもスロット定義の初期値が無視されない"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a b)))
+                           '((a 1) (b 2) (c 3) (d 4))))
+    (macrolet ((test (&rest args)
+                 `(let ((o (eval `(,ctor ,,@args))))
+                    (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d)))))
+      (values (test 10 20)
+              (test nil nil)
+              )))
+  => (10 20 3 4)
+  => (nil nil 3 4))
+
+(deftest test-defstruct-constructor-with-slots-2 ()
+  "コンストラクタを指定してもスロット定義の初期値が無視されない"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (a b &optional (c 30))))
+                           '((a 1) (b 2) (c 3) (d 4))))
+    (macrolet ((test (&rest args)
+                 `(let ((o (eval `(,ctor ,,@args))))
+                    (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d)))))
+      (values (test 10 20)
+              (test 10 20 300)
+              (test nil nil nil)
+              )))
+  => (10 20 30 4)
+  => (10 20 300 4)
+  => (nil nil nil 4))
+
+(deftest test-defstruct-constructor-with-slots-3 ()
+  "コンストラクタを指定してもスロット定義の初期値が無視されない"
+  (let* ((struct-name (gensym "struct-"))
+         (ctor (intern (format nil "make-~A" struct-name))))
+    (eval
+     (si::defstruct-helper `(,struct-name
+                             (:constructor ,ctor (&optional (c 30))))
+                           '(a b c (d 40))))
+    (macrolet ((test (&rest args)
+                 `(let ((o (eval `(,ctor ,,@args))))
+                    (mapcar #'(lambda (slot) (si:*slot-value o slot)) '(:a :b :c :d)))))
+      (values (test)
+              (test 300)
+              (test nil)
+              )))
+  => (nil nil 30 40)
+  => (nil nil 300 40)
+  => (nil nil nil 40))
+
+
 (defmacro with-lispmode-bed (&body body)
   `(with-temp-buffer
      (lisp-mode)
