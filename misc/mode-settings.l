@@ -2,8 +2,9 @@
 (defvar *xyzzy-lisp-path-regex* "xyzzy[^/]*/lisp")
 
 (defun set-xyzzy-src-indent ()
-  (when (string-matchp *xyzzy-src-path-regex*
-                       (get-buffer-file-name))
+  (when (and (get-buffer-file-name)
+             (string-matchp *xyzzy-src-path-regex*
+                            (get-buffer-file-name)))
     (c++-set-gnu-style-indent)))
 (add-hook '*c++-mode-hook* 'set-xyzzy-src-indent t)
 
@@ -25,8 +26,9 @@
   (setq c++-comment-indent 2))
 
 (defun set-xyzzy-lisp-indent ()
-  (when (string-matchp *xyzzy-lisp-path-regex*
-                       (get-buffer-file-name))
+  (when (and (get-buffer-file-name)
+             (string-matchp *xyzzy-lisp-path-regex*
+                            (get-buffer-file-name)))
     (set-tab-columns 8 (selected-buffer))
     (setq indent-tabs-mode t)))
 (add-hook '*lisp-mode-hook* 'set-xyzzy-lisp-indent t)
