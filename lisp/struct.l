@@ -330,9 +330,12 @@
 			  ,@(let ((inits '()))
 			      (dolist (desc slots inits)
 				(let ((v (member (car desc) init-vars :test #'string=)))
-				  (when v
-				    (push `(*set-slot-value ,object ,(car desc) ,(car v))
-					  inits)))))
+				  (cond (v
+					 (push `(*set-slot-value ,object ,(car desc) ,(car v))
+					       inits))
+					((not (eq (cadr desc) *option-not-specified*))
+					 (push `(*set-slot-value ,object ,(car desc) ,(cadr desc))
+					       inits))))))
 			  ,object))
 		     forms)))))
     forms))
