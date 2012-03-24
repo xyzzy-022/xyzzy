@@ -1823,8 +1823,8 @@ write_stream (lisp stream, const Char *b, size_t size)
         case st_file_output:
         case st_file_io:
           {
-            for (const Char *be = b + size; b < be; b++)
-              putc_file_stream (stream, *b);
+            for (size_t i = 0; i < size; i++)
+              putc_file_stream (stream, b[i]);
             xstream_column (stream) = update_column (xstream_column (stream), b, size);
             return;
           }
@@ -1885,8 +1885,8 @@ write_stream (lisp stream, const Char *b, size_t size)
         case st_socket:
           try
             {
-              for (const Char *be = b + size; b < be; b++)
-                putc_sock_stream (stream, *b);
+              for (size_t i = 0; i < size; i++)
+                putc_sock_stream (stream, b[i]);
               xstream_column (stream) = update_column (xstream_column (stream), b, size);
             }
           catch (sock_error &e)
