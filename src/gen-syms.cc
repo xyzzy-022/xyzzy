@@ -1457,6 +1457,7 @@ static symbols unint[] =
   MAKE_SYMBOL2 (os-build-number),
   MAKE_SYMBOL2 (os-platform),
   MAKE_SYMBOL2 (os-csd-version),
+  MAKE_SYMBOL2 (process-id),
 
   MAKE_SYMBOL2 (next-prefix-value),
   MAKE_SYMBOL2 (next-prefix-args),
@@ -1633,6 +1634,7 @@ static symbols ed[] =
   DEFUN3 (os-build-number, 0, 0, 0),
   DEFUN3 (os-platform, 0, 0, 0),
   DEFUN3 (os-csd-version, 0, 0, 0),
+  DEFUN3 (get-process-id, 0, 0, 0),
   DEFUN3 (get-windows-directory, 0, 0, 0),
   DEFUN3 (get-system-directory, 0, 0, 0),
   MAKE_SYMBOL2 (win32s),
