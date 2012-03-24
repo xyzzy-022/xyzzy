@@ -34,6 +34,7 @@ public:
   char *ime_mode (char *, char *) const;
   char *position (char *, char *) const;
   char *host_name (char *, char *, int) const;
+  char *process_id (char *, char *) const;
   char *percent(char *, char *) const;
 };
 
