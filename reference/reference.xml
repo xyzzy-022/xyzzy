@@ -26203,6 +26203,54 @@ uuencodeします。
 </chapter>
 
 <chapter>
+<title>si:uuid-create</title>
+<type>Function</type>
+<arguments>uuid-create &amp;key :sequential</arguments>
+<package>system</package>
+<description>
+UUIDを生成し文字列とリストの多値で返します。
+
+  :sequential : non-nilを指定すると連番のUUIDを生成します。
+
+リストは以下の形式になっています。
+
+  (time-low
+   time-mid
+   time-high-and-version
+   clock-seq-and-reserved
+   clock-seq-low
+   (node-octet0
+    node-octet1
+    ...
+    node-octet5))
+
+使用例：
+
+  (si:uuid-create)
+  =&gt; "0035e2b2-9839-48c6-a914-9c2928d0cd53"
+  =&gt; (3531442 38969 18630 169 20 (156 41 40 208 205 83))
+
+  (apply 'format nil "~8,'0X-~4,'0X-~4,'0X-~2,'0X~2,'0X-~{~2,'0X~}"
+         '(3531442 38969 18630 169 20 (156 41 40 208 205 83)))
+  =&gt; "0035e2b2-9839-48c6-a914-9c2928d0cd53"
+
+  (si:uuid-create :sequential t)
+  =&gt; "e05fe0ee-7561-11e1-ba61-000c29aae86e"
+  =&gt; (3764379886 30049 4577 186 97 (0 12 41 170 232 110))
+
+  (si:uuid-create :sequential t)
+  =&gt; "e05fe0ef-7561-11e1-ba61-000c29aae86e"
+  =&gt; (3764379887 30049 4577 186 97 (0 12 41 170 232 110))
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<seealso></seealso>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>signal-process</title>
 <type>Function</type>
 <arguments>signal-process PROCESS</arguments>
