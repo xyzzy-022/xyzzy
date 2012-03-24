@@ -161,3 +161,79 @@ of SHA-384 and SHA-512)."
     (si:*set-package-documentation pkg "test package")
     (si:*package-documentation pkg))
   => "test package")
+
+(deftest uuid-create-1 ()
+  "戻り値の 1 つ目が文字列で 2 つ目がリストか"
+  (multiple-value-bind (uuidstr uuidlst)
+      (si:uuid-create)
+    (values (typep uuidstr 'string)
+            (typep uuidlst 'list)))
+  => t
+  => t)
+
+(deftest uuid-create-1-seq ()
+  "戻り値の 1 つ目が文字列で 2 つ目がリストか (:sequential)"
+  (multiple-value-bind (uuidstr uuidlst)
+      (si:uuid-create :sequential t)
+    (values (typep uuidstr 'string)
+            (typep uuidlst 'list)))
+  => t
+  => t)
+
+(deftest uuid-create-2 ()
+  "UUID文字列はRFC4122に従いすべて小文字か"
+  (every #'(lambda (c)
+             (or (digit-char-p c)
+                 (lower-case-p c)
+                 (char= c #\-)))
+         (si:uuid-create))
+  => t)
+
+(deftest uuid-create-2-seq ()
+  "UUID文字列はRFC4122に従いすべて小文字か (:sequential)"
+  (every #'(lambda (c)
+             (or (digit-char-p c)
+                 (lower-case-p c)
+                 (char= c #\-)))
+         (si:uuid-create :sequential t))
+  => t)
+
+(deftest uuid-create-3 ()
+  "文字列とリストの値は同じUUIDであるか"
+  (multiple-value-bind (uuidstr uuidlst)
+      (si:uuid-create)
+    (string= uuidstr
+             (apply 'format nil "~8,'0X-~4,'0X-~4,'0X-~2,'0X~2,'0X-~{~2,'0X~}"
+                    uuidlst)))
+  => t)
+
+(deftest uuid-create-3-seq ()
+  "文字列とリストの値は同じUUIDであるか (:sequential)"
+  (multiple-value-bind (uuidstr uuidlst)
+      (si:uuid-create :sequential t)
+    (string= uuidstr
+             (apply 'format nil "~8,'0X-~4,'0X-~4,'0X-~2,'0X~2,'0X-~{~2,'0X~}"
+                    uuidlst)))
+  => t)
+
+(deftest uuid-create-4 ()
+  ":sequential を指定しない場合、前回のUUIDからの差分は1より大きいか"
+  (let ((uuid1 (cadr (multiple-value-list (si:uuid-create))))
+        (uuid2 (cadr (multiple-value-list (si:uuid-create)))))
+    (flet ((test (a b)
+             (<= (abs (- a b)) 1)))
+      (values (every #'test (butlast uuid1) (butlast uuid2))
+              (every #'test (car (last uuid1)) (car (last uuid2))))))
+  => nil
+  => nil)
+
+(deftest uuid-create-4-seq ()
+  ":sequential を指定した場合、前回のUUIDからの差分は1か"
+  (let ((uuid1 (cadr (multiple-value-list (si:uuid-create :sequential t))))
+        (uuid2 (cadr (multiple-value-list (si:uuid-create :sequential t)))))
+    (flet ((test (a b)
+             (<= (abs (- a b)) 1)))
+      (values (every #'test (butlast uuid1) (butlast uuid2))
+              (every #'test (car (last uuid1)) (car (last uuid2))))))
+  => t
+  => t)

@@ -289,6 +289,12 @@ w2s_chunk (char *b, char *be, const Char *s, size_t size)
 }
 
 lisp
+make_string (const u_char *string)
+{
+  return make_string ((const char *)string);
+}
+
+lisp
 make_string (const char *string)
 {
   lisp p = make_simple_string ();

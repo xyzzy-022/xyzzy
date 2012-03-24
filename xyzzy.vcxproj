@@ -75,7 +75,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)gen\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;rpcrt4.lib;wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)src\zlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -114,7 +114,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)gen\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;rpcrt4.lib;wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)src\zlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -227,6 +227,7 @@
     <ClCompile Include="src\symbol.cc" />
     <ClCompile Include="src\syntax.cc" />
     <ClCompile Include="src\sysdep.cc" />
+    <ClCompile Include="src\system.cc" />
     <ClCompile Include="src\thread.cc" />
     <ClCompile Include="src\toplev.cc" />
     <ClCompile Include="src\ucs2.cc" />
@@ -415,6 +416,7 @@
     <ClInclude Include="src\syntax.h" />
     <ClInclude Include="src\syntaxinfo.h" />
     <ClInclude Include="src\sysdep.h" />
+    <ClInclude Include="src\system.h" />
     <ClInclude Include="src\thread.h" />
     <ClInclude Include="src\timer.h" />
     <ClInclude Include="src\trace.h" />

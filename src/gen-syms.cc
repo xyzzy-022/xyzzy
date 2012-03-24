@@ -1012,6 +1012,9 @@ static symbols sys[] =
   SI_DEFUN2X ("#|-reader", number_bar_reader, 3, 0, 0),
   SI_DEFVAR2 (*character-name-hash-table*),
 
+  /* system.cc */
+  SI_DEFUN3 (uuid-create, 0, 0, FFneed_rest),
+
   /* Window.cc */
   SI_DEFUN3 (*instance-number, 0, 0, 0),
 
@@ -1406,6 +1409,7 @@ static symbols kwd[] =
   DEFKWD2 (osfjvc),
   DEFKWD2 (vender),
   DEFKWD2 (invalidate),
+  DEFKWD2 (sequential),
 };
 
 static symbols unint[] =
