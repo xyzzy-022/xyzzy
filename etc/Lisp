@@ -564,6 +564,7 @@ get-macro-character
 get-menu
 get-menu-position
 get-next-buffer
+get-process-id
 get-properties
 get-selection-type
 get-short-path-name

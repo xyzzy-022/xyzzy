@@ -656,6 +656,12 @@ Fos_csd_version ()
   return xsymbol_value (Vos_csd_version);
 }
 
+lisp
+Fget_process_id ()
+{
+  return xsymbol_value (Vprocess_id);
+}
+
 void
 init_environ ()
 {
@@ -682,6 +688,7 @@ init_environ ()
   xsymbol_value (Vos_minor_version) = make_fixnum (sysdep.os_ver.dwMinorVersion);
   xsymbol_value (Vos_build_number) = make_fixnum (sysdep.os_ver.dwBuildNumber);
   xsymbol_value (Vos_csd_version) = make_string (sysdep.os_ver.szCSDVersion);
+  xsymbol_value (Vprocess_id) = make_fixnum (sysdep.process_id);
 
   switch (sysdep.wintype)
     {

@@ -25,6 +25,8 @@ Sysdep::Sysdep ()
   if (!GetComputerName (host_name, &len))
     *host_name = 0;
 
+  process_id = GetCurrentProcessId ();
+
   hbr_white = GetStockObject (WHITE_BRUSH);
   hbr_black = GetStockObject (BLACK_BRUSH);
   hpen_white = GetStockObject (WHITE_PEN);

@@ -179,6 +179,14 @@ buffer_info::host_name (char *b, char *be, int pound) const
 }
 
 char *
+buffer_info::process_id (char *b, char *be) const
+{
+  char tem[64];
+  sprintf_s (tem, sizeof tem, "%d", sysdep.process_id);
+  return stpncpy (b, tem, be - b);
+}
+
+char *
 buffer_info::percent (char *b, char *be) const
 {
   if (b_percentp)
@@ -295,6 +303,10 @@ buffer_info::format (lisp fmt, char *b, char *be) const
 			case '/':
 			  b = percent (b, be);
 			  break;
+
+            case '$':
+              b = process_id (b, be);
+              break;
             }
         }
     }

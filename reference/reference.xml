@@ -13889,6 +13889,21 @@ get-buffer-createを用いて実装されています。
 </chapter>
 
 <chapter>
+<title>get-process-id</title>
+<type>Function</type>
+<arguments>get-process-id</arguments>
+<package>editor</package>
+<description>
+xyzzyのプロセスIDを返します。
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>get-selection-type</title>
 <type>Function</type>
 <arguments>get-selection-type</arguments>
@@ -18300,6 +18315,7 @@ NUMBER がゼロより小さければ t 、そうでなければ nil を返し�
         不完全バッファ: #
   %p    プログラム名
   %v    バージョン
+  %$    プロセスID
   %h    ホスト名
   %#h   @ホスト名
   %b    バッファ名
@@ -18319,7 +18335,7 @@ NUMBER がゼロより小さければ t 、そうでなければ nil を返し�
   タイトルバーのフォーマットとほぼ同様ですが、
   %i, %P, %/ はモードラインのフォーマットでしか設定できません。
 
-  %/ は xyzzy 0.2.2.236 から利用可能です。
+  %/, %$ は xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>update-mode-line</seealso>
 <seealso>title-bar-format</seealso>
@@ -28937,6 +28953,7 @@ catchで指定されたラベルまで、非局所脱出します。
         不完全バッファ: # 
   %p    プログラム名 
   %v    バージョン 
+  %$    プロセスID
   %h    ホスト名 
   %#h   @ホスト名 
   %b    バッファ名 
@@ -28952,6 +28969,9 @@ catchで指定されたラベルまで、非局所脱出します。
 備考：
   モードラインのフォーマットとほぼ同様ですが、
   %i, %P, %/ はタイトルバーでは設定できません。
+
+備考：
+  %$ は xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>mode-line-format</seealso>
 <link></link>
