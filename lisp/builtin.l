@@ -1274,6 +1274,7 @@
 (si::defun-builtin ole-enumerator-next (oleobj))
 (si::defun-builtin ole-enumerator-reset (oleobj))
 (si::defun-builtin ole-enumerator-skip (oleobj &optional count))
+(si::defun-builtin create-uuid (&key :sequential))
 
 (gc)
 

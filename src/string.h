@@ -110,6 +110,7 @@ int i2wl (const Char *, int);
 lisp coerce_to_string (lisp, int);
 
 lisp make_string (const char *);
+lisp make_string (const u_char *);
 lisp make_string (const char *, size_t);
 lisp make_string_simple (const char *, size_t);
 lisp make_string (const Char *, size_t);
