@@ -237,3 +237,25 @@ of SHA-384 and SHA-512)."
               (every #'test (car (last uuid1)) (car (last uuid2))))))
   => t
   => t)
+
+(deftest fix-file-stream-column-2 ()
+  "ファイルの si:*stream-column が正しい値を返すか"
+  (with-temp-files (out)
+    (with-open-file (s out :direction :output)
+      (values (si:*stream-column s)
+              (progn (format s "aa") (si:*stream-column s))
+              (progn (format s "b") (si:*stream-column s)))))
+  => 0
+  => 2
+  => 3)
+
+(deftest fix-file-stream-column-2 ()
+  "ファイルの si:*stream-column が正しい値を返すか"
+  (with-temp-files (out)
+    (with-open-file (s out :direction :output)
+      (values (si:*stream-column s)
+              (progn (format s "aa\n") (si:*stream-column s))
+              (progn (format s "b") (si:*stream-column s)))))
+  => 0
+  => 0
+  => 1)
