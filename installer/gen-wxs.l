@@ -44,26 +44,23 @@
 
 (defparameter *xyzzy-source-root* (si:system-root))
 (defparameter *xyzzy-wxs-path* (merge-pathnames "installer/xyzzy.gen.wxs" *xyzzy-source-root*))
-(defparameter *xyzzy-wxl-path* (merge-pathnames "installer/xyzzy.wxs.l" *xyzzy-source-root*))
 (defparameter *xyzzy-components* '("etc" "lisp" "html" "reference"))
 (defparameter *ignored-files* (list (si:dump-image-path)
                                     (merge-pathnames "DOC" *etc-path*)))
 (defparameter *components* nil)
+(defparameter *id->guid-alist-path* (merge-pathnames "installer/id-guid-alist.l" *xyzzy-source-root*))
 (defparameter *id->guid-alist* nil)
 
 
 (defun update-xyzzy-wxs ()
   (interactive)
   (with-output-to-temp-buffer ("wxsgen")
-    (when (file-exist-p *xyzzy-wxl-path*)
-      (format t "Reading ~A..." *xyzzy-wxl-path*)
-      (refresh-screen)
-      (update-guid-mapping (read-xyzzy-wxs *xyzzy-wxl-path*))
-      (format t "done~%"))
+    (when (file-exist-p *id->guid-alist-path*)
+      (read-id->guid-alist))
     (format t "Generating ~A..." *xyzzy-wxs-path*)
     (refresh-screen)
     (let ((wxs (make-wxs-sexp)))
-      (write-sexp *xyzzy-wxl-path* wxs)
+      (write-id->guid-alist)
       (write-xml *xyzzy-wxs-path* wxs))
     (format t "done~%")
     ))
@@ -108,20 +105,6 @@
      (:Icon (:Id "xyzzycli.ico" :SourceFile "src/res/xyzzy3.ico"))
      (:UIRef (:Id "WixUI_InstallDir")))))
 
-(defun write-sexp (pathname sexp)
-  (with-open-file (stream pathname :direction :output :if-exists :supersede)
-    (print-sexp sexp stream)))
-
-(defun print-sexp (sexp &optional (stream *standard-output*))
-  (walk-sexp sexp
-             #'(lambda (tag attributes children indent)
-                 (fresh-line stream)
-                 (format stream "~VT(~S~@[ ~S~]~@[)~]"
-                         indent tag attributes (not children)))
-             #'(lambda (tag attributes children indent)
-                 (when children
-                   (format stream ")")))))
-
 (defun write-xml (pathname sexp)
   (with-open-file (stream pathname :direction :output :if-exists :supersede)
     (format stream "<?xml version='1.0' encoding='utf-8'?>~%")
@@ -149,9 +132,16 @@
     (when (and children onend)
       (funcall onend tag attributes children indent))))
 
-(defun read-xyzzy-wxs (path)
+(defun read-id->guid-alist (&optional (path *id->guid-alist-path*))
   (with-open-file (stream path)
-    (read stream)))
+    (setf *id->guid-alist* (read stream))))
+
+(defun write-id->guid-alist (&optional (path *id->guid-alist-path*))
+  (with-open-file (stream path :direction :output)
+    (format stream "(~%")
+    (dolist (pair *id->guid-alist*)
+      (format stream " ~S~%" pair))
+    (format stream ")~%")))
 
 (defun update-guid-mapping (sexp)
   (walk-sexp sexp
@@ -206,7 +196,7 @@
               :KeyPath "yes")))))
 
 (defun collect-components (root)
-  (list (collect-1-component root)))
+  (list (collect-1-component (remove-trail-slash root))))
 
 (defun collect-1-component (root)
   (let ((id (component-id root)))

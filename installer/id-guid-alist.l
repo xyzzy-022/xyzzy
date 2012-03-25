@@ -1,0 +1,11 @@
+(
+ ("Component_shortcut" . "bd229846-8428-4527-8c93-f7b69ace46d8")
+ ("Component_reference" . "218d440e-a997-42c3-9e6b-1e83c23f734a")
+ ("Component_html" . "62b68d6c-3649-4aef-8fd4-769203a44d6e")
+ ("Component_lisp_wip" . "79c5f1c2-0e43-4f3a-a4a4-ccd57310ce96")
+ ("Component_lisp" . "a12f9203-2ea7-4056-9b3d-5641ab03cbc7")
+ ("Component_etc" . "12e55188-974c-44cb-9b89-20469e123fab")
+ ("Component_xyzzyenv.exe" . "ba5c1dda-4bdc-44f7-b4ec-a8cd7c1426c8")
+ ("Component_xyzzycli.exe" . "196ca7bb-bdd1-4c2c-8e08-ebd6c86c3036")
+ ("Component_xyzzy.exe" . "0889af8e-6ef0-4a65-90da-8ab84d18ceaf")
+)
