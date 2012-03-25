@@ -44,7 +44,7 @@
 	  (cond ((setq opt (parse-command-line arg "-l" "-load" 'file))
 		 (load opt))
 		((setq opt (parse-command-line arg "-f" "-funcall" 'function))
-		 (funcall (intern opt)))
+		 (funcall (read-from-string opt)))
 		((setq opt (parse-command-line arg "-e" "-eval" 'string))
 		 (eval (read-from-string opt)))
 		((setq opt (parse-command-line arg "-g" "-go" 'number))
