@@ -38,6 +38,9 @@ xyzzy.BUG
 usr/
 site-lisp/
 
+# Release files
+_dist/
+
 ## Ignore Makefile temporary files, build results.
 char-width.h
 fns-decl.h
