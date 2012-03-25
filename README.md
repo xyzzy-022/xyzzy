@@ -51,11 +51,12 @@ xyzzy 0.2.2 系列は以下の観点を重視したバージョンです。
 
 ## 開発
 
-xyzzy はすでにアカウントが取られていたので xyzzy-022 という GitHub Organization で行います。
+https://github.com/xyzzy はすでにアカウントが取られていたので https://github.com/xyzzy-022
+という GitHub Organization で行います。
 
-開発したい人は Organization に追加するので、とりあえず Pull Request を送るところから。
+開発したい人は Organization に追加するので、とりあえず Pull Request を送ってください。
 
-  * ブランチモデルは [A successful Git branching model](http://keijinsonyaban.blogspot.com/2010/10/successful-git-branching-model.html) に従います
+  * ブランチモデルは [A successful Git branching model] に従います
     * topic ブランチ、develop ブランチ、release ブランチ、master ブランチ
     * topic ブランチで開発して develop ブランチの `merge --no-ff`
     * Fast Forward な merge だと問題があった時に revert するのが面倒なので、かならず `--no-ff` でマージコミットを生成する
@@ -81,6 +82,8 @@ xyzzy はすでにアカウントが取られていたので xyzzy-022 という GitHub Organization 
     [gui]
             encoding = utf-8
     ```
+
+  [A successful Git branching model]: http://keijinsonyaban.blogspot.com/2010/10/successful-git-branching-model.html
 
 ----
 
@@ -119,12 +122,12 @@ xyzzy はすでにアカウントが取られていたので xyzzy-022 という GitHub Organization 
 ### 手順
 
  1. build.bat
-    * デバッグ版は build.bat Debug)
+    * デバッグ版は build.bat Debug
  2. bytecompile.bat
  3. ぽけーと待つ
     * 82 個ほど警告が出ますがそのうち全部消します
  4. できあがり
-
+ 5. run-all-tests.bat でユニットテストを実行
 
 ----
 
