@@ -3,7 +3,9 @@
 
 # define PROGRAM_NAME "xyzzy"
 # define PROGRAM_APP_USER_MODEL_ID PROGRAM_NAME
-# define PROGRAM_COPYRIGHT "Copyright (C) 1996-2005 T.Kamei"
+// ファイルバージョンには複数書けない
+// # define PROGRAM_COPYRIGHT "Copyright (C) 1996-2005 T.Kamei"
+# define PROGRAM_COPYRIGHT "Copyright (C) 2012 xyzzy Project"
 
 # define PROGRAM_MAJOR_VERSION 0
 # define PROGRAM_MINOR_VERSION 2
