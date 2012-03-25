@@ -14,7 +14,7 @@
     (interactive)
     (unless dialog-template
       (setq dialog-template
-	    `(dialog 0 0 211 139
+	    `(dialog 0 0 211 148
 		     (:caption "‚É‚Â‚¢‚Ä")
 		     (:font 9 "MS UI Gothic")
 		     (:control
@@ -23,13 +23,15 @@
 		      (:link xyzzy ,(concat "\001xyzzy\002 version "
 					    (software-version-display-string))
 		       #x50020000 34 7 123 8)
-		      (:link mail "Copyright (C) 1996-2005 \001Tetsuya Kamei\002"
+		      (:static nil "Copyright (C) 1996-2005 Tetsuya Kamei"
 		       #x50020000 34 19 132 8)
+		      (:link org "Copyright (C) 2012 \001xyzzy Project\002"
+		       #x50020000 34 28 132 8)
 		      (:static nil "Icon designed by Yoshinori Watanabe."
-		       #x50020000 34 32 126 8)
-		      (:static nil "RSA Data Security, Inc." #x50020000 34 44 83 8)
-		      (:static nil "MD5 Message-Digest Algorithm." #x50020000 34 53 111 8)
-		      (:listbox list nil #x50a10111 33 64 138 68)))))
+		       #x50020000 34 41 126 8)
+		      (:static nil "RSA Data Security, Inc." #x50020000 34 53 83 8)
+		      (:static nil "MD5 Message-Digest Algorithm." #x50020000 34 62 111 8)
+		      (:listbox list nil #x50a10111 33 73 138 68)))))
     (dialog-box dialog-template
 		(list (cons 'list
 			    (long-operation
@@ -39,7 +41,7 @@
 						 (list (list (get x 'archiver-dll-file-name)
 							     version)))))
 				      *archiver-dll-list*))))
-		'((xyzzy :url "http://www.jsdlab.co.jp/~kamei/")
-		  (mail :url "mailto:kamei@jsdlab.co.jp")
+		'((xyzzy :url "http://xyzzy-022.github.com")
+		  (org :url "https://github.com/xyzzy-022")
 		  (list :column (28 10))))
     t))
