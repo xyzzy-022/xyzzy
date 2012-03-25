@@ -1,0 +1,35 @@
+<Project DefaultTargets="BuildInstaller" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.0</ProductVersion>
+    <ProjectGuid>{c523055d-a9d0-4318-ae85-ec934d33204b}</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>xyzzy</OutputName>
+    <OutputType>Package</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <DefineSolutionProperties>false</DefineSolutionProperties>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\installer</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(Configuration)\installer</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUiExtension">
+      <HintPath>$(WixExtDir)\WixUiExtension.dll</HintPath>
+    </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="installer\xyzzy.gen.wxs" />
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <Target Name="GenerateWxs" Inputs="installer/gen-wxs.l" Outputs="installer/xyzzy.gen.wxs">
+    <Exec Command="xyzzy.exe -l installer/gen-wxs.l -f wxsgen:update-xyzzy-wxs -f kill-xyzzy" />
+  </Target>
+  <Target Name="BuildInstaller" DependsOnTargets="GenerateWxs;Build" />
+</Project>
