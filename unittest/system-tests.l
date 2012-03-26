@@ -259,3 +259,8 @@ of SHA-384 and SHA-512)."
   => 0
   => 0
   => 1)
+
+(deftest getpid ()
+  "ƒvƒƒZƒXID‚ªŽæ“¾‚Å‚«‚é‚±‚Æ"
+  (integerp (si:getpid))
+  => t)

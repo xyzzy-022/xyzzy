@@ -656,12 +656,6 @@ Fos_csd_version ()
   return xsymbol_value (Vos_csd_version);
 }
 
-lisp
-Fget_process_id ()
-{
-  return xsymbol_value (Vprocess_id);
-}
-
 void
 init_environ ()
 {
@@ -954,6 +948,12 @@ Fsi_putenv (lisp var, lisp val)
 
   int r = _putenv (b);
   return (r < 0 || !val) ? Qnil : val;
+}
+
+lisp
+Fsi_getpid ()
+{
+  return xsymbol_value (Vprocess_id);
 }
 
 lisp

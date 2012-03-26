@@ -13889,21 +13889,6 @@ get-buffer-createを用いて実装されています。
 </chapter>
 
 <chapter>
-<title>get-process-id</title>
-<type>Function</type>
-<arguments>get-process-id</arguments>
-<package>editor</package>
-<description>
-xyzzyのプロセスIDを返します。
-
-補足：
-  xyzzy 0.2.2.236 から利用可能です。
-</description>
-<section>システム</section>
-<file>builtin.l</file>
-</chapter>
-
-<chapter>
 <title>get-selection-type</title>
 <type>Function</type>
 <arguments>get-selection-type</arguments>
@@ -25738,6 +25723,21 @@ VALUE を省略した場合や nil を指定した場合は環境変数を削除
   xyzzy 0.2.2.236 から利用可能です。
 </description>
 <seealso>si:getenv</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:getpid</title>
+<type>Function</type>
+<arguments>getpid</arguments>
+<package>system</package>
+<description>
+xyzzyのプロセスIDを返します。
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
 <section>システム</section>
 <file>builtin.l</file>
 </chapter>
