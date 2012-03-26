@@ -518,8 +518,8 @@ read_config (config &cf)
                            cf.post_opt, sizeof cf.post_opt, path);
 }
 
-extern "C" void __cdecl
-process_startup ()
+int WINAPI
+WinMain (HINSTANCE hinst, HINSTANCE, LPSTR, int cmdshow)
 {
   config cf;
   read_config (cf);
