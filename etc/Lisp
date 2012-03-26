@@ -2725,6 +2725,7 @@ hjump-columns
 html-current-doctype
 html-find-doctype
 html-help
+html-keyword-file
 html-load-keyword-file
 html-mode
 identity
