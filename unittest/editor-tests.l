@@ -47,8 +47,3 @@
      (member "ed" list :test #'string=)))
   => non-nil
   => non-nil)
-
-(deftest get-process-id ()
-  "ƒvƒƒZƒXID‚ªŽæ“¾‚Å‚«‚é‚±‚Æ"
-  (integerp (get-process-id))
-  => t)

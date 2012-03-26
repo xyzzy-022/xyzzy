@@ -564,7 +564,6 @@ get-macro-character
 get-menu
 get-menu-position
 get-next-buffer
-get-process-id
 get-properties
 get-selection-type
 get-short-path-name
@@ -1239,6 +1238,7 @@ si:canonicalize-type
 si:closure-variable
 si:dump-image-path
 si:getenv
+si:getpid
 si:hmac-md5
 si:hmac-sha-1
 si:hmac-sha-224

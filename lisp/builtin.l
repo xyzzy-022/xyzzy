@@ -531,6 +531,7 @@
 (si::defun-builtin system-root ())
 (si::defun-builtin getenv (variable))
 (si::defun-builtin putenv (variable &optional value))
+(si::defun-builtin getpid ())
 (si::defun-builtin make-chunk (type size &optional source offset))
 (si::defun-builtin make-string-chunk (string))
 (si::defun-builtin chunk-data (chunk))
