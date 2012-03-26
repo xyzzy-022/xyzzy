@@ -76,7 +76,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;rpcrt4.lib;wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)src\zlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)src\zlib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <StackReserveSize>0x2000000</StackReserveSize>
@@ -115,7 +115,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;rpcrt4.lib;wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)src\zlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)src\zlib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
