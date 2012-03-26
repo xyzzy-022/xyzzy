@@ -149,8 +149,8 @@ set_title (char *cmd)
   SetConsoleTitle (title);
 }
 
-extern "C" void
-process_startup ()
+int
+main (void)
 {
   char buf[256];
   char *myname = skip_white (GetCommandLine ());
