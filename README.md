@@ -73,6 +73,19 @@ https://github.com/xyzzy はすでにアカウントが取られていたので https://github.com
   * コミットログの書き方
     * Git 流 (メールみたいなやつ) に従うが日本語で良い
     * エンコーディングは UTF-8 で
+  * コーディングルール
+    * 基本的には元々の亀井さんのコードに合わせます
+      * misc/mode-settings.l を読み込んでおいてください
+    * ただし、以下の点は変えます
+      * ヘッダファイルのプロトタイプ宣言で引数名はちゃんと書く
+      * C++ スタイルのキャストを利用 (static_cast, const_cast, reinterpret_cast, dynamic_cast)
+        * <http://msdn.microsoft.com/ja-jp/library/cc440191(v=vs.71).aspx>
+        * <http://msdn.microsoft.com/ja-jp/library/cc440192(v=vs.71).aspx>
+      * XML ドキュメントを記述
+        * <http://msdn.microsoft.com/ja-jp/library/ms177227.aspx>
+  * push または Pull Request する前に以下を確認
+    * `build.bat` と `build.bat Debug` が警告なしでビルドできること
+    * `run-tests-all.bat` がパスすること
   * .gitconfig に以下を設定しておく
 
     ```ini
@@ -125,7 +138,6 @@ https://github.com/xyzzy はすでにアカウントが取られていたので https://github.com
     * デバッグ版は build.bat Debug
  2. bytecompile.bat
  3. ぽけーと待つ
-    * 82 個ほど警告が出ますがそのうち全部消します
  4. できあがり
  5. run-all-tests.bat でユニットテストを実行
 
