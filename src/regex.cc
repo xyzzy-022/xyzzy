@@ -270,7 +270,8 @@ regexp_compile::dump (const Char *p0, int size)
         case NORMAL_CHARS:
           {
             printf ("normal-chars: ");
-            for (int i = 1; i <= *p; i++)
+            int i;
+            for (i = 1; i <= *p; i++)
               putchar (p[i]);
             p += i;
           }

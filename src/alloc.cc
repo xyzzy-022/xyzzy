@@ -19,7 +19,8 @@ u_int alloc_page::ap_block_size;
 static int
 power_of_2_p (u_int size)
 {
-  for (int n = 0; size; size >>= 1)
+  int n;
+  for (n = 0; size; size >>= 1)
     if (size & 1)
       n++;
   return n == 1;
