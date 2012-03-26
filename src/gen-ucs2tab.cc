@@ -36,9 +36,9 @@ parse_line (char *b, int &mb, ucs2_t &wc, const char *file, int linenum, int und
   else
     invalid (file, linenum);
   if (b1[0] == '0' && b1[1] == 'x')
-    wc = strtol (b1 + 2, 0, 16);
+    wc = static_cast<ucs2_t> (strtol (b1 + 2, 0, 16));
   else if (undef_ok)
-    wc = ucs2_t (-1);
+    wc = static_cast<ucs2_t> (-1);
   else
     invalid (file, linenum);
   return 1;

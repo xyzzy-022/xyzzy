@@ -104,7 +104,7 @@ find_symbol (u_int hash, lisp string, lisp package)
 }
 
 static void
-import (lisp symbol, lisp package)
+import_symbol (lisp symbol, lisp package)
 {
   check_symbol (symbol);
 
@@ -138,7 +138,7 @@ import (lisp symbol, lisp package)
 }
 
 static void
-export (lisp symbol, lisp package)
+export_symbol (lisp symbol, lisp package)
 {
   check_symbol (symbol);
   lisp name = xsymbol_name (symbol);
@@ -159,7 +159,7 @@ export (lisp symbol, lisp package)
     }
 
   if (do_import)
-    import (symbol, package);
+    import_symbol (symbol, package);
 
   lisp vec = xpackage_external (package);
   u_int h = hash % xvector_length (vec);
@@ -537,10 +537,10 @@ Fexport (lisp symbols, lisp package)
 {
   package = coerce_to_package (package);
   if (symbols != Qnil && !consp (symbols))
-    export (symbols, package);
+    export_symbol (symbols, package);
   else
     for (; consp (symbols); symbols = xcdr (symbols))
-      export (xcar (symbols), package);
+      export_symbol (xcar (symbols), package);
   multiple_value::clear ();
   return Qt;
 }
@@ -566,10 +566,10 @@ Fimport (lisp symbols, lisp package)
 {
   package = coerce_to_package (package);
   if (symbols != Qnil && !consp (symbols))
-    import (symbols, package);
+    import_symbol (symbols, package);
   else
     for (; consp (symbols); symbols = xcdr (symbols))
-      import (xcar (symbols), package);
+      import_symbol (xcar (symbols), package);
   multiple_value::clear ();
   return Qt;
 }

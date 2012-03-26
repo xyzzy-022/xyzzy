@@ -137,7 +137,7 @@ Fmake_random_state (lisp state)
     state = coerce_to_random_state (state);
   lisp p = make_random_state ();
   if (state == Qt)
-    xrandom_state_object (p).srandom (time (0));
+    xrandom_state_object (p).srandom (static_cast<long> (time (0)));
   else
     xrandom_state_object (p) = xrandom_state_object (state);
   return p;
