@@ -32,8 +32,8 @@ static void
 print (HDC hdc, const GLYPHSET *g, const char *name)
 {
   printf ("static const struct {ucs2_t c; u_char w;} %s[] = {", name);
-  for (int i = 0, n = 0; i < g->cRanges; i++)
-    for (int j = 0; j < g->ranges[i].cGlyphs; j++)
+  for (DWORD i = 0, n = 0; i < g->cRanges; i++)
+    for (USHORT j = 0; j < g->ranges[i].cGlyphs; j++)
       {
         wchar_t wc = g->ranges[i].wcLow + j;
         if (wc >= REQ_RANGE_MIN && wc <= REQ_RANGE_MAX)
