@@ -1,3 +1,4 @@
+;; ISO 7185 Standard Pascal Keywords
 and
 array
 begin
@@ -33,6 +34,85 @@ until
 var
 while
 with
+
+;; ISO 10206 Extended Pascal Keywords
+and_then
+bindable
+export
+implementation
+import
+interface
+module
+only
+or_else
+otherwise
+pow
+protected
+qualified
+restricted
+value
+
+;; Borland Turbo Pascal Keywords
+absolute
+asm
+constructor
+destructor
+implementation
+inherited
+inline
+interface
+object
+shl
+shr
+unit
+uses
+virtual
+xor
+
+;; Borland Delphi Keywords
+as
+class
+except
+exports
+finalization
+finally
+initialization
+is
+library
+on
+property
+raise
+threadvar
+try
+
+;; Free Pascal Keywords
+dispose
+exit
+false
+new
+true
+
+;; Object Pascal Keywords
+abstract
+class
+constructor
+destructor
+inherited
+is
+object
+property
+view
+virtual
+
+;; GNU Keywords
+all
+asm
+inline
+
+;; Pascal eXtensions for Scientific Calculations
+module
+operator
+
 ;; The following are not standard in pascal, but widely used.
 get
 put
