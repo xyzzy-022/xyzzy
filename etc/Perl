@@ -2,6 +2,7 @@ bless
 break
 caller
 continue
+default
 delete
 die
 do
@@ -14,6 +15,7 @@ exists
 exit
 for
 foreach
+given
 goto
 if
 import
@@ -36,6 +38,7 @@ undef
 unless
 until
 use
+when
 while
 
 ;*1
