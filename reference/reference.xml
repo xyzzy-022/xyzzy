@@ -416,6 +416,113 @@ execute-subprocessの中でcommand-output-mode起動時に実行されます。
 </chapter>
 
 <chapter>
+<title>*css-mode-hook*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+css-mode起動時に実行されます。
+</description>
+<seealso></seealso>
+<link></link>
+<section>モード</section>
+<file>css-mode.l</file>
+</chapter>
+
+<chapter>
+<title>*css-level*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+css-modeで利用するCSS Levelを指定します。
+デフォルトは 3 (CSS Level 3)です。
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<seealso></seealso>
+<link></link>
+<section>モード</section>
+<file>css-mode.l</file>
+</chapter>
+
+<chapter>
+<title>*css-keyword-file*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+css-modeで利用するCSS Level 2のキーワードファイルを指定します。
+*css-level*が2の場合に読み込まれます。
+</description>
+<seealso></seealso>
+<link></link>
+<section>モード</section>
+<file>css-mode.l</file>
+</chapter>
+
+<chapter>
+<title>*css3-keyword-files*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+css-modeで利用するCSS Level 3のキーワードファイルを指定します。
+*css-level*が3の場合に読み込まれます。
+
+CSS3用のキーワードファイルはCSSモジュールごとに分かれているので、
+必要なモジュールのキーワードのみを読み込むことができます。
+
+デフォルトはCSS Level 3の全モジュール、ブラウザごとの拡張、
+HTML4/5 の要素をキーワードとして読み込みます。
+
+  ;; css-modeで利用するキーワードの設定 (CSS Level 3)
+  (setq *css3-keyword-files*
+    '(;; CSS3 modules
+      "CSS3/2d-transforms"
+      "CSS3/3d-transforms"
+      "CSS3/animations"
+      "CSS3/backgrounds-and-borders"
+      "CSS3/basic-box"
+      "CSS3/basic-user-interface"
+      "CSS3/behavioral-extensions"
+      "CSS3/color"
+      "CSS3/flexible-box-layout"
+      "CSS3/fonts"
+      "CSS3/generated-and-replaced-content"
+      "CSS3/hyperlinks"
+      "CSS3/layout"
+      "CSS3/line"
+      "CSS3/lists"
+      "CSS3/marquee"
+      "CSS3/multi-column"
+      "CSS3/paged-media"
+      "CSS3/presentation-levels"
+      "CSS3/ruby"
+      "CSS3/speech"
+      "CSS3/tables"
+      "CSS3/text"
+      "CSS3/transitions"
+      ;; vendor extensions
+      "CSS3/microsoft-extensions"
+      "CSS3/mozilla-extensions"
+      "CSS3/webkit-extensions"
+      ;; HTML elements
+      "CSS3/html4-elements"
+      "CSS3/html5-elements"
+      ))
+
+補足：
+  xyzzy 0.2.2.236 から利用可能です。
+</description>
+<seealso></seealso>
+<link></link>
+<section>モード</section>
+<file>css-mode.l</file>
+</chapter>
+
+<chapter>
 <title>*dabbrev-search-this-buffer-only*</title>
 <type>Variable</type>
 <arguments></arguments>

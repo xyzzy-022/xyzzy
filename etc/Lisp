@@ -2046,6 +2046,8 @@ create-buffer-bar
 create-xyzzy-shortcut-dialog
 csharp-mode
 css-mode
+css2-mode
+css3-mode
 current-directory-datum
 current-directory-pathname
 current-kbd-layout

@@ -1,0 +1,18 @@
+;; Transitions
+transition
+transition-delay
+transition-duration
+transition-property
+transition-timing-function
+
+;*2
+all
+cubic-bezier
+ease
+ease-in
+ease-in-out
+ease-out
+inherit
+initial
+linear
+none

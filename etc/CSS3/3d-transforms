@@ -1,0 +1,20 @@
+;; 3D Transforms
+backface-visibility
+perspective
+perspective-origin
+transform-origin
+transform-style
+
+;*2
+bottom
+center
+flat
+hidden
+inherit
+initial
+left
+none
+preserve-3d
+right
+top
+visible
