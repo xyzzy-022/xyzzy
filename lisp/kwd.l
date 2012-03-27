@@ -64,8 +64,11 @@
   (if (listp name)
       (progn
 	(dolist (n name)
-	  (setf table (load-keyword-file-1 n icase table condition)))
-	(setf (gethash 'keyword-file table) name)
+	  (when n
+	    (setf table (or (load-keyword-file-1 n icase table condition)
+			    table))))
+	(when table
+	  (setf (gethash 'keyword-file table) name))
 	table)
     (load-keyword-file-1 name icase table condition)))
 
