@@ -81,7 +81,7 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
 
   * `sql-mode` で以下の機能を追加しました。(#178, x022235)
     * SQL 92 の 「--」で始まる 1 行コメントに対応しました。
-    * キーワードの補完に対応しました。(M-Tab)
+    * キーワードの補完に対応しました。(`M-Tab`)
 
   * キーワードファイル更新しました。(#46, x022235)
     * etc/C
@@ -90,14 +90,14 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
       * C++ 11 に対応しました。
     * etc/C#
       * C# 5.0 に対応しました。
-    * etc/CSS
+    * etc/CSS, etc/CSS3/*
       * CSS level 2, CSS level 3 に対応しました。
       * `css-mode` のデフォルトを CSS3 に更新しました。
         * `*css-level*` でデフォルト値を設定可能です。
         * `css2-mode`, `css3-mode` で切り替えることも可能です。
       * CSS3 のキーワードファイルはモジュールごとに分かれているので
         `*css3-keyword-files*` で読み込むモジュールをカスタマイズ可能です。
-    * etc/HTML
+    * etc/HTML5
       * HTML5 に対応しました。
       * `<!DOCTYPE html>` の場合に自動的に HTML5 キーワードが有効になります。
       * `html+-mode` を使っている場合は `(setq *html+-use-html-kwd* t)` を設定してください。
@@ -107,7 +107,7 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
       * Java 5.0 で追加されたキーワードに対応しました。
     * etc/Pascal
       * 色々追加しました。
-    * etc/Sql
+    * etc/Sql, etc/Sql-NonStd/*
       * 色々追加しました。
       * DBMS 固有のキーワードを追加 (SQLServer, Oracle, MySQL, PostgreSQL) しました。
       * `(setq *sql-keyword-file* '("Sql" "Sql-NonStd/Oracle"))` など利用したい
