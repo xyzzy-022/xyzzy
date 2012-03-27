@@ -1,0 +1,22 @@
+;; Ruby
+ruby-align
+ruby-overhang
+ruby-position
+ruby-span
+
+;*2
+after
+attr
+auto
+before
+center
+distribute-letter
+distribute-space
+end
+inherit
+initial
+left
+line-edge
+none
+right
+start

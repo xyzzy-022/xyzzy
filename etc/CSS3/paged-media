@@ -1,0 +1,19 @@
+;; Paged Media
+fit
+fit-position
+image-orientation
+page
+
+;*2
+auto
+bottom
+center
+fill
+hidden
+inherit
+initial
+left
+meet
+right
+slice
+top

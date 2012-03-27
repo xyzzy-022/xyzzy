@@ -1,0 +1,21 @@
+;; Hyperlinks
+target
+target-name
+target-new
+target-position
+
+;*2
+above
+back
+behind
+current
+front
+inherit
+initial
+modal
+new
+none
+parent
+root
+tab
+window

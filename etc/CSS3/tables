@@ -1,0 +1,18 @@
+;; Tables
+border-collapse
+border-spacing
+caption-side
+empty-cells
+table-layout
+
+;*2
+auto
+bottom
+collapse
+fixed
+hide
+inherit
+initial
+separate
+show
+top
