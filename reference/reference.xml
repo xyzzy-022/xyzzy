@@ -16059,6 +16059,10 @@ OBJECTがconsか空リスト()ならt、それ以外ならnilを返します。
   (when *xmldoc-keyword-hash-table*
     (make-local-variable 'keyword-hash-table)
     (setq keyword-hash-table *xmldoc-keyword-hash-table*))
+
+補足：
+  xyzzy 0.2.2.236 から NAME には複数のキーワードファイルを
+  リストで指定可能です。
 </description>
 <seealso>キーワードファイルの書き方</seealso>
 <seealso>*keyword-load-path*</seealso>

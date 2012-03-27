@@ -61,11 +61,20 @@
 	 (return num))))))
 
 (defun load-keyword-file (name &optional icase table condition)
+  (if (listp name)
+      (progn
+	(dolist (n name)
+	  (setf table (load-keyword-file-1 n icase table condition)))
+	(setf (gethash 'keyword-file table) name)
+	table)
+    (load-keyword-file-1 name icase table condition)))
+
+(defun load-keyword-file-1 (name &optional icase table condition)
   (let (filename)
     (dolist (d *keyword-load-path*
 	       (unless (file-exist-p (setq filename
 					   (merge-pathnames name (etc-path))))
-		 (return-from load-keyword-file nil)))
+		 (return-from load-keyword-file-1 nil)))
       (setq filename (merge-pathnames name d))
       (when (file-exist-p filename)
 	(return)))
