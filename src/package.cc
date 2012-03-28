@@ -740,7 +740,7 @@ Flookup_symbol (lisp from, lisp to, lisp package)
   return Qnil;
 }
 
-static int
+int
 count_symbols (lisp vector)
 {
   int size = 0;

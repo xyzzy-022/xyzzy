@@ -556,10 +556,14 @@ completion::complete_symbol ()
           complete_symbol (xpackage_external (package));
       }
 
+  // パッケージ名の補完
   if (!mss.pkg_end ())
     for (lisp p = xsymbol_value (Vpackage_list); consp (p); p = xcdr (p))
       {
         lisp x = xcar (p);
+        // なにも export していないパッケージは補完候補に出さない
+        if (count_symbols (xpackage_external (x)) <= 0)
+          continue;
         do_completion (xpackage_name (x), 0);
         for (lisp q = xpackage_nicknames (x); consp (q); q = xcdr (q))
           do_completion (xcar (q), 0);
