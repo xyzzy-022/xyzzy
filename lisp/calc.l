@@ -44,6 +44,14 @@
 
 (defvar *calc-token* nil)
 
+(defvar *calc-special-constants*
+  (macrolet ((|42| (&rest words)
+	       `(cons ,(format nil "~{~A~^[A,@ ]*~}" words) 42)))
+    `(,(|42| "l¶" "‰F’ˆ" "‚·‚×‚Ä‚Ì“š‚¦")
+      ,(|42| "¶–½" "‰F’ˆ" "‚»‚Ì‚·‚×‚Ä‚É‘Î‚·‚é“š‚¦")
+      ,(|42| "¶–½" "‰F’ˆ" "‚»‚µ‚Ä–œ•¨‚É‚Â‚¢‚Ä‚Ì“š‚¦")
+      ,(|42| "¶–½" "‰F’ˆ" "‚»‚µ‚Ä–œ•¨‚É‚Â‚¢‚Ä‚Ì‹†‹É‚Ì‹^–â‚Ì“š‚¦")
+      )))
 (defconstant calc::pi pi)
 (defconstant calc::e (exp 1.0d0))
 
@@ -390,6 +398,12 @@
 		 *calc-radix* (if *calc-unsigned* 'unsigned 'signed) *calc-ratio*))))
 
 (defun calc-string (string)
+  (or (cdr (assoc string *calc-special-constants*
+		  :test #'(lambda (str re)
+			    (string-matchp re str))))
+      (calc-string-1 string)))
+
+(defun calc-string-1 (string)
   (let ((*read-default-float-format* 'double-float)
 	(*calc-token* (let ((token nil))
 			(with-input-from-string (s string)
