@@ -444,7 +444,7 @@
 		     (:button :send-to "送る (&T)" #x50010003 102 59 80 10)
 		     (:button :programs "プログラムメニュー (&P)" #x50010003 12 72 80 10)
 		     ,@(unless (featurep :windows-7)
-			 `((:button :start-menu "スタートメニュー (&S)" #x50010003 102 72 90 10)))
+			 `((:button :start-menu "スタートメニュー (&S)" #x50010003 102 72 80 10)))
 		     (:button IDOK "OK" #x50010001 88 100 50 14)
 		     (:button IDCANCEL "キャンセル" #x50010000 144 100 50 14)))
 		  '((xyzzycli-exe . t))
