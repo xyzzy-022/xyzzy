@@ -1,7 +1,9 @@
-xyzzy 0.2.2.236 Release Note
-============================
+xyzzy リリースノート
+====================
 
+バージョン: 0.2.2.236
 リリース日: 2012-03-29
+ホームページ: http://xyzzy-022.github.com
 
 はじめに
 --------
@@ -9,14 +11,14 @@ xyzzy 0.2.2.236 Release Note
 2304。
 
 亀井さんによる最後のバージョン (0.2.2.235) がリリースされてから、
-有志による最初のバージョン (0.2.2.236) がリリースされるまでにかかった日数であり、
-また 48^2 でもあります。
+有志による 0.2.2 系列最初のバージョン (0.2.2.236) がリリースされるまでに
+かかった日数であり、また `(expt 48 2)` でもあります。
+
+xyzzy 0.2.2.236 では 22 件の機能追加と、17 件のバグ修正を
+行なっています。これらの修正は 9 人の有志の手により行われました。
 
 0.2.2.236 は 0.2.2.235 との互換性を重視したバージョンです。
 今まで利用してきた拡張はそのまま動作することを期待してもよいでしょう。
-
-0.2.2.236 では 21 件の機能追加と、17 件のバグ修正を行なっています。
-これらの修正は 9 人の有志の手により行われました。
 
 
 インストール
@@ -100,7 +102,24 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     * etc/HTML5
       * HTML5 に対応しました。
       * `<!DOCTYPE html>` の場合に自動的に HTML5 キーワードが有効になります。
-      * `html+-mode` を使っている場合は `(setq *html+-use-html-kwd* t)` を設定してください。
+      * `html+-mode` を使っている場合は以下の設定をすることで HTML5 キーワードを利用できます。
+
+        ```lisp
+        ;; html+-mode で HTML5 キーワードを利用する
+        (in-package :editor)
+        (setq *html+-use-html-kwd* t)
+        (in-package :user)
+        ;autoload を使わない場合は *html+-use-html-kwd* 設定後にロードする
+        ;(require "html+-mode")
+        ```
+
+      * 新規の HTML ファイルを作成した時に自動的に HTML5 キーワードを有効にしたい場合は
+        以下の設定をしてください。
+
+        ```lisp
+        (setq *html-default-doctype* "HTML5.0")
+        ```
+
     * etc/Perl
       * Perl 5.10 に対応しました。
     * etc/Java
@@ -109,9 +128,17 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
       * 色々追加しました。
     * etc/Sql, etc/Sql-NonStd/*
       * 色々追加しました。
-      * DBMS 固有のキーワードを追加 (SQLServer, Oracle, MySQL, PostgreSQL) しました。
-      * `(setq *sql-keyword-file* '("Sql" "Sql-NonStd/Oracle"))` など利用したい
+      * DBMS 固有のキーワードを追加しました。
+        SQLServer, Oracle, MySQL, PostgreSQL 用のキーワードを標準で用意してあります。
+      * DBMS 固有のキーワードを利用したい場合は、`*sql-keyword-file*` に利用したい
         キーワードファイルをリストで設定してください。
+
+        ```lisp
+        (setq *sql-keyword-file* '("SQL" "Sql-NonStd/Oracle"))
+        (setq *sql-keyword-file* '("SQL" "Sql-NonStd/SQLServer"))
+        (setq *sql-keyword-file* '("SQL" "Sql-NonStd/MySQL"))
+        (setq *sql-keyword-file* '("SQL" "Sql-NonStd/PostgreSQL"))
+        ```
 
   * calc-mode で人生、宇宙、すべての答えを計算できるようになりました。(#180, x022235)
 
@@ -180,10 +207,10 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     ドキュメントを取得するには `(documentation (find-package :foo) t)` とします。
 
   * SHA2 を計算する以下の関数を追加しました。(#39, x022235)
-    * `si:sha-224` 
-    * `si:sha-256` 
-    * `si:sha-384` 
-    * `si:sha-512` 
+    * `si:sha-224`
+    * `si:sha-256`
+    * `si:sha-384`
+    * `si:sha-512`
 
   * HMAC-SHA2 を計算する以下の関数を追加しました。(#40, x022235)
     * `si:hmac-sha-224`
@@ -276,27 +303,23 @@ Common Lisp との互換性向上
     ```
 
   * `machine-type`, `machine-version`, `machine-instance` を追加しました。(#41, x022235)
-    * `machine-instance` は `ed:machine-name` と同じ値を返します
+    * `machine-instance` は `ed:machine-name` と同じ値を返します。
     * `machine-type`, `machine-version` などもあまり利用することはないと思いますが、
       CL のライブラリを移植しやすくするために追加しました。
 
   * `lisp-implementation-version`, `lisp-implementation-type` を追加しました。(#42, x022235)
-    * `software-version`, `software-type` と同じ値を返します
+    * `software-version`, `software-type` と同じ値を返します。
     * CL のライブラリを移植しやすくするために追加しました。
 
   * repl 変数名を lisp パッケージから `export` しました。(#147, x022235)
 
+    xl-repl と rx を組み合わせた場合にロード順によってはエラーになる問題を
+    回避するための修正です。
+    (https://github.com/youz/xl-repl/issues/3)
+
 
 注意事項
 --------
-
-  * 以下のフォーマット書式のバグは影響が大きいので修正されません。
-
-    ```lisp
-    (format nil "~10@A" "hoge")
-    "hoge      "                   ; 0.2.2.235, 0.2.2.236
-    "      hoge"                   ; 本来の仕様
-    ```
 
   * NetInstaller で入手可能な以下のパッケージは 0.2.2.236 では
     本体に同梱しています。インストールすると古いファイルで上書きされるので
@@ -308,6 +331,91 @@ Common Lisp との互換性向上
     reference.chm                      2007.12.25     2007/12/25 01:25  | 2007.12.25     2007/12/25 01:25
     reference.xml                      2007.12.25     2007/12/25 01:23  | 2007.12.25     2007/12/25 01:23
     ```
+
+既知の問題
+----------
+
+  * format の `~n@A` 書式がバグっている
+
+    このバグの修正は影響範囲が大きいので修正されません。
+
+    ```lisp
+    (format nil "~10@A" "hoge")
+    "hoge      "                   ; 0.2.2.235, 0.2.2.236
+    "      hoge"                   ; 本来の仕様
+    ```
+
+  * software-type, software-version が CL と異なる (#169)
+  * NULL 文字をインクリメンタル検索しようとすると落ちる (#152)
+  * :typeがlistかvectorで:namedじゃない構造体でtypepがおかしい (#138)
+  * ローカル関数で (setf READER) (#137)
+  * dualウィンドウモードでfilerのディレクトリ指定が動かない (#130)
+  * c-modeでマクロの継続行のインデントがおかしい (#127)
+  * クリップボードにコピーするとxyzzyが固まる場合がある (#113)
+  * C-u 999 C-g 後にメニュー操作でエラー (#111)
+  * Vista 以降で再変換 (C-c C-c) が動作しない (#101)
+  * ファイル保存時にパーミッションを保存 (#96)
+  * ole で responseBody, responseStream を取得できない (#68)
+  * ole-for-each で ie.Document.all の IEnum を取得できない (#67)
+  * ole-create-event-sink に TypeLib のファイル名を明示的に指定しないとエラーになる (#66)
+  * 巨大な文字列に対する正規表現マッチがすごい遅い (#65)
+  * load 時の *readtable* がファイルローカルではない (#64)
+  * setf の最適化に bug (#63)
+  * handler-case で :no-error を指定してコンパイルするとエラー (#62)
+  * labels の lambda-list 内の init-form で同じ labels 式で定義したローカル関数を呼び出してると、コンパイルで挙動が変わる (#61)
+  * si:binhex-decode で落ちる (#45)
+  * multiframe: 画面端の折り返しがウィンドウ単位でちゃんと動くようにする変更を取り込む (#25)
+  * siteinit.l が sjis 以外で書かれていた場合に対応 (#11)
+  * multiframe: cpp-syntax の修正を取り込む (#10)
+
+
+謝辞
+----
+
+約 6 年ぶりにリリースされる xyzzy はこの 0.2.2.236 だけではありません。
+既に以下の派生バージョンがリリースされています。
+
+  * マルチフレーム機能に対応した [0.2.3 系列]
+  * ユニコード対応を進めている [xyzzy+]
+
+また、NANRI 氏が 2008 年から [xyzzy.src] にて継続的にバグ修正をおこなって
+くれています。
+
+0.2.2.236 はこれらのプロジェクトから多くの刺激とコードを得て作成されました。
+謝意に代えて 0.2.2.236 のリリースさせて頂きます。
+
+  [0.2.3 系列]: https://bitbucket.org/mumurik/xyzzy/wiki/Home
+  [xyzzy+]: http://xyzzy.codeplex.com/
+  [xyzzy.src]: https://github.com/southly/xyzzy.src
+
+----
+
+複数の派生版が存在することに混乱する人がいるかもしれません。
+とっとと統合しろと思う人がいるかもしれません。
+
+ですが、多様性は善です。
+
+多様性は競争を促し、競争は進化を促します。
+xyzzy がこれからも進化していくためにもこれらの多様性は必要です。
+
+協調できるとこは協調し、競争すべきところでは競争しながらお互いに進んでいくのが
+6 年のブランクを取り戻すためには丁度よいと思います。
+
+なお、拡張 Lisp の作者さんの中には複数の派生版への対応に悩む人もいるかも知れません。
+その人には以下のプロジェクトを紹介しておきます。
+
+  * http://xyzzy.s53.xrea.com/wiki/index.php?%B3%C8%C4%A5%A4%CE%A5%E1%A5%F3%A5%C6%A4%C8%A4%AB
+  * https://github.com/xyzzy-ext
+
+
+さいごに
+--------
+
+最後になりましたが xyzzy を作成し、0.2.2.235 でフリーなソフトウェアから
+なんとなく OSS ライセンスに変えてリリースして頂いた亀井氏に感謝します。
+
+以上へなちょこメンテナではありますが、今後ともやる気のなさを引き継ぎつつ
+開発を継続していきたいと思います。
 
 
 以上です。
