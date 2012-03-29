@@ -625,6 +625,7 @@ static symbols lsp[] =
   DEFVAR2 (*read-default-float-format*),
   DEFVAR2 (*readtable*),
   DEFVAR2 (*read-suppress*),
+  DEFVAR2 (*read-eval*),
 
   /* package.cc */
   DEFUN3 (make-package, 1, 0, FFneed_rest),
@@ -662,6 +663,9 @@ static symbols lsp[] =
   DEFVAR2 (*garbage-collection-messages*),
 
   /* environ.cc */
+  DEFUN3 (machine-instance, 0, 0, 0),
+  DEFUN3 (machine-type, 0, 0, 0),
+  DEFUN3 (machine-version, 0, 0, 0),
   DEFUN3 (get-decoded-time, 0, 0, 0),
   DEFUN3 (get-universal-time, 0, 0, 0),
   DEFUN3 (decode-universal-time, 1, 1, 0),
@@ -670,6 +674,8 @@ static symbols lsp[] =
   DEFUN3 (software-type, 0, 0, 0),
   DEFUN3 (software-version, 0, 0, 0),
   DEFUN3 (software-version-display-string, 0, 0, 0),
+  DEFUN3 (lisp-implementation-type, 0, 0, 0),
+  DEFUN3 (lisp-implementation-version, 0, 0, 0),
 
   /* structure.cc */
   MAKE_SYMBOL (structure, Qstructure),
@@ -825,6 +831,8 @@ static symbols sys[] =
   SI_DEFUN3 (*package-internal, 1, 0, 0),
   SI_DEFUN3 (*package-external, 1, 0, 0),
   SI_DEFUN3 (*package-summary, 1, 0, 0),
+  SI_DEFUN3 (*package-documentation, 1, 0, 0),
+  SI_DEFUN3 (*set-package-documentation, 2, 0, 0),
 
   /* lprint.cc */
   SI_DEFUN3 (*print-condition, 1, 0, 0),
@@ -841,6 +849,10 @@ static symbols sys[] =
   SI_DEFUN3 (*show-window-foreground, 0, 0, 0),
   SI_DEFUN3 (*activate-toplevel, 0, 0, 0),
   SI_DEFVAR2 (*paste-hook*),
+
+  /* appid.cc */
+  MAKE_SYMBOL2Q (app-user-model-id),
+  SI_DEFUN3 (*app-user-model-id, 0, 0, 0),
 
   /* buffer.cc */
   SI_DEFUN3 (*create-wait-object, 0, 0, 0),
@@ -899,6 +911,8 @@ static symbols sys[] =
   /* environ.cc */
   SI_DEFUN3 (system-root, 0, 0, 0),
   SI_DEFUN3 (getenv, 1, 0, 0),
+  SI_DEFUN3 (putenv, 1, 1, 0),
+  SI_DEFUN3 (getpid, 0, 0, 0),
   SI_DEFUN3 (delete-registry-tree, 0, 0, 0),
   SI_DEFUN3 (performance-counter, 0, 0, 0),
   SI_DEFUN3 (dump-image-path, 0, 0, 0),
@@ -956,8 +970,16 @@ static symbols sys[] =
   SI_DEFUN3 (binhex-decode, 1, 1, 0),
   SI_DEFUN3 (md5, 1, 0, 0),
   SI_DEFUN3 (sha-1, 1, 0, 0),
+  SI_DEFUN3 (sha-224, 1, 0, 0),
+  SI_DEFUN3 (sha-256, 1, 0, 0),
+  SI_DEFUN3 (sha-384, 1, 0, 0),
+  SI_DEFUN3 (sha-512, 1, 0, 0),
   SI_DEFUN3 (hmac-md5, 2, 0, 0),
   SI_DEFUN3 (hmac-sha-1, 2, 0, 0),
+  SI_DEFUN3 (hmac-sha-224, 2, 0, 0),
+  SI_DEFUN3 (hmac-sha-256, 2, 0, 0),
+  SI_DEFUN3 (hmac-sha-384, 2, 0, 0),
+  SI_DEFUN3 (hmac-sha-512, 2, 0, 0),
 
   /* lread.cc */
   SI_DEFUN3 (*load-library, 1, 0, FFneed_rest),
@@ -990,6 +1012,9 @@ static symbols sys[] =
   SI_DEFUN2X ("#--reader", number_minus_reader, 3, 0, 0),
   SI_DEFUN2X ("#|-reader", number_bar_reader, 3, 0, 0),
   SI_DEFVAR2 (*character-name-hash-table*),
+
+  /* system.cc */
+  SI_DEFUN3 (uuid-create, 0, 0, FFneed_rest),
 
   /* Window.cc */
   SI_DEFUN3 (*instance-number, 0, 0, 0),
@@ -1083,6 +1108,13 @@ static symbols kwd[] =
   DEFKWD2 (windows-nt),
   DEFKWD2 (windows-2000),
   DEFKWD2 (windows-xp),
+  DEFKWD2 (windows-vista),
+  DEFKWD2 (windows-7),
+  DEFKWD2 (windows-8),
+  DEFKWD2 (x86),
+  DEFKWD2 (x64),
+  DEFKWD2 (ia64),
+  DEFKWD2 (wow64),
   DEFKWD2 (no-dup),
   DEFKWD2 (case-fold),
   DEFKWD2 (reverse),
@@ -1238,6 +1270,7 @@ static symbols kwd[] =
   DEFKWD2 (start-menu),
   DEFKWD2 (startup),
   DEFKWD2 (templates),
+  DEFKWD2 (appid),
   DEFKWD2 (int8),
   DEFKWD2 (uint8),
   DEFKWD2 (int16),
@@ -1377,6 +1410,7 @@ static symbols kwd[] =
   DEFKWD2 (osfjvc),
   DEFKWD2 (vender),
   DEFKWD2 (invalidate),
+  DEFKWD2 (sequential),
 };
 
 static symbols unint[] =
@@ -1417,11 +1451,14 @@ static symbols unint[] =
   MAKE_SYMBOL2Q (user-config-path),
   MAKE_SYMBOL2 (user-name),
   MAKE_SYMBOL2 (machine-name),
+  MAKE_SYMBOL2 (machine-type),
+  MAKE_SYMBOL2 (machine-version),
   MAKE_SYMBOL2 (os-major-version),
   MAKE_SYMBOL2 (os-minor-version),
   MAKE_SYMBOL2 (os-build-number),
   MAKE_SYMBOL2 (os-platform),
   MAKE_SYMBOL2 (os-csd-version),
+  MAKE_SYMBOL2 (process-id),
 
   MAKE_SYMBOL2 (next-prefix-value),
   MAKE_SYMBOL2 (next-prefix-args),
@@ -1607,6 +1644,9 @@ static symbols ed[] =
   MAKE_SYMBOL2 (windows-nt),
   MAKE_SYMBOL2 (windows-2000),
   MAKE_SYMBOL2 (windows-xp),
+  MAKE_SYMBOL2 (windows-vista),
+  MAKE_SYMBOL2 (windows-7),
+  MAKE_SYMBOL2 (windows-8),
   DEFUN3 (user-config-path, 0, 0, 0),
   DEFVAR2 (*convert-registry-to-file-p*),
 
@@ -1671,6 +1711,7 @@ static symbols ed[] =
   DEFUN3 (file-locked-p, 0, 1, 0),
   MAKE_SYMBOL2 (exclusive-lock-file),
   DEFUN3 (set-buffer-colors, 1, 1, 0),
+  DEFUN3 (get-buffer-colors, 0, 1, 0),
   DEFVAR2 (*change-buffer-colors-hook*),
   DEFVAR2 (*sort-buffer-list-by-created-order*),
   DEFVAR2 (*title-bar-text-order*),
@@ -1946,6 +1987,7 @@ static symbols ed[] =
   DEFCMD3 (split-window, 0, 2, 0, "p"),
   DEFCMD3 (delete-other-windows, 0, 0, 0, ""),
   DEFCMD3 (delete-window, 0, 0, 0, ""),
+  DEFUN3 (deleted-window-p, 1, 0, 0),
   DEFUN3 (selected-window, 0, 0, 0),
   DEFUN3 (minibuffer-window, 0, 0, 0),
   DEFUN3 (minibuffer-window-p, 1, 0, 0),
@@ -2313,6 +2355,7 @@ static symbols ed[] =
   DEFVAR2 (*deactivate-hook*),
   DEFVAR2 (*save-buffer-ime-mode*),
   DEFVAR2 (*ime-reconvert-helper*),
+  DEFVAR2 (*ime-documentfeed-helper*),
   DEFVAR2 (*keyboard-layout-list*),
   DEFVAR (*ime-does-not-process-C-\\*, Vime_does_not_process_control_backslach),
   DEFVAR2 (*no-input-language-change-notification*),
@@ -2572,6 +2615,7 @@ static symbols ed[] =
   DEFVAR2 (*prefix-value*),
   DEFVAR2 (*prefix-args*),
   DEFVAR2 (*save-window-size*),
+  DEFVAR2 (*save-window-snap-size*),
   DEFVAR2 (*save-window-position*),
   DEFVAR2 (*restore-window-size*),
   DEFVAR2 (*restore-window-position*),
@@ -2714,7 +2758,7 @@ check_dup (symbols *p, int n, const char *pkg)
 
   qsort (buf, n, sizeof *buf, compare);
   int f = 0;
-  for (i = 1; i < n; i++)
+  for (int i = 1; i < n; i++)
     if (!strcmp (buf[i - 1], buf[i]))
       {
         fprintf (stderr, "package %s: duplicate definition: %s \n", pkg, buf[i]);
@@ -2835,7 +2879,8 @@ static void
 process_interactive ()
 {
   const char **intr = (const char **)alloca (sizeof (char *) * numberof (ed));
-  for (int i = 0, j = 0; i < numberof (ed); i++)
+  int j = 0;
+  for (int i = 0; i < numberof (ed); i++)
     if (ed[i].interactive)
       intr[j++] = ed[i].interactive;
   if (!j)
@@ -2846,12 +2891,13 @@ process_interactive ()
   int n = j;
   qsort (intr, n, sizeof *intr, compare);
 
-  for (i = 1, j = 1; i < n; i++)
+  j = 1;
+  for (int i = 1; i < n; i++)
     if (strcmp (intr[i], intr[j - 1]))
       intr[j++] = intr[i];
   n = j;
 
-  for (i = 0; i < numberof (ed); i++)
+  for (int i = 0; i < numberof (ed); i++)
     if (ed[i].interactive)
       {
         for (j = 0; j < n; j++)
@@ -2868,7 +2914,7 @@ process_interactive ()
       }
 
   printf ("lintr intrs[] =\n{\n");
-  for (i = 0; i < n; i++)
+  for (int i = 0; i < n; i++)
     {
       printf ("  {");
       putq (intr[i]);

@@ -1,7 +1,6 @@
 #ifndef _ed_h_
 # define _ed_h_
 
-# include "version.h"
 # include "sysdep.h"
 # include "xcolor.h"
 # include "lisp.h"

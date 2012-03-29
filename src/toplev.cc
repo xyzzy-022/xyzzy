@@ -1,6 +1,7 @@
 #include "ed.h"
 #include <imm.h>
 #include <process.h>
+#include "appid.h"
 #include "ctl3d.h"
 #include "environ.h"
 #include "fnkey.h"
@@ -47,6 +48,17 @@ quit_thread_entry (void *p)
           case WM_TIMER:
             hwnd_fg = GetForegroundWindow ();
             msg.wParam = hwnd_fg ? GetWindowThreadProcessId (hwnd_fg, 0) == parent : 0;
+            if (!msg.wParam)
+              {
+                // may be ghost window.
+                if (IsHungAppWindow (hwnd_fg))
+                  {
+                    if (IsHungAppWindow (app.toplev))
+                      {
+                        msg.wParam = 1;
+                      }
+                  }
+              }
             /* fall thru... */
           case WM_ACTIVATEAPP:
           case WM_PRIVATE_ACTIVATEAPP:
@@ -336,7 +348,8 @@ set_ime_caret ()
         {
           GetClientRect (app.active_frame.has_caret, &r);
 
-          for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
+          Window *wp;
+          for (wp = app.active_frame.windows; wp; wp = wp->w_next)
             if (wp->w_hwnd == app.active_frame.has_caret)
               break;
           r.left += app.text_font.cell ().cx / 2;
@@ -580,6 +593,7 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   switch (msg)
     {
     case WM_CREATE:
+      appid::set ();
       app.toplev = hwnd;
       app.hwnd_sw = CreateStatusWindow ((SBARS_SIZEGRIP | WS_CHILD | WS_VISIBLE
                                          | WS_CLIPCHILDREN | WS_CLIPSIBLINGS),
@@ -1073,6 +1087,8 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_IME_REQUEST:
       if (wparam == IMR_RECONVERTSTRING)
         return app.kbdq.reconvert ((RECONVERTSTRING *)lparam, 0);
+      if (wparam == IMR_DOCUMENTFEED)
+        return app.kbdq.documentfeed ((RECONVERTSTRING *)lparam, 0);
       break;
 
     case WM_DRAWITEM:
@@ -1092,6 +1108,8 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
           if ((msg == msime || msg == atok)
               && wparam == IMR_RECONVERTSTRING)
             return app.kbdq.reconvert ((RECONVERTSTRING *)lparam, 1);
+          if (wparam == IMR_DOCUMENTFEED)
+            return app.kbdq.documentfeed ((RECONVERTSTRING *)lparam, 1);
         }
 
       wheel_info wi;

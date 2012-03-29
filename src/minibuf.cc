@@ -257,7 +257,7 @@ complete_read (const Char *prompt, long prompt_length, lisp def,
             package = lpkg;
         }
 
-      const Char *b = xstring_contents (string);
+      Char *b = xstring_contents (string);
       int l = xstring_length (string);
 
       maybe_symbol_string mss (package);
@@ -418,6 +418,8 @@ completion::do_completion (lisp candidate, int igcase)
   if (l < c_target_len)
     return 0;
 
+  if (memq (candidate, c_matches_list))
+    return 1;
   c_matches_list = Fcons (candidate, c_matches_list);
   c_nmatches++;
 
@@ -527,7 +529,7 @@ completion::complete_symbol ()
         package = lpkg;
     }
 
-  const Char *b = xstring_contents (c_target);
+  Char *b = xstring_contents (c_target);
   int l = xstring_length (c_target);
 
   maybe_symbol_string mss (package);
@@ -552,6 +554,19 @@ completion::complete_symbol ()
         package = xcar (p);
         if (packagep (package))
           complete_symbol (xpackage_external (package));
+      }
+
+  // パッケージ名の補完
+  if (!mss.pkg_end ())
+    for (lisp p = xsymbol_value (Vpackage_list); consp (p); p = xcdr (p))
+      {
+        lisp x = xcar (p);
+        // なにも export していないパッケージは補完候補に出さない
+        if (count_symbols (xpackage_external (x)) <= 0)
+          continue;
+        do_completion (xpackage_name (x), 0);
+        for (lisp q = xpackage_nicknames (x); consp (q); q = xcdr (q))
+          do_completion (xcar (q), 0);
       }
 
   fix_match_len ();
@@ -631,7 +646,8 @@ completion::split_pathname ()
 {
   const Char *p0 = xstring_contents (c_target);
   const Char *pe = p0 + xstring_length (c_target);
-  for (const Char *p = pe;
+  const Char *p;
+  for (p = pe;
        p > p0 && p[-1] != ':' && p[-1] != '/' && p[-1] != '\\';
        p--)
     ;
@@ -679,7 +695,8 @@ completion::complete_UNC (lisp &directory)
   int l = pe - p0;
   if (l < 2 || *p0 != '/' || p0[1] != '/')
     return 0;
-  for (const Char *p = p0 + 2; p < pe && *p != '/'; p++)
+  const Char *p;
+  for (p = p0 + 2; p < pe && *p != '/'; p++)
     ;
   for (; pe > p && pe[-1] == '/'; pe--)
     ;

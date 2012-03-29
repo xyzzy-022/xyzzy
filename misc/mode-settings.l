@@ -1,0 +1,35 @@
+(defvar *xyzzy-src-path-regex* "xyzzy[^/]*/src")
+(defvar *xyzzy-lisp-path-regex* "xyzzy[^/]*/lisp")
+
+(defun set-xyzzy-src-indent ()
+  (when (and (get-buffer-file-name)
+             (string-matchp *xyzzy-src-path-regex*
+                            (get-buffer-file-name)))
+    (c++-set-gnu-style-indent)))
+(add-hook '*c++-mode-hook* 'set-xyzzy-src-indent t)
+
+(defun c++-set-gnu-style-indent ()
+  (interactive)
+  (make-local-variable 'c++-indent-level)
+  (make-local-variable 'c++-continued-statement-offset)
+  (make-local-variable 'c++-argdecl-indent)
+  (make-local-variable 'c++-brace-offset)
+  (make-local-variable 'c++-brace-imaginary-offset)
+  (make-local-variable 'c++-label-offset)
+  (make-local-variable 'c++-comment-indent)
+  (setq c++-indent-level 2)
+  (setq c++-continued-statement-offset 2)
+  (setq c++-argdecl-indent 5)
+  (setq c++-brace-offset 0)
+  (setq c++-brace-imaginary-offset 0)
+  (setq c++-label-offset -2)
+  (setq c++-comment-indent 2))
+
+(defun set-xyzzy-lisp-indent ()
+  (when (and (get-buffer-file-name)
+             (string-matchp *xyzzy-lisp-path-regex*
+                            (get-buffer-file-name)))
+    (set-tab-columns 8 (selected-buffer))
+    (setq indent-tabs-mode t)))
+(add-hook '*lisp-mode-hook* 'set-xyzzy-lisp-indent t)
+

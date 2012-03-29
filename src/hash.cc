@@ -411,8 +411,8 @@ add_hash_entry (lisp key, lisp value, lhash_table *table)
   return 0;
 }
 
-static void
-hash_table_rehash (lisp hash_table, int inc = 0)
+void
+hash_table_rehash (lisp hash_table, int inc)
 {
   assert (hash_table_p (hash_table));
   int old_size = xhash_table_size (hash_table);
@@ -435,6 +435,7 @@ hash_table_rehash (lisp hash_table, int inc = 0)
   xhash_table_entry (hash_table) = new_entry;
   xhash_table_size (hash_table) = new_size;
 
+  xhash_table_size (new_hash_table) = 0;
   xhash_table_entry (new_hash_table) = 0;
 }
 
@@ -445,8 +446,8 @@ Fsi_puthash (lisp key, lisp hash_table, lisp value)
   if (xhash_table_used (hash_table) > xhash_table_size (hash_table) * 8 / 10)
     {
       int inc = xhash_table_rehash_size (hash_table);
-      if (inc < 10)
-        inc = min (max (xhash_table_size (hash_table) * 2 / 10, 10), 100);
+      if (inc < xhash_table_size (hash_table) / 2)
+        inc = xhash_table_size (hash_table) / 2;
       hash_table_rehash (hash_table, inc);
     }
   add_hash_entry (key, value, (lhash_table *)hash_table);
@@ -499,7 +500,7 @@ Fhash_table_test (lisp hash_table)
 lisp
 Fsxhash (lisp object)
 {
-  return make_fixnum (sxhash (object, 0));
+  return make_fixnum (sxhash_equal (object, 0));
 }
 
 int
@@ -522,11 +523,11 @@ equalp (lhash_table *x, lhash_table *y)
         return 0;
 
   entry = xhash_table_entry (x);
-  for (i = 0; i < size; i++, entry++)
+  for (int i = 0; i < size; i++, entry++)
     if (entry->key != Qunbound && entry->key != Qdeleted)
       {
-        lisp t = Fgethash (entry->key, y, Qnil);
-        if (Fequalp (entry->value, t) == Qnil)
+        hash_entry *t = find_hash_entry (entry->key, y);
+        if (Fequalp (entry->value, t->value) == Qnil)
           return 0;
       }
 

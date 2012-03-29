@@ -38,7 +38,8 @@ make_vector_from_list (lisp list, int length)
   assert (consp (list) || list == Qnil);
   lisp vector = alloc_vector (length);
   lisp *p = xvector_contents (vector);
-  for (int i = 0; i < length && consp (list); i++, list = xcdr (list))
+  int i;
+  for (i = 0; i < length && consp (list); i++, list = xcdr (list))
     *p++ = xcar (list);
   if (i < length)
     {

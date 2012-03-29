@@ -246,7 +246,8 @@ splitter::find_pane (HWND hwnd) const
 pane *
 splitter::find_pane (const POINT &pos) const
 {
-  for (pane *p = s_tail; p; p = p->prev ())
+  pane *p;
+  for (p = s_tail; p; p = p->prev ())
     if (PtInRect (&p->rect (), pos))
       {
         RECT r;

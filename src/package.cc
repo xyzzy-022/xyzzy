@@ -104,7 +104,7 @@ find_symbol (u_int hash, lisp string, lisp package)
 }
 
 static void
-import (lisp symbol, lisp package)
+import_symbol (lisp symbol, lisp package)
 {
   check_symbol (symbol);
 
@@ -138,7 +138,7 @@ import (lisp symbol, lisp package)
 }
 
 static void
-export (lisp symbol, lisp package)
+export_symbol (lisp symbol, lisp package)
 {
   check_symbol (symbol);
   lisp name = xsymbol_name (symbol);
@@ -159,7 +159,7 @@ export (lisp symbol, lisp package)
     }
 
   if (do_import)
-    import (symbol, package);
+    import_symbol (symbol, package);
 
   lisp vec = xpackage_external (package);
   u_int h = hash % xvector_length (vec);
@@ -334,7 +334,8 @@ find_prime (int n)
 {
   static const int prime[] =
     {11, 53, 101, 211, 307, 401, 503, 601, 701, 809, 907, 1009,};
-  for (int i = 0; i < numberof (prime); i++)
+  int i;
+  for (i = 0; i < numberof (prime); i++)
     if (prime[i] >= n)
       return prime[i];
   return prime[i - 1];
@@ -432,7 +433,7 @@ Fpackage_shadowing_symbols (lisp package)
 lisp
 Flist_all_packages ()
 {
-  return xsymbol_value (Vpackage_list);
+  return Fcopy_list (xsymbol_value (Vpackage_list));
 }
 
 lisp
@@ -453,6 +454,7 @@ Fdelete_package (lisp package)
     }
   xpackage_name (package) = Qnil;
   xpackage_nicknames (package) = Qnil;
+  xpackage_documentation (package) = Qnil;
   return Qt;
 }
 
@@ -535,10 +537,10 @@ Fexport (lisp symbols, lisp package)
 {
   package = coerce_to_package (package);
   if (symbols != Qnil && !consp (symbols))
-    export (symbols, package);
+    export_symbol (symbols, package);
   else
     for (; consp (symbols); symbols = xcdr (symbols))
-      export (xcar (symbols), package);
+      export_symbol (xcar (symbols), package);
   multiple_value::clear ();
   return Qt;
 }
@@ -564,10 +566,10 @@ Fimport (lisp symbols, lisp package)
 {
   package = coerce_to_package (package);
   if (symbols != Qnil && !consp (symbols))
-    import (symbols, package);
+    import_symbol (symbols, package);
   else
     for (; consp (symbols); symbols = xcdr (symbols))
-      import (xcar (symbols), package);
+      import_symbol (xcar (symbols), package);
   multiple_value::clear ();
   return Qt;
 }
@@ -635,6 +637,20 @@ Fsi_package_external (lisp package)
   return xpackage_external (coerce_to_package (package));
 }
 
+lisp
+Fsi_package_documentation (lisp package)
+{
+  return xpackage_documentation (coerce_to_package (package));
+}
+
+lisp
+Fsi_set_package_documentation (lisp package, lisp documentation)
+{
+  check_string (documentation);
+  xpackage_documentation (coerce_to_package (package)) = documentation;
+  return documentation;
+}
+
 static lisp
 lookup (u_int hash, const Char *s, int size, lisp vector)
 {
@@ -653,11 +669,11 @@ lookup (u_int hash, const Char *s, int size, lisp vector)
 }
 
 void
-maybe_symbol_string::parse (const Char *&xb, int &xl)
+maybe_symbol_string::parse (Char *&xb, int &xl)
 {
-  const Char *b = xb;
-  const Char *be = b + xl;
-  for (const Char *colon = b; colon < be; colon++)
+  Char *b = xb;
+  Char *be = b + xl;
+  for (Char *colon = b; colon < be; colon++)
     if (*colon == ':')
       {
         if (colon == b)
@@ -724,7 +740,7 @@ Flookup_symbol (lisp from, lisp to, lisp package)
   return Qnil;
 }
 
-static int
+int
 count_symbols (lisp vector)
 {
   int size = 0;

@@ -7,12 +7,13 @@
 
 (in-package "editor")
 
-(export '(*html-default-doctype* *html-keyword-file* *html-doctypes*
+(export '(*html-default-doctype* *html-keyword-file* *html5-keyword-file* *html-doctypes*
 	  *html-ignore-doctype-declaration*
 	  html-find-doctype html-current-doctype html-load-keyword-file))
 
 (defvar *html-default-doctype* "HTML4.01 Frameset")
 (defvar *html-keyword-file* "HTML")
+(defvar *html5-keyword-file* "HTML5")
 (defvar *html-ignore-doctype-declaration* nil)
 
 (defvar *html-doctypes*
@@ -120,7 +121,11 @@
      "J-?Sky\\(Web\\)?[ \t\r\n]*Station")
     ("doti1.0"
      nil
-     "\\(doti\\)[^0-9]*\\(1\\|$\\)")))
+     "\\(doti\\)[^0-9]*\\(1\\|$\\)")
+    ("HTML5.0"
+     "html"
+     nil)
+    ))
 
 (defvar *html-keyword-hash-list* nil)
 
@@ -155,6 +160,12 @@
   (and (hash-table-p keyword-hash-table)
        (gethash 'keyword-condition keyword-hash-table)))
 
+(defun html-keyword-file (doctype)
+  (cond ((string-match "HTML5" doctype)
+	 *html5-keyword-file*)
+	(t
+	 *html-keyword-file*)))
+
 (defun html-load-keyword-file (doctype)
   (interactive
       (list (completing-read "doctype: "
@@ -170,7 +181,7 @@
     (let* ((hash (cdr (assoc doctype *html-keyword-hash-list*
 			     :test #'string=))))
       (unless hash
-	(setq hash (load-keyword-file *html-keyword-file*
+	(setq hash (load-keyword-file (html-keyword-file doctype)
 				      (not (string-match "XHTML" doctype))
 				      nil doctype))
 	(when hash

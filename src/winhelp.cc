@@ -140,7 +140,7 @@ iset::find_topic (ifile *f)
     {
       char buf[300];
       int nchars = GETC ();
-      for (i = 0; i < nchars; i++)
+      for (int i = 0; i < nchars; i++)
         buf[i] = GETC ();
       if (help_index >= 0 && help_index < f->if_nfiles)
         {
@@ -399,8 +399,6 @@ Ffind_winhelp_path (lisp index_file, lisp ltopic)
 
 typedef HWND (WINAPI *HTMLHELPPROC)(HWND, LPCSTR, UINT, DWORD);
 
-static HTMLHELPPROC HtmlHelp = (HTMLHELPPROC)GetProcAddress (LoadLibrary ("hhctrl.ocx"),
-                                                             "HtmlHelpA");
 #define HH_KEYWORD_LOOKUP 0xd
 #define HH_GET_LAST_ERROR 0x14
 
@@ -429,6 +427,8 @@ Fhtml_help (lisp lfile, lisp lkeyword)
   check_string (lfile);
   check_string (lkeyword);
 
+  static HTMLHELPPROC HtmlHelp = (HTMLHELPPROC)GetProcAddress (LoadLibrary ("hhctrl.ocx"),
+                                                               "HtmlHelpA");
   if (!HtmlHelp)
     FEsimple_error (Ehtml_help_does_not_supported);
 

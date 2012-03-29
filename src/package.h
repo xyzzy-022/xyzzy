@@ -12,6 +12,7 @@ public:
   lisp shadowings;
   lisp internal;
   lisp external;
+  lisp documentation;
 };
 
 # define packagep(X) typep ((X), Tpackage)
@@ -71,6 +72,13 @@ xpackage_external (lisp x)
   return ((lpackage *)x)->external;
 }
 
+inline lisp &
+xpackage_documentation (lisp x)
+{
+  assert (packagep (x));
+  return ((lpackage *)x)->documentation;
+}
+
 inline lpackage *
 make_package ()
 {
@@ -82,11 +90,13 @@ make_package ()
   p->shadowings = Qnil;
   p->internal = Qnil;
   p->external = Qnil;
+  p->documentation = Qnil;
   return p;
 }
 
 lisp coerce_to_package (lisp);
 lisp make_package (lisp, lisp, int = 211, int = 103);
+int count_symbols (lisp vector);
 
 class maybe_symbol_string
 {
@@ -95,7 +105,7 @@ class maybe_symbol_string
 public:
   maybe_symbol_string (lisp pkg) : package (pkg), pkge (0) {}
   lisp current_package () const {return package;}
-  void parse (const Char *&b, int &l);
+  void parse (Char *&b, int &l);
   const Char *pkg_end () const {return pkge;}
 };
 

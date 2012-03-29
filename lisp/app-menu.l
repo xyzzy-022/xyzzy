@@ -400,6 +400,8 @@
 	   (:sep :above-insert-date)
 	   (:item :tag-command "日付と時刻の挿入(&M)..."
 	    'insert-date-string)
+	   (:item :tag-command "ショートカットの作成(&N)..."
+	    'create-xyzzy-shortcut-dialog)
 	   (:item :tag-command "ファイラ(&F)..."
 	    'open-filer)
 	   (:menu nil "辞書(&I)"

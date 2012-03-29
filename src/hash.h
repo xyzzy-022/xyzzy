@@ -82,4 +82,6 @@ lhash_table *make_hash_table ();
 int equalp (lhash_table *, lhash_table *);
 lChar Char_hash (Char, lisp);
 
+void hash_table_rehash (lisp hash_table, int inc = 0);
+
 #endif

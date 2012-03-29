@@ -43,6 +43,11 @@
 
 (defvar *pop-up-windows* t)
 
+(define-condition no-window-error (range-error)
+  ()
+  (:report (lambda (c s) (format s "他にウィンドウがありません")))
+  (:important nil))
+
 (defun count-windows (&optional minibuf)
   (let ((count 1)
 	(current (selected-window))
@@ -105,13 +110,13 @@
 	  (setq target (next-window target))
 	  (when (eq target current)
 	    (and f (not no-error)
-		 (error 'range-error :datum arg))
+		 (error 'no-window-error :datum arg))
 	    (return)))
       (dotimes (x (- arg))
 	(setq target (previous-window target))
 	  (when (eq target current)
 	    (and f (not no-error)
-		 (error 'range-error :datum arg))
+		 (error 'no-window-error :datum arg))
 	    (return))))
     (set-window target)))
 

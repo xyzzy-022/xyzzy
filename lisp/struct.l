@@ -68,14 +68,14 @@
 		 ((null (car v)) (setq conc-name ""))
 		 (t (setq conc-name (string (car v))))))
 	  (:constructor
-	   (cond ((endp v))
-		 ((null (car v))
-		  (setq default-constructor nil))
-		 ((endp (cdr v))
+	   (cond ((endp v))           ; :constructor 指定なし
+		 ((null (car v)))     ; (:constructor)
+		 ((endp (cdr v))      ; (:constructor make-foo)
 		  (push (car v) constructors)
 		  (setq default-constructor nil))
-		 (t
-		  (push v constructors))))
+		 (t                   ; (:constructor make-foo (args...))
+		  (push v constructors)
+		  (setq default-constructor nil))))
 	  (:copier
 	   (cond ((endp v))
 		 ((null (car v)) (setq copier nil))
@@ -327,14 +327,15 @@
 		 (defstruct-parse-lambda-list (cadr c) slots)
 	       (push `(defun ,(car c) ,lambda-list
 			(let ((,object (*make-structure-data ,def)))
-			  ,@(let ((inits '())
-				  (i 0))
+			  ,@(let ((inits '()))
 			      (dolist (desc slots inits)
 				(let ((v (member (car desc) init-vars :test #'string=)))
-				  (when v
-				    (push `(*set-index-slot-value ,object ,i ,(car v))
-					  inits)
-				    (incf i)))))
+				  (cond (v
+					 (push `(*set-slot-value ,object ,(car desc) ,(car v))
+					       inits))
+					((not (eq (cadr desc) *option-not-specified*))
+					 (push `(*set-slot-value ,object ,(car desc) ,(cadr desc))
+					       inits))))))
 			  ,object))
 		     forms)))))
     forms))
@@ -354,14 +355,36 @@
 		forms)))
       (incf i))))
 
+(defun create-print-function (print-function)
+  (when print-function
+    (labels ((rec (pf)
+	       (cond ((si:*closurep pf)
+		      ;; 親から継承した場合
+		      pf)
+		     ((symbolp pf)
+		      ;; :print-function foo の場合
+		      `',pf)
+		     ((eq (safe-car pf) 'lambda)
+		      ;; :print-function (lambda (o s p) ...) の場合
+		      `#',pf)
+		     ((eq (safe-car pf) 'function)
+		      ;; :print-function #'foo または
+		      ;; :print-function #'(lambda (o s p) ...) の場合
+		      ;; 警告を出して #' を外す
+		      (warn ":print-functionに関数が指定されました。~%~S の代わりに ~S を指定してください"
+			    print-function (cadr pf))
+		      (rec (cadr pf)))
+		     (t
+		      (error "不正な:print-functionです: ~S" print-function)))))
+      (rec print-function))))
+
 (defun define-structure (name doc conc-name constructors copier predicate
 			 include slots print-function)
   (let ((def (gensym)))
     `(eval-when (:compile-toplevel :load-toplevel :execute)
        (let ((,def (*make-structure-definition ',name nil ,include
 					       ',constructors
-					       ,(when print-function
-						  `#',print-function)
+					       ,(create-print-function print-function)
 					       nil ',slots)))
 	 (setf (get ',name 'structure-definition) ,def)
 	 (setf (get ',name 'lisp::structure-documentation) ,doc)

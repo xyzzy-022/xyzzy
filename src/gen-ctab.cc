@@ -26,19 +26,19 @@ ctype ()
   bzero (buf, sizeof buf);
   for (int i = '0'; i <= '9'; i++)
     buf[i] |= _CTN;
-  for (i = 'A'; i <= 'Z'; i++)
+  for (int i = 'A'; i <= 'Z'; i++)
     buf[i] |= _CTU;
-  for (i = 'a'; i <= 'z'; i++)
+  for (int i = 'a'; i <= 'z'; i++)
     buf[i] |= _CTL;
-  for (i = 0xa1; i <= 0xdf; i++)
+  for (int i = 0xa1; i <= 0xdf; i++)
     buf[i] |= _CTK;
-  for (i = 0x81; i <= 0x9f; i++)
+  for (int i = 0x81; i <= 0x9f; i++)
     buf[i] |= _CTK1;
-  for (i = 0xe0; i <= 0xfc; i++)
+  for (int i = 0xe0; i <= 0xfc; i++)
     buf[i] |= _CTK1;
-  for (i = 0x40; i <= 0x7e; i++)
+  for (int i = 0x40; i <= 0x7e; i++)
     buf[i] |= _CTK2;
-  for (i = 0x80; i <= 0xfc; i++)
+  for (int i = 0x80; i <= 0xfc; i++)
     buf[i] |= _CTK2;
 
   printf ("unsigned char char_type_table[] =\n");
@@ -54,7 +54,7 @@ translate ()
   char buf[256];
   for (int i = 0; i < 256; i++)
     buf[i] = i;
-  for (i = 'a'; i <= 'z'; i++)
+  for (int i = 'a'; i <= 'z'; i++)
     buf[i] = i - 'a' + 'A';
 
   printf ("unsigned char char_translate_upcase_table[] =\n");
@@ -62,9 +62,9 @@ translate ()
   dump (buf, sizeof buf);
   printf ("};\n\n");
 
-  for (i = 0; i < 256; i++)
+  for (int i = 0; i < 256; i++)
     buf[i] = i;
-  for (i = 'A'; i <= 'Z'; i++)
+  for (int i = 'A'; i <= 'Z'; i++)
     buf[i] = i - 'A' + 'a';
 
   printf ("unsigned char char_translate_downcase_table[] =\n");
@@ -72,7 +72,7 @@ translate ()
   dump (buf, sizeof buf);
   printf ("};\n\n");
 
-  for (i = 0; i < 256; i++)
+  for (int i = 0; i < 256; i++)
     buf[i] = i;
 
   printf ("unsigned char char_no_translate_table[] =\n");
@@ -87,11 +87,11 @@ numeric ()
   char buf[128];
   for (int i = 0; i < 128; i++)
     buf[i] = 36;
-  for (i = '0'; i <= '9'; i++)
+  for (int i = '0'; i <= '9'; i++)
     buf[i] = i - '0';
-  for (i = 'A'; i <= 'Z'; i++)
+  for (int i = 'A'; i <= 'Z'; i++)
     buf[i] = i - 'A' + 10;
-  for (i = 'a'; i <= 'z'; i++)
+  for (int i = 'a'; i <= 'z'; i++)
     buf[i] = i - 'a' + 10;
 
   printf ("char char_numeric_table[] =\n");
@@ -106,41 +106,41 @@ ctlchars ()
   char buf[128], buf2[256];
   memset (buf, 0, sizeof buf);
   memset (buf2, 0, sizeof buf2);
-  buf['!'] = CCF_EXCLAM;
-  buf['"'] = CCF_DQUOTE;
-  buf['#'] = CCF_NUMBER;
-  buf['$'] = CCF_DOLLAR;
-  buf['%'] = CCF_PERCENT;
-  buf['&'] = CCF_AMPER;
-  buf['\''] = CCF_QUOTE;
-  buf['('] = CCF_LPAREN;
-  buf[')'] = CCF_RPAREN;
-  buf['*'] = CCF_ASTER;
-  buf['+'] = CCF_PLUS;
-  buf[','] = CCF_COMMA;
-  buf['-'] = CCF_MINUS;
-  buf['.'] = CCF_DOT;
-  buf['/'] = CCF_SLASH;
-  buf['0'] = CCF_0;
-  buf['1'] = CCF_1;
-  buf['2'] = CCF_2;
-  buf['3'] = CCF_3;
-  buf['4'] = CCF_4;
-  buf['5'] = CCF_5;
-  buf['6'] = CCF_6;
-  buf['7'] = CCF_7;
-  buf['8'] = CCF_8;
-  buf['9'] = CCF_9;
-  buf[':'] = CCF_COLON;
-  buf[';'] = CCF_SEMI;
-  buf['<'] = CCF_LT;
-  buf['='] = CCF_EQ;
-  buf['>'] = CCF_GT;
-  buf['`'] = CCF_BACKQ;
-  buf['{'] = CCF_LBRACE;
-  buf['|'] = CCF_VER;
-  buf['}'] = CCF_RBRACE;
-  buf['~'] = CCF_TILDE;
+  buf['!'] = static_cast<byte> (CCF_EXCLAM & 0xFF);
+  buf['"'] = static_cast<byte> (CCF_DQUOTE & 0xFF);
+  buf['#'] = static_cast<byte> (CCF_NUMBER & 0xFF);
+  buf['$'] = static_cast<byte> (CCF_DOLLAR & 0xFF);
+  buf['%'] = static_cast<byte> (CCF_PERCENT & 0xFF);
+  buf['&'] = static_cast<byte> (CCF_AMPER & 0xFF);
+  buf['\''] = static_cast<byte> (CCF_QUOTE & 0xFF);
+  buf['('] = static_cast<byte> (CCF_LPAREN & 0xFF);
+  buf[')'] = static_cast<byte> (CCF_RPAREN & 0xFF);
+  buf['*'] = static_cast<byte> (CCF_ASTER & 0xFF);
+  buf['+'] = static_cast<byte> (CCF_PLUS & 0xFF);
+  buf[','] = static_cast<byte> (CCF_COMMA & 0xFF);
+  buf['-'] = static_cast<byte> (CCF_MINUS & 0xFF);
+  buf['.'] = static_cast<byte> (CCF_DOT & 0xFF);
+  buf['/'] = static_cast<byte> (CCF_SLASH & 0xFF);
+  buf['0'] = static_cast<byte> (CCF_0 & 0xFF);
+  buf['1'] = static_cast<byte> (CCF_1 & 0xFF);
+  buf['2'] = static_cast<byte> (CCF_2 & 0xFF);
+  buf['3'] = static_cast<byte> (CCF_3 & 0xFF);
+  buf['4'] = static_cast<byte> (CCF_4 & 0xFF);
+  buf['5'] = static_cast<byte> (CCF_5 & 0xFF);
+  buf['6'] = static_cast<byte> (CCF_6 & 0xFF);
+  buf['7'] = static_cast<byte> (CCF_7 & 0xFF);
+  buf['8'] = static_cast<byte> (CCF_8 & 0xFF);
+  buf['9'] = static_cast<byte> (CCF_9 & 0xFF);
+  buf[':'] = static_cast<byte> (CCF_COLON & 0xFF);
+  buf[';'] = static_cast<byte> (CCF_SEMI & 0xFF);
+  buf['<'] = static_cast<byte> (CCF_LT & 0xFF);
+  buf['='] = static_cast<byte> (CCF_EQ & 0xFF);
+  buf['>'] = static_cast<byte> (CCF_GT & 0xFF);
+  buf['`'] = static_cast<byte> (CCF_BACKQ & 0xFF);
+  buf['{'] = static_cast<byte> (CCF_LBRACE & 0xFF);
+  buf['|'] = static_cast<byte> (CCF_VER & 0xFF);
+  buf['}'] = static_cast<byte> (CCF_RBRACE & 0xFF);
+  buf['~'] = static_cast<byte> (CCF_TILDE & 0xFF);
 
   for (int i = 0; i < sizeof buf; i++)
     if (buf[i])
@@ -165,9 +165,9 @@ b64tab ()
 
   for (int i = 'A'; i <= 'Z'; i++)
     buf[i] = i - 'A';
-  for (i = 'a'; i <= 'z'; i++)
+  for (int i = 'a'; i <= 'z'; i++)
     buf[i] = i - 'a' + 26;
-  for (i = '0'; i <= '9'; i++)
+  for (int i = '0'; i <= '9'; i++)
     buf[i] = i - '0' + 52;
   buf['+'] = 62;
   buf['/'] = 63;
@@ -196,14 +196,14 @@ utf7tab ()
 
   for (int i = 'A'; i <= 'Z'; i++)
     buf[i] = UTF7_SET_D | UTF7_SET_B;
-  for (i = 'a'; i <= 'z'; i++)
+  for (int i = 'a'; i <= 'z'; i++)
     buf[i] = UTF7_SET_D | UTF7_SET_B;
-  for (i = '0'; i <= '9'; i++)
+  for (int i = '0'; i <= '9'; i++)
     buf[i] = UTF7_SET_D | UTF7_SET_B;
   for (const char *p = "'(),-./:?"; *p; p++)
     buf[*p] = UTF7_SET_D;
 
-  for (p = "!\"#$%&*;<=>@[]^_`{|}"; *p; p++)
+  for (const char *p = "!\"#$%&*;<=>@[]^_`{|}"; *p; p++)
     buf[*p] = UTF7_SET_O;
 
   buf['+'] |= UTF7_SET_B;
@@ -214,9 +214,9 @@ utf7tab ()
   buf['\r'] = UTF7_WHITE;
   buf['\n'] = UTF7_WHITE;
 
-  for (i = 0x20; i <= 0x25; i++)
+  for (int i = 0x20; i <= 0x25; i++)
     buf[i] |= UTF7_IMAP4_MAILBOX_NAME;
-  for (i = 0x27; i <= 0x7e; i++)
+  for (int i = 0x27; i <= 0x7e; i++)
     buf[i] |= UTF7_IMAP4_MAILBOX_NAME;
 
   buf['+'] |= UTF7_SHIFT_CHAR;

@@ -2,6 +2,7 @@
 #include "environ.h"
 #include "conf.h"
 #include "fnkey.h"
+#include "monitor.h"
 
 const char Registry::base[] = "Software\\Free Software\\Xyzzy\\";
 const char Registry::Settings[] = "Settings";
@@ -304,6 +305,24 @@ Fsi_delete_registry_tree ()
 }
 
 lisp
+Fmachine_instance ()
+{
+  return xsymbol_value (Vmachine_name);
+}
+
+lisp
+Fmachine_type ()
+{
+  return xsymbol_value (Vmachine_type);
+}
+
+lisp
+Fmachine_version ()
+{
+  return xsymbol_value (Vmachine_version);
+}
+
+lisp
 Fget_decoded_time ()
 {
   SYSTEMTIME s;
@@ -481,7 +500,8 @@ decode_universal_time (lisp lutc, decoded_time *dt)
     }
   static const int days_in_month[] =
     {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-  for (int mon = 1; mon <= 12; mon++)
+  int mon;
+  for (mon = 1; mon <= 12; mon++)
     {
       int dom = days_in_month[mon];
       if (mon == 2 && leap_year_p (dt->year))
@@ -577,6 +597,18 @@ Fsoftware_version ()
 }
 
 lisp
+Flisp_implementation_type ()
+{
+  return xsymbol_value (Qsoftware_type);
+}
+
+lisp
+Flisp_implementation_version ()
+{
+  return xsymbol_value (Qsoftware_version);
+}
+
+lisp
 Fsoftware_version_display_string ()
 {
   return xsymbol_value (Qsoftware_version_display_string);
@@ -640,10 +672,17 @@ init_environ ()
   else
     xsymbol_value (Vmachine_name) = make_string ("unknown");
 
+  char *processor_id = getenv ("PROCESSOR_IDENTIFIER");
+  if (processor_id)
+    xsymbol_value (Vmachine_version) = make_string (processor_id);
+  else
+    xsymbol_value (Vmachine_version) = Qnil;
+
   xsymbol_value (Vos_major_version) = make_fixnum (sysdep.os_ver.dwMajorVersion);
   xsymbol_value (Vos_minor_version) = make_fixnum (sysdep.os_ver.dwMinorVersion);
   xsymbol_value (Vos_build_number) = make_fixnum (sysdep.os_ver.dwBuildNumber);
   xsymbol_value (Vos_csd_version) = make_string (sysdep.os_ver.szCSDVersion);
+  xsymbol_value (Vprocess_id) = make_fixnum (sysdep.process_id);
 
   switch (sysdep.wintype)
     {
@@ -669,9 +708,10 @@ init_environ ()
 
     case Sysdep::WINTYPE_WINDOWS_NT:
     case Sysdep::WINTYPE_WINDOWS_NT5:
+    case Sysdep::WINTYPE_WINDOWS_NT6:
       xsymbol_value (Vos_platform) = Vwindows_nt;
       xsymbol_value (Vfeatures) = xcons (Kwindows_nt, xsymbol_value (Vfeatures));
-      if (sysdep.wintype == Sysdep::WINTYPE_WINDOWS_NT5)
+      if (sysdep.Win5p ())
         {
           xsymbol_value (Vos_platform) = Vwindows_2000;
           xsymbol_value (Vfeatures) = xcons (Kwindows_2000, xsymbol_value (Vfeatures));
@@ -681,10 +721,50 @@ init_environ ()
               xsymbol_value (Vfeatures) = xcons (Kwindows_xp, xsymbol_value (Vfeatures));
             }
         }
+      if (sysdep.Win6p ())
+        {
+          xsymbol_value (Vos_platform) = Vwindows_vista;
+          xsymbol_value (Vfeatures) = xcons (Kwindows_vista, xsymbol_value (Vfeatures));
+          if (sysdep.version () >= Sysdep::WIN7_VERSION)
+            {
+              xsymbol_value (Vos_platform) = Vwindows_7;
+              xsymbol_value (Vfeatures) = xcons (Kwindows_7, xsymbol_value (Vfeatures));
+            }
+          if (sysdep.version () >= Sysdep::WIN8_VERSION)
+            {
+              xsymbol_value (Vos_platform) = Vwindows_8;
+              xsymbol_value (Vfeatures) = xcons (Kwindows_8, xsymbol_value (Vfeatures));
+            }
+        }
       break;
 
     default:
       xsymbol_value (Vos_platform) = Qnil;
+      break;
+    }
+
+  switch (sysdep.machine_type)
+    {
+    case Sysdep::MACHINETYPE_X86:
+      xsymbol_value (Vfeatures) = xcons (Kx86, xsymbol_value (Vfeatures));
+      xsymbol_value (Vmachine_type) = make_string ("x86");
+      break;
+    case Sysdep::MACHINETYPE_X64:
+      xsymbol_value (Vfeatures) = xcons (Kx64, xsymbol_value (Vfeatures));
+      xsymbol_value (Vmachine_type) = make_string ("x64");
+      break;
+    case Sysdep::MACHINETYPE_IA64:
+      xsymbol_value (Vfeatures) = xcons (Kia64, xsymbol_value (Vfeatures));
+      xsymbol_value (Vmachine_type) = make_string ("IA64");
+    case Sysdep::MACHINETYPE_UNKNOWN:
+      xsymbol_value (Vmachine_type) = Qnil;
+      break;
+    }
+
+  switch (sysdep.process_type)
+    {
+    case Sysdep::PROCESSTYPE_WOW64:
+      xsymbol_value (Vfeatures) = xcons (Kwow64, xsymbol_value (Vfeatures));
       break;
     }
 }
@@ -702,6 +782,7 @@ Fget_system_directory ()
 }
 
 int environ::save_window_size = 1;
+int environ::save_window_snap_size = 0;
 int environ::save_window_position = 1;
 int environ::restore_window_size;
 int environ::restore_window_position;
@@ -710,6 +791,7 @@ int
 environ::load_geometry (int cmdshow, POINT *point, SIZE *size)
 {
   read_conf (cfgMisc, cfgSaveWindowSize, save_window_size);
+  read_conf (cfgMisc, cfgSaveWindowSnapSize, save_window_snap_size);
   read_conf (cfgMisc, cfgSaveWindowPosition, save_window_position);
   read_conf (cfgMisc, cfgWindowFlags, Window::w_default_flags);
   restore_window_size = save_window_size;
@@ -734,12 +816,8 @@ environ::load_geometry (int cmdshow, POINT *point, SIZE *size)
   point->x = point->y = CW_USEDEFAULT;
   size->cx = size->cy = CW_USEDEFAULT;
 
-  SIZE scr;
-  scr.cx = GetSystemMetrics (SM_CXSCREEN);
-  scr.cy = GetSystemMetrics (SM_CYSCREEN);
-
   char name[64];
-  sprintf (name, "%dx%d", scr.cx, scr.cy);
+  make_geometry_key (name, sizeof name, 0);
   WINDOWPLACEMENT w;
   if (read_conf (cfgMisc, name, w)
       && w.rcNormalPosition.left < w.rcNormalPosition.right
@@ -750,25 +828,14 @@ environ::load_geometry (int cmdshow, POINT *point, SIZE *size)
           cmdshow = w.showCmd;
           size->cx = w.rcNormalPosition.right - w.rcNormalPosition.left;
           size->cy = w.rcNormalPosition.bottom - w.rcNormalPosition.top;
-          size->cx = min (size->cx, scr.cx);
-          size->cy = min (size->cy, scr.cy);
         }
       if (environ::restore_window_position)
         {
           point->x = w.rcNormalPosition.left;
           point->y = w.rcNormalPosition.top;
-          if (point->x >= scr.cx)
-            point->x = scr.cx / 2;
-          point->x = max (point->x, LONG (-scr.cx / 2));
-          if (point->y >= scr.cy)
-            point->y = scr.cy / 2;
-          point->y = max (point->y, LONG (-scr.cy / 2));
-          if (environ::restore_window_size)
+          if (!monitor.get_monitor_from_point (*point))
             {
-              if (point->x + size->cx < 10)
-                point->x = 0;
-              if (point->y + size->cy < 10)
-                point->y = 0;
+              point->x = point->y = CW_USEDEFAULT;
             }
         }
     }
@@ -780,6 +847,7 @@ void
 environ::save_geometry ()
 {
   save_window_size = xsymbol_value (Vsave_window_size) != Qnil;
+  save_window_snap_size = xsymbol_value (Vsave_window_snap_size) != Qnil;
   save_window_position = xsymbol_value (Vsave_window_position) != Qnil;
 
   if (save_window_size || save_window_position)
@@ -788,9 +856,16 @@ environ::save_geometry ()
       w.length = sizeof w;
       if (GetWindowPlacement (app.toplev, &w))
         {
+          RECT r;
+          if (save_window_snap_size && w.showCmd == SW_SHOWNORMAL && GetWindowRect (app.toplev, &r))
+            {
+              w.rcNormalPosition.left = r.left;
+              w.rcNormalPosition.top = r.top;
+              w.rcNormalPosition.right = r.right;
+              w.rcNormalPosition.bottom = r.bottom;
+            }
           char name[256];
-          sprintf (name, "%dx%d",
-                   GetSystemMetrics (SM_CXSCREEN), GetSystemMetrics (SM_CYSCREEN));
+          make_geometry_key (name, sizeof name, 0);
           if (!save_window_size || !save_window_position)
             {
               WINDOWPLACEMENT ow;
@@ -828,6 +903,7 @@ environ::save_geometry ()
     }
 
   write_conf (cfgMisc, cfgSaveWindowSize, save_window_size);
+  write_conf (cfgMisc, cfgSaveWindowSnapSize, save_window_snap_size);
   write_conf (cfgMisc, cfgSaveWindowPosition, save_window_position);
   write_conf (cfgMisc, cfgRestoreWindowSize,
               xsymbol_value (Vrestore_window_size) != Qnil);
@@ -848,6 +924,36 @@ Fsi_getenv (lisp var)
   w2s (v, var);
   char *e = getenv (v);
   return e ? make_string (e) : Qnil;
+}
+
+lisp
+Fsi_putenv (lisp var, lisp val)
+{
+  check_string (var);
+  int l = xstring_length (var) * 2 + 1 + 1;
+  if (val && val != Qnil)
+    {
+      check_string (val);
+      l += xstring_length (val) * 2;
+    }
+
+  char *v = (char *)alloca (l);
+  char *b = v;
+  v = w2s (v, var);
+  *v++ = '=';
+  if (val && val != Qnil)
+    w2s (v, val);
+  else
+    *v++ = 0;
+
+  int r = _putenv (b);
+  return (r < 0 || !val) ? Qnil : val;
+}
+
+lisp
+Fsi_getpid ()
+{
+  return xsymbol_value (Vprocess_id);
 }
 
 lisp

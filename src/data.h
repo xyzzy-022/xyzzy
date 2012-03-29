@@ -133,4 +133,6 @@ void combine_syms ();
 int rdump_xyzzy ();
 void cleanup_lisp_objects ();
 
+void rehash_all_hash_tables ();
+
 #endif

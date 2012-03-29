@@ -317,6 +317,12 @@ read_suppress_p ()
   return xsymbol_value (Vread_suppress) != Qnil;
 }
 
+static inline int
+read_eval_p ()
+{
+  return xsymbol_value (Vread_eval) != Qnil;
+}
+
 static void
 multiple_escape (lisp stream, Token &token, lisp readtab)
 {
@@ -582,7 +588,8 @@ read_delimited_list (lisp stream, Char delim, int &len)
 static int
 read_escape_sequence (lisp stream, int val, int base, int nchars)
 {
-  for (int i = 0; i < nchars; i++)
+  int i;
+  for (i = 0; i < nchars; i++)
     {
       lChar c = readc_stream (stream);
       if (c == lChar_EOF)
@@ -999,6 +1006,8 @@ number_colon_reader (lisp stream, Char, dispmacro_param &param)
 static lisp
 number_dot_reader (lisp stream, Char, dispmacro_param &param)
 {
+  if (!read_eval_p ())
+    reader_error (stream, Enot_allow_evaluation);
   if (!read_suppress_p () && param.present)
     reader_error (stream, Einvalid_midfix_parameter);
   lisp object = lisp_parser (stream);
@@ -1154,7 +1163,7 @@ number_A_reader (lisp stream, Char, dispmacro_param &param)
   count_dimensions (stream, object, dims, rank - 1);
 
   lisp d = Qnil;
-  for (i = 0; i < rank; i++)
+  for (int i = 0; i < rank; i++)
     d = xcons (make_fixnum (dims[i]), d);
 
   lisp array = Fsi_make_array (d, Qt, Qnil, Qnil, Qnil, Qnil);
@@ -1502,7 +1511,8 @@ get_reader_macro_function (lisp fn)
 static void
 default_readtable (readtab_rep *const r)
 {
-  for (int i = 0; i < ' '; i++)
+  int i;
+  for (i = 0; i < ' '; i++)
     {
       r[i].type = SCT_ILLEGAL;
       r[i].cfunc = 0;
@@ -1572,7 +1582,8 @@ static void
 copy_readtable (const readtab_rep *oldr, readtab_rep *newr)
 {
   memcpy (newr, oldr, sizeof *newr * READTABLE_REP_SIZE);
-  for (readtab_rep *r = newr, *const e = r + READTABLE_REP_SIZE; r < e; r++)
+  readtab_rep *r = newr, *const e = r + READTABLE_REP_SIZE;
+  for (; r < e; r++)
     r->disp = 0;
   for (; newr < e; oldr++, newr++)
     if (oldr->disp)
@@ -1951,7 +1962,8 @@ Fread_into (lisp string, lisp stream, lisp eof_error_p, lisp eof_value, lisp max
       if (l <= 0 || l > xstring_dimension (string))
         FErange_error (max_length);
     }
-  for (Char *p = xstring_contents (string), *const pe = p + l; p < pe; p++)
+  Char *p = xstring_contents (string), *const pe = p + l;
+  for (; p < pe; p++)
     {
       lChar c = readc_stream (stream);
       if (c == lChar_EOF)

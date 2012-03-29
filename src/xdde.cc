@@ -220,12 +220,14 @@ Dde::wild_connect (HSZ topic, HSZ service, CONVCONTEXT *cc)
   if (service && service != hsz_server)
     return 0;
 
-  for (int ntopics = 0; DdeServerTopicList[ntopics].topic; ntopics++)
+  int ntopics;
+  for (ntopics = 0; DdeServerTopicList[ntopics].topic; ntopics++)
     ;
 
   HSZ *hsz = (HSZ *)alloca ((ntopics + 1) * sizeof *hsz * 2);
 
-  for (int i = 0, j = 0; i < ntopics; i++)
+  int i, j;
+  for (i = 0, j = 0; i < ntopics; i++)
     if (!topic || !DdeCmpStringHandles (topic, DdeServerTopicList[ntopics].hsz_topic))
       {
         hsz[j++] = hsz_server;

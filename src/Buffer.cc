@@ -3,6 +3,7 @@
 #include "filer.h"
 #include "binfo.h"
 #include "buffer-bar.h"
+#include "version.h"
 
 fixed_heap Chunk::c_heap (sizeof (Char) * TEXT_SIZE);
 fixed_heap Chunk::c_breaks_heap (BREAKS_SIZE);
@@ -420,7 +421,8 @@ Buffer::link_list ()
   else
     {
       long ver = 1;
-      for (Buffer *bp = b_blist;; bp = bp->b_next)
+      Buffer *bp;
+      for (bp = b_blist;; bp = bp->b_next)
         {
           int f = bcmp (xstring_contents (lbuffer_name),
                         xstring_contents (bp->lbuffer_name),
@@ -480,7 +482,8 @@ create_default_buffers ()
 Buffer *
 Buffer::find_buffer (const Char *name, int l, long version)
 {
-  for (Buffer *bp = b_blist; bp; bp = bp->b_next)
+  Buffer *bp;
+  for (bp = b_blist; bp; bp = bp->b_next)
     if (xstring_length (bp->lbuffer_name) == l
         && !bcmp (xstring_contents (bp->lbuffer_name), name, l)
         && (version == -1 || version == bp->b_version))
@@ -744,6 +747,8 @@ Fset_buffer_modified_p (lisp flag, lisp buffer)
   bp->b_modified = bp->b_need_auto_save = flag != Qnil;
   bp->modify_mode_line ();
   Buffer::maybe_modify_buffer_bar ();
+  if (!bp->b_modified)
+    bp->save_modtime_undo (bp->b_modtime);
   if (!bp->b_modified && symbol_value (Slock_file, bp) == Kedit)
     bp->unlock_file ();
   return Qt;
@@ -822,7 +827,8 @@ Buffer::dlist_force_add_tail ()
         b_dlist = this;
       else
         {
-          for (Buffer *d = b_dlist; d->b_ldisp; d = d->b_ldisp)
+          Buffer *d;
+          for (d = b_dlist; d->b_ldisp; d = d->b_ldisp)
             ;
           d->b_ldisp = this;
         }
@@ -863,7 +869,7 @@ Buffer::dlist_find ()
       return bp;
   if (b_dlist && b_dlist->b_ldisp)
     return b_dlist->b_ldisp;
-  bp = selected_buffer ();
+  Buffer *bp = selected_buffer ();
   if (!bp->internal_buffer_p ())
     return bp;
   return bp->next_buffer (0);
@@ -1281,7 +1287,7 @@ Buffer::refresh_title_bar () const
   if (stringp (fmt))
     {
       char buf[512 + 10];
-      buffer_info binfo (0, this, 0, 0);
+      buffer_info binfo (0, this, 0, 0, 0);
       *binfo.format (fmt, buf, buf + 512) = 0;
       SetWindowText (app.toplev, buf);
     }
@@ -1340,7 +1346,8 @@ Buffer::change_colors (const XCOLORREF *cc)
     {
       if (b_colors_enable)
         {
-          for (int i = 0; i < USER_DEFINABLE_COLORS; i++)
+          int i;
+          for (i = 0; i < USER_DEFINABLE_COLORS; i++)
             if (b_colors[i] != cc[i])
               break;
           if (i == USER_DEFINABLE_COLORS)
@@ -1378,6 +1385,24 @@ Fset_buffer_colors (lisp lcolors, lisp lbuffer)
       Buffer::coerce_to_buffer (lbuffer)->change_colors (cc);
     }
   return Qt;
+}
+
+lisp
+Fget_buffer_colors (lisp lbuffer)
+{
+  lisp v = make_vector (USER_DEFINABLE_COLORS, Qnil);
+  Buffer *bp = Buffer::coerce_to_buffer (lbuffer);
+  if (bp->b_colors_enable)
+    {
+      for (int i = 0; i < USER_DEFINABLE_COLORS; i++)
+        xvector_contents (v) [i] = make_fixnum (bp->b_colors[i]);
+    }
+  else
+    {
+      for (int i = 0; i < USER_DEFINABLE_COLORS; i++)
+        xvector_contents (v) [i] = make_fixnum (Window::default_xcolors[i]);
+    }
+  return v;
 }
 
 void

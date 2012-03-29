@@ -19,9 +19,11 @@ main ()
     }
 
   int buf[sizeof jisx0212_width_table * 8];
-  for (int hashsize = nic;; hashsize++)
+  int hashsize;
+  for (hashsize = nic;; hashsize++)
     {
       memset (buf, -1, sizeof *buf * hashsize);
+      int i;
       for (i = 0; i < nic; i++)
         {
           if (buf[ic[i] % hashsize] != -1)
@@ -33,7 +35,7 @@ main ()
     }
 
   printf ("static const Char jisx0212_half_width_table[] = {");
-  for (i = 0; i < nic; i++)
+  for (int i = 0; i < nic; i++)
     {
       if (!(i % 8))
         printf ("\n");
@@ -44,7 +46,7 @@ main ()
   printf ("#define JISX0212_HALF_WIDTH_HASH_SIZE %d\n\n", hashsize);
 
   printf ("static const u_char jisx0212_half_width_hash[] = {");
-  for (i = 0; i < hashsize; i++)
+  for (int i = 0; i < hashsize; i++)
     {
       if (!(i % 8))
         printf ("\n");

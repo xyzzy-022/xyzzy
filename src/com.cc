@@ -1,7 +1,9 @@
 #include "ed.h"
 #include <shlobj.h>
+#include <propkey.h>
 #include "com.h"
 #include "oleconv.h"
+#include "sysdep.h"
 
 static void
 set_desc (IShellLink *sl, lisp ldesc)
@@ -17,6 +19,32 @@ set_args (IShellLink *sl, lisp largs)
   char *b = (char *)alloca (xstring_length (largs) * 2 + 1);
   w2s (b, largs);
   ole_error (sl->SetArguments (b));
+}
+
+static void
+set_appid (IShellLink *sl, lisp lappid)
+{
+  if (!sysdep.Win6_1p ())
+    return;
+
+  char *b = (char *)alloca (xstring_length (lappid) * 2 + 1);
+  w2s (b, lappid);
+
+  int l = (strlen (b) + 1);
+  wchar_t *w = (wchar_t *)alloca (l * sizeof (wchar_t));
+  MultiByteToWideChar (CP_ACP, 0, b, -1, w, l);
+
+  safe_com <IPropertyStore> store;
+  ole_error (sl->QueryInterface (IID_PPV_ARGS(&store)));
+
+  PROPVARIANT pv;
+  PropVariantClear (&pv);
+
+  pv.vt = VT_LPWSTR;
+  pv.pwszVal = w;
+
+  ole_error (store->SetValue (PKEY_AppUserModel_ID, pv));
+  ole_error (store->Commit ());
 }
 
 lisp
@@ -43,6 +71,9 @@ Fcreate_shortcut (lisp lobject, lisp llink, lisp keys)
     show = SW_SHOWMINIMIZED;
   else
     show = SW_SHOWNORMAL;
+  lisp lappid = find_keyword (Kappid, keys, 0);
+  if (lappid)
+    check_string (lappid);
 
   safe_com <IShellLink> sl;
   ole_error (CoCreateInstance (CLSID_ShellLink, 0, CLSCTX_INPROC_SERVER,
@@ -82,6 +113,8 @@ Fcreate_shortcut (lisp lobject, lisp llink, lisp keys)
     }
   if (lshow)
     ole_error (sl->SetShowCmd (show));
+  if (lappid)
+    set_appid (sl, lappid);
 
   safe_com <IPersistFile> pf;
   ole_error (sl->QueryInterface (IID_IPersistFile, (void **)&pf));
@@ -210,7 +243,8 @@ Fole_drop_files (lisp lpath, lisp lclsid, lisp ldir, lisp lfiles)
   int maxl = strlen (dir);
 
   lisp f = lfiles;
-  for (int nfiles = 0; consp (f); f = xcdr (f), nfiles++)
+  int nfiles;
+  for (nfiles = 0; consp (f); f = xcdr (f), nfiles++)
     {
       check_string (xcar (f));
       maxl = max (maxl, xstring_length (xcar (f)));
@@ -244,7 +278,8 @@ Fole_drop_files (lisp lpath, lisp lclsid, lisp ldir, lisp lfiles)
   safe_vidl (ialloc, idls, nfiles);
 
   f = lfiles;
-  for (int i = 0; i < nfiles && consp (f); i++, f = xcdr (f))
+  int i;
+  for (i = 0; i < nfiles && consp (f); i++, f = xcdr (f))
     {
       i2w (xcar (f), wbuf);
       ole_error (sf->ParseDisplayName (0, 0, wbuf, &eaten, &idls[i], 0));

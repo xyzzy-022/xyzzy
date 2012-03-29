@@ -303,7 +303,7 @@ Buffer::save_modtime_undo (const FileTime &modtime)
 {
   for (UndoInfo *u = b_undo; u; u = u->prev ())
     u->modify ();
-  for (u = b_redo; u; u = u->prev ())
+  for (UndoInfo *u = b_redo; u; u = u->prev ())
     u->modify ();
 }
 

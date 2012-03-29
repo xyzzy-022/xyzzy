@@ -1514,14 +1514,21 @@ listen_stream (lisp stream)
         {
         case st_file_io:
         case st_file_input:
+          {
 #ifdef _MSC_VER
-          if (xfile_stream_input (stream)->_cnt > 0)
-            return 1;
+            if (xfile_stream_input (stream)->_cnt > 0)
+              return 1;
 #else
 # error "Not Supported"
 #endif
-          return WaitForSingleObject (HANDLE (_get_osfhandle (_fileno (xfile_stream_input (stream)))),
-                                      0) != WAIT_TIMEOUT;
+            if (WaitForSingleObject (HANDLE (_get_osfhandle (_fileno (xfile_stream_input (stream)))),
+                                     0) == WAIT_TIMEOUT)
+              return 0;
+
+            int c = getc (xfile_stream_input (stream));
+            ungetc (c, xfile_stream_input (stream));
+            return c != EOF;
+          }
 
         case st_file_output:
         case st_string_output:
@@ -1533,7 +1540,11 @@ listen_stream (lisp stream)
           return 0;
 
         case st_string_input:
-          return 1;
+          {
+            lisp string = xstring_stream_input (stream);
+            return (xstring_stream_start (stream) < xstring_length (string)
+                    || xstring_stream_start (stream) < xstring_stream_end (stream));
+          }
 
         case st_synonym:
           QUIT;
@@ -1812,8 +1823,8 @@ write_stream (lisp stream, const Char *b, size_t size)
         case st_file_output:
         case st_file_io:
           {
-            for (const Char *be = b + size; b < be; b++)
-              putc_file_stream (stream, *b);
+            for (size_t i = 0; i < size; i++)
+              putc_file_stream (stream, b[i]);
             xstream_column (stream) = update_column (xstream_column (stream), b, size);
             return;
           }
@@ -1874,8 +1885,8 @@ write_stream (lisp stream, const Char *b, size_t size)
         case st_socket:
           try
             {
-              for (const Char *be = b + size; b < be; b++)
-                putc_sock_stream (stream, *b);
+              for (size_t i = 0; i < size; i++)
+                putc_sock_stream (stream, b[i]);
               xstream_column (stream) = update_column (xstream_column (stream), b, size);
             }
           catch (sock_error &e)

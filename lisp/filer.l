@@ -53,7 +53,7 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
     ("実行ファイル" "*.exe" "*.com" "*.bat" "*.pif")
     ("アーカイブ" . ("*.lzh" "*.zip" "*.arj" "*.tar" "*.bz2" "*.gz"
 		 "*.Z" "*.tbz" "*.taz" "*.tgz" "*.cab" "*.rar"
-		 "*.gza" "*.bza" "*.yz1" "*.7z"))
+		 "*.gza" "*.bza" "*.yz1" "*.7z" "*.lzma" "*.xz"))
     ("バックアップ" "*~" "*.bak")
     ("自動セーブ" "#*#")))
 
@@ -910,6 +910,8 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
 		      ((string-matchp "\\.tar\\.gz$" file) file)
 		      ((string-matchp "\\.tar\\.bz2$" file) file)
 		      ((string-matchp "\\.tar\\.Z$" file) file)
+		      ((string-matchp "\\.tar\\.lzma$" file) file)
+		      ((string-matchp "\\.tar\\.xz$" file) file)
 		      ((string-matchp "\\.tbz$" file) file)
 		      ((string-matchp "\\.tgz$" file) file)
 		      ((string-matchp "\\.taz$" file) file)

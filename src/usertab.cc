@@ -356,7 +356,8 @@ Ftab_bar_add_item (lisp name, lisp item, lisp string,
   u[user_tab_bar::UTB_AFTER] = find_keyword (Kafter, keys);
 
   int pos = user_tab_bar::UTB_LAST;
-  for (int i = 0, n = 0; i < user_tab_bar::UTB_MAX; i++)
+  int i, n;
+  for (i = 0, n = 0; i < user_tab_bar::UTB_MAX; i++)
     if (u[i] != Qnil)
       {
         pos = i;

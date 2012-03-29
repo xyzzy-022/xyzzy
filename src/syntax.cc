@@ -21,7 +21,8 @@ Fmake_syntax_table ()
   p->comment_column = -1;
   xsyntax_table (x) = p;
 
-  for (int i = 0; i <= ' '; i++)
+  int i;
+  for (i = 0; i <= ' '; i++)
     xchar_syntax (p, i) = SCjunk;
   xchar_syntax (p, ' ') = SCwhite;
   xchar_syntax (p, '\t') = SCwhite;
@@ -3878,7 +3879,7 @@ lisp syntax_state::ss_hashtab;
 const syntax_table *syntax_state::ss_tab;
 Buffer *syntax_state::ss_bp;
 Chunk *syntax_state::ss_chunk;
-void (syntax_state::*syntax_state::update)(Char);
+void (syntax_state::*syntax_state::update)(const Char *);
 
 void
 syntax_state::init_color_table ()

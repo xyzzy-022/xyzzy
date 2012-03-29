@@ -71,7 +71,7 @@ init_iso8859 (wc2int_hash &hash, wc2int_hash_rep *rep, int size, int ccs)
   for (int i = 0; i < size; i++)
     rep[i].wc = ucs2_t (-1);
 
-  for (i = 0; i < 128; i++)
+  for (int i = 0; i < 128; i++)
     if (wc[i] != ucs2_t (-1))
       {
         ucs2_t w = wc[i];
@@ -93,7 +93,7 @@ init_wincp (wc2int_hash &hash, wc2int_hash_rep *rep, int size, const Char *to_in
   for (int i = 0; i < size; i++)
     rep[i].wc = ucs2_t (-1);
 
-  for (i = 0; i < 128; i++)
+  for (int i = 0; i < 128; i++)
     {
       ucs2_t wc = i2w (to_int[i]);
       if (wc != ucs2_t (-1))
@@ -245,15 +245,15 @@ make_wc2cp932_table ()
 {
   for (int i = 0; i < 0x10000; i++)
     wc2cp932_table[i] = Char (-1);
-  for (i = 0; i < 0x100; i++)
+  for (int i = 0; i < 0x100; i++)
     if (i2w (i) != Char (-1))
       wc2cp932_table[i2w (i)] = i;
-  for (i = 0x8100; i <= 0x9fff; i++)
+  for (int i = 0x8100; i <= 0x9fff; i++)
     wc2cp932_table[i2w (i)] = i;
-  for (i = 0xe000; i <= 0xfcff; i++)
+  for (int i = 0xe000; i <= 0xfcff; i++)
     wc2cp932_table[i2w (i)] = i;
   wc2cp932_table[0xffff] = Char (-1);
-  for (i = CCS_UTF16_SURROGATE_HIGH_MIN; i <= CCS_UTF16_SURROGATE_LOW_MAX; i++)
+  for (int i = CCS_UTF16_SURROGATE_HIGH_MIN; i <= CCS_UTF16_SURROGATE_LOW_MAX; i++)
     wc2cp932_table[i] = i;
 
   COPY_DIFF_TABLE (wc2cp932_table,
@@ -285,7 +285,8 @@ init_wc2perlang_table (Char *const tab, int min, int max,
                        const Char *wincr, int nwincr,
                        const Char *rest, int nrest)
 {
-  for (int i = 0; i < 0x80; i++)
+  int i;
+  for (i = 0; i < 0x80; i++)
     tab[i] = i;
   for (; i < 0x10000; i++)
     tab[i] = Char (-1);

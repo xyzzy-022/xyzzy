@@ -24,7 +24,7 @@
 (defun coerce-to-package (x)
   (let ((p (find-package x)))
     (unless p
-      (error "パッケージが見つかりません: ~S" p))
+      (error "パッケージが見つかりません: ~S" x))
     p))
 
 (defun string-or-symbol (x)
@@ -43,11 +43,11 @@
     (setq option :shadow)
     (mapc fn shadow)
     (setq option :shadowing-import-from)
-    (dolist (x (cdr shadowing-import-from))
-      (mapc fn shadow))
+    (dolist (pkg/syms shadowing-import-from)
+      (mapc fn (cdr pkg/syms)))
     (setq option :import-from)
-    (dolist (x (cdr import-from))
-      (mapc fn shadow))
+    (dolist (pkg/syms import-from)
+      (mapc fn (cdr pkg/syms)))
     (setq option :intern)
     (mapc fn intern)
     (clrhash h)
@@ -78,7 +78,8 @@
 	(export '())
 	(nsymbols 0)
 	internal
-	external)
+	external
+	documentation)
     (dolist (opt options)
       (unless (consp opt)
 	(error "defpackageのオプションの形式が不正です: ~S" opt))
@@ -119,6 +120,8 @@
 	       (setq internal (cadr opt)))
 	      ((eq x :external-size)
 	       (setq external (cadr opt)))
+	      ((eq x :documentation)
+	       (setq documentation (cadr opt)))
 	      (t
 	       (error "未サポートのオプションです: ~S" x)))))
     (defpackage-check-dups nsymbols shadow shadowing-import-from import-from intern export)
@@ -130,12 +133,13 @@
 	    intern
 	    export
 	    internal
-	    external)))
+	    external
+	    documentation)))
 
 (defun defpackage-helper (package-name options)
   (setq package-name (string-or-symbol package-name))
   (multiple-value-bind (nicknames shadow shadowing-import use import
-				  intern export internal external)
+				  intern export internal external documentation)
       (defpackage-parse-options (find-package package-name) options)
     (let ((nicknames (and nicknames `(:nicknames ',nicknames)))
 	  (use (if (or shadow shadowing-import (null use)) use `(:use ',use)))
@@ -155,7 +159,9 @@
       (and intern
 	   (push `(mapc #'(lambda (x) (intern x package)) ',intern) forms))
       (and export
-	   (push `(export ',export package) forms))
+	   (push `(export (mapcar #'(lambda (x) (intern x package)) ',export) package) forms))
+      (and documentation
+	   (push `(si:*set-package-documentation package ',documentation) forms))
       (if forms
 	  `(eval-when (:compile-toplevel :load-toplevel :execute)
 	     (let* ((package (or (find-package ,package-name)

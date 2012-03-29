@@ -10,6 +10,7 @@
 #include "thread.h"
 #include "xstrlist.h"
 #include "vwin32.h"
+#include "version.h"
 
 static lisp
 file_error_condition (int e)
@@ -498,7 +499,8 @@ Fpathname_host (lisp pathname)
   if (*p0 != SEPCHAR || p0[1] != SEPCHAR)
     return Qnil;
   p0 += 2;
-  for (const Char *p = p0; p < pe && *p != SEPCHAR; p++)
+  const Char *p;
+  for (p = p0; p < pe && *p != SEPCHAR; p++)
     ;
   if (p == p0)
     return Qnil;
@@ -552,12 +554,15 @@ pathname_name_type (lisp pathname, pathbuf_t buf,
 {
   const Char *p0, *pe;
   pathname = coerce_to_pathname (pathname, buf, p0, pe);
-  for (const Char *p = pe; p > p0; p--)
+  const Char *p;
+  for (p = pe; p > p0; p--)
     if (p[-1] == SEPCHAR)
       break;
-  for (const Char *dot = p; dot < pe && *dot == '.'; dot++)
+  const Char *dot;
+  for (dot = p; dot < pe && *dot == '.'; dot++)
     ;
-  for (const Char *p2 = pe; p2 > dot; p2--)
+  const Char *p2;
+  for (p2 = pe; p2 > dot; p2--)
     if (p2[-1] == '.')
       break;
   name = p;
@@ -715,9 +720,9 @@ Ftruename (lisp pathname)
           if (WINFS::get_file_data (path, fd))
             t = stpcpy (t, fd.cFileName);
           else if (p)
-            memcpy (t, sl, p - sl);
+            t = stpncpy (t, sl, p - sl);
           else
-            strcpy (t, sl);
+            t = stpcpy (t, sl);
           if (!p)
             break;
           *p = '\\';

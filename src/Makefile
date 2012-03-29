@@ -1,6 +1,6 @@
 
 # define VC++ version (4, 6, or 7)
-VCVER=4
+VCVER=10
 
 .SUFFIXES: .cc .rc .res .d
 
@@ -12,6 +12,7 @@ DnD.cc \
 StrBuf.cc \
 Window.cc \
 alloc.cc \
+appid.cc \
 arc-if.cc \
 archiver.cc \
 array.cc \
@@ -94,6 +95,7 @@ resolver.cc \
 search.cc \
 sequence.cc \
 sha1.cc \
+sha2.cc \
 signal.cc \
 sock.cc \
 sockinet.cc \
@@ -140,7 +142,11 @@ CXXOPT=-GF -EHa
 !ENDIF
 
 DEFS=-DSTRICT -DWIN32 -D_WIN32 -D_MT -D__XYZZY__ -DPRIVCTRL_NODLL -DHAVE_DIMM_H -DDEBUG_GC
+!IF "$(VCVER)" == "8" || "$(VCVER)" == "9" || "$(VCVER)" == "10"
+CXX=cl -nologo -Zc:wchar_t- -Zc:forScope- -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_WARNINGS
+!ELSE
 CXX=cl -nologo
+!ENDIF
 CPP=cl -nologo -E
 LD=link -nologo
 LIBS=kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib \
@@ -162,7 +168,7 @@ CFG=r
 
 OUTDIR=d
 OBJS=$(OBJS: = d/)
-CXXFLAGS=-Od -Gz -Gs -Gy -Gi -Gm $(CXXOPT) -W3 -MTd -Zi $(INC) $(DEFS) -DDEBUG -Fo$(OUTDIR)/
+CXXFLAGS=-Od -Gz -Gs -Gy -Gm $(CXXOPT) -W3 -MTd -Zi $(INC) $(DEFS) -DDEBUG -Fo$(OUTDIR)/
 LDFLAGS=-debug -stack:0x2000000 -incremental:yes
 FINAL_TARGET=$(OUTDIR)/$(BUILD)
 
@@ -170,7 +176,7 @@ FINAL_TARGET=$(OUTDIR)/$(BUILD)
 
 OUTDIR=r
 OBJS=$(OBJS: = r/)
-CXXFLAGS=-Ob1 -Og -Oi -Ot -Oy -G5 -Gs -Gy -Gz $(CXXOPT) -W3 -MT -vmb $(INC) $(DEFS) -Fo$(OUTDIR)/
+CXXFLAGS=-Ob1 -Oi -Ot -Oy -Gs -Gy -Gz $(CXXOPT) -W3 -MT -vmb $(INC) $(DEFS) -Fo$(OUTDIR)/
 LDFLAGS=-stack:0x2000000 -map:$(OUTDIR)/xyzzy.map -incremental:no -fixed -opt:ref
 FINAL_TARGET=../$(BUILD)
 
@@ -209,7 +215,6 @@ clean:
 	  $(OUTDIR)\$(BUILD:.exe=.ilk)
 	rm -f gen-syms.obj gen-syms.exe gen-ctab.obj gen-ctab.exe
 	rm -f gen-ktab.obj gen-ktab.exe gen-msg.obj gen-msg.exe
-	rm -f gen-vinf.obj gen-vinf.exe verinfo.h
 	rm -f gen-ucs2tab.obj gen-ucs2tab.exe
 	rm -f gen-utf2sjis.obj gen-utf2sjis.exe
 	rm -f gen-char-width.obj gen-char-width.exe
@@ -219,8 +224,8 @@ clean:
 	rm -f dpp.exe dpp.obj num-arith.h
 
 distclean: clean
-	rm -f vars-decl.h fns-decl.h symtable.cc chtab.cc msgcode.h \
-	  dumpver.cc msgdef.cc kanjitab.h char-width.h \
+	rm -f vars-decl.h fns-decl.h symtable.gen.cc chtab.gen.cc msgcode.h \
+	  dumpver.gen.cc msgdef.gen.cc kanjitab.h char-width.h \
 	  gen-jisx0212-width.obj gen-jisx0212-width.exe \
 	  gen-lucida-width.obj gen-lucida-width.exe \
 	  gen-fontrange.obj gen-fontrange.exe \
@@ -269,9 +274,12 @@ TMPFILE=tmpfile.$$$$
 $(OUTDIR)/xyzzy.res: $(OUTDIR)/xyzzy.rc
 	rc -r -fo$@ $(RCFLAGS) $(OUTDIR)/xyzzy.rc
 
-$(OUTDIR)\xyzzy.rc: xyzzy.rc verinfo.h
+$(OUTDIR)\xyzzy.rc: xyzzy.rc version-rc.h
 	type xyzzy.rc > $@
-	type verinfo.h >> $@
+	type version-rc.h >> $@
+
+version-describe.gen.h:
+	..\misc\update_version_describe.bat
 
 vars-decl.h: gen-syms.exe
 	-@if exist $@ del $@ > nul
@@ -283,17 +291,20 @@ fns-decl.h: gen-syms.exe
 	.\gen-syms -proto > $(TMPFILE)
 	move $(TMPFILE) $@ > nul
 
-symtable.cc: gen-syms.exe
+symtable.cc: symtable.gen.cc
+symtable.gen.cc: gen-syms.exe
 	-@if exist $@ del $@ > nul
 	.\gen-syms -symtable > $(TMPFILE)
 	move $(TMPFILE) $@ > nul
 
-dumpver.cc: gen-syms.exe version.h
+dumpver.cc: dumpver.gen.cc
+dumpver.gen.cc: gen-syms.exe version.h
 	-@if exist $@ del $@ > nul
 	.\gen-syms -version > $(TMPFILE)
 	move $(TMPFILE) $@ > nul
 
-chtab.cc: gen-ctab.exe
+chtab.cc: chtab.gen.cc
+chtab.gen.cc: gen-ctab.exe
 	-@if exist $@ del $@ > nul
 	.\gen-ctab > $(TMPFILE)
 	move $(TMPFILE) $@ > nul
@@ -303,7 +314,8 @@ msgcode.h: gen-msg.exe
 	.\gen-msg -enum > $(TMPFILE)
 	move $(TMPFILE) $@ > nul
 
-msgdef.cc: gen-msg.exe
+msgdef.cc: msgdef.gen.cc
+msgdef.gen.cc: gen-msg.exe
 	-@if exist $@ del $@ > nul
 	.\gen-msg -c > $(TMPFILE)
 	move $(TMPFILE) $@ > nul
@@ -311,11 +323,6 @@ msgdef.cc: gen-msg.exe
 kanjitab.h: gen-ktab.exe
 	-@if exist $@ del $@ > nul
 	.\gen-ktab > $(TMPFILE)
-	move $(TMPFILE) $@ > nul
-
-verinfo.h: gen-vinf.exe
-	-@if exist $@ del $@ > nul
-	.\gen-vinf > $(TMPFILE)
 	move $(TMPFILE) $@ > nul
 
 ucs2tab.h: gen-ucs2tab.cc
@@ -378,9 +385,6 @@ gen-msg.exe: gen-msg.cc chtab.cc chtype.h msgdef.h
 
 gen-ktab.exe: gen-ktab.cc
 	$(CXX) -Fe$@ -Tpgen-ktab.cc
-
-gen-vinf.exe: gen-vinf.cc version.h
-	$(CXX) -Fe$@ -Tpgen-vinf.cc
 
 gen-ucs2tab.exe: gen-ucs2tab.cc charset.h fontrange.h
 	$(CXX) -Fe$@ -Tpgen-ucs2tab.cc
@@ -486,7 +490,7 @@ $(OUTDIR)/usertab.obj: $(MAINFRAME_H) colors.h
 $(OUTDIR)/usertool.obj: $(MAINFRAME_H)
 $(OUTDIR)/ucs2.obj: ucs2tab.h char-width.h
 $(OUTDIR)/vector.obj: sequence.h
-$(OUTDIR)/version.obj: version.h
+$(OUTDIR)/version.obj: version.h version-describe.gen.h
 $(OUTDIR)/wheel.obj: wheel.h
 $(OUTDIR)/wstream.obj: StrBuf.h wstream.h
 $(OUTDIR)/xdde.obj: xdde.h

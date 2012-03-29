@@ -481,7 +481,8 @@ read_optargs (argments &args)
       pe = strchr (p0, ',');
       if (!pe)
         pe = p0 + strlen (p0);
-      for (char *p = pe; p > p0 && (isalnum (p[-1]) || p[-1] == '_'); p--)
+      char *p;
+      for (p = pe; p > p0 && (isalnum (p[-1]) || p[-1] == '_'); p--)
         ;
       if (p == pe || p == p0)
         break;
@@ -534,7 +535,7 @@ process_proc ()
 
   while (process_body (body, rettype, name, args))
     ;
-  for (i = 0; i < (args.nargs == 1 ? LMAX : LMAX * LMAX); i++)
+  for (int i = 0; i < (args.nargs == 1 ? LMAX : LMAX * LMAX); i++)
     {
       if (i % LMAX <= args.argtype && i / LMAX <= args.argtype
           && body[i] == NOT_DEFINED)

@@ -2,6 +2,8 @@
 #ifndef _fns_h_
 # define _fns_h_
 
+# include "xcolor.h"
+
 /* eval.cc */
 lisp eval (lisp, lex_env &);
 lisp funcall_1 (lisp, lisp);

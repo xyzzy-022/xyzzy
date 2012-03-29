@@ -81,7 +81,7 @@ make_random_state (lisp keys)
     FEprogram_error (Einvalid_random_state_initializer, v);
   lrandom_state *p = make_random_state ();
   p->object.index = n;
-  for (i = 0; i < Random::INDEX_MAX; i++, x++)
+  for (int i = 0; i < Random::INDEX_MAX; i++, x++)
     p->object.X[i] = fixnum_value (*x);
   return p;
 }
@@ -137,7 +137,7 @@ Fmake_random_state (lisp state)
     state = coerce_to_random_state (state);
   lisp p = make_random_state ();
   if (state == Qt)
-    xrandom_state_object (p).srandom (time (0));
+    xrandom_state_object (p).srandom (static_cast<long> (time (0)));
   else
     xrandom_state_object (p) = xrandom_state_object (state);
   return p;

@@ -47,7 +47,8 @@ struct Sysdep
       WINTYPE_WINDOWS_95,
       WINTYPE_WINDOWS_98,
       WINTYPE_WINDOWS_NT,
-      WINTYPE_WINDOWS_NT5
+      WINTYPE_WINDOWS_NT5,
+      WINTYPE_WINDOWS_NT6,
     };
 
   windows_type wintype;
@@ -57,12 +58,32 @@ struct Sysdep
   HFONT hfont_ruler;
   SIZE ruler_ext;
 
+  enum machine_type
+    {
+      MACHINETYPE_UNKNOWN,
+      MACHINETYPE_X86,
+      MACHINETYPE_X64,
+      MACHINETYPE_IA64,
+    };
+
+  machine_type machine_type;
+
+  enum process_type
+    {
+      PROCESSTYPE_UNKNOWN,
+      PROCESSTYPE_NATIVE,
+      PROCESSTYPE_WOW64,
+    };
+
+  process_type process_type;
 private:
   HFONT hfont_ui;
   HFONT hfont_ui90;
   HFONT hfont_ui270;
   static HFONT create_ui_font (int);
   void init_wintype ();
+  void init_machine_type ();
+  void init_process_type ();
 public:
   HFONT ui_font ();
   HFONT ui_font90 ();
@@ -70,6 +91,7 @@ public:
 
   char curdir[PATH_MAX];
   char host_name[MAX_COMPUTERNAME_LENGTH + 1];
+  DWORD process_id;
 
   __int64 perf_freq;
   int perf_counter_present_p;
@@ -89,6 +111,8 @@ public:
       WIN98_VERSION = PACK_VERSION (4, 10),
       WINME_VERSION = PACK_VERSION (4, 90),
       WINXP_VERSION = PACK_VERSION (5, 1),
+      WIN7_VERSION = PACK_VERSION (6, 1),
+      WIN8_VERSION = PACK_VERSION (6, 2),
     };
   DWORD version () const
     {return PACK_VERSION (os_ver.dwMajorVersion, os_ver.dwMinorVersion);}
@@ -97,6 +121,10 @@ public:
     {return os_ver.dwMajorVersion >= 4;}
   int Win5p () const
     {return os_ver.dwMajorVersion >= 5;}
+  int Win6p () const
+    {return os_ver.dwMajorVersion >= 6;}
+  int Win6_1p () const
+    {return os_ver.dwMajorVersion >= 6 && os_ver.dwMinorVersion >= 1;}
   int Win95p () const
     {return wintype == WINTYPE_WINDOWS_95;}
   int Win98p () const

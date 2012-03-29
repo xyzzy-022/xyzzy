@@ -212,6 +212,15 @@
 
 (setq *ime-reconvert-helper* #'ime-reconvert-helper)
 
+(defun ime-documentfeed-helper ()
+  (save-excursion
+    (let ((curr (point)))
+      (goto-bol)
+      (values (buffer-substring (point) curr)
+	      (buffer-substring (point) (progn (goto-eol) (point)))))))
+
+(setq *ime-documentfeed-helper* #'ime-documentfeed-helper)
+
 (define-key spec-map #\C-c 'rewind-ime-composition)
 (define-key spec-map #\C-d 'delete-last-ime-composition)
 (define-key spec-map #\C-r 'ime-register-word-dialog)

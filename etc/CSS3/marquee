@@ -1,0 +1,22 @@
+;; Marquee
+marquee-direction
+marquee-play-count
+marquee-speed
+marquee-style
+overflow-style
+
+;*2
+alternate
+auto
+fast
+forward
+infinite
+inherit
+initial
+marquee-block
+marquee-line
+normal
+reverse
+scroll
+slide
+slow

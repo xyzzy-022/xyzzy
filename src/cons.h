@@ -10,6 +10,7 @@ public:
 };
 
 # define consp(X) typep ((X), Tcons)
+# define listp(X) ((X) == Qnil || consp (X))
 
 inline void
 check_cons (lisp x)

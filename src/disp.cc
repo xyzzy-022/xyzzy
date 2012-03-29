@@ -6,6 +6,7 @@
 #include "jisx0212-hash.h"
 #include "mainframe.h"
 #include "regex.h"
+#include <list>
 
 class color_caret
 {
@@ -603,7 +604,8 @@ Window::paint_glyphs (HDC hdc, HDC hdcmem, const glyph_t *gstart, const glyph_t 
             ;
           g0 += b - buf;
         }
-      for (const glyph_t *g1 = g;
+      const glyph_t *g1;
+      for (g1 = g;
            g1 > g0 && (g1[-1] & ~GLYPH_COLOR_MASK) == ' ';
            g1--)
         ;
@@ -1000,7 +1002,7 @@ Window::paint_cursor_line (HDC hdc, int f) const
             (hdc, CreatePen (PS_SOLID, 0, w_colors[WCOLOR_CURSOR] ^ w_colors[WCOLOR_BACK]));
           int omode = SetROP2 (hdc, R2_XORPEN);
           MoveToEx (hdc, x1, y, 0);
-          LineTo (hdc, x2 + 1, y);
+          LineTo (hdc, x2, y);
           SetROP2 (hdc, omode);
           DeleteObject (SelectObject (hdc, open));
         }
@@ -1723,10 +1725,10 @@ regexp_kwd::kwdmatch (const Point &point, int scolor, int &revkwd)
                                     }
                                   while (consp (val));
 
-                                  for (i = end - beg - 1; i >= 0; i--)
+                                  for (int i = end - beg - 1; i >= 0; i--)
                                     rk_vals[i] = 0;
 
-                                  for (i = 0; i <= re.re_regs.nregs; i++)
+                                  for (int i = 0; i <= re.re_regs.nregs; i++)
                                     if (vals[i] >= 0)
                                       {
                                         point_t b = re.re_regs.start[i];
@@ -1777,7 +1779,8 @@ regexp_kwd::kwdmatch_begin (const Point &opoint, int scolor)
 
   Chunk *cp = opoint.p_chunk;
   const Char *p = cp->c_text + opoint.p_offset;
-  for (int l = 0; l < MAX_KWDLEN; l++)
+  int l;
+  for (l = 0; l < MAX_KWDLEN; l++)
     {
       if (point.p_point <= rk_last_try)
         break;
@@ -2530,7 +2533,8 @@ Window::find_motion () const
   int offset = (flags () & WF_LINE_NUMBER) ? LINENUM_COLUMNS + 1 : 0;
   glyph_data **og = w_glyphs.g_rep->gr_oglyph;
   glyph_data **ng = w_glyphs.g_rep->gr_nglyph;
-  for (int y1 = 0; y1 < w_ech.cy; y1++)
+  int y1, y2;
+  for (y1 = 0; y1 < w_ech.cy; y1++)
     {
       int f = compare_glyph (og[y1], ng[y1], offset);
       if (f == NO_MATCH)
@@ -2538,7 +2542,7 @@ Window::find_motion () const
       ng[y1]->gd_mod = f != FULL_MATCH;
     }
 
-  for (int y2 = w_ech.cy - 1; y2 > y1; y2--)
+  for (y2 = w_ech.cy - 1; y2 > y1; y2--)
     {
       int f = compare_glyph (og[y2], ng[y2], offset);
       if (f == NO_MATCH)
@@ -2558,7 +2562,8 @@ Window::find_motion () const
       int f = compare_glyph (og[y], ng[y2], offset);
       if (!f)
         continue;
-      for (int oy = y - 1, ny = y2 - 1; oy >= y1; oy--, ny--)
+      int oy, ny;
+      for (oy = y - 1, ny = y2 - 1; oy >= y1; oy--, ny--)
         {
           int f2 = compare_glyph (og[oy], ng[ny], offset);
           if (!f2)
@@ -2575,12 +2580,13 @@ Window::find_motion () const
 
   for (int i = 0; i < 3; i++, y2--)
     {
-      for (y = y2 - 1; y >= y1; y--)
+      for (int y = y2 - 1; y >= y1; y--)
         {
           int f = compare_glyph (og[y2], ng[y], offset);
           if (!f)
             continue;
-          for (int oy = y2 - 1, ny = y - 1; ny >= y1; oy--, ny--)
+          int oy, ny;
+          for (oy = y2 - 1, ny = y - 1; ny >= y1; oy--, ny--)
             {
               int f2 = compare_glyph (og[oy], ng[ny], offset);
               if (!f2)
@@ -2753,6 +2759,7 @@ Window::scroll_lines (int dy)
       glyph_data **ngx = ng;
       glyph_data **osave = (glyph_data **)alloca (sizeof (glyph_data *) * dy * 2);
       glyph_data **nsave = osave + dy;
+      int i;
       for (i = 0; i < dy; i++)
         {
           osave[i] = *og++;
@@ -2785,6 +2792,7 @@ Window::scroll_lines (int dy)
       glyph_data **ngx = ng;
       glyph_data **osave = (glyph_data **)alloca (sizeof (glyph_data *) * dy * 2);
       glyph_data **nsave = osave + dy;
+      int i;
       for (i = 0; i < dy; i++)
         {
           osave[i] = *--og;
@@ -3230,9 +3238,10 @@ format_point (char *b, int l, int c)
 static void
 point_from_end (const char *buf, const char *&bb, const char *&be)
 {
-  for (const char *b = buf + 4; b > buf && b[-1] != ' '; b--)
+  const char *b, *e;
+  for (b = buf + 4; b > buf && b[-1] != ' '; b--)
     ;
-  for (const char *e = buf + 17; *e && *e != ' '; e++)
+  for (e = buf + 17; *e && *e != ' '; e++)
     ;
   bb = b;
   be = e;
@@ -3248,45 +3257,107 @@ calc_point_width (int l, int c)
   return e - b;
 }
 
-int
-Window::paint_mode_line_point (HDC hdc)
+static void
+format_percent(char* buf, int size, int percent)
 {
-  if (w_point_pixel < 0)
+  sprintf_s(buf, size, "%d", percent);
+}
+
+bool
+mode_line_percent_painter::need_repaint_all ()
+{
+	char buf[32];
+	format_percent(buf, 32, m_percent);
+	return m_point_pixel >= 0 && strlen(buf) != m_last_width;
+
+}
+
+int
+mode_line_percent_painter::calc_percent (Buffer* bufp, point_t point)
+{
+  if(bufp->b_nchars > 0)
+    return (100*point) / bufp->b_nchars;
+  if(point == 0) // 0/0, treat as 0.
+	return 0;
+  return -1;
+}
+
+
+int
+mode_line_percent_painter::paint_percent (HDC hdc)
+{
+
+  RECT r;
+  r.top = 1;
+  r.bottom = m_ml_size.cy - 1;
+  r.left = m_point_pixel;
+
+  char nb[32];
+  format_percent(nb, 32, m_percent);
+  m_last_width = strlen(nb);
+
+  SIZE size;
+  GetTextExtentPoint32 (hdc, nb, m_last_width, &size);
+
+  long right = size.cx + r.left;
+  r.right = min(right, m_ml_size.cx - 1);
+
+  ExtTextOut (hdc,
+              m_point_pixel ,
+              1 + m_modeline_paramp->m_exlead,
+              ETO_OPAQUE | ETO_CLIPPED, &r, nb, m_last_width, 0);
+  m_last_percent = m_percent;
+  
+
+  return (int)right;
+}
+
+
+bool
+mode_line_point_painter::need_repaint_all()
+{
+	return m_point_pixel >= 0 && calc_point_width (m_plinenum, m_column) != m_last_ml_point_width;
+}
+
+int
+mode_line_point_painter::paint_point (HDC hdc)
+{
+  if (m_point_pixel < 0)
     return 0;
-  if (w_column == w_last_ml_column && w_plinenum == w_last_ml_linenum)
+  if (m_column == m_last_ml_column && m_plinenum == m_last_ml_linenum)
     return 0;
 
   RECT r;
   r.top = 1;
-  r.bottom = w_ml_size.cy - 1;
+  r.bottom = m_ml_size.cy - 1;
 
   char nb[32];
-  format_point (nb, w_plinenum, w_column);
+  format_point (nb, m_plinenum, m_column);
   const char *b, *e;
   point_from_end (nb, b, e);
-  w_last_ml_point_width = e - b;
+  m_last_ml_point_width = e - b;
 
-  int x0 = (w_point_pixel + app.modeline_param.m_exts[1]
-            - app.modeline_param.m_exts[b - nb]);
-  int right = (x0 + app.modeline_param.m_exts[e - nb]
-               + app.modeline_param.m_exts[1]);
+  int x0 = (m_point_pixel + m_modeline_paramp->m_exts[1]
+            - m_modeline_paramp->m_exts[b - nb]);
+  int right = (x0 + m_modeline_paramp->m_exts[e - nb]
+               + m_modeline_paramp->m_exts[1]);
 
-  if (w_last_ml_linenum < 0)
+  if (m_last_ml_linenum < 0)
     {
-      r.left = w_point_pixel;
-      r.right = min (right, int (w_ml_size.cx - 1));
+      r.left = m_point_pixel;
+      r.right = min (right, int (m_ml_size.cx - 1));
     }
   else
     {
       char ob[32];
-      format_point (ob, w_last_ml_linenum, w_last_ml_column);
+      format_point (ob, m_last_ml_linenum, m_last_ml_column);
       int ib = b - nb, ie = e - nb;
       for (; ib < ie && ob[ib] == nb[ib]; ib++)
         ;
       for (; ie > ib && ob[ie - 1] == nb[ie - 1]; ie--)
         ;
-      r.left = x0 + app.modeline_param.m_exts[ib];
-      r.right = min (x0 + app.modeline_param.m_exts[ie], int (w_ml_size.cx - 1));
+      r.left = x0 + m_modeline_paramp->m_exts[ib];
+      r.right = min (x0 + m_modeline_paramp->m_exts[ie], int (m_ml_size.cx - 1));
       b = nb + ib;
       e = nb + ie;
     }
@@ -3297,19 +3368,21 @@ Window::paint_mode_line_point (HDC hdc)
     ;
 
   ExtTextOut (hdc,
-              x0 + app.modeline_param.m_exts[b - nb],
-              1 + app.modeline_param.m_exlead,
+              x0 + m_modeline_paramp->m_exts[b - nb],
+              1 + m_modeline_paramp->m_exlead,
               ETO_OPAQUE | ETO_CLIPPED, &r, b, e - b, 0);
-  w_last_ml_column = w_column;
-  w_last_ml_linenum = w_plinenum;
+  m_last_ml_column = m_column;
+  m_last_ml_linenum = m_plinenum;
   return right;
 }
+
 
 void
 Window::paint_mode_line (HDC hdc)
 {
   char *b0, *b;
   char *posp = 0;
+  char *percentp = 0;
 
   w_ime_mode_line = 0;
   lisp fmt = symbol_value (Vmode_line_format, w_bufp);
@@ -3320,7 +3393,7 @@ Window::paint_mode_line (HDC hdc)
       b = b0;
       *b++ = ' ';
 
-      buffer_info binfo (this, w_bufp, &posp, &w_ime_mode_line);
+      buffer_info binfo (this, w_bufp, &posp, &w_ime_mode_line, &percentp);
       b = binfo.format (fmt, b, b0 + l);
     }
   else
@@ -3352,26 +3425,73 @@ Window::paint_mode_line (HDC hdc)
   r.right = w_ml_size.cx - 1;
   r.bottom = w_ml_size.cy - 1;
 
-  if (!posp)
+  std::list<mode_line_painter*> painters;
+  w_point_painter.set_posp(posp);
+  w_percent_painter.set_posp(percentp);
+  if(posp) {
+	  w_point_painter.setup_paint(&app.modeline_param, w_column, w_plinenum, w_ml_size);
+	  painters.push_back(&w_point_painter);
+  }
+  else
+  {
+	  w_point_painter.no_format_specifier();
+  }
+
+
+  if(percentp) {
+	  w_percent_painter.setup_paint(&app.modeline_param, mode_line_percent_painter::calc_percent(w_bufp, w_point.p_point), w_ml_size);
+
+	  if(posp && posp > percentp) // tenuki sort.
+		  painters.push_front(&w_percent_painter);
+	  else
+		  painters.push_back(&w_percent_painter);
+  }
+  else
+  {
+	  w_percent_painter.no_format_specifier();
+  }
+
+
+  if (painters.size() == 0)
     {
-      w_point_pixel = -1;
       ExtTextOut (hdc, 1, 1 + app.modeline_param.m_exlead,
                   ETO_OPAQUE | ETO_CLIPPED, &r, b0, b - b0, 0);
     }
   else
     {
-      SIZE size;
-      GetTextExtentPoint32 (hdc, b0, posp - b0, &size);
-      w_point_pixel = 1 + size.cx;
-      r.right = min (w_point_pixel, int (r.right));
-      ExtTextOut (hdc, 1, 1 + app.modeline_param.m_exlead,
-                  ETO_OPAQUE | ETO_CLIPPED, &r, b0, posp - b0, 0);
-      w_last_ml_column = w_last_ml_linenum = -1;
-      r.left = paint_mode_line_point (hdc);
+	  char *b1 = b0;
+	  for(std::list<mode_line_painter*>::iterator it = painters.begin(); it != painters.end(); it++)
+	  {
+		  mode_line_painter * painter = *it;
+
+		  int point_start_px;
+
+		  if(painter->get_posp() - b1 == 0)
+		  {
+			  point_start_px = r.left;
+		  }
+		  else
+		  {
+			  SIZE size;
+			  GetTextExtentPoint32 (hdc, b1, painter->get_posp() - b1, &size);
+
+			  point_start_px = r.left + size.cx;
+
+			  r.right = min (point_start_px, int (w_ml_size.cx - 1));
+			  ExtTextOut (hdc, r.left, 1 + app.modeline_param.m_exlead,
+						  ETO_OPAQUE | ETO_CLIPPED, &r, b1, painter->get_posp() - b1, 0);
+		  }
+
+		  r.left = painter->first_paint(hdc, point_start_px);
+		  b1 = painter->get_posp();
+	  }
+
       r.right = w_ml_size.cx - 1;
       ExtTextOut (hdc, r.left, 1 + app.modeline_param.m_exlead,
-                  ETO_OPAQUE | ETO_CLIPPED, &r, posp, b - posp, 0);
+                  ETO_OPAQUE | ETO_CLIPPED, &r, b1, b - b1, 0);
     }
+
+
 
   SelectObject (hdc, of);
   SetTextColor (hdc, ofg);
@@ -3454,9 +3574,13 @@ Window::redraw_mode_line ()
   int r;
 
   HDC hdc = GetDC (w_hwnd_ml);
+  // a little slow. we can avoid this setup if we check validity.
+  w_point_painter.setup_paint(&app.modeline_param, w_column, w_plinenum, w_ml_size);
+  w_percent_painter.setup_paint(&app.modeline_param, mode_line_percent_painter::calc_percent(w_bufp, w_point.p_point), w_ml_size);
+
   if (w_disp_flags & WDF_MODELINE
-      || (w_point_pixel >= 0
-          && calc_point_width (w_plinenum, w_column) != w_last_ml_point_width))
+      || w_point_painter.need_repaint_all()
+	  || w_percent_painter.need_repaint_all())
     {
       paint_mode_line (hdc);
       w_disp_flags &= ~WDF_MODELINE;
@@ -3476,7 +3600,11 @@ Window::redraw_mode_line ()
           obg = SetBkColor (hdc, w_colors[WCOLOR_MODELINE_BG]);
         }
       HGDIOBJ of = SelectObject (hdc, app.modeline_param.m_hfont);
-      paint_mode_line_point (hdc);
+
+	  // order is not important.
+	  w_point_painter.update_paint(hdc);
+	  w_percent_painter.update_paint(hdc);
+
       SelectObject (hdc, of);
       SetTextColor (hdc, ofg);
       SetTextColor (hdc, obg);
@@ -3662,7 +3790,7 @@ refresh_screen (int f)
     UpdateWindow (wp->w_hwnd);
 
   int update_title_bar = 0;
-  for (wp = app.active_frame.windows; wp; wp = wp->w_next)
+  for (Window *wp = app.active_frame.windows; wp; wp = wp->w_next)
     if (wp->refresh (f) && wp == selected_window ())
       update_title_bar = 1;
 
@@ -3676,7 +3804,7 @@ refresh_screen (int f)
 
   if (f)
     {
-      bp = selected_buffer ();
+      Buffer *bp = selected_buffer ();
       g_frame.update_ui ();
       bp->change_ime_mode ();
       bp->set_frame_title (update_title_bar);

@@ -16,6 +16,7 @@
 #include "sock.h"
 #include "conf.h"
 #include "colors.h"
+#include "version.h"
 #ifdef DEBUG
 # include "mainframe.h"
 # include <crtdbg.h>
@@ -288,7 +289,8 @@ init_math_symbols ()
 
   xsymbol_value (Qmost_positive_single_float) = make_single_float (FLT_MAX);
   xsymbol_value (Qmost_negative_single_float) = make_single_float (-FLT_MAX);
-  for (float fl = 1.0F, fe = 1.1F; fl && fe > fl; fe = fl, fl /= 2.0F)
+  float fl, fe;
+  for (fl = 1.0F, fe = 1.1F; fl && fe > fl; fe = fl, fl /= 2.0F)
     ;
   xsymbol_value (Qleast_positive_single_float) = make_single_float (fe);
   xsymbol_value (Qleast_negative_single_float) = make_single_float (-fe);
@@ -296,10 +298,10 @@ init_math_symbols ()
     make_single_float (FLT_MIN);
   xsymbol_value (Qleast_negative_normalized_single_float) =
     make_single_float (-FLT_MIN);
-  for (fl = 1.0F, fe = 1.1F; 1.0F + fl != 1.0F && fe > fl; fe = fl, fl /= 2.0F)
+  for (fl = 1.0F, fe = 1.1F; (float)(1.0F + fl) != 1.0F && fe > fl; fe = fl, fl /= 2.0F)
     ;
   xsymbol_value (Qsingle_float_epsilon) = make_single_float (fe);
-  for (fl = 1.0F, fe = 1.1F; 1.0F - fl != 1.0F && fe > fl; fe = fl, fl /= 2.0F)
+  for (fl = 1.0F, fe = 1.1F; (float)(1.0F - fl) != 1.0F && fe > fl; fe = fl, fl /= 2.0F)
     ;
   xsymbol_value (Qsingle_float_negative_epsilon) = make_single_float (fe);
 
@@ -316,7 +318,8 @@ init_math_symbols ()
 
   xsymbol_value (Qmost_positive_double_float) = make_double_float (DBL_MAX);
   xsymbol_value (Qmost_negative_double_float) = make_double_float (-DBL_MAX);
-  for (double dl = 1.0, de = 1.1; dl && de > dl; de = dl, dl /= 2.0)
+  double dl, de;
+  for (dl = 1.0, de = 1.1; dl && de > dl; de = dl, dl /= 2.0)
     ;
   xsymbol_value (Qleast_positive_double_float) = make_double_float (de);
   xsymbol_value (Qleast_negative_double_float) = make_double_float (-de);
@@ -368,7 +371,6 @@ init_symbol_value_once ()
 
   xsymbol_value (Vload_verbose) = Qt;
   xsymbol_value (Vload_print) = Qnil;
-  xsymbol_value (Vload_pathname) = Qnil;
 
   xsymbol_value (Vrandom_state) = Fmake_random_state (Qt);
   xsymbol_value (Vdefault_random_state) = xsymbol_value (Vrandom_state);
@@ -433,6 +435,8 @@ init_symbol_value_once ()
   xsymbol_value (Vthis_command) = Qnil;
   xsymbol_value (Vlast_command) = Qnil;
 
+  xsymbol_value (Qapp_user_model_id) =
+    make_string (ProgramAppUserModelId);
   xsymbol_value (Qsoftware_type) = make_string (ProgramName);
   xsymbol_value (Qsoftware_version) = make_string (VersionString);
   xsymbol_value (Qsoftware_version_display_string) =
@@ -526,7 +530,9 @@ init_symbol_value ()
   xsymbol_value (Vreader_in_backquote) = Qnil;
   xsymbol_value (Vreader_preserve_white) = Qnil;
   xsymbol_value (Vread_suppress) = Qnil;
+  xsymbol_value (Vread_eval) = Qt;
   xsymbol_value (Vreader_label_alist) = Qnil;
+  xsymbol_value (Vload_pathname) = Qnil;
 
   xsymbol_value (Vclipboard_newer_than_kill_ring_p) = Qnil;
   xsymbol_value (Vkill_ring_newer_than_clipboard_p) = Qnil;
@@ -569,7 +575,8 @@ init_lisp_objects ()
   const char *config_path = 0, *ini_file = 0;
   *app.dump_image = 0;
 
-  for (int ac = 1; ac < __argc - 1; ac += 2)
+  int ac;
+  for (ac = 1; ac < __argc - 1; ac += 2)
     if (!strcmp (__argv[ac], "-image"))
       {
         char *tem;
@@ -590,7 +597,10 @@ init_lisp_objects ()
       init_dump_path ();
       if ((ac < __argc || !check_dump_key ())
           && rdump_xyzzy ())
-        combine_syms ();
+        {
+          combine_syms ();
+          rehash_all_hash_tables ();
+        }
       else
         {
           init_syms ();
@@ -781,6 +791,7 @@ static int
 init_app (HINSTANCE hinst, int passed_cmdshow, int &ole_initialized)
 {
   SetErrorMode (SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
+  SetDllDirectory("");
   app.toplev = 0;
 
   init_ucs2_table ();
@@ -828,6 +839,7 @@ init_app (HINSTANCE hinst, int passed_cmdshow, int &ole_initialized)
   int show_normal = !sw_minimized_p (cmdshow) && !sw_maximized_p (cmdshow);
 
   xsymbol_value (Vsave_window_size) = boole (environ::save_window_size);
+  xsymbol_value (Vsave_window_snap_size) = boole (environ::save_window_snap_size);
   xsymbol_value (Vsave_window_position) = boole (environ::save_window_position);
   xsymbol_value (Vrestore_window_size) = boole (environ::restore_window_size);
   xsymbol_value (Vrestore_window_position) = boole (environ::restore_window_position);

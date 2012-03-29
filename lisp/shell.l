@@ -87,8 +87,8 @@
 
 (defun shell-alternate-send-input ()
   (interactive)
-  (let ((*shell-echo* (if (equal *shell-echo* "\n") "\r" "\n")))
-    (declare (special *shell-echo*))
+  (let ((*shell-ret* (if (equal *shell-ret* "\n") "\r" "\n")))
+    (declare (special *shell-ret*))
     (shell-send-input)))
 
 (setf (symbol-function 'shell-send-interrupt) #'kill-subprocess)

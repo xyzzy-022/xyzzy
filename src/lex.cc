@@ -290,7 +290,7 @@ lex_env::lambda_bind (lisp lambda_list, lisp params,
             FEinvalid_lambda_list (org_lambda_list);
 
           lisp value = 0;
-          for (p = params; consp (p); p = xcdr (p))
+          for (lisp p = params; consp (p); p = xcdr (p))
             {
               lisp key = xcar (p);
               p = xcdr (p);

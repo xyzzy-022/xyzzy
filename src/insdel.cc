@@ -17,7 +17,7 @@ Buffer::check_valid () const
   assert (nchars == b_nchars);
 
   nchars = 0;
-  for (cp = b_chunke; cp; cp = cp->c_prev)
+  for (const Chunk *cp = b_chunke; cp; cp = cp->c_prev)
     {
       nchars += cp->c_used;
       if (!cp->c_prev)
@@ -165,9 +165,9 @@ move_chunk (const Chunk *sp, int src, Chunk *dp, int dst, int size)
 }
 
 static void
-adjust (const Chunk *&chunk, int &offset)
+adjust (Chunk *&chunk, int &offset)
 {
-  const Chunk *cp = chunk;
+  Chunk *cp = chunk;
   int o = offset;
   while (o > cp->c_used)
     {
@@ -227,9 +227,9 @@ Buffer::move_before_gap (Point &w_point, int size) const
 }
 
 static void
-adjust_dst (const Chunk *&chunk, int &offset)
+adjust_dst (Chunk *&chunk, int &offset)
 {
-  const Chunk *cp = chunk;
+  Chunk *cp = chunk;
   int o = offset;
   while (o > Chunk::TEXT_SIZE)
     {
@@ -483,7 +483,7 @@ Buffer::insert_chars_internal (Point &point, const insertChars *ichars,
 
   Chunk *cp = point.p_chunk;
   int off = point.p_offset;
-  for (i = 0; i < repeat; i++)
+  for (int i = 0; i < repeat; i++)
     for (int j = 0; j < nargs; j++)
       {
         int rest = ichars[j].length;
@@ -565,7 +565,8 @@ Finsert (lisp args)
   insertChars *ichars = (insertChars *)alloca ((sizeof *ichars + sizeof *tem)
                                                * nargs);
   tem = (Char *)(ichars + nargs);
-  for (int i = 0; i < nargs; i++, args = xcdr (args))
+  int i;
+  for (i = 0; i < nargs; i++, args = xcdr (args))
     {
       lisp x = xcar (args);
       if (charp (x))
@@ -759,7 +760,7 @@ Buffer::insert_file_contents (Window *wp, lisp filename, lisp visit,
 
   if (visit != Qnil)
     {
-      b_eol_code = exact_eol_code (rfc.r_eol_code);
+      b_eol_code = exact_eol_code (rfc.r_eol_code, b_eol_code);
       lchar_encoding = rfc.r_char_encoding;
       b_modified = 0;
       b_need_auto_save = 0;
@@ -1056,7 +1057,8 @@ make_cf_text_sjis (CLIPBOARDTEXT &clp, lisp string)
   const Char *s = xstring_contents (string);
   const Char *const se = s + xstring_length (string);
 
-  for (int extra = 0; s < se; s++)
+  int extra;
+  for (extra = 0; s < se; s++)
     if (*s == '\n' || DBCP (*s))
       extra++;
 
@@ -1124,7 +1126,8 @@ make_cf_wtext (CLIPBOARDTEXT &clp, lisp string)
   const Char *s = xstring_contents (string);
   const Char *const se = s + xstring_length (string);
 
-  for (int extra = 0; s < se; s++)
+  int extra;
+  for (extra = 0; s < se; s++)
     if (*s == '\n')
       extra++;
 
@@ -1223,7 +1226,8 @@ static int
 count_cf_text_length (const u_char *string)
 {
   int l = 0;
-  for (const u_char *s = string; *s;)
+  const u_char *s;
+  for (s = string; *s;)
     {
       if (SJISP (*s))
         {
@@ -1323,7 +1327,8 @@ static int
 count_cf_wtext_length (const ucs2_t *string)
 {
   int l = 0;
-  for (const ucs2_t *s = string; *s; s++)
+  const ucs2_t *s;
+  for (s = string; *s; s++)
     if (*s == '\r')
       {
         if (s[1] == '\n')
@@ -1574,7 +1579,8 @@ copy_textprop (const textprop *p, textprop *t)
 textprop *
 Buffer::add_textprop (point_t p1, point_t p2)
 {
-  for (textprop *p = textprop_head (p1), *prev = 0; p; prev = p, p = p->t_next)
+  textprop *p, *prev;
+  for (p = textprop_head (p1), prev = 0; p; prev = p, p = p->t_next)
     if (*p > p1)
       break;
 

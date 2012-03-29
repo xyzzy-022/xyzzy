@@ -94,17 +94,17 @@ EnvStrings::setup (lisp lenv)
   e_buf = (char *)xmalloc (l + sizeof (char **) * n);
   char **nb = (char **)(e_buf + l);
   char **ne = nb;
-  for (e = environ; *e; e++, ne++)
+  for (char **e = environ; *e; e++, ne++)
     *ne = *e;
 
   char *b = e_buf;
-  for (le = lenv; consp (le); le = xcdr (le))
+  for (lisp le = lenv; consp (le); le = xcdr (le))
     {
       lisp x = xcar (le);
       b = set (nb, ne, b, xcar (x), xcdr (x));
     }
 
-  for (d = 0; d < 26; d++)
+  for (int d = 0; d < 26; d++)
     {
       const char *dir = get_device_dir (d);
       int x = strlen (dir);
@@ -125,7 +125,7 @@ EnvStrings::setup (lisp lenv)
 
   e_env = (char *)xmalloc (l);
   char *p = e_env;
-  for (np = nb; np < ne; np++)
+  for (char **np = nb; np < ne; np++)
     if (**np)
       p = stpcpy (p, *np) + 1;
   *p = 0;
@@ -243,11 +243,11 @@ Fcall_process (lisp cmd, lisp keys)
   if (!no_std_handles)
     {
       si.dwFlags |= STARTF_USESTDHANDLES;
-      si.hStdInput = hin.valid () ? hin : GetStdHandle (STD_INPUT_HANDLE);
-      si.hStdOutput = hout.valid () ? hout : GetStdHandle (STD_OUTPUT_HANDLE);
+      si.hStdInput = hin.valid () ? (HANDLE)hin : GetStdHandle (STD_INPUT_HANDLE);
+      si.hStdOutput = hout.valid () ? (HANDLE)hout : GetStdHandle (STD_OUTPUT_HANDLE);
       si.hStdError = (lstdout != lstderr
-                      ? herr.valid () ? herr : GetStdHandle (STD_ERROR_HANDLE)
-                      : hout.valid () ? hout : GetStdHandle (STD_ERROR_HANDLE));
+                      ? herr.valid () ? (HANDLE)herr : GetStdHandle (STD_ERROR_HANDLE)
+                      : hout.valid () ? (HANDLE)hout : GetStdHandle (STD_ERROR_HANDLE));
     }
 
   WINFS::SetCurrentDirectory (dir);
@@ -613,8 +613,8 @@ class process_input_stream: public byte_input_stream
             {
             case eol_crlf:
               {
-                for (u_char *d = p_buf, *s = p_buf, *const se = s + l;
-                     s < se; s++)
+                u_char *d = p_buf, *s = p_buf, *const se = s + l;
+                for (; s < se; s++)
                   if (*s != '\r')
                     *d++ = *s;
                 l = d - p_buf;
@@ -750,7 +750,7 @@ public:
       if (!WriteFile (p_out, s, l, &nwrite, 0))
         file_error (GetLastError ());
     }
-  void create (lisp, lisp, const char *);
+  void create (lisp, lisp, int, const char *);
   virtual int readin (u_char *, int);
 };
 
@@ -858,7 +858,7 @@ NormalProcess::signal_win95 ()
 }
 
 void
-NormalProcess::create (lisp command, lisp execdir, const char *env)
+NormalProcess::create (lisp command, lisp execdir, int show, const char *env)
 {
   char dir[PATH_MAX + 1];
   pathname2cstr (execdir, dir);
@@ -910,7 +910,7 @@ NormalProcess::create (lisp command, lisp execdir, const char *env)
   bzero (&si, sizeof si);
   si.cb = sizeof si;
   si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-  si.wShowWindow = SW_SHOWMINNOACTIVE;
+  si.wShowWindow = show;
   si.hStdInput = ipipe_r;
   si.hStdOutput = opipe_w;
   si.hStdError = opipe_w;
@@ -973,6 +973,21 @@ Fmake_process (lisp command, lisp keys)
 {
   check_string (command);
 
+  int show;
+  lisp lshow = find_keyword (Kshow, keys);
+  if (lshow == Kshow)
+    show = SW_SHOWNORMAL;
+  else if (lshow == Kno_active)
+    show = SW_SHOWNA;
+  else if (lshow == Kmaximize)
+    show = SW_SHOWMAXIMIZED;
+  else if (lshow == Khide)
+    show = SW_HIDE;
+  else if (lshow == Kminimize)
+    show = SW_SHOWMINNOACTIVE;
+  else
+    show = SW_SHOWMINNOACTIVE;
+
   lisp execdir = find_keyword (Kexec_directory, keys);
   if (execdir == Qnil)
     execdir = selected_buffer ()->ldirectory;
@@ -1003,7 +1018,7 @@ Fmake_process (lisp command, lisp keys)
   NormalProcess *pr = new NormalProcess (bp, process, Process::make_process_marker (bp));
   try
     {
-      pr->create (command, execdir, env.str ());
+      pr->create (command, execdir, show, env.str ());
     }
   catch (nonlocal_jump &)
     {

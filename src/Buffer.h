@@ -142,8 +142,9 @@ public:
           r->a_next = a_reps;
           a_reps = r;
           a_free = r + 1;
-          for (arep *p = a_free, *pe = (arep *)((T *)p + ((a_heap.size () - sizeof *p)
-                                                          / sizeof (T) - 1));
+          arep *p, *pe;
+          for (p = a_free, pe = (arep *)((T *)p + ((a_heap.size () - sizeof *p)
+                                                   / sizeof (T) - 1));
                p < pe; p = (arep *)((T *)p + 1))
             p->a_next = (arep *)((T *)p + 1);
           p->a_next = 0;
@@ -320,9 +321,11 @@ exact_valid_eol_code_p (int code)
 }
 
 static inline eol_code
-exact_eol_code (int code)
+exact_eol_code (int code, int default_code = 1)
 {
-  return exact_valid_eol_code_p (code) ? eol_code (code) : eol_crlf;
+  return (exact_valid_eol_code_p (code) ? eol_code (code)
+          : exact_valid_eol_code_p (default_code) ? eol_code (default_code)
+          : eol_crlf);
 }
 
 class UndoInfo;

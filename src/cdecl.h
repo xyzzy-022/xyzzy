@@ -5,6 +5,7 @@
 # pragma warning (disable: 4201)
 
 # include <stdio.h>
+# include <stdint.h>
 # include <limits.h>
 # include <windows.h>
 # include <winreg.h>
@@ -22,6 +23,9 @@
 # pragma warning (disable: 4610)
 
 # define alloca _alloca
+# define memicmp _memicmp
+# define strdup _strdup
+# define stricmp _stricmp
 
 # define BITS_PER_SHORT (sizeof (short) * CHAR_BIT)
 # define BITS_PER_INT (sizeof (int) * CHAR_BIT)
@@ -35,9 +39,6 @@ typedef unsigned short u_short;
 typedef unsigned int u_int;
 typedef unsigned long u_long;
 
-typedef char int8_t;
-typedef short int16_t;
-typedef long int32_t;
 typedef u_char u_int8_t;
 typedef u_short u_int16_t;
 typedef u_long u_int32_t;
@@ -166,6 +167,8 @@ int assert_failed (const char *, int);
 
 # define __TOSTR(X) #X
 # define _TOSTR(X) __TOSTR(X)
+# define __TOWSTR(X) L##X
+# define _TOWSTR(X) __TOWSTR (X)
 
 # define THREADLOCAL __declspec (thread)
 

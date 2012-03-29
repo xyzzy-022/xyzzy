@@ -6,6 +6,8 @@
 #include <process.h>
 #include "thread.h"
 #include "xstrlist.h"
+#include "version.h"
+#include "monitor.h"
 
 void
 set_window_icon (HWND hwnd)
@@ -33,7 +35,7 @@ center_window (HWND hwnd)
               - (dr.bottom - dr.top) / 3);
 
   RECT work;
-  SystemParametersInfo (SPI_GETWORKAREA, 0, &work, 0);
+  monitor.get_workarea_from_window (owner, &work);
 
   left = min (max (left, work.left), work.right - (dr.right - dr.left));
   top = min (max (top, work.top), work.bottom - (dr.bottom - dr.top));
@@ -72,7 +74,8 @@ save_list_column_width (HWND list, int ncolumns, const char *entry, const char *
     return;
 
   int *v = (int *)alloca (sizeof *v * ncolumns);
-  for (int i = 0, good = 0; i < ncolumns; i++)
+  int good = 0;
+  for (int i = 0; i < ncolumns; i++)
     {
       v[i] = ListView_GetColumnWidth (list, i);
       if (v[i] > 0)
@@ -164,7 +167,7 @@ buffer_list_init_item (HWND list)
   ListView_SetItemCount (list, nbuffers);
 
   int i = 0, cur = 0;
-  for (bp = Buffer::b_blist; bp; bp = bp->b_next)
+  for (const Buffer *bp = Buffer::b_blist; bp; bp = bp->b_next)
     if (!bp->internal_buffer_p ())
       {
         if (bp == selected_buffer ())

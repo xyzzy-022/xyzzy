@@ -121,6 +121,7 @@ public:
   int copy_queue (Char *, int) const;
   void paste () const;
   int reconvert (RECONVERTSTRING *, int);
+  int documentfeed (RECONVERTSTRING *, int);
   void set_kbd_langid (LANGID langid) {input_langid = langid;}
   LANGID kbd_langid () const {return input_langid;}
   void init_kbd_encoding () {init_kbd_encoding (get_kbd_langid ());}

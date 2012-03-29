@@ -530,7 +530,7 @@ Freplace (lisp seq1, lisp seq2, lisp keys)
                     assert (consp (seq2));
                     x[i] = xcar (seq2);
                   }
-                for (i = 0; i < l; i++, seq1 = xcdr (seq1))
+                for (int i = 0; i < l; i++, seq1 = xcdr (seq1))
                   {
                     assert (consp (seq1));
                     xcar (seq1) = x[i];
@@ -647,7 +647,7 @@ Freplace (lisp seq1, lisp seq2, lisp keys)
               }
             Char *s = xstring_contents (seq1) + start1;
             Char *se = s + l;
-            for (p = seq2; s < se; p = xcdr (p), s++)
+            for (lisp p = seq2; s < se; p = xcdr (p), s++)
               *s = xchar_code (xcar (p));
           }
           break;
@@ -661,7 +661,7 @@ Freplace (lisp seq1, lisp seq2, lisp keys)
             for (lisp *v = v0; v < ve; v++)
               check_char (*v);
             Char *s = xstring_contents (seq1) + start1;
-            for (v = v0; v < ve; v++, s++)
+            for (lisp *v = v0; v < ve; v++, s++)
               *s = xchar_code (*v);
           }
           break;
@@ -711,7 +711,8 @@ xdelete (test_proc &test, T *p, int start, int end, lisp from_end, int count, in
     return l;
   if (from_end == Qnil || count >= end - start)
     {
-      for (int i = start, j = start; i < end; i++)
+      int i, j;
+      for (i = start, j = start; i < end; i++)
         if (!test.test (coerce_to_lisp_object (p[i])))
           p[j++] = p[i];
         else if (!--count)
@@ -727,7 +728,8 @@ xdelete (test_proc &test, T *p, int start, int end, lisp from_end, int count, in
     }
   else
     {
-      for (int i = end - 1, j = end; i >= start; i--)
+      int i, j;
+      for (i = end - 1, j = end; i >= start; i--)
         if (!test.test (coerce_to_lisp_object (p[i])))
           p[--j] = p[i];
         else if (!--count)
@@ -775,6 +777,7 @@ xdelete (lisp seq, test_proc &test, lisp keys)
               {
                 p = seq;
                 n--;
+                int i;
                 for (i = 0; i < n; i++, p = xcdr (p))
                   xcar (p) = v[i];
                 assert (consp (p));
