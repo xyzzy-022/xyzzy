@@ -190,6 +190,28 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
 
     0.2.2.236 で追加した API は記述済みです。
 
+    info-modoki-mode でリファレンスを引くためには xy-reference をインストール後に
+    以下を評価してください。
+
+    ```lisp
+    (require "xy-reference")
+    ;; キャッシュを削除
+    (setf xy-reference::*lookup-cache* (make-hash-table :test 'equal))
+    (setf xy-reference::*index-result* nil)
+    (delete-buffer *imm-buffer*)
+
+    ;; reference.txt 生成
+    (xy-reference:2txt)
+    ```
+
+    HTML Help 版が必要な場合は HTML Help Workshop インストール後に、
+    追加で以下も評価してください。
+
+    ```lisp
+    ;; reference.chm 生成
+    (xy-reference:2hh)
+    ```
+
   * lisp キーワードファイルを同梱しました。(#22, x022235)
 
     0.2.2.236 で追加した API は記述済みです。
@@ -327,9 +349,7 @@ Common Lisp との互換性向上
     インストールしないようにしてください。
 
     ```
-    reference.txt                      2007.12.25     2007/12/25 01:28  | 2007.12.25     2007/12/25 01:28
     keyword file                       2007.12.25     2007/12/25 01:27  | 2007.12.25     2007/12/25 01:27
-    reference.chm                      2007.12.25     2007/12/25 01:25  | 2007.12.25     2007/12/25 01:25
     reference.xml                      2007.12.25     2007/12/25 01:23  | 2007.12.25     2007/12/25 01:23
     ```
 
@@ -346,6 +366,7 @@ Common Lisp との互換性向上
     "      hoge"                   ; 本来の仕様
     ```
 
+  * 人生、宇宙、すべての答え * 2 を計算できない (#181)
   * software-type, software-version が CL と異なる (#169)
   * NULL 文字をインクリメンタル検索しようとすると落ちる (#152)
   * :typeがlistかvectorで:namedじゃない構造体でtypepがおかしい (#138)
