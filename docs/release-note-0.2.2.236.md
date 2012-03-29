@@ -15,8 +15,8 @@ xyzzy リリースノート
 有志による 0.2.2 系列最初のバージョン (0.2.2.236) がリリースされるまでに
 かかった日数であり、また `(expt 48 2)` でもあります。
 
-xyzzy 0.2.2.236 では 22 件の機能追加と、17 件のバグ修正を
-行なっています。これらの修正は 9 人の有志の手により行われました。
+xyzzy 0.2.2.236 では 34 件の機能追加と、51 件のバグ修正を
+行なっています。これらの修正は 11 人の有志の手により行われました。
 
 0.2.2.236 は 0.2.2.235 との互換性を重視したバージョンです。
 今まで利用してきた拡張はそのまま動作することを期待してもよいでしょう。
@@ -143,6 +143,13 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
 
   * calc-mode で人生、宇宙、すべての答えを計算できるようになりました。(#180, x022235)
 
+  * カレンダーの祝日を現行法にあわせました。(#1, southly)
+
+  * tar32.dll Ver2.35 から利用できるようになった lzma および xz の圧縮と展開に対応しました。(#1, southly)
+
+  * IME の前後参照変換に対応しました。
+    MS-IME や ATOK などを利用している場合に変換精度が上がります。(#1, southly, miyamuko)
+
 
 バグ修正
 --------
@@ -172,6 +179,25 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
   * カーソルが単語の末尾にあるときに辞書を引くとその単語を調べるようになりました。(#141, x022235)
 
     調べたい単語を入力して `C-c e` とすると入力した単語を辞書で引きます。
+
+  * 共通設定の「[...]はワイルドカード」の設定が保存されるようにしました。(#1, southly)
+
+  * Windows プログラムの DLL 読み込みに脆弱性に対応しました。(#1, southly)
+
+    [JVNVU#707943](http://jvn.jp/cert/JVNVU707943/index.html)
+
+  * 「plink name@example.jp ls」と plink を利用しようとすると
+    「Unable to read from standard input: ハンドルが無効です。」
+    というエラーになるのを修正しました。(#1, southly)
+
+  * ファイルサイズが 0 のときの (正確には改行がないファイルのときの) 改行コードが
+    `*default-eol-code*` に基づいた改行コードになるようにしました。(#1, southly)
+
+  * hash-table が rehash した後の GC のタイミングでクラッシュする問題を修正しました。(#1, southly)
+
+  * 循環参照がある場合の評価結果の印字でスタックオーバーフローするのを修正しました。(#1, southly)
+
+  * ハッシュテーブルの要素数が 80000 を越えるとパフォーマンスが低下していた問題を修正しました。(#1, southly)
 
 
 開発者向け機能追加
@@ -247,6 +273,27 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
   * プロセス ID を取得する以下の API を追加しました。(#164, x022235)
     * `si:getpid`
 
+  * 削除されたウィンドウかどうかを返す API を追加しました。(#1, miyamuko)
+    * `ed:deleted-window-p`
+
+  * 環境変数を追加する API を追加しました。(#1, southly, miyamuko)
+    * `si:putenv`
+
+  * スペシャル変数 `*read-eval*` が機能するようにしました。
+    `#.` リーダーマクロによる読み込み時評価を制御できます。(#1, southly)
+
+    ```lisp
+    (let ((*read-eval* nil))
+      (read-from-string "#.(+ 1 1)"))
+    => Line 1: リード時の評価が許されていません
+    ```
+
+  * 現在のバッファの色設定を取得する API を追加しました。
+    set-buffer-colors で設定した色を取得できます。(#1, southly)
+    * `ed:get-buffer-colors`
+
+  * make-process にキーパラメータ :show を追加しました。(#1, southly)
+
   * ユニットテスト フレームワークを追加しました。(#5, bowbow99)
 
   * zlib 1.2.6 へ更新しました。(#155, x022235)
@@ -257,24 +304,156 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
 
   * `list-all-packages` がコピーを返すようになりました。(#7, youz)
 
-  * `defstruct` の以下のバグを修正しました。(#36, x022235)
-    * `print-function` が事前に定義されていないとエラーになる
-    * 継承した `print-function` があるとバイトコンパイルできない
-    * `print-function` を再定義しても反映されない
-    * デフォルトのコンストラクタが必ず作られる
-    * コンストラクタの引数の割り当てがおかしい
-    * コンストラクタで引数を指定すると、スロット定義の初期値が無視される
+  * `defstruct` の以下のバグを修正しました。
+    * `print-function` が事前に定義されていないとエラーになる (#36, x022235)
+    * 継承した `print-function` があるとバイトコンパイルできない (#36, x022235)
+    * `print-function` を再定義しても反映されない (#36, x022235)
+    * デフォルトのコンストラクタが必ず作られる (#36, x022235)
+    * コンストラクタの引数の割り当てがおかしい (#36, x022235)
+    * コンストラクタで引数を指定すると、スロット定義の初期値が無視される (#36, x022235)
 
-  * `defpackage` の以下のバグを修正しました。 (#37, x022235)
-    * `:shadowing-import-from` 2 つと `:shadow` を書くとエラー
-    * パッケージが見つからない場合のエラーメッセージが不正
+  * `defpackage` の以下のバグを修正しました。
+    * `:shadowing-import-from` を 2 つと `:shadow` を書くとエラー (#37, x022235)
+    * パッケージが見つからない場合のエラーメッセージが不正 (#37, x022235)
+    * `:export` オプションを指定できない (#1, southly)
 
   * 他のパッケージから `import` したシンボルを `export` すると補完候補が重複する
     問題を修正しました。(#143, x022235)
 
   * ファイルとソケットに対する `si:*stream-column` が誤った値を返す問題を修正しました。(#166, x022235)
 
-  * `format` 書式のバグを修正しました。(#2, southly)
+  * ヒストリファイルと同様にセッションファイルも書き込み時に `*print-length*`
+    などの影響を受けないよう修正しました。(#1, southly)
+
+  * `equalp` に hash-table を渡すと多値が返ってくる問題を修正しました。(#1, southly)
+
+  * `sxhash` の値が `equalp` 用の値になっているが `equal` 用の値になるように修正しました。(#1, southly)
+
+    ```lisp
+    (= (sxhash (list "ABC")) (sxhash (list "ABC"))) => t
+    (= (sxhash (list "abc")) (sxhash (list "ABC"))) => nil
+    ```
+
+  * lambda form をコンパイルするとレキシカル変数を参照できなくなっていた問題を修正しました。(#1, southly, youz)
+
+    ```lisp
+    (defun test1 ()
+      (let ((a 1))
+        ((lambda () a))))
+    => test1
+    (test1)
+    => 1
+    (compile 'test1)
+    => test1
+    (test1)
+    => 1
+    ```
+
+  * `abbreviate-display-string` で必要以上に文字列が省略されることがあるのを修正しました。(#1, southly)
+
+  * `let` や `let*` で同一のスペシャル変数に対して複数回の束縛を作ったときの値が
+    おかしいのを修正しました。(#1, southly)
+
+    ```lisp
+    (defparameter *special* :global)
+    (let* ((*special* :local-1)
+          (*special* :local-2))
+      *special*)
+    => :local-2
+    ```
+
+  * `let` や `let*` で同一のスペシャル変数に対して複数回の束縛を作ると、
+    スコープが外れたときに値が書き換わってしまうのを修正しました。(#1, southly)
+
+    ```lisp
+    (progn
+      (defparameter *special* :global)
+      (let ((*special* :local-1)
+            (*special* :local-2))
+        *special*)
+      *special*)
+    => :global
+    ```
+
+  * `macroexpand` で二番目の戻り値が返っていなかったのを修正しました。(#1, southly)
+
+    ```lisp
+    (macroexpand '(push 1 x))
+    => (setq x (cons 1 x))
+    => t
+    ```
+
+  * `flet`, `labels`, `macrolet` で引数のチェックがおかしかったのを修正しました。(#1, southly)
+
+    ```lisp
+    (flet () 3)     => 3
+    (flet ())       => nil
+    (labels () 3)   => 3
+    (labels ())     => nil
+    (macrolet () 3) => 3
+    (macrolet ())   => nil
+    ```
+
+  * `list-length` でリスト以外を渡した場合にエラーにするようにしました。(#1, southly)
+
+    ```lisp
+    (list-length :foo)
+    => 不正なデータ型です: :foo: list
+    (list-length '(a . b))
+    => 不正なデータ型です: b: list
+    ```
+
+  * `nthcdr` にドット対を渡した場合に値が取れな方のを修正しました。(#1, southly)
+
+    ```lisp
+    (nthcdr 0 '()) => nil
+    (nthcdr 3 '()) => nil
+    (nthcdr 0 '(a b c)) => (a b c)
+    (nthcdr 2 '(a b c)) => (c)
+    (nthcdr 4 '(a b c)) => nil
+    (nthcdr 1 '(0 . 1)) => 1
+    (nthcdr 3 '(0 . 1)) => nil
+    ```
+
+    最後のケースはエラーにすべきだけど、とりあえずそのままにしてあります。
+
+  * `single-float-epsilon`, `single-float-negative-epsilon` がおかしかったのを修正しました。(#1, southly)
+
+  * ダンプ作成時にロードしたファイル名がそのままダンプファイルに保存される
+    ようなので、起動時にも初期化するように修正しました。(#1, southly)
+
+  * `applyhook`, `*applyhook*` をローカル関数に対応させました。(#1, southly)
+
+  * `listen` が EOF のときに nil を返すように修正しました。
+    `string-stream` と `file-stream` だけです。(#1, southly)
+
+  * `save-window-excursion` で正しく多値が返らない場合があるのを修正しました。(#1, southly)
+
+  * `long-operation` の戻り値が `prog1` 相当になっているのを `progn` 相当になるよ
+    うに修正しました。(#1, southly)
+
+  * `(set-buffer-modified-p nil)` をした時に以前更新なし状態だった点が
+    更新無し状態のままなのを修正しました。(#1, southly)
+
+  * `(setq inverse-cursor-line t)` の状態にすると行カーソルと折り返し線の
+    交点が反転したまま残ってしまうのを修正しました。(#1, southly)
+
+  * シンボルがキーのハッシュテーブルをダンプファイルに入れた場合、
+    `gethash` で値がとれない問題を修正しました。(#1, southly)
+
+  * `shell-alternate-send-input` で不正な文字が送られていたバグを修正しました。(#1, southly, 名無しさん)
+
+    <http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F15>
+
+  * `ole-method` で文字列を渡すと余計な 0x00 が付く問題を修正しました。(#1, southly, miyamuko)
+
+  * 戻り値が double, float の C 関数を呼ぶとクラッシュする問題を修正しました。(#1, southly)
+
+  * `start-timer` の継続処理で初回だけ二度連続実行される不具合を修正しました。(#1, southly, シバ某)
+
+    <http://xyzzy.s53.xrea.com/wiki/index.php?patch%2F21>
+
+  * `format` 書式のバグを修正しました。(#1, #2, southly)
 
     ```lisp
     (format nil "~0,1T")
@@ -338,7 +517,8 @@ Common Lisp との互換性向上
 
     xl-repl と rx を組み合わせた場合にロード順によってはエラーになる問題を
     回避するための修正です。
-    (<https://github.com/youz/xl-repl/issues/3>)
+
+    <https://github.com/youz/xl-repl/issues/3>
 
 
 注意事項
@@ -439,4 +619,4 @@ xyzzy がこれからも進化していくためにもこれらの多様性は�
 開発を継続していきたいと思います。
 
 
-`(provide "xyzzy")`
+`(provide "xyzzy-0.2.2.236")`
