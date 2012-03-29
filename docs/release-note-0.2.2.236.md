@@ -105,17 +105,21 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
       * `<!DOCTYPE html>` の場合に自動的に HTML5 キーワードが有効になります。
       * `html+-mode` を使っている場合は以下の設定をすることで HTML5 キーワードを利用できます。
 
-            ;; html+-mode で HTML5 キーワードを利用する
-            (in-package :editor)
-            (setq *html+-use-html-kwd* t)
-            (in-package :user)
-            ;autoload を使わない場合は *html+-use-html-kwd* 設定後にロードする
-            ;(require "html+-mode")
+        ```lisp
+        ;; html+-mode で HTML5 キーワードを利用する
+        (in-package :editor)
+        (setq *html+-use-html-kwd* t)
+        (in-package :user)
+        ;autoload を使わない場合は *html+-use-html-kwd* 設定後にロードする
+        ;(require "html+-mode")
+        ```
 
       * 新規の HTML ファイルを作成した時に自動的に HTML5 キーワードを有効にしたい場合は
         以下の設定をしてください。
 
-            (setq *html-default-doctype* "HTML5.0")
+        ```lisp
+        (setq *html-default-doctype* "HTML5.0")
+        ```
 
     * etc/Perl
       * Perl 5.10 に対応しました。
@@ -130,10 +134,12 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
       * DBMS 固有のキーワードを利用したい場合は、`*sql-keyword-file*` に利用したい
         キーワードファイルをリストで設定してください。
 
-            (setq *sql-keyword-file* '("SQL" "Sql-NonStd/Oracle"))
-            (setq *sql-keyword-file* '("SQL" "Sql-NonStd/SQLServer"))
-            (setq *sql-keyword-file* '("SQL" "Sql-NonStd/MySQL"))
-            (setq *sql-keyword-file* '("SQL" "Sql-NonStd/PostgreSQL"))
+        ```lisp
+        (setq *sql-keyword-file* '("SQL" "Sql-NonStd/Oracle"))
+        (setq *sql-keyword-file* '("SQL" "Sql-NonStd/SQLServer"))
+        (setq *sql-keyword-file* '("SQL" "Sql-NonStd/MySQL"))
+        (setq *sql-keyword-file* '("SQL" "Sql-NonStd/PostgreSQL"))
+        ```
 
   * calc-mode で人生、宇宙、すべての答えを計算できるようになりました。(#180, x022235)
 
@@ -248,33 +254,35 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
 
   * `format` 書式のバグを修正しました。(#2, southly)
 
-        (format nil "~0,1T")
-        ""                         ; 0.2.2.235
-        " "                        ; 0.2.2.236
+    ```lisp
+    (format nil "~0,1T")
+    ""                         ; 0.2.2.235
+    " "                        ; 0.2.2.236
 
-        (format nil "~VT" nil)
-        Vパラメータの型が不正です  ; 0.2.2.235
-        " "                        ; 0.2.2.236
+    (format nil "~VT" nil)
+    Vパラメータの型が不正です  ; 0.2.2.235
+    " "                        ; 0.2.2.236
 
-        (format nil "~,,VF" 3 pi)
-        "3.141592653589793d0"      ; 0.2.2.235
-        "3141.592653589793"        ; 0.2.2.236
+    (format nil "~,,VF" 3 pi)
+    "3.141592653589793d0"      ; 0.2.2.235
+    "3141.592653589793"        ; 0.2.2.236
 
-        (format nil "~10g" 1.23456d+38)
-        "^@^@^@^@^@^@    "                              ; 0.2.2.235
-        "123456000000000000000000000000000000000.0    " ; 0.2.2.236
+    (format nil "~10g" 1.23456d+38)
+    "^@^@^@^@^@^@    "                              ; 0.2.2.235
+    "123456000000000000000000000000000000000.0    " ; 0.2.2.236
 
-        (format nil "~E" 123.45)
-        "123.45"                   ; 0.2.2.235
-        "1.2345e+2"                ; 0.2.2.236
+    (format nil "~E" 123.45)
+    "123.45"                   ; 0.2.2.235
+    "1.2345e+2"                ; 0.2.2.236
 
-        (format nil "~@F" 123.45)
-        "123.45"                   ; 0.2.2.235
-        "+123.45"                  ; 0.2.2.236
+    (format nil "~@F" 123.45)
+    "123.45"                   ; 0.2.2.235
+    "+123.45"                  ; 0.2.2.236
 
-        (format nil "~16,10,'*,'-,2:R" #x123abc)
-        パラメータが多すぎます     ; 0.2.2.235
-        "**12-3a-bc"               ; 0.2.2.236
+    (format nil "~16,10,'*,'-,2:R" #x123abc)
+    パラメータが多すぎます     ; 0.2.2.235
+    "**12-3a-bc"               ; 0.2.2.236
+    ```
 
 
 Common Lisp との互換性向上
@@ -282,16 +290,18 @@ Common Lisp との互換性向上
 
   * Common Lisp 互換の文字を追加しました。(#35, x022235)
 
-        Common Lisp    xyzzy Lisp    char-code
-        --------------------------------------
-        #\Backspace    #\C-h                 8
-        #\Tab          #\TAB                 9
-        #\Newline      #\LFD                10
-        #\Linefeed     #\LFD                10
-        #\Page         #\C-l                12
-        #\Return       #\RET                13
-        #\Space        #\SPC                32
-        #\Rubout       #\DEL               127
+    ```
+    Common Lisp    xyzzy Lisp    char-code
+    --------------------------------------
+    #\Backspace    #\C-h                 8
+    #\Tab          #\TAB                 9
+    #\Newline      #\LFD                10
+    #\Linefeed     #\LFD                10
+    #\Page         #\C-l                12
+    #\Return       #\RET                13
+    #\Space        #\SPC                32
+    #\Rubout       #\DEL               127
+    ```
 
   * `machine-type`, `machine-version`, `machine-instance` を追加しました。(#41, x022235)
     * `machine-instance` は `ed:machine-name` と同じ値を返します。
@@ -316,10 +326,12 @@ Common Lisp との互換性向上
     本体に同梱しています。インストールすると古いファイルで上書きされるので
     インストールしないようにしてください。
 
-        reference.txt                      2007.12.25     2007/12/25 01:28  | 2007.12.25     2007/12/25 01:28
-        keyword file                       2007.12.25     2007/12/25 01:27  | 2007.12.25     2007/12/25 01:27
-        reference.chm                      2007.12.25     2007/12/25 01:25  | 2007.12.25     2007/12/25 01:25
-        reference.xml                      2007.12.25     2007/12/25 01:23  | 2007.12.25     2007/12/25 01:23
+    ```
+    reference.txt                      2007.12.25     2007/12/25 01:28  | 2007.12.25     2007/12/25 01:28
+    keyword file                       2007.12.25     2007/12/25 01:27  | 2007.12.25     2007/12/25 01:27
+    reference.chm                      2007.12.25     2007/12/25 01:25  | 2007.12.25     2007/12/25 01:25
+    reference.xml                      2007.12.25     2007/12/25 01:23  | 2007.12.25     2007/12/25 01:23
+    ```
 
 既知の問題
 ----------
@@ -328,9 +340,11 @@ Common Lisp との互換性向上
 
     このバグの修正は影響範囲が大きいので修正されません。
 
-        (format nil "~10@A" "hoge")
-        "hoge      "                   ; 0.2.2.235, 0.2.2.236
-        "      hoge"                   ; 本来の仕様
+    ```lisp
+    (format nil "~10@A" "hoge")
+    "hoge      "                   ; 0.2.2.235, 0.2.2.236
+    "      hoge"                   ; 本来の仕様
+    ```
 
   * software-type, software-version が CL と異なる (#169)
   * NULL 文字をインクリメンタル検索しようとすると落ちる (#152)
