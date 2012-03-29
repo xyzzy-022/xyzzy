@@ -96,6 +96,7 @@ make_package ()
 
 lisp coerce_to_package (lisp);
 lisp make_package (lisp, lisp, int = 211, int = 103);
+int count_symbols (lisp vector);
 
 class maybe_symbol_string
 {
