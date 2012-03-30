@@ -243,9 +243,11 @@
 		   (return tok)))))
 	    ((find c " \t\n\r\f"))
 	    ((or (alpha-char-p c)
+		 (kanji-char-p c)
 		 (char= c #\_))
 	     (return (intern (calc-get-token c s #'(lambda (c)
 						     (or (alphanumericp c)
+							 (kanji-char-p c)
 							 (char= c #\_))))
 			     *calc-package*)))
 	    (t
