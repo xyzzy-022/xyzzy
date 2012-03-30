@@ -117,7 +117,7 @@ Sysdep::init_wintype ()
               windows_short_name = "w2k";
             }
         }
-      if (Win6p ())
+      else if (Win6p ())
         {
           wintype = WINTYPE_WINDOWS_NT6;
           // 設定ファイルのパス (user-config-path) が変わるため wxp のままとする
