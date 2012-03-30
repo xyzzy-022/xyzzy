@@ -44,16 +44,16 @@
 
 (defvar *calc-token* nil)
 
-(defvar *calc-special-constants*
-  (macrolet ((|42| (&rest words)
-	       `(cons ,(format nil "~{~A~^[、,　 ]*~}" words) 42)))
-    `(,(|42| "人生" "宇宙" "すべての答え")
-      ,(|42| "生命" "宇宙" "そのすべてに対する答え")
-      ,(|42| "生命" "宇宙" "そして万物についての答え")
-      ,(|42| "生命" "宇宙" "そして万物についての究極の疑問の答え")
-      )))
 (defconstant calc::pi pi)
 (defconstant calc::e (exp 1.0d0))
+
+(defconstant calc::人生、宇宙、すべての答え 42)
+(defconstant calc::生命、宇宙、そのすべてに対する答え
+  calc::人生、宇宙、すべての答え)
+(defconstant calc::生命、宇宙、そして万物についての答え
+  calc::人生、宇宙、すべての答え)
+(defconstant calc::生命、宇宙、そして万物についての究極の疑問の答え
+  calc::人生、宇宙、すべての答え)
 
 (setf (symbol-function 'calc::gcd) #'gcd)
 (setf (symbol-function 'calc::lcm) #'lcm)
@@ -400,12 +400,6 @@
 		 *calc-radix* (if *calc-unsigned* 'unsigned 'signed) *calc-ratio*))))
 
 (defun calc-string (string)
-  (or (cdr (assoc string *calc-special-constants*
-		  :test #'(lambda (str re)
-			    (string-matchp re str))))
-      (calc-string-1 string)))
-
-(defun calc-string-1 (string)
   (let ((*read-default-float-format* 'double-float)
 	(*calc-token* (let ((token nil))
 			(with-input-from-string (s string)
