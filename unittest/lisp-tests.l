@@ -19,6 +19,38 @@
 
 (let ((os-version (list (os-major-version) (os-minor-version)))
       (os-features '(:windows-8 :windows-7 :windows-vista :windows-xp :windows-2000)))
+  ;; Windows 2000
+  (when (equalp '(5 0) os-version)
+    (deftest os-features-2000-test ()
+      "*features* contains :windows-2000, :windows-nt"
+      (mapcar #'(lambda (k) (not (null (featurep k)))) os-features)
+      => (nil nil nil nil t))
+    (deftest os-platform-2000-test ()
+      "(os-platform) should return :windows-2000"
+      (os-platform)
+      => windows-2000)
+    (deftest user-config-path-and-dump-image-path-2000-test ()
+      "(user-config-path) and (si:dump-image-path) should return w2k"
+      (values (pathname-name (user-config-path))
+              (pathname-type (si:dump-image-path)))
+      => "w2k"
+      => "w2k"))
+  ;; Windows XP
+  (when (equalp '(5 1) os-version)
+    (deftest os-features-xp-test ()
+      "*features* contains :windows-xp, :windows-2000, :windows-nt"
+      (mapcar #'(lambda (k) (not (null (featurep k)))) os-features)
+      => (nil nil nil t t))
+    (deftest os-platform-xp-test ()
+      "(os-platform) should return :windows-xp"
+      (os-platform)
+      => windows-xp)
+    (deftest user-config-path-and-dump-image-path-xp-test ()
+      "(user-config-path) and (si:dump-image-path) should return wxp"
+      (values (pathname-name (user-config-path))
+              (pathname-type (si:dump-image-path)))
+      => "wxp"
+      => "wxp"))
   ;; Windows Vista
   (when (equalp '(6 0) os-version)
     (deftest os-features-vista-test ()
