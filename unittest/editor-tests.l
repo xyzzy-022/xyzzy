@@ -47,3 +47,100 @@
      (member "ed" list :test #'string=)))
   => non-nil
   => non-nil)
+
+(defmacro with-csharp-mode-bed (&body body)
+  `(with-temp-buffer
+     (csharp-mode)
+     ,@body))
+
+(defun csharp-region-indent-test (line)
+  (insert line #\LFD)
+  (previous-line)
+  (goto-bol)
+  (c-indent-line)
+  (prog1
+      (current-column)
+    (forward-line)))
+
+(deftest csharp-mode-calc-c-indent-for-region-directive-1 ()
+  (let ((csharp-indent-level 2)
+        (csharp-continued-statement-offset 2)
+        (csharp-argdecl-indent 5)
+        (csharp-brace-offset 0)
+        (csharp-brace-imaginary-offset 0)
+        (csharp-label-offset -2)
+        (csharp-comment-indent 2))
+    (with-csharp-mode-bed
+      (values
+       (csharp-region-indent-test "#region MyClass")
+       (csharp-region-indent-test "class MyClass {")
+       (csharp-region-indent-test   "#region Public Methods")
+       (csharp-region-indent-test   "#region MyMethod")
+       (csharp-region-indent-test   "public void MyMethod() {")
+       (csharp-region-indent-test     "#region MyStatement")
+       (csharp-region-indent-test     "return;")
+       (csharp-region-indent-test     "#endregion // MyStatement")
+       (csharp-region-indent-test   "}")
+       (csharp-region-indent-test   "#endregion // MyMethod")
+       (csharp-region-indent-test   "#endregion // Public Methods")
+       (csharp-region-indent-test "}")
+       (csharp-region-indent-test "#endregion // MyClass"))))
+  => 0
+  => 0
+  => 2
+  => 2
+  => 2
+  => 4
+  => 4
+  => 4
+  => 2
+  => 2
+  => 2
+  => 0
+  => 0)
+
+(deftest csharp-mode-calc-c-indent-for-region-directive-2 ()
+  (let ((csharp-indent-level 2)
+        (csharp-continued-statement-offset 2)
+        (csharp-argdecl-indent 5)
+        (csharp-brace-offset 0)
+        (csharp-brace-imaginary-offset 0)
+        (csharp-label-offset -2)
+        (csharp-comment-indent 2))
+    (with-csharp-mode-bed
+      (values
+       (csharp-region-indent-test "class MyClass {")
+       (csharp-region-indent-test "#undef DEBUG")
+       (csharp-region-indent-test "#define DEBUG")
+       (csharp-region-indent-test "#pragma warning disable 414, 3021")
+       (csharp-region-indent-test   "# region MyMethod")
+       (csharp-region-indent-test   "public int MyMethod() {")
+       (csharp-region-indent-test "#if DEBUG")
+       (csharp-region-indent-test     "#  region MyStatement")
+       (csharp-region-indent-test "# define PI 3.14")
+       (csharp-region-indent-test "# line 200")
+       (csharp-region-indent-test     "return PI;")
+       (csharp-region-indent-test "# line default")
+       (csharp-region-indent-test     "#  endregion // MyStatement")
+       (csharp-region-indent-test "#elif DEBUG2")
+       (csharp-region-indent-test "# warn Not implemented yet.")
+       (csharp-region-indent-test "#else")
+       (csharp-region-indent-test "# error Not implemented yet.")
+       (csharp-region-indent-test "#endif")
+       (csharp-region-indent-test   "}")
+       (csharp-region-indent-test   "# endregion // MyMethod")
+       (csharp-region-indent-test "}")
+       (csharp-region-indent-test "#endregion // MyClass"))))
+  => 0
+  => 0
+  => 0
+  => 0
+  => 2
+  => 2
+  => 4
+  => 4
+  => 4
+  => 2
+  => 2
+  => 0
+  => 0)

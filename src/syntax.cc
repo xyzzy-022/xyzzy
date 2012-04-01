@@ -2240,6 +2240,8 @@ static const char C_KWD_INTERNAL[] = "internal";
 static const char C_KWD_NEW[] = "new";
 static const char C_KWD_SEALED[] = "sealed";
 static const char C_KWD_EXTERN[] = "extern";
+static const char C_KWD_REGION[] = "region";
+static const char C_KWD_ENDREGION[] = "endregion";
 
 #define C_KWD_LENGTH(KWD) (sizeof (KWD) - 1)
 #define C_KWD_LENGTH_CLASS C_KWD_LENGTH (C_KWD_CLASS)
@@ -2283,7 +2285,8 @@ Buffer::c_goto_if_directive (Point &point) const
 int
 Buffer::c_skip_white_backward (Point &point, int pure) const
 {
-  const int opt_cpp = xsyntax_table (lsyntax_table)->flags & SYNTAX_OPT_CPP;
+  const int syntax_opt = xsyntax_table (lsyntax_table)->flags;
+  const int opt_cpp = syntax_opt & SYNTAX_OPT_CPP;
   flag_fake_open_brace = 0;
   skip_over_newline = !eobp (point) && point.ch () == '\n';
   while (1)
@@ -2306,7 +2309,7 @@ Buffer::c_skip_white_backward (Point &point, int pure) const
 
       flag_fake_open_brace = 0;
       goto_bol (point);
-      if (opt_cpp && point.ch () == '#')
+      if (opt_cpp && (point.ch () == '#' || csharp_region_directive_p (point, syntax_opt)))
         {
           forward_char (point, 1);
           skip_pure_white (point);
@@ -2845,6 +2848,25 @@ Buffer::c_check_extern_p (const Point &opoint) const
 }
 
 int
+Buffer::csharp_region_directive_p (const Point &opoint, int syntax_opt) const
+{
+  if (!(syntax_opt & SYNTAX_OPT_CSHARP))
+    return 0;
+
+  Point point (opoint);
+
+  skip_pure_white (point);
+  if (point.ch () != '#')
+    return 0;
+
+  forward_char (point, 1);
+  skip_pure_white (point);
+
+  return (C_SYMBOL_MATCH_P (point, C_KWD_REGION, 1) ||
+          C_SYMBOL_MATCH_P (point, C_KWD_ENDREGION, 1));
+}
+
+int
 Buffer::calc_c_indent (Point &point, Point &colon_point,
                        int syntax_opt) const
 {
@@ -2852,7 +2874,8 @@ Buffer::calc_c_indent (Point &point, Point &colon_point,
   goto_bol (point);
   const Point curpos (point);
   skip_pure_white (point);
-  if (opt_cpp && !eobp (point) && point.ch () == '#')
+  if (opt_cpp && !eobp (point) && point.ch () == '#' &&
+      !csharp_region_directive_p (point, syntax_opt))
     {
       goto_bol (point);
       return Csame;
