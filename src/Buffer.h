@@ -755,6 +755,7 @@ struct Buffer
   int c_check_throws (Point &, Point &, const Point &, int) const;
   int c_check_extern_p (const Point &) const;
   int csharp_region_directive_p (const Point &point, int syntax_opt) const;
+  int csharp_using_statement_p (const Point &opoint, int syntax_opt) const;
 
   lisp lock_file ();
   lisp lock_file (lisp, int);
