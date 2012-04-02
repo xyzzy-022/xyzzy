@@ -153,3 +153,49 @@
   => 2
   => 0
   => 0)
+
+(deftest csharp-mode-calc-c-indent-for-using-statement ()
+  (let ((csharp-indent-level 2)
+        (csharp-continued-statement-offset 2)
+        (csharp-argdecl-indent 5)
+        (csharp-brace-offset 0)
+        (csharp-brace-imaginary-offset 0)
+        (csharp-label-offset -2)
+        (csharp-comment-indent 2))
+    (with-csharp-mode-bed
+      (values
+       (csharp-region-indent-test "class MyClass {")
+       (csharp-region-indent-test   "public int MyMethod() {")
+       (csharp-region-indent-test     "using (StreamReader outFile = new StreamReader(outputFile.OpenRead()))")
+       (csharp-region-indent-test     "using (StreamReader expFile = new StreamReader(expectedFile.OpenRead())) {")
+       (csharp-region-indent-test       "outFile.Write(expFile.ReadToEnd());")
+       (csharp-region-indent-test     "}")
+       (csharp-region-indent-test   "}")
+       (csharp-region-indent-test "}"))))
+  => 0
+  => 2
+  => 4
+  => 4
+  => 6
+  => 4
+  => 2
+  => 0)
+
+(deftest csharp-mode-calc-c-indent-for-using-directive ()
+  (let ((csharp-indent-level 2)
+        (csharp-continued-statement-offset 2)
+        (csharp-argdecl-indent 5)
+        (csharp-brace-offset 0)
+        (csharp-brace-imaginary-offset 0)
+        (csharp-label-offset -2)
+        (csharp-comment-indent 2))
+    (with-csharp-mode-bed
+      (values
+       (csharp-region-indent-test "namespace MyNS {")
+       (csharp-region-indent-test   "using")
+       (csharp-region-indent-test     "System.IO;")
+       (csharp-region-indent-test "}"))))
+  => 0
+  => 2
+  => 4
+  => 0)

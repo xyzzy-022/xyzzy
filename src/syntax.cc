@@ -2242,6 +2242,7 @@ static const char C_KWD_SEALED[] = "sealed";
 static const char C_KWD_EXTERN[] = "extern";
 static const char C_KWD_REGION[] = "region";
 static const char C_KWD_ENDREGION[] = "endregion";
+static const char C_KWD_USING[] = "using";
 
 #define C_KWD_LENGTH(KWD) (sizeof (KWD) - 1)
 #define C_KWD_LENGTH_CLASS C_KWD_LENGTH (C_KWD_CLASS)
@@ -2251,6 +2252,7 @@ static const char C_KWD_ENDREGION[] = "endregion";
 #define C_KWD_LENGTH_THROWS C_KWD_LENGTH (C_KWD_THROWS)
 #define C_KWD_LENGTH_IMPLEMENTS C_KWD_LENGTH (C_KWD_IMPLEMENTS)
 #define C_KWD_LENGTH_EXTENDS C_KWD_LENGTH (C_KWD_EXTENDS)
+#define C_KWD_LENGTH_USING C_KWD_LENGTH (C_KWD_USING)
 
 void
 Buffer::skip_pure_white (Point &point) const
@@ -2866,6 +2868,34 @@ Buffer::csharp_region_directive_p (const Point &opoint, int syntax_opt) const
           C_SYMBOL_MATCH_P (point, C_KWD_ENDREGION, 1));
 }
 
+/*
+using-statement:
+  using   (    resource-acquisition   )    embedded-statement
+resource-acquisition:
+  local-variable-declaration
+  expression
+*/
+int
+Buffer::csharp_using_statement_p (const Point &opoint, int syntax_opt) const
+{
+  if (!(syntax_opt & SYNTAX_OPT_CSHARP))
+    return 0;
+
+  Point point (opoint);
+  skip_pure_white (point);
+
+  if (!C_SYMBOL_MATCH_P (point, C_KWD_USING, 0))
+    return 0;
+
+  forward_char (point, C_KWD_LENGTH_USING);
+  skip_pure_white (point);
+  if (point.ch () != '(')
+    // Maybe using directive
+    return 0;
+
+  return 1;
+}
+
 int
 Buffer::calc_c_indent (Point &point, Point &colon_point,
                        int syntax_opt) const
@@ -3032,6 +3062,8 @@ Buffer::calc_c_indent (Point &point, Point &colon_point,
                                                opos, syntax_opt, c);
                   if (result)
                     return result;
+                  if (csharp_using_statement_p (point, syntax_opt))
+                    return Csame;
                 }
               return status;
             }
