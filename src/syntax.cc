@@ -2271,8 +2271,9 @@ int
 Buffer::c_goto_if_directive (Point &point) const
 {
   while (forward_line (point, -1))
-    if (point.ch () == '#')
+    if (c_preprocessor_directive_p (point))
       {
+        skip_pure_white (point);
         forward_char (point, 1);
         skip_pure_white (point);
         if (C_SYMBOL_MATCH_P (point, C_KWD_IF, 1))
@@ -2311,8 +2312,9 @@ Buffer::c_skip_white_backward (Point &point, int pure) const
 
       flag_fake_open_brace = 0;
       goto_bol (point);
-      if (opt_cpp && (point.ch () == '#' || csharp_region_directive_p (point, syntax_opt)))
+      if (opt_cpp && (c_preprocessor_directive_p (point) || csharp_region_directive_p (point, syntax_opt)))
         {
+          skip_pure_white (point);
           forward_char (point, 1);
           skip_pure_white (point);
           if (C_SYMBOL_MATCH_P (point, C_KWD_EL, 1)
@@ -2342,7 +2344,7 @@ Buffer::c_skip_white_backward (Point &point, int pure) const
               return 0;
             }
           goto_bol (point);
-          if (opt_cpp && point.ch () != '#')
+          if (opt_cpp && !c_preprocessor_directive_p (point))
             {
               point = opoint;
               return 0;
@@ -2850,6 +2852,14 @@ Buffer::c_check_extern_p (const Point &opoint) const
 }
 
 int
+Buffer::c_preprocessor_directive_p (const Point &opoint) const
+{
+  Point point (opoint);
+  skip_pure_white (point);
+  return (point.ch () == '#');
+}
+
+int
 Buffer::csharp_region_directive_p (const Point &opoint, int syntax_opt) const
 {
   if (!(syntax_opt & SYNTAX_OPT_CSHARP))
@@ -2904,12 +2914,6 @@ Buffer::calc_c_indent (Point &point, Point &colon_point,
   goto_bol (point);
   const Point curpos (point);
   skip_pure_white (point);
-  if (opt_cpp && !eobp (point) && point.ch () == '#' &&
-      !csharp_region_directive_p (point, syntax_opt))
-    {
-      goto_bol (point);
-      return Csame;
-    }
 
   if (C_SYMBOL_MATCH_P (point, C_KWD_ELSE, 0))
     return c_goto_match_if (point);
@@ -3166,7 +3170,7 @@ Buffer::calc_c_indent (Point &point, Point &colon_point,
             skip_semi_colon--;
         }
 
-      if (in_cpp && point.ch () == '#' && bolp (point))
+      if (in_cpp && c_preprocessor_directive_p (point))
         {
           result = Send_sexp;
           goto fake_open_brace;
@@ -3177,7 +3181,7 @@ Buffer::calc_c_indent (Point &point, Point &colon_point,
     }
 
   point = curpos;
-  if (opt_cpp && forward_line (point, -1) && point.ch () == '#')
+  if (opt_cpp && forward_line (point, -1) && c_preprocessor_directive_p (point))
     {
       goto_eol (point);
       forward_char (point, -1);
@@ -3212,7 +3216,8 @@ Fcalc_c_indent ()
       comment_indent,
       continued_statement_offset,
       indent_level,
-      label_offset
+      label_offset,
+      preprocessor_offset,
     };
 
   static const lisp *c_params[] =
@@ -3224,6 +3229,7 @@ Fcalc_c_indent ()
       &Vc_continued_statement_offset,
       &Vc_indent_level,
       &Vc_label_offset,
+      &Vc_preprocessor_offset,
     };
   static const lisp *cplusplus_params[] =
     {
@@ -3234,6 +3240,7 @@ Fcalc_c_indent ()
       &Vcplusplus_continued_statement_offset,
       &Vcplusplus_indent_level,
       &Vcplusplus_label_offset,
+      &Vcplusplus_preprocessor_offset,
     };
   static const lisp *java_params[] =
     {
@@ -3244,6 +3251,7 @@ Fcalc_c_indent ()
       &Vjava_continued_statement_offset,
       &Vjava_indent_level,
       &Vjava_label_offset,
+      &Vjava_preprocessor_offset,
     };
   static const lisp *csharp_params[] =
     {
@@ -3254,6 +3262,7 @@ Fcalc_c_indent ()
       &Vcsharp_continued_statement_offset,
       &Vcsharp_indent_level,
       &Vcsharp_label_offset,
+      &Vcsharp_preprocessor_offset,
     };
 
   Window *wp = selected_window ();
@@ -3300,6 +3309,8 @@ Fcalc_c_indent ()
   point = wp->w_point;
 
 #define indent_param(X) symbol_value_as_integer (*params[(X)], bp)
+#define indent_param_p(X) (symbol_value (*params[(X)], bp) != Qnil && \
+                           symbol_value (*params[(X)], bp) != Qunbound)
   const lisp **const params = (syntax_opt & SYNTAX_OPT_CPLUSPLUS
                                ? cplusplus_params
                                : (syntax_opt & SYNTAX_OPT_JAVA
@@ -3410,6 +3421,17 @@ Fcalc_c_indent ()
             goal = column + indent_param (argdecl_indent);
           break;
 
+        case '#':
+          if (syntax_opt & SYNTAX_OPT_CPP && !bp->csharp_region_directive_p (point, syntax_opt)) {
+            if (indent_param_p (preprocessor_offset)) {
+              goal += indent_param (preprocessor_offset);
+            } else {
+              bp->goto_bol (point);
+              goal = 0;
+            }
+          }
+          break;
+
         default:
           if (bp->c_label_line_p (point))
             goal += indent_param (label_offset);
@@ -3419,6 +3441,7 @@ Fcalc_c_indent ()
 
   return make_fixnum (goal < 0 ? 0 : goal);
 #undef indent_param
+#undef indent_param_p
 }
 
 lisp

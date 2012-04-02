@@ -9,7 +9,7 @@
 
 (export '(*c-mode-hook* c-indent-level c-continued-statement-offset
 	  c-argdecl-indent c-brace-offset c-brace-imaginary-offset
-	  c-label-offset c-comment-indent))
+	  c-label-offset c-preprocessor-offset c-comment-indent))
 (export '(c-mode c-indent-line c-newline-and-indent c-electric-insert
 	  c-electric-close indent-cpp-directive
 	  *c-keyword-file* *c-indent-tabs-mode*
@@ -25,6 +25,7 @@
   (setq c-brace-offset 0)
   (setq c-brace-imaginary-offset 0)
   (setq c-label-offset -2)
+  (setq c-preprocessor-offset nil)
   (setq c-comment-indent 2))
 
 (defvar *c-tab-always-indent* t)
