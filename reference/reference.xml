@@ -1461,10 +1461,8 @@ isearch-scannerで実行されます。scan-bufferするパターンを書き換
 etc-pathで取得されるパスを検索します。
 
 使用例：
-  (pushnew "C:/Program Files/xyzzy/keyword" *keyword-load-path* :test #'string=)
-
-補足：
-  xyzzy 0.2.2.238から$XYZZY/site-etcがデフォルトで追加されています。
+  (pushnew (merge-pathnames "keyword" (si:system-root))
+           *keyword-load-path* :test #'string=)
 </description>
 <seealso>load-keyword-file</seealso>
 <seealso>*etc-path*</seealso>
@@ -3195,10 +3193,17 @@ C++での
 <description>
 キーワードファイルをカスタマイズするには以下の方法を推奨します。
 
-  1. $XYZZY/site-etc にカスタマイズしたいキーワードファイルと
+  1. *keyword-load-path*にカスタマイズしたキーワードファイルを
+     置く場所を指定する
+
+     ;; 例) $XYZZY/keyword に置く場合
+     (pushnew (merge-pathnames "keyword" (si:system-root))
+              *keyword-load-path* :test #'string=)
+
+  2. 上記場所にカスタマイズしたいキーワードファイルと
      同名のファイルを作成
-  2. 先頭に ;@include &lt;カスタマイズしたいファイル&gt; を追加
-  3. ;*-- は ;*+ などを使ってキーワードを追加・削除・色の変更
+  3. 先頭に ;@include &lt;カスタマイズしたいファイル&gt; を追加
+  4. ;*-- は ;*+ などを使ってキーワードを追加・削除・色の変更
 
 例：
   ;;;; C# のキーワードファイルのカスタマイズ
