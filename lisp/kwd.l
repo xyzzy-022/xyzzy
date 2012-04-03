@@ -84,6 +84,7 @@
     (let ((num #x400)
 	  (entity-ok 0)
 	  (valid t)
+	  (remove nil)
 	  buffer)
       (unwind-protect
 	  (save-excursion
@@ -106,11 +107,15 @@
 				 (forward-char 2)
 				 (when (or (equal condition "*")
 					   (match-keyword-condition condition))
-				   (setq valid t)))
+				   (setq valid t remove nil)))
+				((looking-for "*--")
+				 (forward-char 3)
+				 (when (match-keyword-condition condition)
+				   (setq valid nil remove t)))
 				((looking-for "*-")
 				 (forward-char 2)
 				 (when (match-keyword-condition condition)
-				   (setq valid nil)))
+				   (setq valid nil remove nil)))
 				((not valid))
 				((looking-at "@include[ \t]+\\(?:\"\\(.+\\)\"\\|<\\(.+\\)>\\)$")
 				 (let ((include (if (match-string 1)
@@ -148,15 +153,17 @@
 			  (forward-line 1))
 			 ((eolp)
 			  (forward-char 1))
-			 ((not valid)
+			 ((and (not valid) (not remove))
 			  (forward-line 1))
 			 (t
-			  (setf (gethash (buffer-substring (point)
+			  (let ((keyword (buffer-substring (point)
 							   (progn
 							     (goto-eol)
-							     (point)))
-					 table)
-				num)
+							     (point)))))
+			    (cond ((and (not valid) remove)
+				   (remhash keyword table))
+				  (valid
+				   (setf (gethash keyword table) num))))
 			  (forward-char 1)))))
 	(when buffer
 	  (delete-buffer buffer)))))
