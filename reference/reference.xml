@@ -1461,11 +1461,15 @@ isearch-scannerで実行されます。scan-bufferするパターンを書き換
 etc-pathで取得されるパスを検索します。
 
 使用例：
-  (setq *keyword-load-path* '("C:/Program Files/xyzzy/keyword"))
+  (pushnew "C:/Program Files/xyzzy/keyword" *keyword-load-path* :test #'string=)
+
+補足：
+  xyzzy 0.2.2.238から$XYZZY/site-etcがデフォルトで追加されています。
 </description>
 <seealso>load-keyword-file</seealso>
 <seealso>*etc-path*</seealso>
 <seealso>キーワードファイルの書き方</seealso>
+<seealso>キーワードファイルのカスタマイズ</seealso>
 <link></link>
 <section>変数と定数</section>
 <file>kwd.l</file>
@@ -3156,19 +3160,82 @@ C++での
               u underline
               s strike-out
               l 一行丸ごと
-条件：
-  xyzzy 0.2.207からload-keyword-fileにconditionを指定する
-  ことが可能になりました。conditionはitemと比較を行います。
-  $XYZZY/lisp/html-kwd.lを参照
+  ;@include &lt;path&gt;  etc-pathからの相対パスでキーワードファイルを読み込む
+  ;@include &quot;path&quot;  読み込み中のファイルからの相対パスでキーワードファイルを読み込む
+  ;*+               conditionに関わらず以降を有効にする
+  ;*-               conditionに関わらず以降を無効にする
+                    キーワードが定義済みの場合は定義されたまま
+  ;*--              conditionに関わらず以降を削除する
+  ;*+item           itemがconditionに一致した場合に以降を有効にする
+  ;*-item           itemがconditionに一致した場合に以降を無効にする
+                    キーワードが定義済みの場合は定義されたまま
+  ;*--item          itemがconditionに一致した場合に以降を削除する
+  ;*&amp;               以降はHTMLのタグ以外でも有効なキーワードとする
+  ;*&lt;               以降はHTMLのタグでのみ有効なキーワードとする
 
-  ;*+         conditionに関わらず以降を有効にする
-  ;*-         conditionに関わらず以降を無効にする
-  ;*+item     itemがconditionに一致した場合に以降を有効にする
-  ;*-item     itemがconditionに一致した場合に以降を無効にする
-  ;*&amp;         以降はHTMLのタグ以外でも有効なキーワードとする
-  ;*&lt;         以降はHTMLのタグでのみ有効なキーワードとする
+備考：
+  load-keyword-fileに指定したconditionはitemと比較を行います。
+  $XYZZY/lisp/html-kwd.lを参照。
+  xyzzy 0.2.2.238から他のキーワードファイルの読み込み (;@include) と
+  キーワードの削除 (;*--) が可能になりました。
+  属性の指定はファイルローカルです。;@includeによって読み込んだ他の
+  ファイルには影響を与えません。
 </description>
-<seealso></seealso>
+<seealso>キーワードファイルのカスタマイズ</seealso>
+<link></link>
+<section>その他</section>
+<file></file>
+</chapter>
+
+<chapter>
+<title>キーワードファイルのカスタマイズ</title>
+<type>Tips</type>
+<arguments></arguments>
+<package></package>
+<description>
+キーワードファイルをカスタマイズするには以下の方法を推奨します。
+
+  1. $XYZZY/site-etc にカスタマイズしたいキーワードファイルと
+     同名のファイルを作成
+  2. 先頭に ;@include &lt;カスタマイズしたいファイル&gt; を追加
+  3. ;*-- は ;*+ などを使ってキーワードを追加・削除・色の変更
+
+例：
+  ;;;; C# のキーワードファイルのカスタマイズ
+  ;;
+  :: #reigon と #endregion はキーワード番号0の色を利用
+  ;; LINQ のクエリ式のキーワードを削除
+  ;; http://msdn.microsoft.com/en-us/library/bb310804.aspx
+
+  ;; etc/C# の読み込み
+  ;@include &lt;C#&gt;
+
+  ;; 色の変更
+  ;*0
+  #region
+  #endregion
+
+  ;; キーワードの削除
+  ;*--
+  from
+  where
+  select
+  group
+  into
+  orderby
+  join
+  let
+  in
+  on
+  equals
+  by
+  ascending
+  descending
+
+備考：
+  このカスタマイズ方法が使えるのはxyzzy 0.2.2.238以降です。
+</description>
+<seealso>キーワードファイルの書き方</seealso>
 <link></link>
 <section>その他</section>
 <file></file>
@@ -16172,6 +16239,7 @@ OBJECTがconsか空リスト()ならt、それ以外ならnilを返します。
   リストで指定可能です。
 </description>
 <seealso>キーワードファイルの書き方</seealso>
+<seealso>キーワードファイルのカスタマイズ</seealso>
 <seealso>*keyword-load-path*</seealso>
 <seealso>make-list-from-keyword-table</seealso>
 <section>その他</section>
