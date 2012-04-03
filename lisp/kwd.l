@@ -105,19 +105,11 @@
 			  (cond ((looking-for "*+")
 				 (forward-char 2)
 				 (when (or (equal condition "*")
-					   (progn
-					     (skip-chars-forward " \t")
-					     (eolp))
-					   (and condition
-						(looking-at condition)))
+					   (match-keyword-condition condition))
 				   (setq valid t)))
 				((looking-for "*-")
 				 (forward-char 2)
-				 (when (or (progn
-					     (skip-chars-forward " \t")
-					     (eolp))
-					   (and condition
-						(looking-at condition)))
+				 (when (match-keyword-condition condition)
 				   (setq valid nil)))
 				((not valid))
 				((looking-at "@include[ \t]+\\(?:\"\\(.+\\)\"\\|<\\(.+\\)>\\)$")
@@ -169,6 +161,13 @@
 	(when buffer
 	  (delete-buffer buffer)))))
   table)
+
+(defun match-keyword-condition (condition)
+  (or (progn
+	(skip-chars-forward " \t")
+	(eolp))
+      (and condition
+	   (looking-at condition))))
 
 (defun make-list-from-keyword-table (hash)
   (let ((list nil))
