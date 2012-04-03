@@ -10,6 +10,7 @@
 (export '(make-keyword-table load-keyword-file make-list-from-keyword-table
 	  reload-keyword-file *keyword-load-path*))
 
+;; See init-misc-objects in misc.l
 (defvar *keyword-load-path* nil)
 
 (or (boundp 'keyword-hash-table)

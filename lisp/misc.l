@@ -362,6 +362,7 @@
 
 (defun init-misc-objects ()
   (setq *etc-path* (merge-pathnames "etc" (si:system-root)))
+  (setq *keyword-load-path* (list (merge-pathnames "site-etc" (si:system-root))))
   (setq *cooked-mode-input-stream*
 	(make-general-input-stream #'cooked-mode-tty-input nil
 				   #'(lambda () (listen *keyboard*))))
