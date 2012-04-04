@@ -9,12 +9,13 @@
 
 (in-package "editor")
 
-(export '(grep-dialog *grep-directory-name-hook* *grepd-hook*))
+(export '(grep-dialog *grep-directory-name-hook* *grepd-hook* *before-grepd-hook*))
 
 (defvar *last-grepd-regexp* "")
 (defvar *regexp-search* nil)
 (defvar *understand-escape-sequences* nil)
 (defvar *grepd-hook* nil)
+(defvar *before-grepd-hook* nil)
 
 (define-history-variable *grep-directory-history* nil)
 (define-history-variable *grep-file-history* nil)
@@ -69,6 +70,7 @@
 	  (error "~A~%ディレクトリが見つかりません" dir))
 	(scan-files-setup (glob-common-path dirlist)
 			  buffer temp scanner)
+	(run-hook-with-args '*before-grepd-hook* pattern)
 	(refresh-screen)
 	(with-output-to-selected-buffer
 	  (let ((last-tick (get-internal-real-time))
@@ -179,6 +181,7 @@
     (scan-files-setup (subseq (car dirlist) 0 commonl)
 		      buffer temp scanner)
     (async-grep-mode)
+    (run-hook-with-args '*before-grepd-hook*)
     (setq async-grep-temp-buffer temp)
     (setq async-grep-timer-callback
 	  (grep-async-scanner pattern buffer temp scanner

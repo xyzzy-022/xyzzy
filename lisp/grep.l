@@ -8,12 +8,13 @@
 (in-package "editor")
 
 (export '(*last-fgrep-pattern* *last-grep-regexp* grep fgrep
-	  *grep-highlight-match* *grep-hook*))
+	  *grep-highlight-match* *grep-hook* *before-grep-hook*))
 
 (defvar *last-fgrep-pattern* "")
 (defvar *last-grep-regexp* "")
 (defvar *grep-highlight-match* '(:bold t))
 (defvar *grep-hook* nil)
+(defvar *before-grep-hook* nil)
 
 (defun fgrep (pattern &optional arg)
   (interactive "sfgrep: \np" :default0 *last-fgrep-pattern* :history0 'search)
@@ -63,6 +64,7 @@
 	  (make-local-variable '*find-error-scanner*)
 	  (setq *find-error-scanner* scanner)
 	  (set-buffer-fold-width nil sbuffer)
+	  (run-hook-with-args '*before-grep-hook* pattern)
 	  (dolist (buffer (if arg (list arg) (buffer-list)))
 	    (let ((bufname (buffer-name buffer)))
 	      (unless (or (eq buffer sbuffer)
