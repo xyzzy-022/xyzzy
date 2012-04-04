@@ -139,8 +139,8 @@
 	(let ((marker (find-errors errors)))
 	  (or marker
 	      (return))
-	  (setq errors (cons (cons marker (current-line-number)) errors)))
-	(setq *nerrors-found* (1+ *nerrors-found*))
+	  (push (cons marker (current-line-number)) errors))
+	(incf *nerrors-found*)
 	(incf nerrors)
 	(when (<= *max-error-list* nerrors)
 	  (return))
@@ -151,7 +151,7 @@
 		   *nerrors-found* percent))
 	(or (forward-line 1)
 	    (return)))
-      (setq *error-list* (reverse errors)))
+      (setq *error-list* (nreverse errors)))
     (message "Parsing error messages...done")))
 
 (defun build-error-list ()
