@@ -16,6 +16,7 @@
 
 (defvar *error-list* nil)
 (defvar *rerror-list* nil)
+(defvar *max-error-list* 100)
 (defvar *error-buffer* nil)
 (defvar *last-error* nil)
 (defvar *nerrors-found* nil)
@@ -133,13 +134,16 @@
 (defun build-error-list-1 ()
   (long-operation
     (message "Parsing error messages...")
-    (let (errors percent opercent)
+    (let (errors percent opercent (nerrors 0))
       (loop
 	(let ((marker (find-errors errors)))
 	  (or marker
 	      (return))
-	  (setq errors (cons (cons marker (current-line-number)) errors)))
-	(setq *nerrors-found* (1+ *nerrors-found*))
+	  (push (cons marker (current-line-number)) errors))
+	(incf *nerrors-found*)
+	(incf nerrors)
+	(when (<= *max-error-list* nerrors)
+	  (return))
 	(setq percent (truncate (* 100 (point)) (point-max)))
 	(unless (and opercent (eql percent opercent))
 	  (setq opercent percent)
@@ -147,7 +151,7 @@
 		   *nerrors-found* percent))
 	(or (forward-line 1)
 	    (return)))
-      (setq *error-list* (reverse errors)))
+      (setq *error-list* (nreverse errors)))
     (message "Parsing error messages...done")))
 
 (defun build-error-list ()
