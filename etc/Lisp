@@ -1525,6 +1525,8 @@ zerop
 *auto-mode-parameter-alist*
 *auto-update-per-device-directory*
 *before-find-file-hook*
+*before-grep-hook*
+*before-grepd-hook*
 *brackets-is-wildcard-character*
 *buffer-bar-context-menu*
 *buffer-bar-context-menu-buffer*
