@@ -171,6 +171,7 @@
     <ClCompile Include="src\font.cc" />
     <ClCompile Include="src\gime.cc" />
     <ClCompile Include="src\glob.cc" />
+    <ClCompile Include="src\guess.cc" />
     <ClCompile Include="src\guid.cc" />
     <ClCompile Include="src\gzip.cc" />
     <ClCompile Include="src\hash.cc" />
@@ -364,6 +365,7 @@
     <ClInclude Include="src\function.h" />
     <ClInclude Include="src\gime.h" />
     <ClInclude Include="src\glob.h" />
+    <ClInclude Include="src\guess.h" />
     <ClInclude Include="src\hash.h" />
     <ClInclude Include="src\ipc.h" />
     <ClInclude Include="src\kanji.h" />
