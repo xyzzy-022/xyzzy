@@ -25,6 +25,12 @@
     <Filter Include="ヘッダー ファイル\privctrl">
       <UniqueIdentifier>{6c2577ed-1ae6-4589-9819-49eee3f6dd75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\libguess">
+      <UniqueIdentifier>{9e3e305c-4718-4f7a-9d56-7920d33fe45d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\libguess">
+      <UniqueIdentifier>{e5c163e6-b772-41d7-8d0c-ab466b06b153}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\chtab.cc">
@@ -402,6 +408,9 @@
     <ClCompile Include="src\system.cc">
       <Filter>ソース ファイル\ed</Filter>
     </ClCompile>
+    <ClCompile Include="src\guess.cc">
+      <Filter>ソース ファイル\libguess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\xyzzy.gen.rc">
@@ -768,6 +777,9 @@
     </ClInclude>
     <ClInclude Include="src\system.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\guess.h">
+      <Filter>ヘッダー ファイル\libguess</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

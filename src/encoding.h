@@ -43,6 +43,7 @@ protected:
     }
 public:
   int get () {return s_bp == s_be ? refill () : *s_bp++;}
+  int peek () {return s_bp == s_be ? refill () : *s_bp;}
   void putback (int c) {if (c != eof && s_bp != s_bb) s_bp--;}
   int eofp ()
     {
