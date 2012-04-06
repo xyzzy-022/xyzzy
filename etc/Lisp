@@ -594,6 +594,7 @@ goto-virtual-column
 goto-virtual-eol
 goto-virtual-line
 graphic-char-p
+guess-char-encoding
 handler-case
 hash-table-count
 hash-table-p

@@ -2372,6 +2372,7 @@ static symbols ed[] =
   DEFUN3 (convert-encoding-to-internal, 2, 1, 0),
   DEFUN3 (convert-encoding-from-internal, 2, 1, 0),
   DEFUN3 (detect-char-encoding, 1, 0, 0),
+  DEFUN3 (guess-char-encoding, 1, 0, 0),
   DEFVAR2 (*accept-mule-ucs-funny-utf8*),
 
   /* ldialog.cc */

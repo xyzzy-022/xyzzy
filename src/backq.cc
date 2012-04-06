@@ -2,32 +2,6 @@
 
 static lisp bq_process (lisp x);
 
-static inline lisp
-list (lisp x)
-{
-  return xcons (x, Qnil);
-}
-
-static inline lisp
-list (lisp x, lisp y)
-{
-  return xcons (x, list (y));
-}
-
-static inline lisp
-list (lisp x, lisp y, lisp z)
-{
-  return xcons (x, list (y, z));
-}
-
-static inline lisp
-append (lisp x, lisp y)
-{
-  if (y == Qnil)
-    return x;
-  return Fappend (list (x, y));
-}
-
 static lisp
 bq_mapcar_cadr (lisp list)
 {

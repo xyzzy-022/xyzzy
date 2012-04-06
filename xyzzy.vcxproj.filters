@@ -778,8 +778,5 @@
     <ClInclude Include="src\system.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\guess.h">
-      <Filter>ヘッダー ファイル\libguess</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
