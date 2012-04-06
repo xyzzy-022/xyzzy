@@ -113,6 +113,7 @@ Fguess_char_encoding (lisp string)
 
   char sig[3];
   size_t siglen = 0;
+  int sjis_halfwidth_alive = 1;
   for (int c = is->get (), i = 0; c != xstream::eof; c = is->get (), i++)
     {
       if (siglen < sizeof sig)
@@ -139,6 +140,9 @@ Fguess_char_encoding (lisp string)
           if (c == 0xff)
             return list (make_pair (Vencoding_default_utf16be_bom, 1.0));
         }
+
+      if (c >= 0x80 && (c < 0xa1 || c > 0xdf))
+        sjis_halfwidth_alive = 0;
 
       if (DFA_ALIVE(eucj))
         {
@@ -171,6 +175,12 @@ Fguess_char_encoding (lisp string)
           return Qnil;
         }
     }
+
+  if (DFA_ALIVE(eucj) && DFA_ALIVE(sjis) && !DFA_ALIVE(utf8) &&
+      sjis_halfwidth_alive) {
+    /* non-ASCII chars are only cp932 half width chars */
+    return list (make_pair (Vencoding_sjis, 0.9));
+  }
 
   /* Now, we have ambigous code. */
   guess_dfa *order[] = { &utf8, &sjis, &eucj, &big5 };
