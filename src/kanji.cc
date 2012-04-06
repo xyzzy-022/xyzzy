@@ -47,6 +47,8 @@ Fdetect_char_encoding (lisp string)
           continue;
 
       if (top == Qnil || number_compare (score (xcar (top)), score (x)) < 0)
+        top = xcons (x, Qnil);
+      else if (number_compare (score (xcar (top)), score (x)) == 0)
         top = xcons (x, top);
     }
 
