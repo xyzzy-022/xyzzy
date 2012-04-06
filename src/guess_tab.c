@@ -80,7 +80,7 @@ static guess_arc guess_eucj_ar[] = {
  {  0, 1.0   }, /* init -> init */
  {  1, 0.8   }, /* init -> jis0201_kana */
  {  3, 0.95  }, /* init -> jis0213_2 */
- {  2, 1.0   }, /* init -> jis0213_1 */
+ {  2, 0.8   }, /* init -> jis0213_1 */
  {  0, 1.0   }, /* jis0201_kana -> init */
  {  0, 1.0   }, /* jis0213_1 -> init */
  {  0, 1.0   }, /* jis0213_2 -> init */
@@ -128,7 +128,7 @@ static signed char guess_sjis_st[][256] = {
 static guess_arc guess_sjis_ar[] = {
  {  0, 1.0   }, /* init -> init */
  {  1, 1.0   }, /* init -> jis0213 */
- {  0, 0.8   }, /* init -> init */
+ {  0, 1.0   }, /* init -> init */
  {  1, 0.95  }, /* init -> jis0213 */
  {  0, 0.8   }, /* init -> init */
  {  0, 1.0   }, /* jis0213 -> init */
