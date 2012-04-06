@@ -32677,6 +32677,34 @@ abbrev-mode の時は self-insert-command でも実行されます。
 </chapter>
 
 <chapter>
+<title>*detect-char-encoding-mode*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+detect-char-encoding での文字エンコーディングの判別方法を設定します。
+
+  :xyzzy    : xyzzy オリジナルの判別方法を利用します。
+              Shift_JIS や半角カタカナに強いですが、
+              EUC-JP や UTF-8 では誤判定することが多いです。
+
+  :libguess : libguess (Gauche) の判別方法を利用します。
+              Shift_JIS や半角カタカナの判別では
+              xyzzy オリジナルの判別方法より劣りますが、
+              全体的に誤判定は少ないです。
+
+備考：
+  guess-char-encoding はこの変数の影響は受けません。
+  常に libguess を利用した判別結果を返します。
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>detect-char-encoding</seealso>
+<link></link>
+<section>テキスト</section>
+<file></file>
+</chapter>
+
+<chapter>
 <title>detect-char-encoding</title>
 <type>Function</type>
 <arguments>detect-char-encoding STRING-OR-STREAM</arguments>
@@ -32689,6 +32717,7 @@ STRING-OR-STREAM の文字エンコーディングを判定します。
 <seealso>convert-encoding-from-internal</seealso>
 <seealso>convert-encoding-to-internal</seealso>
 <seealso>guess-char-encoding</seealso>
+<seealso>*detect-char-encoding-mode*</seealso>
 <link></link>
 <section>テキスト</section>
 <file>builtin.l</file>

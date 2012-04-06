@@ -393,6 +393,7 @@ init_symbol_value_once ()
   xsymbol_value (Vcreate_buffer_hook) = Qnil;
   xsymbol_value (Vdefault_fileio_encoding) = xsymbol_value (Qencoding_sjis);
   xsymbol_value (Vexpected_fileio_encoding) = xsymbol_value (Qencoding_auto);
+  xsymbol_value (Vdetect_char_encoding_mode) = Klibguess;
   xsymbol_value (Vdefault_eol_code) = make_fixnum (eol_crlf);
   xsymbol_value (Vexpected_eol_code) = make_fixnum (eol_guess);
 
