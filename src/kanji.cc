@@ -24,9 +24,9 @@ detect_char_encoding (const char *string, int size, int real_size)
 lisp
 Fdetect_char_encoding (lisp string)
 {
-#define score xcar
-#define encoding xcdr
-  // r == ((<score> . <encoding>) (<score> . <encoding>) ...)
+#define score xcdr
+#define encoding xcar
+  // r == ((<encoding> . <score>) (<encoding> . <score>) ...)
 
   lisp r = Fguess_char_encoding (string);
   if (r == Qnil)

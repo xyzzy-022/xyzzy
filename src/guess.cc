@@ -95,8 +95,8 @@ get_utf8_encoding (char *sig, size_t siglen)
 static lisp
 make_pair (lisp encoding, double score)
 {
-  return xcons (make_double_float (score),
-                symbol_value_char_encoding (encoding));
+  return xcons (symbol_value_char_encoding (encoding),
+                make_double_float (score));
 }
 
 lisp
