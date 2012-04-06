@@ -32688,6 +32688,29 @@ STRING-OR-STREAM の文字エンコーディングを判定します。
 <seealso>stream-encoding</seealso>
 <seealso>convert-encoding-from-internal</seealso>
 <seealso>convert-encoding-to-internal</seealso>
+<seealso>guess-char-encoding</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>guess-char-encoding</title>
+<type>Function</type>
+<arguments>guess-char-encoding STRING-OR-STREAM</arguments>
+<package>editor</package>
+<description>
+STRING-OR-STREAM の文字エンコーディングを判定して、文字エンコーディングの
+候補とスコアを返します。
+
+例:
+  (guess-char-encoding "abc")
+  =&gt; ((1.0d0 . #.(make-utf8-encoding "utf8n" "Unicode (UTF-8N)" :signature nil :windows t :byte-order nil :cjk :jp))
+      (1.0d0 . #.(make-sjis-encoding "sjis" "日本語(Shift_JIS)"))
+      (1.0d0 . #.(make-iso2022-encoding "euc-jp" "日本語(EUC-JP)" :no-escape t :g0 :us-ascii :g1 :jisx0208 :g2 :jisx0201-kana :g3 :jisx0212 :cjk :jp :ascii-eol nil :ascii-control nil :7bits nil :locking-shift nil :short-form nil :use-cns11643 nil :vender nil))
+      (1.0d0 . #.(make-big5-encoding "big5" "中国語(Big-5)")))
+</description>
+<seealso>detect-char-encoding</seealso>
 <link></link>
 <section>テキスト</section>
 <file>builtin.l</file>

@@ -2,7 +2,6 @@
 #include "StrBuf.h"
 #include "safe_ptr.h"
 #include "byte-stream.h"
-#include "guess.h"
 
 int
 check_kanji2 (const char *string, u_int off)
@@ -25,7 +24,54 @@ detect_char_encoding (const char *string, int size, int real_size)
 lisp
 Fdetect_char_encoding (lisp string)
 {
-  return guess_char_encoding (string);
+#define score xcar
+#define encoding xcdr
+  // r == ((<score> . <encoding>) (<score> . <encoding>) ...)
+
+  lisp r = Fguess_char_encoding (string);
+  if (r == Qnil)
+    return Qnil;
+
+  if (xlist_length (r) == 1)
+    return encoding (xcar (r));
+
+  // 曖昧な場合は一番高いスコアのエンコーディングを返す。
+  // 一番高いスコアが複数ある場合は nil を返す。
+  lisp top = Qnil;
+  for (; consp (r); r = xcdr (r))
+    {
+      lisp x = xcar (r);
+      // sjis の半角カナだけだと big5 のスコアが高くなるので
+      // 曖昧な場合は big5 は無視して判定する。
+      if (xchar_encoding_type (encoding (x)) == encoding_big5)
+          continue;
+
+      if (top == Qnil || number_compare (score (xcar (top)), score (x)) < 0)
+        top = xcons (x, top);
+    }
+
+  size_t len = xlist_length (top);
+  if (len == 1)
+    return encoding (xcar (top));
+
+  if (len == 2)
+    {
+      // sjis を utf-8 と誤認することはあまりないが、
+      // utf-8 を sjis と誤認することが多いので、
+      // sjis と utf-8 が同スコアの場合は utf-8 を優先する。
+      lisp a = xcar (top);
+      lisp b = Fcadr (top);
+      if (xchar_encoding_type (encoding (a)) == encoding_sjis &&
+          xchar_encoding_type (encoding (b)) == encoding_utf8)
+        return encoding (b);
+      if (xchar_encoding_type (encoding (b)) == encoding_sjis &&
+          xchar_encoding_type (encoding (a)) == encoding_utf8)
+        return encoding (a);
+    }
+
+  return Qnil;
+#undef score
+#undef encoding
 }
 
 lisp

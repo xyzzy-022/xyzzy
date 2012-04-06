@@ -37,11 +37,8 @@
  *
  */
 
-#include "guess.h"
-
-/* take precedence if scores are same. you can customize the order as: */
-/* ORDER_** &highest, &second, ... &lowest */
-#define ORDER_JP &utf8, &sjis, &eucj
+# include "ed.h"
+# include "byte-stream.h"
 
 /* data types */
 typedef struct guess_arc_rec
@@ -87,21 +84,35 @@ utf8_signature_p (const char *string, int size)
   return size >= 3 && !memcmp (string, "\xef\xbb\xbf", 3);
 }
 
+static lisp
+get_utf8_encoding (char *sig, size_t siglen)
+{
+  return (utf8_signature_p (sig, siglen)
+          ? Vencoding_default_utf8
+          : Vencoding_default_utf8n);
+}
+
+static lisp
+make_pair (lisp encoding, double score)
+{
+  return xcons (make_double_float (score),
+                symbol_value_char_encoding (encoding));
+}
+
 lisp
-guess_char_encoding (lisp string)
+Fguess_char_encoding (lisp string)
 {
   guess_dfa eucj = DFA_INIT(guess_eucj_st, guess_eucj_ar);
   guess_dfa sjis = DFA_INIT(guess_sjis_st, guess_sjis_ar);
   guess_dfa utf8 = DFA_INIT(guess_utf8_st, guess_utf8_ar);
   guess_dfa big5 = DFA_INIT(guess_big5_st, guess_big5_ar);
 
-  guess_dfa *order[] = { ORDER_JP, 0 };
   xstream_ibyte_helper is (string);
   if (is-> eofp ())
     return Qnil;
 
   char sig[3];
-  int siglen = 0;
+  size_t siglen = 0;
   for (int c = is->get (), i = 0; c != xstream::eof; c = is->get (), i++)
     {
       if (siglen < sizeof sig)
@@ -112,7 +123,7 @@ guess_char_encoding (lisp string)
         {
           c = (unsigned char) is->peek ();
           if (c == '$' || c == '(')
-            return symbol_value_char_encoding (Vencoding_jis);
+            return list (make_pair (Vencoding_jis, 1.0));
         }
 
       /* special treatment of BOM */
@@ -120,39 +131,37 @@ guess_char_encoding (lisp string)
         {
           c = (unsigned char) is->peek ();
           if (c == 0xfe)
-            return symbol_value_char_encoding (Vencoding_default_utf16le_bom);
+            return list (make_pair (Vencoding_default_utf16le_bom, 1.0));
         }
       if (i == 0 && c == 0xfe && !is->eofp ())
         {
           c = (unsigned char) is->peek ();
           if (c == 0xff)
-            return symbol_value_char_encoding (Vencoding_default_utf16be_bom);
+            return list (make_pair (Vencoding_default_utf16be_bom, 1.0));
         }
 
       if (DFA_ALIVE(eucj))
         {
           if (!DFA_ALIVE(sjis) && !DFA_ALIVE(utf8) && !DFA_ALIVE(big5))
-            return symbol_value_char_encoding (Vencoding_euc_jp);
+            return list (make_pair (Vencoding_euc_jp, 1.0));
           DFA_NEXT(eucj, c);
         }
       if (DFA_ALIVE(sjis))
         {
           if (!DFA_ALIVE(eucj) && !DFA_ALIVE(utf8) && !DFA_ALIVE(big5))
-            return symbol_value_char_encoding (Vencoding_sjis);
+            return list (make_pair (Vencoding_sjis, 1.0));
           DFA_NEXT(sjis, c);
         }
       if (DFA_ALIVE(utf8))
         {
           if (!DFA_ALIVE(sjis) && !DFA_ALIVE(eucj) && !DFA_ALIVE(big5))
-            return (utf8_signature_p (sig, siglen)
-                    ? symbol_value_char_encoding (Vencoding_default_utf8)
-                    : symbol_value_char_encoding (Vencoding_default_utf8n));
+            return list (make_pair (get_utf8_encoding (sig, siglen), 1.0));
           DFA_NEXT(utf8, c);
         }
       if (DFA_ALIVE(big5))
         {
           if (!DFA_ALIVE(sjis) && !DFA_ALIVE(eucj) && !DFA_ALIVE(utf8))
-            return symbol_value_char_encoding (Vencoding_big5);
+            return list (make_pair (Vencoding_big5, 1.0));
           DFA_NEXT(big5, c);
         }
 
@@ -163,36 +172,26 @@ guess_char_encoding (lisp string)
         }
     }
 
-  guess_dfa *top = NULL;
-  int ntop;
-
-  /* Now, we have ambigous code. Pick the highest score.
-   * If more than one candidate tie, return the Qnil.
-   */
-  for (int i = 0; order[i] != NULL; i++)
+  /* Now, we have ambigous code. */
+  guess_dfa *order[] = { &utf8, &sjis, &eucj, &big5 };
+  lisp result = Qnil;
+  for (int i = numberof (order) - 1; i >= 0; i--)
     {
+      lisp encoding = Qnil;
       if (!DFA_ALIVE (*order[i])) continue;
-      if (top == NULL || order[i]->score > top->score)
-        {
-          top = order[i];
-          ntop = 0;
-        }
-      if (top->score == order[i]->score)
-        ntop++;
+      if (order[i] == &eucj)
+        encoding = Vencoding_euc_jp;
+      else if (order[i] == &utf8)
+        encoding = get_utf8_encoding (sig, siglen);
+      else if (order[i] == &sjis)
+        encoding = Vencoding_sjis;
+      else if (order[i] == &big5)
+        encoding = Vencoding_big5;
+      else
+        assert (0);
+
+      result = xcons (make_pair (encoding, order[i]->score), result);
     }
-  if (ntop > 1)
-    return Qnil;
 
-  if (top == &eucj)
-    return symbol_value_char_encoding (Vencoding_euc_jp);
-  if (top == &utf8)
-    return (utf8_signature_p (sig, siglen)
-            ? symbol_value_char_encoding (Vencoding_default_utf8)
-            : symbol_value_char_encoding (Vencoding_default_utf8n));
-  if (top == &sjis)
-    return symbol_value_char_encoding (Vencoding_sjis);
-  if (top == &big5)
-    return symbol_value_char_encoding (Vencoding_big5);
-
-  return Qnil;
+  return result;
 }

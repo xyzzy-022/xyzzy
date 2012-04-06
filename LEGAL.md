@@ -192,7 +192,7 @@
 
 ----
 
-### misc/guess.scm, src/guess.cc, src/guess.h
+### misc/guess.scm, src/guess.cc
 
     This code is derivative of guess.c of Gauche-0.8.3.
     The following is the original copyright notice.
