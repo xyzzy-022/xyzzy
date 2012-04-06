@@ -365,6 +365,7 @@
     <ClInclude Include="src\function.h" />
     <ClInclude Include="src\gime.h" />
     <ClInclude Include="src\glob.h" />
+    <ClInclude Include="src\guess.h" />
     <ClInclude Include="src\hash.h" />
     <ClInclude Include="src\ipc.h" />
     <ClInclude Include="src\kanji.h" />

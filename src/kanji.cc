@@ -2,6 +2,8 @@
 #include "StrBuf.h"
 #include "safe_ptr.h"
 #include "byte-stream.h"
+#include "iso2022state.h"
+#include "guess.h"
 
 int
 check_kanji2 (const char *string, u_int off)
@@ -13,20 +15,552 @@ check_kanji2 (const char *string, u_int off)
   return !((se - s) & 1);
 }
 
+static inline int
+char_defined_p (Char c)
+{
+  ucs2_t w = i2w (c);
+  return w != ucs2_t (-1) && !ucs2_PUA_p (w);
+}
+
+class iso2022_state
+{
+  u_char s_state;
+  u_long s_charset;
+public:
+  iso2022_state () : s_state (0), s_charset (0) {}
+  void update (int c)
+    {
+      s_state = iso2022state[iso2022state_chars[c]][s_state];
+      if (s_state & ISO2022STATE_TERM)
+        {
+          s_charset |= 1 << (s_state & ISO2022STATE_MASK);
+          s_state = 0;
+        }
+    }
+  int ok () const {return s_charset;}
+  lisp encoding () const;
+};
+
 lisp
-detect_char_encoding (const char *string, int size, int real_size)
+iso2022_state::encoding () const
+{
+#define CCS_MATCH(CCS, MASK)  (((CCS) & (MASK)) == (CCS))
+  int cjk = ENCODING_LANG_NIL;
+  if (CCS_MATCH (s_charset, (1 << ccs_usascii) | (1 << ccs_jisx0201_kana) | (1 << ccs_jisx0208)))
+    cjk = ENCODING_LANG_JP;
+  else if (CCS_MATCH (s_charset, (1 << ccs_usascii) | (1 << ccs_jisx0201_kana)
+                      | (1 << ccs_jisx0208) | (1 << ccs_jisx0212)))
+    cjk = ENCODING_LANG_JP2;
+  else if (CCS_MATCH (s_charset, (1 << ccs_usascii) | (1 << ccs_ksc5601)))
+    cjk = ENCODING_LANG_KR;
+  else if (CCS_MATCH (s_charset, ((1 << ccs_usascii) | (1 << ccs_gb2312)
+                                  | (1 << ccs_cns11643_1) | (1 << ccs_cns11643_2))))
+    cjk = ENCODING_LANG_CN;
+  else if (CCS_MATCH (s_charset, (1 << ccs_usascii) | (1 << ccs_gb2312)))
+    cjk = ENCODING_LANG_CN_GB;
+  else if (CCS_MATCH (s_charset, (1 << ccs_usascii) | (1 << ccs_big5_1) | (1 << ccs_big5_2)))
+    cjk = ENCODING_LANG_CN_BIG5;
+
+  lisp x = xsymbol_value (Vencoding_default_iso_2022);
+  for (; consp (x); x = xcdr (x))
+    {
+      lisp p = xcar (x);
+      if (char_encoding_p (p)
+          && xchar_encoding_type (p) == encoding_iso2022
+          && (xchar_encoding_iso_cjk (p) == cjk
+              || xchar_encoding_iso_cjk (p) == ENCODING_LANG_NIL))
+        return p;
+    }
+
+  x = xsymbol_value (Vencoding_default_iso_2022);
+  if (consp (x))
+    x = xcar (x);
+  if (char_encoding_p (x) && xchar_encoding_type (x) != encoding_auto_detect)
+    return x;
+  return symbol_value_char_encoding (Vencoding_jis);
+}
+
+class euc_state
+{
+  enum estate
+    {
+      ES_NIL,
+      ES_C1,
+      ES_SS2,
+      ES_SS3_1,
+      ES_SS3_2
+    };
+  enum
+    {
+      F_JP = 1,
+      F_KR = 2,
+      F_GB = 4
+    };
+  estate s_state;
+  int s_c1;
+  int s_bad_char;
+  int s_bad_range;
+  int s_may_be_try;
+  int s_may_be_sum;
+
+  int good_charset_p (int) const;
+public:
+  euc_state ()
+       : s_state (ES_NIL), s_bad_char (0), s_bad_range (0),
+         s_may_be_try (0), s_may_be_sum (0) {}
+  void update (int);
+  int bad_range_p () const {return s_bad_range;}
+  int bad_char_p () const {return s_bad_char == (F_JP | F_KR | F_GB);}
+  int may_be () const {return s_may_be_sum >= 3;}
+  lisp encoding (int) const;
+};
+
+int
+euc_state::good_charset_p (int charset) const
+{
+  switch (charset)
+    {
+    case ccs_jisx0208:
+      return !(s_bad_char & F_JP);
+
+    case ccs_gb2312:
+      return !(s_bad_char & F_GB);
+
+    case ccs_ksc5601:
+      return !(s_bad_char & F_KR);
+
+    default:
+      return 1;
+    }
+}
+
+lisp
+euc_state::encoding (int has_escseq) const
+{
+  lisp x;
+
+  if (has_escseq)
+    for (x = xsymbol_value (Vencoding_default_euc); consp (x); x = xcdr (x))
+      {
+        lisp p = xcar (x);
+        if (char_encoding_p (p)
+            && xchar_encoding_type (p) == encoding_iso2022
+            && good_charset_p (xchar_encoding_iso_initial (p)[1]))
+          return p;
+      }
+
+  for (x = xsymbol_value (Vencoding_default_euc); consp (x); x = xcdr (x))
+    {
+      lisp p = xcar (x);
+      if (char_encoding_p (p)
+          && (xchar_encoding_type (p) == encoding_iso2022
+              || xchar_encoding_type (p) == encoding_iso2022_noesc)
+          && good_charset_p (xchar_encoding_iso_initial (p)[1]))
+        return p;
+    }
+
+  x = xsymbol_value (Vencoding_default_euc);
+  if (consp (x))
+    x = xcar (x);
+  if (char_encoding_p (x) && xchar_encoding_type (x) != encoding_auto_detect)
+    return x;
+  return symbol_value_char_encoding (Vencoding_euc_jp);
+}
+
+void
+euc_state::update (int c)
+{
+  if (s_bad_range)
+    return;
+  switch (s_state)
+    {
+    case ES_NIL:
+      if (c >= 0xa1 && c <= 0xfe)
+        {
+          s_c1 = c;
+          s_state = ES_C1;
+        }
+      else
+        {
+          s_may_be_try = 0;
+          if (c >= 0x80)
+            {
+              if (c == CC_SS2)
+                {
+                  s_state = ES_SS2;
+                  s_bad_char |= F_KR | F_GB;
+                }
+              else if (c == CC_SS3)
+                {
+                  s_state = ES_SS3_1;
+                  s_bad_char |= F_KR | F_GB;
+                }
+              else
+                s_bad_range = 1;
+            }
+        }
+      break;
+
+    case ES_C1:
+      if (c < 0xa1 || c > 0xfe)
+        s_bad_range = 1;
+      else
+        {
+          if (s_bad_char != (F_JP | F_KR | F_GB))
+            {
+              int t1 = s_c1 & 127, t2 = c & 127;
+
+              if (!(s_bad_char & F_JP)
+                  && !char_defined_p ((j2sh (t1, t2) << 8) | j2sl (t1, t2)))
+                s_bad_char |= F_JP;
+
+              if (!(s_bad_char & F_KR)
+                  && !char_defined_p (ksc5601_to_int (t1, t2)))
+                s_bad_char |= F_KR;
+
+              if (!(s_bad_char & F_GB)
+                  && !char_defined_p (gb2312_to_int (t1, t2)))
+                s_bad_char |= F_GB;
+            }
+
+          if (s_c1 <= 0xa5 && c <= 0xdf)
+            {
+              if (++s_may_be_try == 3)
+                {
+                  s_may_be_try = 0;
+                  s_may_be_sum++;
+                }
+            }
+          else
+            s_may_be_try = 0;
+        }
+      s_state = ES_NIL;
+      break;
+
+    case ES_SS2:
+      if (!kana_char_p (c))
+        s_bad_range = 1;
+      s_state = ES_NIL;
+      break;
+
+    case ES_SS3_1:
+      if (c >= 0xa1 && c <= 0xfe)
+        s_state = ES_SS3_2;
+      else
+        s_bad_range = 1;
+      break;
+
+    case ES_SS3_2:
+      if (c >= 0xa1 && c <= 0xfe)
+        {
+          if (!(s_bad_char & F_JP))
+            {
+              if (s_c1 == 0xf4 || (s_c1 == 0xf3 && c >= 0xf3))
+                ;
+              else
+                {
+                  s_c1 &= 127;
+                  c &= 127;
+                  if (!char_defined_p (jisx0212_to_int (s_c1, c)))
+                    s_bad_char |= F_JP;
+                }
+            }
+          s_state = ES_NIL;
+        }
+      else
+        s_bad_range = 1;
+      break;
+    }
+}
+
+class sjis_state
+{
+  int s_state;
+  int s_c1;
+  int s_bad_char;
+  int s_bad_range;
+public:
+  sjis_state () : s_state (0), s_bad_char (0), s_bad_range (0) {}
+  void update (int);
+  int bad_range_p () const {return s_bad_range;}
+  int bad_char_p () const {return s_bad_char;}
+};
+
+void
+sjis_state::update (int c)
+{
+  if (s_bad_range)
+    return;
+  if (!s_state)
+    {
+      if (SJISP (c))
+        {
+          s_c1 = c;
+          s_state = 1;
+        }
+      else if (c >= 0x80 && !kana_char_p (c))
+        s_bad_range = 1;
+    }
+  else
+    {
+      if (!SJIS2P (c))
+        s_bad_range = 1;
+      else if (!char_defined_p ((s_c1 << 8) | c))
+        s_bad_char = 1;
+      s_state = 0;
+    }
+}
+
+class utf8_state
+{
+  ucs4_t s_code;
+  int s_nchars;
+  int s_not;
+  int s_accept_mule_ucs;
+public:
+  utf8_state ()
+       : s_nchars (0), s_not (0),
+         s_accept_mule_ucs (xsymbol_value (Vaccept_mule_ucs_funny_utf8) != Qnil) {}
+  void update (int);
+  int ok () const {return !s_not;}
+};
+
+void
+utf8_state::update (int c)
+{
+  extern u_char utf8_chtab[];
+  extern u_char utf8_chmask[];
+
+  if (s_not)
+    return;
+  u_char nbits = utf8_chtab[c];
+  c &= utf8_chmask[nbits];
+  if (!s_nchars)
+    {
+      switch (nbits)
+        {
+        case 7:
+          break;
+
+        case 0:
+        case 6:
+          s_not = 1;
+          break;
+
+        default:
+          s_code = c;
+          s_nchars = 6 - nbits;
+          break;
+        }
+    }
+  else
+    {
+      if (nbits != 6 && (!s_accept_mule_ucs || nbits < 6))
+        s_not = 1;
+      else
+        {
+          s_code = (s_code << 6) | c;
+          if (!--s_nchars && (s_code >= UNICODE_CHAR_LIMIT
+                              || ucs2_t (s_code) == 0xffff
+                              || ucs2_t (s_code) == 0xfffe))
+            s_not = 1;
+        }
+    }
+}
+
+class big5_state
+{
+  int s_state;
+  int s_not;
+public:
+  big5_state () : s_state (0), s_not (0) {}
+  void update (int);
+  int ok () const {return !s_not;}
+};
+
+void
+big5_state::update (int c)
+{
+  if (s_not)
+    return;
+
+  if (!s_state)
+    {
+      if (c >= 0x80)
+        {
+          if (c >= 0xa1 && c <= 0xf8 && c != 0xc8)
+            s_state = 1;
+          else
+            s_not = 1;
+        }
+    }
+  else
+    {
+      if (c >= 0x40 && c <= 0x7e || c >= 0xa1 && c <= 0xfe)
+        s_state = 0;
+      else
+        s_not = 1;
+    }
+}
+
+static int
+simple_unicode_p (const ucs2_t *w, int l)
+{
+  if (!l)
+    return 0;
+  for (const ucs2_t *we = w + l; w < we; w++)
+    switch (*w)
+      {
+      case 0xffff:
+      case 0xfffe:
+      case 0x00ff:
+      case 0x0a0d:
+        return 0;
+      }
+  return 1;
+}
+
+static int
+simple_rev_unicode_p (const ucs2_t *w, int l)
+{
+  if (!l)
+    return 0;
+  for (const ucs2_t *we = w + l; w < we; w++)
+    switch (*w)
+      {
+      case 0xffff:
+      case 0xfeff:
+      case 0xff00:
+      case 0x0a0d:
+        return 0;
+      }
+  return 1;
+}
+
+static lisp
+judge_char_encoding (const iso2022_state &iso2022, const euc_state &euc,
+                     const sjis_state &sjis, const utf8_state &utf8,
+                     const big5_state &big5,
+                     int sum, const char *string, int size)
+{
+  if (!(sum & 0x80))
+    return iso2022.ok () ? iso2022.encoding () : Qnil;
+
+  int type = 0;
+  if (!sjis.bad_range_p ())
+    type |= DCE_SJIS;
+  if (!euc.bad_range_p ())
+    type |= DCE_EUC;
+
+  switch (type)
+    {
+    case DCE_SJIS | DCE_EUC:
+      if (!sjis.bad_char_p () && euc.bad_char_p ())
+        return symbol_value_char_encoding (Vencoding_sjis);
+      if (sjis.bad_char_p () && !euc.bad_char_p ())
+        return euc.encoding (iso2022.ok ());
+      return (euc.may_be ()
+              ? euc.encoding (iso2022.ok ())
+              : symbol_value_char_encoding (Vencoding_sjis));
+
+    case DCE_SJIS:
+      if (sjis.bad_char_p () && utf8.ok ()
+          && utf8_signature_p (string, size))
+        return symbol_value_char_encoding (Vencoding_default_utf8);
+      return symbol_value_char_encoding (Vencoding_sjis);
+
+    case DCE_EUC:
+      return euc.encoding (iso2022.ok ());
+
+    default:
+      if (utf8.ok ())
+        return (utf8_signature_p (string, size)
+                ? symbol_value_char_encoding (Vencoding_default_utf8)
+                : symbol_value_char_encoding (Vencoding_default_utf8n));
+      if (big5.ok ())
+        return symbol_value_char_encoding (Vencoding_big5);
+      return Qnil;
+    }
+}
+
+static lisp
+detect_char_encoding_xyzzy (const char *string, int size, int real_size)
+{
+  if (size >= 2 && !(real_size & 1))
+    {
+      if (*(u_short *)string == UNICODE_BOM
+          && (!sysdep.WinNTp ()
+              ? simple_unicode_p ((const ucs2_t *)string, size / sizeof (ucs2_t))
+              : IsTextUnicode ((void *)string, size, 0)))
+        return symbol_value_char_encoding (Vencoding_default_utf16le_bom);
+      else if (*(u_short *)string == UNICODE_REVBOM
+               && simple_rev_unicode_p ((const ucs2_t *)string, size / sizeof (ucs2_t)))
+        return symbol_value_char_encoding (Vencoding_default_utf16be_bom);
+    }
+
+  iso2022_state iso2022;
+  euc_state euc;
+  sjis_state sjis;
+  utf8_state utf8;
+  big5_state big5;
+  int sum = 0;
+  for (const u_char *s = (const u_char *)string, *se = s + size; s < se; s++)
+    {
+      int c = *s;
+      iso2022.update (c);
+      euc.update (c);
+      sjis.update (c);
+      utf8.update (c);
+      big5.update (c);
+      sum |= c;
+    }
+
+  return judge_char_encoding (iso2022, euc, sjis, utf8, big5, sum, string, size);
+}
+
+static lisp
+detect_char_encoding_xyzzy (lisp string)
+{
+  xstream_ibyte_helper is (string);
+
+  iso2022_state iso2022;
+  euc_state euc;
+  sjis_state sjis;
+  utf8_state utf8;
+  big5_state big5;
+  int sum = 0;
+  int c;
+  char buf[3];
+  int nb = 0;
+  while ((c = is->get ()) != xstream::eof)
+    {
+      iso2022.update (c);
+      euc.update (c);
+      sjis.update (c);
+      utf8.update (c);
+      big5.update (c);
+      sum |= c;
+      if (nb < sizeof buf)
+        buf[nb++] = c;
+    }
+
+  return judge_char_encoding (iso2022, euc, sjis, utf8, big5, sum, buf, nb);
+}
+
+static lisp
+detect_char_encoding_libguess (const char *string, int size, int real_size)
 {
   if (!string || size == 0)
     return Qnil;
   return Fdetect_char_encoding (make_string_simple (string, size));
 }
 
-lisp
-Fdetect_char_encoding (lisp string)
+static lisp
+detect_char_encoding_libguess (lisp string)
 {
-#define score xcar
-#define encoding xcdr
-  // r == ((<score> . <encoding>) (<score> . <encoding>) ...)
+#define score xcdr
+#define encoding xcar
+  // r == ((<encoding> . <score>) (<encoding> . <score>) ...)
 
   lisp r = Fguess_char_encoding (string);
   if (r == Qnil)
@@ -74,6 +608,26 @@ Fdetect_char_encoding (lisp string)
   return Qnil;
 #undef score
 #undef encoding
+}
+
+lisp
+detect_char_encoding (const char *string, int size, int real_size)
+{
+  lisp mode = xsymbol_value (Vdetect_char_encoding_mode);
+  if (mode == Kxyzzy)
+    return detect_char_encoding_xyzzy (string, size, real_size);
+  else
+    return detect_char_encoding_libguess (string, size, real_size);
+}
+
+lisp
+Fdetect_char_encoding (lisp string)
+{
+  lisp mode = xsymbol_value (Vdetect_char_encoding_mode);
+  if (mode == Kxyzzy)
+    return detect_char_encoding_xyzzy (string);
+  else
+    return detect_char_encoding_libguess (string);
 }
 
 lisp

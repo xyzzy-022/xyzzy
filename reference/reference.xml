@@ -32677,6 +32677,57 @@ abbrev-mode の時は self-insert-command でも実行されます。
 </chapter>
 
 <chapter>
+<title>*detect-char-encoding-mode*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+detect-char-encoding での文字エンコーディングの判別方法を設定します。
+
+  :xyzzy    : xyzzy オリジナルの判別方法を利用します。
+              Shift_JIS や半角カタカナに強いですが、
+              EUC-JP や UTF-8 では誤判定することが多いです。
+
+  :libguess : libguess (Gauche) の判別方法を利用します。
+              Shift_JIS や半角カタカナの判別では
+              xyzzy オリジナルの判別方法より劣りますが、
+              全体的に誤判定は少ないです。
+
+備考：
+  guess-char-encoding はこの変数の影響は受けません。
+  常に libguess を利用した判別結果を返します。
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>detect-char-encoding</seealso>
+<seealso>*detect-char-encoding-buffer-size*</seealso>
+<link></link>
+<section>テキスト</section>
+<file></file>
+</chapter>
+
+<chapter>
+<title>*detect-char-encoding-buffer-size*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+ファイルオープン時の文字エンコーディングの判別に利用するバッファサイズを
+指定します。
+
+ファイルの先頭から指定サイズ分を読み込んで、文字エンコーディングを
+判別します。
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>detect-char-encoding</seealso>
+<seealso>*detect-char-encoding-mode*</seealso>
+<link></link>
+<section>テキスト</section>
+<file></file>
+</chapter>
+
+<chapter>
 <title>detect-char-encoding</title>
 <type>Function</type>
 <arguments>detect-char-encoding STRING-OR-STREAM</arguments>
@@ -32689,6 +32740,8 @@ STRING-OR-STREAM の文字エンコーディングを判定します。
 <seealso>convert-encoding-from-internal</seealso>
 <seealso>convert-encoding-to-internal</seealso>
 <seealso>guess-char-encoding</seealso>
+<seealso>*detect-char-encoding-mode*</seealso>
+<seealso>*detect-char-encoding-buffer-size*</seealso>
 <link></link>
 <section>テキスト</section>
 <file>builtin.l</file>
@@ -32704,11 +32757,12 @@ STRING-OR-STREAM の文字エンコーディングを判定して、文字エン
 候補とスコアを返します。
 
 例:
-  (guess-char-encoding "abc")
-  =&gt; ((1.0d0 . #.(make-utf8-encoding "utf8n" "Unicode (UTF-8N)" :signature nil :windows t :byte-order nil :cjk :jp))
-      (1.0d0 . #.(make-sjis-encoding "sjis" "日本語(Shift_JIS)"))
-      (1.0d0 . #.(make-iso2022-encoding "euc-jp" "日本語(EUC-JP)" :no-escape t :g0 :us-ascii :g1 :jisx0208 :g2 :jisx0201-kana :g3 :jisx0212 :cjk :jp :ascii-eol nil :ascii-control nil :7bits nil :locking-shift nil :short-form nil :use-cns11643 nil :vender nil))
-      (1.0d0 . #.(make-big5-encoding "big5" "中国語(Big-5)")))
+  (guess-char-encoding (convert-encoding-from-internal *encoding-utf8n* "スレ違い"))
+  =&gt; ((#.(make-utf8-encoding "utf8n" "Unicode (UTF-8N)" :signature nil :windows t :byte-order nil :cjk :jp) . 1.0d0)
+      (#.(make-sjis-encoding "sjis" "日本語(Shift_JIS)") . 0.6400000000000001d0))
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
 </description>
 <seealso>detect-char-encoding</seealso>
 <link></link>

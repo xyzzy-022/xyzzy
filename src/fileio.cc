@@ -218,8 +218,11 @@ Buffer::read_file_contents (ReadFileContext &rfc, xread_stream &sin)
 }
 
 static inline lisp
-detect_encoding (const mapf &mf, int size)
+detect_encoding (const mapf &mf)
 {
+  int size = fixnum_value (xsymbol_value (Vdetect_char_encoding_buffer_size));
+  if (size <= 0)
+    size = DEFAULT_DETECT_BUFFER_SIZE;
   return detect_char_encoding ((const char *)mf.base (),
                                min ((int)mf.size (), size), mf.size ());
 }
@@ -279,7 +282,7 @@ Buffer::read_file_contents (ReadFileContext &rfc, const char *filename,
     {
       if (char_encoding_p (rfc.r_expect_char_encoding)
           && xchar_encoding_type (rfc.r_expect_char_encoding) == encoding_auto_detect)
-        rfc.r_expect_char_encoding = detect_encoding (mf, 0x10000);
+        rfc.r_expect_char_encoding = detect_encoding (mf);
 
       if (!char_encoding_p (rfc.r_expect_char_encoding))
         {
@@ -352,7 +355,7 @@ Buffer::readin_chunk (ReadFileContext &rfc, const char *filename)
 
   try
     {
-      rfc.r_expect_char_encoding = detect_encoding (mf, 0x8000);
+      rfc.r_expect_char_encoding = detect_encoding (mf);
       if (!char_encoding_p (rfc.r_expect_char_encoding)
           || xchar_encoding_type (rfc.r_expect_char_encoding) == encoding_auto_detect)
         rfc.r_expect_char_encoding = xsymbol_value (Qencoding_sjis);

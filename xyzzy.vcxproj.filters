@@ -28,9 +28,6 @@
     <Filter Include="ソース ファイル\libguess">
       <UniqueIdentifier>{9e3e305c-4718-4f7a-9d56-7920d33fe45d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\libguess">
-      <UniqueIdentifier>{e5c163e6-b772-41d7-8d0c-ab466b06b153}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\chtab.cc">
@@ -776,6 +773,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\system.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\guess.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
