@@ -154,7 +154,10 @@
     (multiple-value-bind (symbol found maybe-symbol)
 	(lookup-symbol (point)
 		       (progn
-			 (forward-sexp)
+			 (loop
+			   (or (skip-syntax-spec-forward "w_")
+			       (skip-chars-forward "#")
+			       (return)))
 			 (point))
 		       package)
       (values symbol (and found maybe-symbol)))))
