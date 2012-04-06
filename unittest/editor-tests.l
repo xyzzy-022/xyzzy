@@ -199,3 +199,51 @@
   => 2
   => 4
   => 0)
+
+(deftest detect-char-encoding-ascii ()
+  (values
+   (detect-char-encoding "")
+   (detect-char-encoding "a")
+   (detect-char-encoding "abc 123"))
+  => nil
+  => nil
+  => nil)
+
+(deftest detect-char-encoding-sjis ()
+  (values
+   (eq *encoding-sjis*
+       (detect-char-encoding "‚ ‚¢‚¤"))
+   (eq *encoding-sjis*
+       (with-input-from-string (s "‚ ‚¢‚¤")
+         (detect-char-encoding s))))
+  => t
+  => t)
+
+(deftest detect-char-encoding-utf8 ()
+  (values
+   (eq *encoding-utf8*
+       (detect-char-encoding (convert-encoding-from-internal *encoding-utf8* "‰”Å")))
+   (eq *encoding-utf8n*
+       (detect-char-encoding (convert-encoding-from-internal *encoding-utf8n* "‰”Å"))))
+  => t
+  => t)
+
+(deftest detect-char-encoding-euc-jp ()
+  (eq *encoding-euc-jp*
+      (detect-char-encoding (convert-encoding-from-internal *encoding-euc-jp* "•·‚«o‚·")))
+  => t)
+
+(deftest detect-char-encoding-jis ()
+  (eq *encoding-jis*
+      (detect-char-encoding (convert-encoding-from-internal *encoding-jis* "•·‚«o‚·")))
+  => t)
+
+
+(deftest guess-char-encoding-ascii ()
+  (let ((guess (guess-char-encoding "abc 123")))
+    (values (length guess)
+            (mapcar #'cdr guess)
+            (mapcar #'char-encoding-name (mapcar #'car guess))))
+  => 4
+  => (1.0d0 1.0d0 1.0d0 1.0d0)
+  => ("utf8n" "sjis" "euc-jp" "big5"))
