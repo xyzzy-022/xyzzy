@@ -174,7 +174,7 @@
    (((#x00 #x7f)) init         1.0)   ; ASCII range
    ((#x8e)        jis0201_kana 0.8)   ; JISX 0201 kana
    ((#x8f)        jis0213_2    0.95)  ; JISX 0213 plane 2
-   (((#xa1 #xfe)) jis0213_1    0.8)   ; JISX 0213 plane 1
+   (((#xa1 #xfe)) jis0213_1    1.0)   ; JISX 0213 plane 1
    )
   ;; jis x 0201 kana
   (jis0201_kana
@@ -197,7 +197,7 @@
   (init
    (((#x00 #x7f)) init         1.0)     ;ascii
    (((#x81 #x9f) (#xe1 #xef)) jis0213 1.0) ;jisx0213 plane 1
-   (((#xa1 #xdf)) init         1.0)     ;jisx0201 kana
+   (((#xa1 #xdf)) init         0.8)     ;jisx0201 kana
    (((#xf0 #xfc)) jis0213      0.95)    ;jisx0213 plane 2
    (((#xfd #xff)) init         0.8))    ;vendor extension
   (jis0213
