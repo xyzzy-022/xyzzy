@@ -17,6 +17,8 @@ check_kanji2 (const char *string, u_int off)
 lisp
 detect_char_encoding (const char *string, int size, int real_size)
 {
+  if (!string || size == 0)
+    return Qnil;
   return Fdetect_char_encoding (make_string_simple (string, size));
 }
 
