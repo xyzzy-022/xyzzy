@@ -32699,6 +32699,29 @@ detect-char-encoding での文字エンコーディングの判別方法を設�
   xyzzy 0.2.2.238 から利用可能です。
 </description>
 <seealso>detect-char-encoding</seealso>
+<seealso>*detect-char-encoding-buffer-size*</seealso>
+<link></link>
+<section>テキスト</section>
+<file></file>
+</chapter>
+
+<chapter>
+<title>*detect-char-encoding-buffer-size*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+ファイルオープン時の文字エンコーディングの判別に利用するバッファサイズを
+指定します。
+
+ファイルの先頭から指定サイズ分を読み込んで、文字エンコーディングを
+判別します。
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>detect-char-encoding</seealso>
+<seealso>*detect-char-encoding-mode*</seealso>
 <link></link>
 <section>テキスト</section>
 <file></file>
@@ -32718,6 +32741,7 @@ STRING-OR-STREAM の文字エンコーディングを判定します。
 <seealso>convert-encoding-to-internal</seealso>
 <seealso>guess-char-encoding</seealso>
 <seealso>*detect-char-encoding-mode*</seealso>
+<seealso>*detect-char-encoding-buffer-size*</seealso>
 <link></link>
 <section>テキスト</section>
 <file>builtin.l</file>

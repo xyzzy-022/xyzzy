@@ -1551,6 +1551,7 @@ zerop
 *default-session-directory*
 *default-write-file-directory*
 *detect-char-encoding-mode*
+*detect-char-encoding-buffer-size*
 *diff-mode-hook*
 *drag-and-drop-hook*
 *enter-minibuffer-hook*
