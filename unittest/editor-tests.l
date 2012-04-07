@@ -48,6 +48,48 @@
   => non-nil
   => non-nil)
 
+(defmacro with-c-mode-bed (&body body)
+  `(with-temp-buffer
+     (c-mode)
+     (make-local-variable 'c-indent-level)
+     (setq c-indent-level 2)
+     (make-local-variable 'c-continued-statement-offset)
+     (setq c-continued-statement-offset 2)
+     (make-local-variable 'c-argdecl-indent)
+     (setq c-argdecl-indent 5)
+     (make-local-variable 'c-brace-offset)
+     (setq c-brace-offset 0)
+     (make-local-variable 'c-brace-imaginary-offset)
+     (setq c-brace-imaginary-offset 0)
+     (make-local-variable 'c-label-offset)
+     (setq c-label-offset -2)
+     (make-local-variable 'c-comment-indent)
+     (setq c-comment-indent 2)
+     (make-local-variable 'c-preprocessor-offset)
+     (setq c-preprocessor-offset nil)
+     ,@body))
+
+(defmacro with-c++-mode-bed (&body body)
+  `(with-temp-buffer
+     (c++-mode)
+     (make-local-variable 'c++-indent-level)
+     (setq c++-indent-level 2)
+     (make-local-variable 'c++-continued-statement-offset)
+     (setq c++-continued-statement-offset 2)
+     (make-local-variable 'c++-argdecl-indent)
+     (setq c++-argdecl-indent 5)
+     (make-local-variable 'c++-brace-offset)
+     (setq c++-brace-offset 0)
+     (make-local-variable 'c++-brace-imaginary-offset)
+     (setq c++-brace-imaginary-offset 0)
+     (make-local-variable 'c++-label-offset)
+     (setq c++-label-offset -2)
+     (make-local-variable 'c++-comment-indent)
+     (setq c++-comment-indent 2)
+     (make-local-variable 'c++-preprocessor-offset)
+     (setq c++-preprocessor-offset nil)
+     ,@body))
+
 (defmacro with-csharp-mode-bed (&body body)
   `(with-temp-buffer
      (csharp-mode)
@@ -65,6 +107,8 @@
      (setq csharp-label-offset -2)
      (make-local-variable 'csharp-comment-indent)
      (setq csharp-comment-indent 2)
+     (make-local-variable 'csharp-preprocessor-offset)
+     (setq csharp-preprocessor-offset nil)
      ,@body))
 
 (defun c-indent-test (line)
@@ -185,6 +229,128 @@
   => 2
   => 4
   => 0)
+
+
+(deftest csharp-preprocessor-offset-1 ()
+  (with-csharp-mode-bed
+    (setq csharp-preprocessor-offset 0)
+    (values
+     (c-indent-test "class MyClass {")
+     (c-indent-test   "#define FOO")
+     (c-indent-test   "public int MyMethod() {")
+     (c-indent-test     "#define FOO")
+     (c-indent-test     "using (StreamReader outFile = new StreamReader(outputFile.OpenRead()))")
+     (c-indent-test     "using (StreamReader expFile = new StreamReader(expectedFile.OpenRead())) {")
+     (c-indent-test       "#define FOO")
+     (c-indent-test       "outFile.Write(expFile.ReadToEnd());")
+     (c-indent-test     "}")
+     (c-indent-test   "}")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 2
+  => 4
+  => 4
+  => 4
+  => 6
+  => 6
+  => 4
+  => 2
+  => 0)
+
+(deftest csharp-preprocessor-offset-2 ()
+  (with-csharp-mode-bed
+    (setq csharp-preprocessor-offset 2)
+    (values
+     (c-indent-test "class MyClass {")
+     (c-indent-test     "#define FOO")
+     (c-indent-test   "public int MyMethod() {")
+     (c-indent-test       "#define FOO")
+     (c-indent-test     "using (StreamReader outFile = new StreamReader(outputFile.OpenRead()))")
+     (c-indent-test     "using (StreamReader expFile = new StreamReader(expectedFile.OpenRead())) {")
+     (c-indent-test         "#define FOO")
+     (c-indent-test       "outFile.Write(expFile.ReadToEnd());")
+     (c-indent-test     "}")
+     (c-indent-test   "}")
+     (c-indent-test "}")))
+  => 0
+  => 4
+  => 2
+  => 6
+  => 4
+  => 4
+  => 8
+  => 6
+  => 4
+  => 2
+  => 0)
+
+(deftest c++-preprocessor-offset-1 ()
+  (with-c++-mode-bed
+    (setq c++-preprocessor-offset 0)
+    (values
+     (c-indent-test "class MyClass {")
+     (c-indent-test   "#define FOO")
+     (c-indent-test   "public int MyMethod() {")
+     (c-indent-test     "#define FOO")
+     (c-indent-test   "}")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 2
+  => 4
+  => 2
+  => 0)
+
+(deftest c-preprocessor-offset-1 ()
+  (with-c-mode-bed
+    (setq c-preprocessor-offset 0)
+    (values
+     (c-indent-test "#define FOO")
+     (c-indent-test "int main() {")
+     (c-indent-test   "#define FOO")
+     (c-indent-test "}")))
+  => 0
+  => 0
+  => 2
+  => 0)
+
+(deftest c-preprocessor-offset-and-indent-cpp-directive ()
+  (with-c-mode-bed
+    (setq c-preprocessor-offset 0)
+    (values
+     (c-indent-test "int main() {")
+     (c-indent-test   "#if FOO")
+     (c-indent-test   "#if BAR")
+     (c-indent-test   "#define BAZ")
+     (c-indent-test   "#else")
+     (c-indent-test   "#endif")
+     (c-indent-test   "#else")
+     (c-indent-test   "#endif")
+     (c-indent-test "}")
+     (progn
+       (indent-cpp-directive)
+       (buffer-substring (point-min) (point-max)))))
+  => 0
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 0
+  => "int main() {
+  #if FOO
+  # if BAR
+  #  define BAZ
+  # else
+  # endif
+  #else
+  #endif
+}
+")
+
 
 (deftest detect-char-encoding-ascii ()
   (values
