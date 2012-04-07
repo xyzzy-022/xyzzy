@@ -2852,9 +2852,6 @@ static void
 print_string ()
 {
   soffset = 0;
-  printf ("#define EXTERN /* empty */\n");
-  printf ("#include \"ed.h\"\n");
-  printf ("#include \"symtable.h\"\n\n");
   printf ("static const char SS[] = \n\"");
   do_all (print_string);
   printf ("\";\n\n");

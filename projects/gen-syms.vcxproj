@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2C956011-ED51-4699-BAC1-B7687910AF1D}</ProjectGuid>
-    <RootNamespace>xyzzyenv</RootNamespace>
+    <ProjectGuid>{FFBB3683-9116-4D7E-84A9-A51337A17D64}</ProjectGuid>
+    <RootNamespace>gensyms</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -41,11 +41,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -56,7 +58,6 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -74,7 +75,6 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -84,21 +84,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\xyzzyenv.cc" />
+    <ClCompile Include="..\src\gen-syms.cc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\xyzzyenv.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\targetver.h" />
+    <ClInclude Include="..\src\cdecl.h" />
+    <ClInclude Include="..\src\function.h" />
+    <ClInclude Include="..\src\symbol.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  <Import Project="$(ProjectDir)gen.targets" />
+  <PropertyGroup>
+    <GenerateTargetPath>$(GenerateDir)vars-decl.h;$(GenerateDir)fns-decl.h;$(GenerateDir)symtable.cc;$(GenerateDir)dumpver.cc</GenerateTargetPath>
+  </PropertyGroup>
+  <Target Name="GenerateSource" Inputs="$(TargetPath)" Outputs="$(GenerateTargetPath)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; -vars &gt; &quot;$(GenerateDir)vars-decl.h&quot;" />
+    <Exec Command="&quot;$(TargetPath)&quot; -proto &gt; &quot;$(GenerateDir)fns-decl.h&quot;" />
+    <Exec Command="&quot;$(TargetPath)&quot; -symtable &gt; &quot;$(GenerateDir)symtable.cc&quot;" />
+    <Exec Command="&quot;$(TargetPath)&quot; -version &gt; &quot;$(GenerateDir)dumpver.cc&quot;" />
   </Target>
-  <Target Name="BeforeClean">
-    <Delete Files="$(SolutionDir)$(TargetName)$(TargetExt)" Condition="Exists('$(SolutionDir)$(TargetName)$(TargetExt)')" />
-  </Target>
+  <Target Name="AfterBuild" DependsOnTargets="GenerateSource" />
+  <Target Name="BeforeClean" DependsOnTargets="DeleteGeneratedSource" />
 </Project>

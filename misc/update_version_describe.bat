@@ -3,8 +3,8 @@ setlocal
 cd %~dp0\..
 
 set GIT_DESCRIBE=git describe --tags --dirty
-set VERSION_DESCRIBE_H=src\version-describe.gen.h
-set VERSION_DESCRIBE_TMP=src\version-describe.%RANDOM%.tmp
+set VERSION_DESCRIBE_H=src\gen\version-describe.h
+set VERSION_DESCRIBE_TMP=src\gen\version-describe.%RANDOM%.tmp
 
 rem git describe の書式
 rem   (tag)-(tag 以降のコミット回数)-g(hash)
