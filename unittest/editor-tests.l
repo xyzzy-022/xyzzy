@@ -67,7 +67,7 @@
      (setq csharp-comment-indent 2)
      ,@body))
 
-(defun csharp-region-indent-test (line)
+(defun c-indent-test (line)
   (insert line #\LFD)
   (previous-line)
   (goto-bol)
@@ -79,19 +79,19 @@
 (deftest csharp-mode-calc-c-indent-for-region-directive-1 ()
   (with-csharp-mode-bed
     (values
-     (csharp-region-indent-test "#region MyClass")
-     (csharp-region-indent-test "class MyClass {")
-     (csharp-region-indent-test   "#region Public Methods")
-     (csharp-region-indent-test   "#region MyMethod")
-     (csharp-region-indent-test   "public void MyMethod() {")
-     (csharp-region-indent-test     "#region MyStatement")
-     (csharp-region-indent-test     "return;")
-     (csharp-region-indent-test     "#endregion // MyStatement")
-     (csharp-region-indent-test   "}")
-     (csharp-region-indent-test   "#endregion // MyMethod")
-     (csharp-region-indent-test   "#endregion // Public Methods")
-     (csharp-region-indent-test "}")
-     (csharp-region-indent-test "#endregion // MyClass")))
+     (c-indent-test "#region MyClass")
+     (c-indent-test "class MyClass {")
+     (c-indent-test   "#region Public Methods")
+     (c-indent-test   "#region MyMethod")
+     (c-indent-test   "public void MyMethod() {")
+     (c-indent-test     "#region MyStatement")
+     (c-indent-test     "return;")
+     (c-indent-test     "#endregion // MyStatement")
+     (c-indent-test   "}")
+     (c-indent-test   "#endregion // MyMethod")
+     (c-indent-test   "#endregion // Public Methods")
+     (c-indent-test "}")
+     (c-indent-test "#endregion // MyClass")))
   => 0
   => 0
   => 2
@@ -109,28 +109,28 @@
 (deftest csharp-mode-calc-c-indent-for-region-directive-2 ()
   (with-csharp-mode-bed
     (values
-     (csharp-region-indent-test "class MyClass {")
-     (csharp-region-indent-test "#undef DEBUG")
-     (csharp-region-indent-test "#define DEBUG")
-     (csharp-region-indent-test "#pragma warning disable 414, 3021")
-     (csharp-region-indent-test   "# region MyMethod")
-     (csharp-region-indent-test   "public int MyMethod() {")
-     (csharp-region-indent-test "#if DEBUG")
-     (csharp-region-indent-test     "#  region MyStatement")
-     (csharp-region-indent-test "# define PI 3.14")
-     (csharp-region-indent-test "# line 200")
-     (csharp-region-indent-test     "return PI;")
-     (csharp-region-indent-test "# line default")
-     (csharp-region-indent-test     "#  endregion // MyStatement")
-     (csharp-region-indent-test "#elif DEBUG2")
-     (csharp-region-indent-test "# warn Not implemented yet.")
-     (csharp-region-indent-test "#else")
-     (csharp-region-indent-test "# error Not implemented yet.")
-     (csharp-region-indent-test "#endif")
-     (csharp-region-indent-test   "}")
-     (csharp-region-indent-test   "# endregion // MyMethod")
-     (csharp-region-indent-test "}")
-     (csharp-region-indent-test "#endregion // MyClass")))
+     (c-indent-test "class MyClass {")
+     (c-indent-test "#undef DEBUG")
+     (c-indent-test "#define DEBUG")
+     (c-indent-test "#pragma warning disable 414, 3021")
+     (c-indent-test   "# region MyMethod")
+     (c-indent-test   "public int MyMethod() {")
+     (c-indent-test "#if DEBUG")
+     (c-indent-test     "#  region MyStatement")
+     (c-indent-test "# define PI 3.14")
+     (c-indent-test "# line 200")
+     (c-indent-test     "return PI;")
+     (c-indent-test "# line default")
+     (c-indent-test     "#  endregion // MyStatement")
+     (c-indent-test "#elif DEBUG2")
+     (c-indent-test "# warn Not implemented yet.")
+     (c-indent-test "#else")
+     (c-indent-test "# error Not implemented yet.")
+     (c-indent-test "#endif")
+     (c-indent-test   "}")
+     (c-indent-test   "# endregion // MyMethod")
+     (c-indent-test "}")
+     (c-indent-test "#endregion // MyClass")))
   => 0
   => 0
   => 0
@@ -157,14 +157,14 @@
 (deftest csharp-mode-calc-c-indent-for-using-statement ()
   (with-csharp-mode-bed
     (values
-     (csharp-region-indent-test "class MyClass {")
-     (csharp-region-indent-test   "public int MyMethod() {")
-     (csharp-region-indent-test     "using (StreamReader outFile = new StreamReader(outputFile.OpenRead()))")
-     (csharp-region-indent-test     "using (StreamReader expFile = new StreamReader(expectedFile.OpenRead())) {")
-     (csharp-region-indent-test       "outFile.Write(expFile.ReadToEnd());")
-     (csharp-region-indent-test     "}")
-     (csharp-region-indent-test   "}")
-     (csharp-region-indent-test "}")))
+     (c-indent-test "class MyClass {")
+     (c-indent-test   "public int MyMethod() {")
+     (c-indent-test     "using (StreamReader outFile = new StreamReader(outputFile.OpenRead()))")
+     (c-indent-test     "using (StreamReader expFile = new StreamReader(expectedFile.OpenRead())) {")
+     (c-indent-test       "outFile.Write(expFile.ReadToEnd());")
+     (c-indent-test     "}")
+     (c-indent-test   "}")
+     (c-indent-test "}")))
   => 0
   => 2
   => 4
@@ -177,10 +177,10 @@
 (deftest csharp-mode-calc-c-indent-for-using-directive ()
   (with-csharp-mode-bed
     (values
-     (csharp-region-indent-test "namespace MyNS {")
-     (csharp-region-indent-test   "using")
-     (csharp-region-indent-test     "System.IO;")
-     (csharp-region-indent-test "}")))
+     (c-indent-test "namespace MyNS {")
+     (c-indent-test   "using")
+     (c-indent-test     "System.IO;")
+     (c-indent-test "}")))
   => 0
   => 2
   => 4
