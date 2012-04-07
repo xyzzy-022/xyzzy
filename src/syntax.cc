@@ -2279,6 +2279,7 @@ Buffer::c_goto_if_directive (Point &point) const
         if (C_SYMBOL_MATCH_P (point, C_KWD_IF, 1))
           return 1;
         if (C_SYMBOL_MATCH_P (point, C_KWD_END, 1)
+            && !C_SYMBOL_MATCH_P (point, C_KWD_ENDREGION, 1)
             && !c_goto_if_directive (point))
           return 0;
       }
