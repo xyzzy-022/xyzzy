@@ -109,7 +109,10 @@
   (let (infile outfile)
     (when (and start end)
       (setq infile (make-temp-file-name))
-      (write-region start end infile))
+      (write-region start end infile nil
+		    (let ((encoding (buffer-fileio-encoding)))
+		      (or (cdr (assoc encoding *char-encoding-bom-alist*))
+			  encoding))))
     (setq outfile (make-temp-file-name))
     (unwind-protect
 	(prog1

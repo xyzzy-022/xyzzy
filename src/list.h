@@ -68,4 +68,30 @@ lisp assq (lisp, lisp);
 int delassq (lisp, lisp *);
 lisp make_list (lisp x, ...);
 
+inline lisp
+list (lisp x)
+{
+  return xcons (x, Qnil);
+}
+
+inline lisp
+list (lisp x, lisp y)
+{
+  return xcons (x, list (y));
+}
+
+inline lisp
+list (lisp x, lisp y, lisp z)
+{
+  return xcons (x, list (y, z));
+}
+
+inline lisp
+append (lisp x, lisp y)
+{
+  if (y == Qnil)
+    return x;
+  return Fappend (list (x, y));
+}
+
 #endif

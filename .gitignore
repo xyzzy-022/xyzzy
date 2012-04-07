@@ -4,7 +4,7 @@
 \#*\#
 
 # Auto generate files
-*.gen.*
+src/gen/
 
 # Patch files
 *.patch
@@ -40,6 +40,13 @@ site-lisp/
 
 # Release files
 _dist/
+
+# Misc files
+misc/mecab-ipadic-*
+misc/words.euc-jp.txt
+misc/words.jis.txt
+misc/words.sjis.txt
+misc/words.utf8.txt
 
 ## Ignore Makefile temporary files, build results.
 char-width.h

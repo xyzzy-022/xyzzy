@@ -1357,6 +1357,7 @@ static symbols kwd[] =
   DEFKWD2 (ascii-eol),
   DEFKWD2 (ascii-control),
   DEFKWD2 (7bits),
+  DEFKWD2 (libguess),
   DEFKWD2 (locking-shift),
   DEFKWD2 (short-form),
   DEFKWD2 (use-cns11643),
@@ -2377,6 +2378,11 @@ static symbols ed[] =
   DEFUN3 (convert-encoding-from-internal, 2, 1, 0),
   DEFUN3 (detect-char-encoding, 1, 0, 0),
   DEFVAR2 (*accept-mule-ucs-funny-utf8*),
+  DEFVAR2 (*detect-char-encoding-mode*),
+  DEFVAR2 (*detect-char-encoding-buffer-size*),
+
+  /* guess.cc */
+  DEFUN3 (guess-char-encoding, 1, 0, 0),
 
   /* ldialog.cc */
   DEFUN3 (dialog-box, 3, 0, 0),
@@ -2850,9 +2856,6 @@ static void
 print_string ()
 {
   soffset = 0;
-  printf ("#define EXTERN /* empty */\n");
-  printf ("#include \"ed.h\"\n");
-  printf ("#include \"symtable.h\"\n\n");
   printf ("static const char SS[] = \n\"");
   do_all (print_string);
   printf ("\";\n\n");

@@ -594,6 +594,7 @@ goto-virtual-column
 goto-virtual-eol
 goto-virtual-line
 graphic-char-p
+guess-char-encoding
 handler-case
 hash-table-count
 hash-table-p
@@ -1525,6 +1526,8 @@ zerop
 *auto-mode-parameter-alist*
 *auto-update-per-device-directory*
 *before-find-file-hook*
+*before-grep-hook*
+*before-grepd-hook*
 *brackets-is-wildcard-character*
 *buffer-bar-context-menu*
 *buffer-bar-context-menu-buffer*
@@ -1547,6 +1550,8 @@ zerop
 *default-load-path*
 *default-session-directory*
 *default-write-file-directory*
+*detect-char-encoding-mode*
+*detect-char-encoding-buffer-size*
 *diff-mode-hook*
 *drag-and-drop-hook*
 *enter-minibuffer-hook*

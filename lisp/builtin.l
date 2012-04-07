@@ -1138,6 +1138,7 @@
 (si::defun-builtin convert-encoding-to-internal (encoding input-string-or-stream &optional output-stream))
 (si::defun-builtin convert-encoding-from-internal (encoding input-string-or-stream &optional output-stream))
 (si::defun-builtin detect-char-encoding (string-or-stream))
+(si::defun-builtin guess-char-encoding (string-or-stream))
 (si::defun-builtin dialog-box (dialog initializers handlers))
 (si::defun-builtin property-sheet (pages &optional caption start-page))
 (si::defun-builtin buffer-selector ())
