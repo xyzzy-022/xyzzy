@@ -1,1 +1,5 @@
-#include "symtable.gen.cc"
+#define EXTERN /* empty */
+#include "ed.h"
+#include "symtable.h"
+
+#include "gen/symtable.cc"

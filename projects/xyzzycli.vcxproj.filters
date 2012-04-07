@@ -14,23 +14,23 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\xyzzycli.cc">
+    <ClCompile Include="..\src\xyzzycli.cc">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\xyzzycli.rc">
+    <ResourceCompile Include="..\src\xyzzycli.rc">
       <Filter>リソース ファイル</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\listen.h">
+    <ClInclude Include="..\src\listen.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\xyzzycli.h">
+    <ClInclude Include="..\src\xyzzycli.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\targetver.h">
+    <ClInclude Include="..\src\targetver.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

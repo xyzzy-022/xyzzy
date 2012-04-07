@@ -41,13 +41,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -91,7 +91,7 @@
   </ImportGroup>
   <Import Project="$(ProjectDir)gen.targets" />
   <PropertyGroup>
-    <GenerateTargetPath>$(TargetDir)fontrange.h</GenerateTargetPath>
+    <GenerateTargetPath>$(GenerateDir)fontrange.h</GenerateTargetPath>
   </PropertyGroup>
   <Target Name="AfterBuild" DependsOnTargets="GenerateSource" />
   <Target Name="BeforeClean" DependsOnTargets="DeleteGeneratedSource" />

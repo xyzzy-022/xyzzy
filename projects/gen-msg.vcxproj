@@ -41,18 +41,18 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(TargetDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\gen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -69,7 +69,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(TargetDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\gen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
@@ -104,11 +104,11 @@
   </ImportGroup>
   <Import Project="$(ProjectDir)gen.targets" />
   <PropertyGroup>
-    <GenerateTargetPath>$(TargetDir)msgcode.h;$(TargetDir)msgdef.gen.cc</GenerateTargetPath>
+    <GenerateTargetPath>$(GenerateDir)msgcode.h;$(GenerateDir)msgdef.cc</GenerateTargetPath>
   </PropertyGroup>
-  <Target Name="GenerateSource" Inputs="$(TargetPath)" Outputs="$(GenerateTargetPath)">
-    <Exec Command="&quot;$(TargetPath)&quot; -enum &gt; &quot;$(TargetDir)msgcode.h&quot;" />
-    <Exec Command="&quot;$(TargetPath)&quot; -c &gt; &quot;$(TargetDir)msgdef.gen.cc&quot;" />
+  <Target Name="GenerateSource" Inputs="$(TargetPath)" Outputs="$(GenerateTargetPath)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; -enum &gt; &quot;$(GenerateDir)msgcode.h&quot;" />
+    <Exec Command="&quot;$(TargetPath)&quot; -c &gt; &quot;$(GenerateDir)msgdef.cc&quot;" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="GenerateSource" />
   <Target Name="BeforeClean" DependsOnTargets="DeleteGeneratedSource" />
