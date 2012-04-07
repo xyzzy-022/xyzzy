@@ -11,7 +11,7 @@
 	  *c++-mode-hook* *c++-keyword-file* *c++-indent-tabs-mode*
 	  c++-indent-level c++-continued-statement-offset
 	  c++-argdecl-indent c++-brace-offset c++-brace-imaginary-offset
-	  c++-label-offset c++-comment-indent
+	  c++-label-offset c++-preprocessor-offset c++-comment-indent
 	  detect-c-or-c++-mode))
 
 (defvar *c++-mode-hook* nil)
@@ -23,6 +23,7 @@
   (setq c++-brace-offset 0)
   (setq c++-brace-imaginary-offset 0)
   (setq c++-label-offset -2)
+  (setq c++-preprocessor-offset nil)
   (setq c++-comment-indent 2))
 
 (defvar *c++-keyword-hash-table* nil)

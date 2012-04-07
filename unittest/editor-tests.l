@@ -48,6 +48,48 @@
   => non-nil
   => non-nil)
 
+(defmacro with-c-mode-bed (&body body)
+  `(with-temp-buffer
+     (c-mode)
+     (make-local-variable 'c-indent-level)
+     (setq c-indent-level 2)
+     (make-local-variable 'c-continued-statement-offset)
+     (setq c-continued-statement-offset 2)
+     (make-local-variable 'c-argdecl-indent)
+     (setq c-argdecl-indent 5)
+     (make-local-variable 'c-brace-offset)
+     (setq c-brace-offset 0)
+     (make-local-variable 'c-brace-imaginary-offset)
+     (setq c-brace-imaginary-offset 0)
+     (make-local-variable 'c-label-offset)
+     (setq c-label-offset -2)
+     (make-local-variable 'c-comment-indent)
+     (setq c-comment-indent 2)
+     (make-local-variable 'c-preprocessor-offset)
+     (setq c-preprocessor-offset nil)
+     ,@body))
+
+(defmacro with-c++-mode-bed (&body body)
+  `(with-temp-buffer
+     (c++-mode)
+     (make-local-variable 'c++-indent-level)
+     (setq c++-indent-level 2)
+     (make-local-variable 'c++-continued-statement-offset)
+     (setq c++-continued-statement-offset 2)
+     (make-local-variable 'c++-argdecl-indent)
+     (setq c++-argdecl-indent 5)
+     (make-local-variable 'c++-brace-offset)
+     (setq c++-brace-offset 0)
+     (make-local-variable 'c++-brace-imaginary-offset)
+     (setq c++-brace-imaginary-offset 0)
+     (make-local-variable 'c++-label-offset)
+     (setq c++-label-offset -2)
+     (make-local-variable 'c++-comment-indent)
+     (setq c++-comment-indent 2)
+     (make-local-variable 'c++-preprocessor-offset)
+     (setq c++-preprocessor-offset nil)
+     ,@body))
+
 (defmacro with-csharp-mode-bed (&body body)
   `(with-temp-buffer
      (csharp-mode)
@@ -65,9 +107,11 @@
      (setq csharp-label-offset -2)
      (make-local-variable 'csharp-comment-indent)
      (setq csharp-comment-indent 2)
+     (make-local-variable 'csharp-preprocessor-offset)
+     (setq csharp-preprocessor-offset nil)
      ,@body))
 
-(defun csharp-region-indent-test (line)
+(defun c-indent-test (line)
   (insert line #\LFD)
   (previous-line)
   (goto-bol)
@@ -79,19 +123,19 @@
 (deftest csharp-mode-calc-c-indent-for-region-directive-1 ()
   (with-csharp-mode-bed
     (values
-     (csharp-region-indent-test "#region MyClass")
-     (csharp-region-indent-test "class MyClass {")
-     (csharp-region-indent-test   "#region Public Methods")
-     (csharp-region-indent-test   "#region MyMethod")
-     (csharp-region-indent-test   "public void MyMethod() {")
-     (csharp-region-indent-test     "#region MyStatement")
-     (csharp-region-indent-test     "return;")
-     (csharp-region-indent-test     "#endregion // MyStatement")
-     (csharp-region-indent-test   "}")
-     (csharp-region-indent-test   "#endregion // MyMethod")
-     (csharp-region-indent-test   "#endregion // Public Methods")
-     (csharp-region-indent-test "}")
-     (csharp-region-indent-test "#endregion // MyClass")))
+     (c-indent-test "#region MyClass")
+     (c-indent-test "class MyClass {")
+     (c-indent-test   "#region Public Methods")
+     (c-indent-test   "#region MyMethod")
+     (c-indent-test   "public void MyMethod() {")
+     (c-indent-test     "#region MyStatement")
+     (c-indent-test     "return;")
+     (c-indent-test     "#endregion // MyStatement")
+     (c-indent-test   "}")
+     (c-indent-test   "#endregion // MyMethod")
+     (c-indent-test   "#endregion // Public Methods")
+     (c-indent-test "}")
+     (c-indent-test "#endregion // MyClass")))
   => 0
   => 0
   => 2
@@ -109,28 +153,28 @@
 (deftest csharp-mode-calc-c-indent-for-region-directive-2 ()
   (with-csharp-mode-bed
     (values
-     (csharp-region-indent-test "class MyClass {")
-     (csharp-region-indent-test "#undef DEBUG")
-     (csharp-region-indent-test "#define DEBUG")
-     (csharp-region-indent-test "#pragma warning disable 414, 3021")
-     (csharp-region-indent-test   "# region MyMethod")
-     (csharp-region-indent-test   "public int MyMethod() {")
-     (csharp-region-indent-test "#if DEBUG")
-     (csharp-region-indent-test     "#  region MyStatement")
-     (csharp-region-indent-test "# define PI 3.14")
-     (csharp-region-indent-test "# line 200")
-     (csharp-region-indent-test     "return PI;")
-     (csharp-region-indent-test "# line default")
-     (csharp-region-indent-test     "#  endregion // MyStatement")
-     (csharp-region-indent-test "#elif DEBUG2")
-     (csharp-region-indent-test "# warn Not implemented yet.")
-     (csharp-region-indent-test "#else")
-     (csharp-region-indent-test "# error Not implemented yet.")
-     (csharp-region-indent-test "#endif")
-     (csharp-region-indent-test   "}")
-     (csharp-region-indent-test   "# endregion // MyMethod")
-     (csharp-region-indent-test "}")
-     (csharp-region-indent-test "#endregion // MyClass")))
+     (c-indent-test "class MyClass {")
+     (c-indent-test "#undef DEBUG")
+     (c-indent-test "#define DEBUG")
+     (c-indent-test "#pragma warning disable 414, 3021")
+     (c-indent-test   "# region MyMethod")
+     (c-indent-test   "public int MyMethod() {")
+     (c-indent-test "#if DEBUG")
+     (c-indent-test     "#  region MyStatement")
+     (c-indent-test "# define PI 3.14")
+     (c-indent-test "# line 200")
+     (c-indent-test     "return PI;")
+     (c-indent-test "# line default")
+     (c-indent-test     "#  endregion // MyStatement")
+     (c-indent-test "#elif DEBUG2")
+     (c-indent-test "# warn Not implemented yet.")
+     (c-indent-test "#else")
+     (c-indent-test "# error Not implemented yet.")
+     (c-indent-test "#endif")
+     (c-indent-test   "}")
+     (c-indent-test   "# endregion // MyMethod")
+     (c-indent-test "}")
+     (c-indent-test "#endregion // MyClass")))
   => 0
   => 0
   => 0
@@ -157,14 +201,14 @@
 (deftest csharp-mode-calc-c-indent-for-using-statement ()
   (with-csharp-mode-bed
     (values
-     (csharp-region-indent-test "class MyClass {")
-     (csharp-region-indent-test   "public int MyMethod() {")
-     (csharp-region-indent-test     "using (StreamReader outFile = new StreamReader(outputFile.OpenRead()))")
-     (csharp-region-indent-test     "using (StreamReader expFile = new StreamReader(expectedFile.OpenRead())) {")
-     (csharp-region-indent-test       "outFile.Write(expFile.ReadToEnd());")
-     (csharp-region-indent-test     "}")
-     (csharp-region-indent-test   "}")
-     (csharp-region-indent-test "}")))
+     (c-indent-test "class MyClass {")
+     (c-indent-test   "public int MyMethod() {")
+     (c-indent-test     "using (StreamReader outFile = new StreamReader(outputFile.OpenRead()))")
+     (c-indent-test     "using (StreamReader expFile = new StreamReader(expectedFile.OpenRead())) {")
+     (c-indent-test       "outFile.Write(expFile.ReadToEnd());")
+     (c-indent-test     "}")
+     (c-indent-test   "}")
+     (c-indent-test "}")))
   => 0
   => 2
   => 4
@@ -177,14 +221,136 @@
 (deftest csharp-mode-calc-c-indent-for-using-directive ()
   (with-csharp-mode-bed
     (values
-     (csharp-region-indent-test "namespace MyNS {")
-     (csharp-region-indent-test   "using")
-     (csharp-region-indent-test     "System.IO;")
-     (csharp-region-indent-test "}")))
+     (c-indent-test "namespace MyNS {")
+     (c-indent-test   "using")
+     (c-indent-test     "System.IO;")
+     (c-indent-test "}")))
   => 0
   => 2
   => 4
   => 0)
+
+
+(deftest csharp-preprocessor-offset-1 ()
+  (with-csharp-mode-bed
+    (setq csharp-preprocessor-offset 0)
+    (values
+     (c-indent-test "class MyClass {")
+     (c-indent-test   "#define FOO")
+     (c-indent-test   "public int MyMethod() {")
+     (c-indent-test     "#define FOO")
+     (c-indent-test     "using (StreamReader outFile = new StreamReader(outputFile.OpenRead()))")
+     (c-indent-test     "using (StreamReader expFile = new StreamReader(expectedFile.OpenRead())) {")
+     (c-indent-test       "#define FOO")
+     (c-indent-test       "outFile.Write(expFile.ReadToEnd());")
+     (c-indent-test     "}")
+     (c-indent-test   "}")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 2
+  => 4
+  => 4
+  => 4
+  => 6
+  => 6
+  => 4
+  => 2
+  => 0)
+
+(deftest csharp-preprocessor-offset-2 ()
+  (with-csharp-mode-bed
+    (setq csharp-preprocessor-offset 2)
+    (values
+     (c-indent-test "class MyClass {")
+     (c-indent-test     "#define FOO")
+     (c-indent-test   "public int MyMethod() {")
+     (c-indent-test       "#define FOO")
+     (c-indent-test     "using (StreamReader outFile = new StreamReader(outputFile.OpenRead()))")
+     (c-indent-test     "using (StreamReader expFile = new StreamReader(expectedFile.OpenRead())) {")
+     (c-indent-test         "#define FOO")
+     (c-indent-test       "outFile.Write(expFile.ReadToEnd());")
+     (c-indent-test     "}")
+     (c-indent-test   "}")
+     (c-indent-test "}")))
+  => 0
+  => 4
+  => 2
+  => 6
+  => 4
+  => 4
+  => 8
+  => 6
+  => 4
+  => 2
+  => 0)
+
+(deftest c++-preprocessor-offset-1 ()
+  (with-c++-mode-bed
+    (setq c++-preprocessor-offset 0)
+    (values
+     (c-indent-test "class MyClass {")
+     (c-indent-test   "#define FOO")
+     (c-indent-test   "public int MyMethod() {")
+     (c-indent-test     "#define FOO")
+     (c-indent-test   "}")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 2
+  => 4
+  => 2
+  => 0)
+
+(deftest c-preprocessor-offset-1 ()
+  (with-c-mode-bed
+    (setq c-preprocessor-offset 0)
+    (values
+     (c-indent-test "#define FOO")
+     (c-indent-test "int main() {")
+     (c-indent-test   "#define FOO")
+     (c-indent-test "}")))
+  => 0
+  => 0
+  => 2
+  => 0)
+
+(deftest c-preprocessor-offset-and-indent-cpp-directive ()
+  (with-c-mode-bed
+    (setq c-preprocessor-offset 0)
+    (values
+     (c-indent-test "int main() {")
+     (c-indent-test   "#if FOO")
+     (c-indent-test   "#if BAR")
+     (c-indent-test   "#define BAZ")
+     (c-indent-test   "#else")
+     (c-indent-test   "#endif")
+     (c-indent-test   "#else")
+     (c-indent-test   "#endif")
+     (c-indent-test "}")
+     (progn
+       (indent-cpp-directive)
+       (buffer-substring (point-min) (point-max)))))
+  => 0
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 0
+  => "int main() {
+  #if FOO
+  # if BAR
+  #  define BAZ
+  # else
+  # endif
+  #else
+  #endif
+}
+")
+
 
 (deftest detect-char-encoding-ascii ()
   (values

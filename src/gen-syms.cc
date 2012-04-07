@@ -2099,6 +2099,7 @@ static symbols ed[] =
   MAKE_SYMBOL2 (c-brace-imaginary-offset),
   MAKE_SYMBOL2 (c-label-offset),
   MAKE_SYMBOL2 (c-comment-indent),
+  MAKE_SYMBOL2 (c-preprocessor-offset),
 
   MAKE_SYMBOL (c++-indent-level, Vcplusplus-indent-level),
   MAKE_SYMBOL (c++-brace-offset, Vcplusplus-brace-offset),
@@ -2107,6 +2108,7 @@ static symbols ed[] =
   MAKE_SYMBOL (c++-brace-imaginary-offset, Vcplusplus-brace-imaginary-offset),
   MAKE_SYMBOL (c++-label-offset, Vcplusplus-label-offset),
   MAKE_SYMBOL (c++-comment-indent, Vcplusplus-comment-indent),
+  MAKE_SYMBOL (c++-preprocessor-offset, Vcplusplus-preprocessor-offset),
 
   MAKE_SYMBOL2 (java-indent-level),
   MAKE_SYMBOL2 (java-brace-offset),
@@ -2115,6 +2117,7 @@ static symbols ed[] =
   MAKE_SYMBOL2 (java-brace-imaginary-offset),
   MAKE_SYMBOL2 (java-label-offset),
   MAKE_SYMBOL2 (java-comment-indent),
+  MAKE_SYMBOL2 (java-preprocessor-offset),
 
   MAKE_SYMBOL2 (csharp-indent-level),
   MAKE_SYMBOL2 (csharp-brace-offset),
@@ -2123,6 +2126,7 @@ static symbols ed[] =
   MAKE_SYMBOL2 (csharp-brace-imaginary-offset),
   MAKE_SYMBOL2 (csharp-label-offset),
   MAKE_SYMBOL2 (csharp-comment-indent),
+  MAKE_SYMBOL2 (csharp-preprocessor-offset),
 
   DEFUN3 (calc-c-indent, 0, 0, 0),
   DEFUN3 (tab-columns, 0, 1, 0),
