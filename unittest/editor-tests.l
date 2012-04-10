@@ -449,6 +449,104 @@
   => 2
   => 0)
 
+(deftest c++/cli-ref-class-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "ref class Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+(deftest c++/cli-value-class-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "value class Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+(deftest c++/cli-interface-class-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "interface class Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+(deftest c++/cli-public-class-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "public class Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+(deftest c++/cli-private-class-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "private class Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+(deftest c++/cli-private-ref-class-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "private ref class Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+(deftest c++/cli-public-interface-class-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "public interface class Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+(deftest c++/cli-attribute-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "namespace Foo {")
+     (c-indent-test   "[Serializable]")
+     (c-indent-test   "class Foo {")
+     (c-indent-test     "[Bar]")
+     (c-indent-test     "int foo;")
+     (c-indent-test   "public:")
+     (c-indent-test     "[Bar]")
+     (c-indent-test     "int foo() {")
+     (c-indent-test       "// baz")
+     (c-indent-test     "}")
+     (c-indent-test   "}")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 2
+  => 4
+  => 4
+  => 2
+  => 4
+  => 4
+  => 6
+  => 4
+  => 2
+  => 0)
+
 
 (deftest detect-char-encoding-ascii ()
   (values
