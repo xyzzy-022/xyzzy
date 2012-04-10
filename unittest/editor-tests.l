@@ -352,6 +352,104 @@
 ")
 
 
+(deftest csharp-mode-enum-indent ()
+  (with-csharp-mode-bed
+    (values
+     (c-indent-test "enum Color :")
+     (c-indent-test   "byte {")
+     (c-indent-test   "Red,")
+     (c-indent-test   "Green,")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 2
+  => 2
+  => 0)
+
+(deftest csharp-mode-class-indent ()
+  (with-csharp-mode-bed
+    (values
+     (c-indent-test "class Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+(deftest csharp-mode-struct-indent ()
+  (with-csharp-mode-bed
+    (values
+     (c-indent-test "struct Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+
+(deftest c++-mode-enum-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "enum Color :")
+     (c-indent-test   "byte {")
+     (c-indent-test   "Red,")
+     (c-indent-test   "Green,")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 2
+  => 2
+  => 0)
+
+(deftest c++-mode-enum-class-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "enum class Color :")
+     (c-indent-test   "byte {")
+     (c-indent-test   "Red,")
+     (c-indent-test   "Green,")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 2
+  => 2
+  => 0)
+
+(deftest c++-mode-enum-struct-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "enum struct Color :")
+     (c-indent-test   "byte {")
+     (c-indent-test   "Red,")
+     (c-indent-test   "Green,")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 2
+  => 2
+  => 0)
+
+(deftest c++-mode-struct-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "struct Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+(deftest c++-mode-class-indent ()
+  (with-c++-mode-bed
+    (values
+     (c-indent-test "class Foo :")
+     (c-indent-test   "Bar {")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 0)
+
+
 (deftest detect-char-encoding-ascii ()
   (values
    (detect-char-encoding "")
