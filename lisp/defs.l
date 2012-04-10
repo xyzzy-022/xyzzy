@@ -18,7 +18,9 @@
 	  *fill-kinsoku-mode*
 	  *file-dialog-filter* *file-dialog-filter-index*
 	  *syntax-option-c-preprocessor* *syntax-option-indent-c++*
-	  *syntax-option-indent-java* *syntax-option-column-comment-char*))
+	  *syntax-option-indent-java* *syntax-option-column-comment-char*
+	  *syntax-option-indent-c++/cli*
+	  ))
 
 (or (boundp 'mode-line-format)
     (setq-default mode-line-format "--%*- %b (%M) [%k:%l] %P %f"))
@@ -133,6 +135,7 @@
 (defconstant *syntax-option-indent-java* 4)
 (defconstant *syntax-option-indent-csharp* 8)
 (defconstant *syntax-option-column-comment-char* 16)
+(defconstant *syntax-option-indent-c++/cli* 32)
 
 (setq-default display-newline-char t)
 (setq-default display-first-tab-char t)

@@ -24883,6 +24883,8 @@ Latexの数式モードの区切りに相当します。
   *syntax-option-indent-c++*     : （詳細不明）
   *syntax-option-indent-java*    : （詳細不明）
   *syntax-option-indent-csharp*  : （詳細不明）
+  *syntax-option-indent-c++/cli* :
+        属性や ref class など C++/CLI 用のインデントを有効にします。
   *syntax-option-column-comment-char* :
         set-syntax-comment-column だけでは、指定カラムに空白以外が来ると
         コメントと見なしますが、特定のキャラクタが現れた場合にだけにした

@@ -2530,6 +2530,18 @@ Buffer::c_class_decl_p (Point &point, const Point &opoint, int syntax_opt) const
       DEFMODIFIER ("sealed"),
       {0},
     };
+  static const modifier cplusplus_cli_modifiers[] =
+    {
+      // C++/CLI
+      // 12.4 Top-level type visibility
+      DEFMODIFIER ("public"),
+      DEFMODIFIER ("private"),
+      // 19.1 Class definitions
+      DEFMODIFIER ("ref"),
+      DEFMODIFIER ("value"),
+      DEFMODIFIER ("interface"),
+      {0},
+    };
   static const modifier c_modifiers[] =
     {
       DEFMODIFIER ("typedef"),
@@ -2540,7 +2552,7 @@ Buffer::c_class_decl_p (Point &point, const Point &opoint, int syntax_opt) const
       {0},
     };
 
-  if (syntax_opt & SYNTAX_OPT_CSHARP
+  if (syntax_opt & (SYNTAX_OPT_CSHARP | SYNTAX_OPT_CPLUSPLUS_CLI)
       && point.ch () == '[')
     {
       skip_sexp_forward (point);
@@ -2552,6 +2564,8 @@ Buffer::c_class_decl_p (Point &point, const Point &opoint, int syntax_opt) const
     modifiers = java_modifiers;
   else if (syntax_opt & SYNTAX_OPT_CSHARP)
     modifiers = csharp_modifiers;
+  else if (syntax_opt & SYNTAX_OPT_CPLUSPLUS_CLI)
+    modifiers = cplusplus_cli_modifiers;
   else
     modifiers = c_modifiers;
 
@@ -3289,7 +3303,7 @@ Fcalc_c_indent ()
           f = Cindent;
         }
     }
-  else if (f == Ccontinue && syntax_opt & SYNTAX_OPT_CSHARP)
+  else if (f == Ccontinue && syntax_opt & (SYNTAX_OPT_CSHARP | SYNTAX_OPT_CPLUSPLUS_CLI))
     {
       Point p (wp->w_point);
       bp->goto_bol (p);
@@ -3301,7 +3315,8 @@ Fcalc_c_indent ()
           Point lbra (p);
           int r = (!bp->forward_char (p, -1)
                    ? Sbob : bp->c_skip_white_backward (p, FLAG_PURE));
-          if (r == Sbob || (!r && (p.ch () == '{' || p.ch () == ';')))
+          if (r == Sbob || (!r && (p.ch () == '{' || p.ch () == ';' ||
+                                   ((syntax_opt & SYNTAX_OPT_CPLUSPLUS_CLI) && p.ch () == ':'))))
             {
               point = lbra;
               f = Csame;
