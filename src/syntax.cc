@@ -2245,6 +2245,7 @@ static const char C_KWD_ENDREGION[] = "endregion";
 static const char C_KWD_USING[] = "using";
 
 #define C_KWD_LENGTH(KWD) (sizeof (KWD) - 1)
+#define C_KWD_LENGTH_ENUM C_KWD_LENGTH (C_KWD_ENUM)
 #define C_KWD_LENGTH_CLASS C_KWD_LENGTH (C_KWD_CLASS)
 #define C_KWD_LENGTH_INTERFACE C_KWD_LENGTH (C_KWD_INTERFACE)
 #define C_KWD_LENGTH_STRUCT C_KWD_LENGTH (C_KWD_STRUCT)
@@ -2579,6 +2580,9 @@ nomatch:
   if (syntax_opt & (SYNTAX_OPT_CPLUSPLUS | SYNTAX_OPT_CSHARP)
       && C_SYMBOL_MATCH_P (point, C_KWD_STRUCT, 0))
     return C_KWD_LENGTH_STRUCT;
+  if (syntax_opt & (SYNTAX_OPT_CPLUSPLUS | SYNTAX_OPT_CSHARP)
+      && C_SYMBOL_MATCH_P (point, C_KWD_ENUM, 0))
+    return C_KWD_LENGTH_ENUM;
   return 0;
 }
 
