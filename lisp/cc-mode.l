@@ -41,7 +41,8 @@
 	(set-syntax-punctuation *c++-mode-syntax-table* c))))
   (set-syntax-option *c++-mode-syntax-table*
 		     (+ *syntax-option-c-preprocessor*
-			*syntax-option-indent-c++*))
+			*syntax-option-indent-c++*
+			*syntax-option-indent-c++/cli*))
   (set-syntax-string *c++-mode-syntax-table* #\")
   (set-syntax-string *c++-mode-syntax-table* #\')
   (set-syntax-escape *c++-mode-syntax-table* #\\)
