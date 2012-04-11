@@ -1,9 +1,9 @@
 #include "monitor.h"
 
 HMONITOR
-Monitor::get_monitor_from_point (POINT point)
+Monitor::get_monitor_from_rect (LPCRECT lprc)
 {
-  return MonitorFromPoint (point, MONITOR_DEFAULTTONULL);
+  return MonitorFromRect (lprc, MONITOR_DEFAULTTONULL);
 }
 
 bool
