@@ -46,7 +46,9 @@
 			  sdir *shell* *shell-command-option* cmd)
 		  (si:system-root))))))
   (values (format nil "~A ~A ~A" *shell* *shell-command-option* cmd)
-	  dir))
+	  (if (pathname-host dir)
+	      (get-windows-directory)
+	    dir)))
 
 (defun execute-shell-command (command &optional infile output environ directory)
   (let (outfile)
