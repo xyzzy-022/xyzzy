@@ -831,9 +831,20 @@ environ::load_geometry (int cmdshow, POINT *point, SIZE *size)
         }
       if (environ::restore_window_position)
         {
-          point->x = w.rcNormalPosition.left;
-          point->y = w.rcNormalPosition.top;
-          if (!monitor.get_monitor_from_point (*point))
+          RECT r;
+          int min_visible = (GetSystemMetrics(SM_CYSIZEFRAME)
+                             + GetSystemMetrics(SM_CYBORDER)
+                             + GetSystemMetrics(SM_CYCAPTION));
+          r.left = w.rcNormalPosition.left + min_visible;
+          r.top = w.rcNormalPosition.top + min_visible;
+          r.right = w.rcNormalPosition.right - min_visible;
+          r.bottom = w.rcNormalPosition.bottom - min_visible;
+          if (monitor.get_monitor_from_rect (&r))
+            {
+              point->x = w.rcNormalPosition.left;
+              point->y = w.rcNormalPosition.top;
+            }
+          else
             {
               point->x = point->y = CW_USEDEFAULT;
             }
