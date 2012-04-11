@@ -12,6 +12,7 @@
 # define DEFAULT_DETECT_BUFFER_SIZE   0x10000
 
 int check_kanji2 (const char *, u_int);
+lisp detect_char_encoding (const char *, int);
 lisp detect_char_encoding (const char *, int, int);
 
 #endif
