@@ -697,7 +697,8 @@
     (setq-default *clipboard-char-encoding* *encoding-sjis*))
 
 (defvar *clipboard-char-encoding-list*
-  '(*encoding-sjis*
+  '(*encoding-auto*
+    *encoding-sjis*
     *encoding-jis*
     *encoding-euc-jp*
     *encoding-iso-2022-jp-2*

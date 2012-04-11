@@ -611,6 +611,12 @@ detect_char_encoding_libguess (lisp string)
 }
 
 lisp
+detect_char_encoding (const char *string, int size)
+{
+  return detect_char_encoding (string, size, size);
+}
+
+lisp
 detect_char_encoding (const char *string, int size, int real_size)
 {
   lisp mode = xsymbol_value (Vdetect_char_encoding_mode);
