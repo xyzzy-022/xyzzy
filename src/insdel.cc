@@ -1198,13 +1198,26 @@ Fcopy_to_clipboard (lisp string)
 
   CLIPBOARDTEXT clp[2];
   bzero (clp, sizeof clp);
-  if (!make_clipboard_text (clp[0], string, 0))
-    FEstorage_error ();
-  if (clp[0].fmt == CF_UNICODETEXT && !sysdep.WinNTp ()
-      && !make_cf_text_sjis (clp[1], string))
+  lisp encoding = symbol_value (Vclipboard_char_encoding, selected_buffer ());
+  if (encoding_utf16_p (encoding))
     {
-      GlobalFree (clp[0].hgl);
-      FEstorage_error ();
+      if (!make_cf_wtext (clp[0], string))
+        FEstorage_error ();
+    }
+  else if (encoding_sjis_p (encoding) || encoding_auto_detect_p (encoding))
+    {
+      if (!make_cf_text_sjis (clp[0], string))
+        FEstorage_error ();
+    }
+  else
+    {
+      if (!make_cf_wtext (clp[0], string))
+        FEstorage_error ();
+      if (!make_cf_text (clp[1], string, encoding))
+        {
+          GlobalFree (clp[0].hgl);
+          FEstorage_error ();
+        }
     }
 
   int result = 0;
