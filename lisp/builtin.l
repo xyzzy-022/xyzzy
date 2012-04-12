@@ -1076,6 +1076,7 @@
 (si::defun-builtin append-trail-slash (string))
 (si::defun-builtin remove-trail-slash (string))
 (si::defun-builtin cwd ())
+(si::defun-builtin chdir (&optional dirname))
 (si::defun-builtin map-slash-to-backslash (string))
 (si::defun-builtin map-backslash-to-slash (string))
 (si::defun-builtin network-connect-dialog ())

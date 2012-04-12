@@ -8487,7 +8487,41 @@ xyzzy.exeの作業ディレクトリを返します。プロパティの作業�
   (cwd)
   =&gt;"D:/WINNT/"
 </description>
-<seealso></seealso>
+<seealso>chdir</seealso>
+<link></link>
+<section>ファイルシステム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>chdir</title>
+<type>Function</type>
+<arguments>chdir &amp;optional DIRNAME</arguments>
+<package>editor</package>
+<description>
+xyzzy.exeの作業ディレクトリを移動します。
+移動した場合は t を、移動しなかった場合は nil を返します。
+
+  DIRNAME : 移動先のディレクトリを絶対パスまたは相対パスで指定します。
+            省略時は user-homedir-pathname に移動します。
+
+使用例： 
+  (chdir (get-windows-directory))
+  =&gt; t
+  (chdir (get-windows-directory))
+  =&gt; nil
+  (chdir "system32")
+  =&gt; t
+  (chdir "..")
+  =&gt; t
+  (chdir "c:/dir/not/found")
+  =&gt; c:/dir/not/found
+  =&gt; 指定されたパスが見つかりません。 
+
+補足：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>cwd</seealso>
 <link></link>
 <section>ファイルシステム</section>
 <file>builtin.l</file>

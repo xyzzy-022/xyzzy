@@ -326,6 +326,17 @@ parse_namestring (pathbuf_t buf, const Char *name, int nl, const Char *defalt, i
   return b - buf;
 }
 
+lisp
+make_path (const char *s, int append_slash)
+{
+  Char *b = (Char *)alloca ((strlen (s) + 1) * sizeof (Char));
+  Char *be = s2w (b, s);
+  map_backsl_to_sl (b, be - b);
+  if (append_slash && be != b && be[-1] != '/')
+    *be++ = '/';
+  return make_string (b, be - b);
+}
+
 void
 map_backsl_to_sl (Char *p, int l)
 {
@@ -956,6 +967,30 @@ lisp
 Fcwd ()
 {
   return xsymbol_value (Qdefault_dir);
+}
+
+lisp
+Fchdir (lisp dirname)
+{
+  lisp dir;
+  if (!dirname || dirname == Qnil)
+    dir = Fuser_homedir_pathname ();
+  else
+    dir = Fmerge_pathnames (dirname, Fcwd ());
+
+  char path[PATH_MAX];
+  pathname2cstr (dir, path);
+  if (!WINFS::SetCurrentDirectory (path))
+    file_error (GetLastError (), dir);
+  if (!GetCurrentDirectory (sizeof path, path))
+    file_error (GetLastError (), dir);
+
+  if (strcmp (sysdep.curdir, path) == 0)
+    return Qnil;
+
+  strcpy (sysdep.curdir, path);
+  xsymbol_value (Qdefault_dir) = make_path (path);
+  return Qt;
 }
 
 lisp

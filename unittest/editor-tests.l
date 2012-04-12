@@ -595,3 +595,83 @@
   => 4
   => (1.0d0 1.0d0 1.0d0 1.0d0)
   => ("utf8n" "sjis" "euc-jp" "big5"))
+
+
+(deftest chdir-0 ()
+  (chdir (get-windows-directory))
+  (values
+   (chdir)
+   (path-equal (user-homedir-pathname) (cwd)))
+  => t
+  => t)
+
+(deftest chdir-1 ()
+  (chdir (get-windows-directory))
+  (values
+   (chdir (si:system-root))
+   (path-equal (si:system-root) (cwd)))
+  => t
+  => t)
+
+(deftest chdir-2 ()
+  (chdir (si:system-root))
+  (values
+   (chdir (get-windows-directory))
+   (path-equal (get-windows-directory) (cwd)))
+  => t
+  => t)
+
+(deftest chdir-3 ()
+  "sysdep.curdir も変更されているか確認"
+  (chdir (get-windows-directory))
+  (values
+   (chdir (get-system-directory))
+   (progn
+     ;; get-disk-usage は一時的にディレクトリを変更し、最後に sysdep.curdir に移動する
+     (get-disk-usage (get-system-directory))
+     (path-equal (get-system-directory) (cwd))))
+  => t
+  => t)
+
+(deftest chdir-4 ()
+  "Qdefault_dir も変更されているか確認"
+  (chdir (get-windows-directory))
+  (values
+   (chdir (get-system-directory))
+   (progn
+     ;; call-process は一時的にディレクトリを変更し、最後に Qdefault_dir に移動する
+     (call-process "dir" :directory (get-system-directory) :show :hide)
+     (path-equal (get-system-directory) (cwd))))
+  => t
+  => t)
+
+(deftest chdir-5 ()
+  (chdir (get-system-directory))
+  (values
+   (chdir (get-windows-directory))
+   (chdir (file-namestring (remove-trail-slash (get-system-directory))))
+   (path-equal (get-system-directory) (cwd)))
+  => t
+  => t
+  => t)
+
+(deftest chdir-6 ()
+  (chdir (get-windows-directory))
+  (values
+   (chdir (get-system-directory))
+   (chdir "..")
+   (chdir "..")
+   (chdir ".."))
+  => t
+  => t
+  => t
+  => nil)
+
+(deftest chdir-file-exists ()
+  (with-temp-files (tmp)
+    (chdir tmp))
+  !! file-error)
+
+(deftest chdir-path-not-found ()
+  (chdir (format nil "path/not/found/~A" (gensym)))
+  !! path-not-found)

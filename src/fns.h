@@ -27,6 +27,7 @@ int parse_namestring (Char *, const Char *, int, const Char *, int);
 char *pathname2cstr (lisp, char *);
 int special_file_p (const char *);
 int sub_directory_p (char *, const char *);
+lisp make_path (const char *s, int append_slash = 1);
 void map_backsl_to_sl (Char *, int);
 int match_suffixes (const char *, lisp);
 int set_device_dir (const char *, int);
