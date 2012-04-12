@@ -75,17 +75,6 @@ Application::~Application ()
   xfree (ini_file_path);
 }
 
-static lisp
-make_path (const char *s, int append_slash = 1)
-{
-  Char *b = (Char *)alloca ((strlen (s) + 1) * sizeof (Char));
-  Char *be = s2w (b, s);
-  map_backsl_to_sl (b, be - b);
-  if (append_slash && be != b && be[-1] != '/')
-    *be++ = '/';
-  return make_string (b, be - b);
-}
-
 static void
 init_module_dir ()
 {

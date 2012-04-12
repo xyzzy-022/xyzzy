@@ -2273,6 +2273,7 @@ static symbols ed[] =
   DEFUN3 (append-trail-slash, 1, 0, 0),
   DEFUN3 (remove-trail-slash, 1, 0, 0),
   DEFUN3 (cwd, 0, 0, 0),
+  DEFUN3 (chdir, 0, 1, 0),
   DEFUN3 (map-slash-to-backslash, 1, 0, 0),
   DEFUN3 (map-backslash-to-slash, 1, 0, 0),
   DEFUN3 (network-connect-dialog, 0, 0, 0),
