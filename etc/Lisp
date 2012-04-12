@@ -175,6 +175,7 @@ char>
 char>=
 character
 characterp
+chdir
 check-type
 check-valid-pathname
 cis
