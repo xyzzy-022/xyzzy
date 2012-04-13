@@ -619,6 +619,7 @@
 (si::defun-builtin delete-registry-tree ())
 (si::defun-builtin performance-counter ())
 (si::defun-builtin *app-user-model-id ())
+(si::defun-builtin uuid-create (&key :sequential))
 
 (gc)
 
@@ -1277,7 +1278,6 @@
 (si::defun-builtin ole-enumerator-next (oleobj))
 (si::defun-builtin ole-enumerator-reset (oleobj))
 (si::defun-builtin ole-enumerator-skip (oleobj &optional count))
-(si::defun-builtin uuid-create (&key :sequential))
 
 (gc)
 
