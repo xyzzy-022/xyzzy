@@ -98,7 +98,7 @@
   <PropertyGroup>
     <GenerateTargetPath>$(GenerateDir)vars-decl.h;$(GenerateDir)fns-decl.h;$(GenerateDir)symtable.cc;$(GenerateDir)dumpver.cc</GenerateTargetPath>
   </PropertyGroup>
-  <Target Name="GenerateSource" Inputs="$(TargetPath)" Outputs="$(GenerateTargetPath)" DependsOnTargets="PrepareGenerate">
+  <Target Name="GenerateSource" Inputs="$(GenerateInputFiles)" Outputs="$(GenerateTargetPath)" DependsOnTargets="PrepareGenerate">
     <Exec Command="&quot;$(TargetPath)&quot; -vars &gt; &quot;$(GenerateDir)vars-decl.h&quot;" />
     <Exec Command="&quot;$(TargetPath)&quot; -proto &gt; &quot;$(GenerateDir)fns-decl.h&quot;" />
     <Exec Command="&quot;$(TargetPath)&quot; -symtable &gt; &quot;$(GenerateDir)symtable.cc&quot;" />
