@@ -710,14 +710,22 @@ Window::invalidate_glyphs ()
 }
 
 void
+Window::change_parameters (const FontSetParam &param)
+{
+  change_parameters (param, 0, 0, 0, 0, false);
+}
+
+void
 Window::change_parameters (const FontSetParam &param,
                            const XCOLORREF *colors, const XCOLORREF *mlcolors,
-                           const XCOLORREF *fg, const XCOLORREF *bg)
+                           const XCOLORREF *fg, const XCOLORREF *bg,
+                           bool change_color_p)
 {
   int ocell = app.text_font.cell ().cy;
 
   app.text_font.create (param);
-  init_colors (colors, mlcolors, fg, bg);
+  if (change_color_p)
+    init_colors (colors, mlcolors, fg, bg);
 
   compute_geometry (app.active_frame.size, ocell);
 
