@@ -106,7 +106,7 @@
   <PropertyGroup>
     <GenerateTargetPath>$(GenerateDir)msgcode.h;$(GenerateDir)msgdef.cc</GenerateTargetPath>
   </PropertyGroup>
-  <Target Name="GenerateSource" Inputs="$(TargetPath)" Outputs="$(GenerateTargetPath)" DependsOnTargets="PrepareGenerate">
+  <Target Name="GenerateSource" Inputs="$(GenerateInputFiles)" Outputs="$(GenerateTargetPath)" DependsOnTargets="PrepareGenerate">
     <Exec Command="&quot;$(TargetPath)&quot; -enum &gt; &quot;$(GenerateDir)msgcode.h&quot;" />
     <Exec Command="&quot;$(TargetPath)&quot; -c &gt; &quot;$(GenerateDir)msgdef.cc&quot;" />
   </Target>
