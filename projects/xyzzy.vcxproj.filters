@@ -378,9 +378,6 @@
     <ClCompile Include="..\src\appid.cc">
       <Filter>ソース ファイル\ed</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\sha2.cc">
-      <Filter>ソース ファイル\ed</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\debug.cc">
       <Filter>ソース ファイル\ed</Filter>
     </ClCompile>
@@ -410,6 +407,9 @@
     </ClCompile>
     <ClCompile Include="..\src\privctrl\url.cc">
       <Filter>ソース ファイル\privctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\sha2.cc">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
