@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 
 const char status_area::s_nil[] = " ";

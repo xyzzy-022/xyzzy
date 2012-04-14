@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 
 static lisp bq_process (lisp x);

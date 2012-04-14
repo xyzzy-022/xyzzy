@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "ed.h"
-#include <math.h>
-#include <float.h>
 
 #define YET return 0;
 

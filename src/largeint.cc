@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "largeint.h"
 
 #ifdef _M_IX86
@@ -151,7 +152,6 @@ addui (u_long x, u_long y, u_long &overflow)
   return r;
 }
 
-# include <limits.h>
 # define BITS_PER_LONG (CHAR_BIT * sizeof (long))
 # define BITS_PER_LONG_2 (BITS_PER_LONG / 2)
 # define RADIX ((1 << BITS_PER_LONG_2) - 1)

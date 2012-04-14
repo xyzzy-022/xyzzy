@@ -1,12 +1,10 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "pathname.h"
 #include "dyn-handle.h"
 #include "environ.h"
-#include <io.h>
-#include <math.h>
 #include "except.h"
 #include "mman.h"
-#include <winioctl.h>
 #include "thread.h"
 #include "xstrlist.h"
 #include "vwin32.h"

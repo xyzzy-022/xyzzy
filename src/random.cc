@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "ed.h"
-#include <time.h>
 
 Random::Random (long seed)
 {

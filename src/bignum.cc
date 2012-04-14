@@ -1,7 +1,5 @@
+#include "stdafx.h"
 #include "ed.h"
-#include <limits.h>
-#include <string.h>
-#include <math.h>
 
 #define BR_SHIFT (sizeof (u_short) * CHAR_BIT)
 #define BR_RADIX (u_long (1L << BR_SHIFT))

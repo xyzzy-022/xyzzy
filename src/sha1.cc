@@ -15,6 +15,8 @@
  *   34AA973C D4C4DAA4 F61EEB2B DBAD2731 6534016F
  */
 
+#include "stdafx.h"
+
 #define SHA1HANDSOFF		/* Copies data before messing with it. */
 
 #include "cdecl.h"

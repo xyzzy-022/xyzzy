@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "arc-if.h"
 #include "vfs.h"
 
@@ -86,8 +87,6 @@ UNPACK.TXT          5186      2431  53.6% 97-08-24  03:39:00 a--w Deflate 78fe7f
       6543210987654321098765432109876543210987654321098765432109876543210987654321
             7         6         5         4         3         2         1
  */
-
-#include <stdio.h>
 
 #define ZIPBUFSIZE (128 * 1024)
 static char *zip_buffer;

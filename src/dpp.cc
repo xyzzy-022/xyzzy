@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdarg.h>
-#include <io.h>
+#include "stdafx.h"
 
 static FILE *fi, *fo;
 #define MAXARGS 2

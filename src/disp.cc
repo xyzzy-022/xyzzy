@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "binfo.h"
 #include "syntaxinfo.h"
@@ -6,7 +7,6 @@
 #include "jisx0212-hash.h"
 #include "mainframe.h"
 #include "regex.h"
-#include <list>
 
 class color_caret
 {

@@ -1,10 +1,8 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "sequence.h"
 #include "wstream.h"
 #include "sockinet.h"
-#include <io.h>
-#include <fcntl.h>
-#include <math.h>
 
 static void
 close_file_stream (lisp stream, int abort)

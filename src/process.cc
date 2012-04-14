@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "ed.h"
-#include <process.h>
 #include "dyn-handle.h"
 #include "sockinet.h"
 #include "byte-stream.h"

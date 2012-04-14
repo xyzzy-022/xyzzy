@@ -1,10 +1,8 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "wstream.h"
 #include "sock.h"
 #include "version.h"
-#include <math.h>
-#include <float.h>
-#include <stdarg.h>
 
 char upcase_digit_char[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 char downcase_digit_char[] = "0123456789abcdefghijklmnopqrstuvwxyz";

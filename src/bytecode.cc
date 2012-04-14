@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "lex.h"
-#include <math.h>
 
 #define BCconstant 1
 #define BCglobal_set 2

@@ -1,8 +1,5 @@
-#include <windows.h>
-#include <commctrl.h>
+#include "stdafx.h"
 #include "privctlimpl.h"
-#include <malloc.h>
-#include <stdio.h>
 #include "mousemsg.h"
 
 static WNDPROC ListViewProc;

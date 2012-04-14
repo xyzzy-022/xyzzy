@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 
 #define KEYMAP_LENGTH (128 + 4 * NFUNCTION_KEYS)

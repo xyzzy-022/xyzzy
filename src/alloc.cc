@@ -1,4 +1,4 @@
-#include <windows.h>
+#include "stdafx.h"
 #include "alloc.h"
 
 struct alloc_page_rep
