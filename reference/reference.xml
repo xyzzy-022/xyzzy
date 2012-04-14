@@ -25323,6 +25323,197 @@ skip-syntax-spec-forward / skip-syntax-spec-backwardに影響します。
 </chapter>
 
 <chapter>
+<title>get-text-fontset</title>
+<type>Function</type>
+<arguments>get-text-fontset</arguments>
+<package>editor</package>
+<description>
+フォント設定を取得します。
+
+使用例：
+  (get-text-fontset)
+  =&gt; ((:lang :ascii :face "Consolas" :size 14 :size-pixel-p nil)
+      (:lang :japanese :face "ＭＳ ゴシック" :size 14 :size-pixel-p nil)
+      (:lang :latin :face "Courier New" :size 13 :size-pixel-p nil)
+      (:lang :cyrillic :face "Courier New" :size 13 :size-pixel-p nil)
+      (:lang :greek :face "Courier New" :size 13 :size-pixel-p nil)
+      (:lang :cn-simplified :face "MS Hei" :size 14 :size-pixel-p nil)
+      (:lang :cn-traditional :face "MingLiu" :size 14 :size-pixel-p nil)
+      (:lang :ksc5601 :face "GulimChe" :size 14 :size-pixel-p nil)
+      (:lang :georgian :face "BPG Courier New U" :size 14 :size-pixel-p nil))
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>get-text-font</seealso>
+<seealso>set-text-font</seealso>
+<seealso>set-text-fontset</seealso>
+<seealso>increase-text-font-size</seealso>
+<seealso>decrease-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>set-text-fontset</title>
+<type>Function</type>
+<arguments>set-text-fontset FONTSET</arguments>
+<package>editor</package>
+<description>
+FONTSETで指定したフォントの設定を更新します。
+変更したい設定のみを指定可能です。
+設定を変更した場合は t が、変更点がなかった場合は nil を返します。
+変更した設定はxyzzy.iniに保存されます。
+
+使用例：
+  (set-text-fontset '((:lang :ascii :face "Consolas" :size 20 :size-pixel-p t)
+                      (:lang :japanese :face "ＭＳ ゴシック" :size 20 :size-pixel-p t)))
+  =&gt; t
+
+  (set-text-fontset '((:lang :ascii :size 16)))
+  =&gt; t
+
+  (set-text-fontset (get-text-fontset))
+  =&gt; nil
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>get-text-font</seealso>
+<seealso>set-text-font</seealso>
+<seealso>get-text-fontset</seealso>
+<seealso>increase-text-font-size</seealso>
+<seealso>decrease-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>get-text-font</title>
+<type>Function</type>
+<arguments>get-text-font LANG</arguments>
+<package>editor</package>
+<description>
+指定した言語のフォント設定を取得します。
+
+  LANG : フォント設定を変更する言語を指定します。
+         :ascii          : ASCII
+         :japanese       : 日本語
+         :latin          : ラテン文字
+         :cyrillic       : キリル文字
+         :greek          : ギリシャ語
+         :cn-simplified  : 中国語(簡体字)
+         :cn-traditional : 中国語(繁体字)
+         :ksc5601        : 韓国語
+         :georgian       : グルジア文字
+
+使用例：
+  (get-text-font :ascii)
+  =&gt; (:lang :ascii :face "Consolas" :size 14 :size-pixel-p nil)
+
+  (get-text-font :japanese)
+  =&gt; (:lang :japanese :face "ＭＳ ゴシック" :size 14 :size-pixel-p nil)
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>set-text-font</seealso>
+<seealso>set-text-fontset</seealso>
+<seealso>get-text-fontset</seealso>
+<seealso>increase-text-font-size</seealso>
+<seealso>decrease-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>set-text-font</title>
+<type>Function</type>
+<arguments>set-text-font LANG &amp; :face :size :size-pixel-p</arguments>
+<package>editor</package>
+<description>
+指定した言語のフォント設定を更新します。
+変更したい設定のみを指定可能です。
+設定を変更した場合は t が、変更点がなかった場合は nil を返します。
+変更した設定はxyzzy.iniに保存されます。
+
+  LANG          : フォント設定を変更する言語を指定します。
+                  :ascii          : ASCII
+                  :japanese       : 日本語
+                  :latin          : ラテン文字
+                  :cyrillic       : キリル文字
+                  :greek          : ギリシャ語
+                  :cn-simplified  : 中国語(簡体字)
+                  :cn-traditional : 中国語(繁体字)
+                  :ksc5601        : 韓国語
+                  :georgian       : グルジア文字
+  :face         : フォント名を指定します。
+  :size         : フォントサイズを指定します。
+  :size-pixel-p : フォントサイズがピクセル単位なら t を指定します。
+
+使用例：
+  (set-text-font :ascii :size 10)
+  =&gt; t
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>get-text-font</seealso>
+<seealso>get-text-fontset</seealso>
+<seealso>set-text-fontset</seealso>
+<seealso>increase-text-font-size</seealso>
+<seealso>decrease-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>increase-text-font-size</title>
+<type>Function</type>
+<arguments>increase-text-font-size &amp;optional (ARG 1)</arguments>
+<package>editor</package>
+<description>
+フォントサイズを大きくします。
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>get-text-font</seealso>
+<seealso>set-text-font</seealso>
+<seealso>set-text-fontset</seealso>
+<seealso>get-text-fontset</seealso>
+<seealso>decrease-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>decrease-text-font-size</title>
+<type>Function</type>
+<arguments>decrease-text-font-size &amp;optional (ARG 1)</arguments>
+<package>editor</package>
+<description>
+フォントサイズを小さくします。
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>get-text-font</seealso>
+<seealso>set-text-font</seealso>
+<seealso>set-text-fontset</seealso>
+<seealso>get-text-fontset</seealso>
+<seealso>increase-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>set-window-configuration</title>
 <type>Function</type>
 <arguments>set-window-configuration CONF</arguments>

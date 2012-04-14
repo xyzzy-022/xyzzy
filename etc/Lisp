@@ -286,6 +286,7 @@ declaim
 decode-escape-sequence
 decode-mime-header
 decode-universal-time
+decrease-text-font-size
 default-directory
 default-value
 defconstant
@@ -570,6 +571,8 @@ get-selection-type
 get-short-path-name
 get-special-folder-location
 get-system-directory
+get-text-font
+get-text-fontset
 get-universal-time
 get-window-handle
 get-window-line
@@ -612,6 +615,7 @@ ime-register-word-dialog
 import
 in-package
 incf
+increase-text-font-size
 indent-for-comment
 indent-region
 indent-relative
@@ -1209,6 +1213,8 @@ set-syntax-word
 set-tab-columns
 set-text-attribute
 set-text-color
+set-text-font
+set-text-fontset
 set-variable
 set-window
 set-window-configuration
