@@ -53,7 +53,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(SolutionDir)privctrl;$(SolutionDir)src\gen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\privctrl;$(SolutionDir)src\gen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;DEBUG;STRICT;WIN32;_WIN32;_MT;__XYZZY__;PRIVCTRL_NODLL;HAVE_DIMM_H;DEBUG_GC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -90,7 +90,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SolutionDir)privctrl;$(SolutionDir)src\gen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\privctrl;$(SolutionDir)src\gen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;STRICT;WIN32;_WIN32;_MT;__XYZZY__;PRIVCTRL_NODLL;HAVE_DIMM_H;DEBUG_GC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -208,6 +208,9 @@
     <ClCompile Include="..\src\preview.cc" />
     <ClCompile Include="..\src\print.cc" />
     <ClCompile Include="..\src\printdlg.cc" />
+    <ClCompile Include="..\src\privctrl\listviewex.cc" />
+    <ClCompile Include="..\src\privctrl\privctrl.cc" />
+    <ClCompile Include="..\src\privctrl\url.cc" />
     <ClCompile Include="..\src\process.cc" />
     <ClCompile Include="..\src\random.cc" />
     <ClCompile Include="..\src\regex.cc" />
@@ -259,9 +262,6 @@
     <ClCompile Include="..\src\gen\msgdef.cc">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\privctrl\listviewex.cc" />
-    <ClCompile Include="..\privctrl\privctrl.cc" />
-    <ClCompile Include="..\privctrl\url.cc" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\gen\xyzzy.rc" />
@@ -309,9 +309,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\privctrl\mousemsg.h" />
-    <ClInclude Include="..\privctrl\privctlimpl.h" />
-    <ClInclude Include="..\privctrl\privctrl.h" />
     <ClInclude Include="..\src\alloc.h" />
     <ClInclude Include="..\src\appid.h" />
     <ClInclude Include="..\src\arc-if.h" />
@@ -387,6 +384,9 @@
     <ClInclude Include="..\src\preview.h" />
     <ClInclude Include="..\src\print.h" />
     <ClInclude Include="..\src\printdlg.h" />
+    <ClInclude Include="..\src\privctrl\mousemsg.h" />
+    <ClInclude Include="..\src\privctrl\privctlimpl.h" />
+    <ClInclude Include="..\src\privctrl\privctrl.h" />
     <ClInclude Include="..\src\process.h" />
     <ClInclude Include="..\src\random.h" />
     <ClInclude Include="..\src\readtab.h" />

@@ -33,15 +33,6 @@
     <ClCompile Include="..\src\symtable.cc">
       <Filter>ソース ファイル\gen</Filter>
     </ClCompile>
-    <ClCompile Include="..\privctrl\listviewex.cc">
-      <Filter>ソース ファイル\privctrl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\privctrl\privctrl.cc">
-      <Filter>ソース ファイル\privctrl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\privctrl\url.cc">
-      <Filter>ソース ファイル\privctrl</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\array.cc">
       <Filter>ソース ファイル\ed</Filter>
     </ClCompile>
@@ -411,6 +402,15 @@
     <ClCompile Include="..\src\stdafx.cc">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\privctrl\listviewex.cc">
+      <Filter>ソース ファイル\privctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\privctrl\privctrl.cc">
+      <Filter>ソース ファイル\privctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\privctrl\url.cc">
+      <Filter>ソース ファイル\privctrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\gen\xyzzy.rc">
@@ -754,15 +754,6 @@
     <ClInclude Include="..\src\byte-stream.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\privctrl\privctlimpl.h">
-      <Filter>ヘッダー ファイル\privctrl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\privctrl\privctrl.h">
-      <Filter>ヘッダー ファイル\privctrl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\privctrl\mousemsg.h">
-      <Filter>ヘッダー ファイル\privctrl</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\appid.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -786,6 +777,15 @@
     </ClInclude>
     <ClInclude Include="..\src\targetver.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\privctrl\mousemsg.h">
+      <Filter>ヘッダー ファイル\privctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\privctrl\privctlimpl.h">
+      <Filter>ヘッダー ファイル\privctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\privctrl\privctrl.h">
+      <Filter>ヘッダー ファイル\privctrl</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
