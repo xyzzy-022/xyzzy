@@ -1,6 +1,9 @@
 #ifndef _font_h_
 #define _font_h_
 
+#define FONT_SIZE_MIN_PIXEL 8
+#define FONT_SIZE_MAX_PIXEL 48
+
 class FontObject
 {
 protected:
@@ -24,6 +27,21 @@ public:
   const POINT &offset () const {return fo_offset;}
   int ascent () const {return fo_ascent;}
   const LOGFONT &logfont () const {return fo_logfont;}
+  static const int dpi ()
+    {
+      HDC hdc = GetDC (0);
+      int dpi = GetDeviceCaps (hdc, LOGPIXELSY);
+      ReleaseDC (0, hdc);
+      return dpi;
+    }
+  static const int pixel_to_point (int pixel)
+    {
+      return MulDiv (pixel, 72, dpi ());
+    }
+  static const int point_to_pixel (int point)
+    {
+      return MulDiv (point, dpi (), 72);
+    }
 };
 
 #define FONT_ASCII          0
@@ -62,6 +80,7 @@ protected:
   void load_params (FontSetParam &);
 
   static const UINT fs_lang_id[];
+  static const lisp *const fs_lang_key[];
   static const char *const fs_regent[];
   struct fontface {const char *disp, *print; int charset;};
   static const fontface fs_default_face[];
@@ -104,6 +123,8 @@ public:
   ~FontSet () {if (fs_hbm) DeleteObject (fs_hbm);}
   int create (const FontSetParam &);
   void init ();
+  lisp make_alist () const;
+  const bool update (FontSetParam &param, const lisp lfontset) const;
   const FontObject &font (int n) const {return fs_font[n];}
   const HBITMAP &hbm () const {return fs_hbm;}
   const SIZE &size () const {return fs_size;}
@@ -121,6 +142,16 @@ public:
              ? fs_default_face[n].disp : fs_default_face[n].print);}
   static int default_charset (int n) {return fs_default_face[n].charset;}
   static UINT lang_id (int n) {return fs_lang_id[n];}
+  static const lisp lang_key (int n) {return *fs_lang_key[n];}
+  static const int lang_key_index (lisp llang)
+    {
+      for (int i = 0; i < FONT_MAX; i++)
+        {
+          if (lang_key (i) == llang)
+            return i;
+        }
+      return -1;
+    }
 };
 
 #endif /* _font_h_ */

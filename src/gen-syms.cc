@@ -1412,6 +1412,14 @@ static symbols kwd[] =
   DEFKWD2 (vender),
   DEFKWD2 (invalidate),
   DEFKWD2 (sequential),
+  DEFKWD2 (japanese),
+  DEFKWD2 (latin),
+  DEFKWD2 (cn-simplified),
+  DEFKWD2 (cn-traditional),
+  DEFKWD2 (georgian),
+  DEFKWD2 (face),
+  DEFKWD2 (lang),
+  DEFKWD2 (size-pixel-p),
 };
 
 static symbols unint[] =
@@ -2026,6 +2034,8 @@ static symbols ed[] =
   DEFCMD3 (begin-auto-scroll, 0, 0, 0, ""),
   MAKE_SYMBOL2 (*page-scroll-half-window*),
   MAKE_SYMBOL2 (*next-screen-context-lines*),
+  DEFUN3 (get-text-fontset, 0, 0, 0),
+  DEFUN3 (set-text-fontset, 1, 0, 0),
 
   /* syntax.cc */
   DEFUN3 (make-syntax-table, 0, 0, 0),

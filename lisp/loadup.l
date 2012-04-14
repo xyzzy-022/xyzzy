@@ -29,6 +29,7 @@
 (si:*load-library "abbrev") (gc)
 (si:*load-library "buffer") (gc)
 (si:*load-library "window") (gc)
+(si:*load-library "font") (gc)
 (si:*load-library "kanji") (gc)
 (si:*load-library "page") (gc)
 (si:*load-library "region") (gc)

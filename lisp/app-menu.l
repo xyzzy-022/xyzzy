@@ -310,6 +310,28 @@
 	    'set-buffer-fold-type-window-update)
 	   (:sep :above-command-bar)
 	   (:menu nil "ツールバー(&Q)" *command-bar-popup-menu*)
+	   (:sep :above-font-size)
+	   (:popup nil "文字のサイズ(&X)"
+	    (:item :tag-command "文字を大きく(&I)"
+	     'increase-text-font-size)
+	    (:item :tag-command "文字を小さく(&O)"
+	     'decrease-text-font-size)
+	    (:sep :above-set-text-font-x-large)
+	    (:item :tag-command "最大(&G)"
+	     #'(lambda () (interactive) (set-text-font-size :x-large))
+	     #'(lambda () (if (eq (get-ascii-text-font-size) :x-large) :check)))
+	    (:item :tag-command "大(&L)"
+	     #'(lambda () (interactive) (set-text-font-size :large))
+	     #'(lambda () (if (eq (get-ascii-text-font-size) :large) :check)))
+	    (:item :tag-command "中(&M)"
+	     #'(lambda () (interactive) (set-text-font-size :medium))
+	     #'(lambda () (if (eq (get-ascii-text-font-size) :medium) :check)))
+	    (:item :tag-command "小(&S)"
+	     #'(lambda () (interactive) (set-text-font-size :small))
+	     #'(lambda () (if (eq (get-ascii-text-font-size) :small) :check)))
+	    (:item :tag-command "最小(&A)"
+	     #'(lambda () (interactive) (set-text-font-size :x-small))
+	     #'(lambda () (if (eq (get-ascii-text-font-size) :x-small) :check))))
 	   (:sep :above-frame)
 	   (:item :tag-command "新しいフレーム(&F)"
 	    'new-pseudo-frame 'new-pseudo-frame-menu-update)
