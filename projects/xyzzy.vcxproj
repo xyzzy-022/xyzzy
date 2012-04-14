@@ -413,6 +413,7 @@
     <ClInclude Include="..\src\syntaxinfo.h" />
     <ClInclude Include="..\src\sysdep.h" />
     <ClInclude Include="..\src\system.h" />
+    <ClInclude Include="..\src\targetver.h" />
     <ClInclude Include="..\src\thread.h" />
     <ClInclude Include="..\src\timer.h" />
     <ClInclude Include="..\src\trace.h" />
