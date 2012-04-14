@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 
 #define xwin32_menu_items xwin32_menu_command

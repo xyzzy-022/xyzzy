@@ -58,8 +58,7 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CallingConvention>StdCall</CallingConvention>
@@ -95,8 +94,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;STRICT;WIN32;_WIN32;_MT;__XYZZY__;PRIVCTRL_NODLL;HAVE_DIMM_H;DEBUG_GC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <StringPooling>true</StringPooling>
@@ -222,6 +220,9 @@
     <ClCompile Include="..\src\sock.cc" />
     <ClCompile Include="..\src\sockinet.cc" />
     <ClCompile Include="..\src\statarea.cc" />
+    <ClCompile Include="..\src\stdafx.cc">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\src\stdctl.cc" />
     <ClCompile Include="..\src\StrBuf.cc" />
     <ClCompile Include="..\src\stream.cc" />
@@ -249,9 +250,15 @@
     <ClCompile Include="..\src\wstream.cc" />
     <ClCompile Include="..\src\xdde.cc" />
     <ClCompile Include="..\src\xlist.cc" />
-    <ClCompile Include="..\src\gen\chtab.cc" />
-    <ClCompile Include="..\src\gen\dumpver.cc" />
-    <ClCompile Include="..\src\gen\msgdef.cc" />
+    <ClCompile Include="..\src\gen\chtab.cc">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\src\gen\dumpver.cc">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\src\gen\msgdef.cc">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\privctrl\listviewex.cc" />
     <ClCompile Include="..\privctrl\privctrl.cc" />
     <ClCompile Include="..\privctrl\url.cc" />
@@ -395,6 +402,7 @@
     <ClInclude Include="..\src\sock.h" />
     <ClInclude Include="..\src\sockinet.h" />
     <ClInclude Include="..\src\statarea.h" />
+    <ClInclude Include="..\src\stdafx.h" />
     <ClInclude Include="..\src\StrBuf.h" />
     <ClInclude Include="..\src\stream.h" />
     <ClInclude Include="..\src\string.h" />

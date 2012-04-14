@@ -1,6 +1,4 @@
-#include <stdarg.h>
-#include <stdio.h>
-#include <windows.h>
+#include "stdafx.h"
 
 #define BUF_SIZE 512
 

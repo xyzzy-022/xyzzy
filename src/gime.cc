@@ -1,4 +1,4 @@
-#include <windows.h>
+#include "stdafx.h"
 #include "gime.h"
 #ifndef DECLSPEC_UUID
 # define DECLSPEC_UUID(X)

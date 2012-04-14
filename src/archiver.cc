@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #ifdef __XYZZY__
 # include "ed.h"
 # include "except.h"
@@ -17,7 +18,6 @@ typedef unsigned char u_char;
 
 #endif /* not __XYZZY__ */
 
-#include <io.h>
 #include "arc-if.h"
 #include "archiver.h"
 #include "safe_ptr.h"

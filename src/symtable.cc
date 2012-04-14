@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #define EXTERN /* empty */
 #include "ed.h"
 #include "symtable.h"

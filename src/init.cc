@@ -1,10 +1,5 @@
+#include "stdafx.h"
 #include "ed.h"
-#include <float.h>
-#include <new.h>
-#include <io.h>
-#include <eh.h>
-#include <fcntl.h>
-#include <objbase.h>
 #include "ctl3d.h"
 #include "environ.h"
 #include "except.h"

@@ -1,12 +1,11 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "environ.h"
 #include "conf.h"
 #include "filer.h"
 #include "colors.h"
-#include <shlobj.h>
 #include "ctxmenu.h"
 #include "com.h"
-#include <process.h>
 
 #ifndef SHGFI_OVERLAYINDEX
 #define SHGFI_OVERLAYINDEX 0x000000040

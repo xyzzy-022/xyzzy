@@ -4,17 +4,7 @@
 
 # pragma warning (disable: 4201)
 
-# include <stdio.h>
-# include <stdint.h>
-# include <limits.h>
-# include <windows.h>
-# include <winreg.h>
-# include <commctrl.h>
-# include <stdlib.h>
-# include <stddef.h>
-# include <string.h>
-# include <mbstring.h>
-# include <malloc.h>
+# include "stdafx.h"
 
 # pragma warning (default: 4201)
 

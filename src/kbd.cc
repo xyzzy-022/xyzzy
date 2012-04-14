@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "ed.h"
-#include <imm.h>
 #include "filer.h"
 #include "safe_ptr.h"
 #include "encoding.h"

@@ -1,7 +1,5 @@
-#include <windows.h>
+#include "stdafx.h"
 #include "privctlimpl.h"
-#include <malloc.h>
-#include <stdio.h>
 
 static void
 dopaint (HWND hwnd, HDC hdc)

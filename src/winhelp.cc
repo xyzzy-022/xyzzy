@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "resource.h"
-#include <share.h>
 #include "oleconv.h"
 
 lisp

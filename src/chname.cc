@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "chtype.h"
 
 struct print_char_name

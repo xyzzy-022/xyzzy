@@ -1,9 +1,9 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "conf.h"
 #include "privctrl.h"
 #include "dialogs.h"
 #include "ofn.h"
-#include <process.h>
 #include "thread.h"
 #include "xstrlist.h"
 #include "version.h"
