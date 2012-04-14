@@ -81,10 +81,10 @@
 				  (mapcar (if (getf font :size-pixel-p)
 					      #'calc-pixel #'calc-point)
 					  '(0 1 2 3 4))
-				  '(:x-large :large :medium :small :x-small))))
-	    (values
-	     (cdr (find-nealest-font-size size candidates :key #'car))
-	     size))))))
+				  '(:x-small :small :medium :large :x-large))))
+	  (values
+	   (cdr (find-nealest-font-size size candidates :key #'car))
+	   size))))))
 
 (defun find-nealest-font-size (size candidates &key (key 'identity))
   (let (nearlest)
