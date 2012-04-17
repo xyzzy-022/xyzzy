@@ -943,7 +943,10 @@ Window::compute_geometry (const SIZE &old_size, int lcell)
   int old_l = static_cast<int> (old_h / lcell);
   int new_h = old_l * app.text_font.cell ().cy + 4;
   int min_h = app.text_font.cell ().cy + 4;
+  int max_h = new_size.cy - (sysdep.edge.cy + FRAME_WIDTH + min_h + app.modeline_param.m_height + 4);
   new_h = max (new_h, min_h);
+  if (max_h < new_h)
+    new_h = old_h;
 
   wp->w_rect.bottom = new_size.cy;
   wp->w_rect.top = new_size.cy - new_h;
