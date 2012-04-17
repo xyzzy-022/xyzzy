@@ -933,18 +933,23 @@ Window::compute_geometry (const SIZE &old_size, int lcell)
 
   const SIZE &new_size = app.active_frame.size;
 
+  // compute minibuffer window geometry
   Window *wp;
   for (wp = app.active_frame.windows; wp->w_next; wp = wp->w_next)
     ;
   wp->w_rect.left = 0;
   wp->w_rect.right = new_size.cx;
-  int h = max (int ((wp->w_rect.bottom - wp->w_rect.top)
-                    * app.text_font.cell ().cy / lcell),
-               lcell);
-  h = max (h, int (app.text_font.cell ().cy + 4));
+  int old_h = wp->w_rect.bottom - wp->w_rect.top;
+  int old_l = static_cast<int> (old_h / lcell);
+  int new_h = old_l * app.text_font.cell ().cy + 4;
+  int min_h = app.text_font.cell ().cy + 4;
+  int max_h = new_size.cy - (sysdep.edge.cy + FRAME_WIDTH + min_h + app.modeline_param.m_height + 4);
+  new_h = max (new_h, min_h);
+  if (max_h < new_h)
+    new_h = old_h;
 
   wp->w_rect.bottom = new_size.cy;
-  wp->w_rect.top = new_size.cy - h;
+  wp->w_rect.top = new_size.cy - new_h;
   wp->calc_client_size (wp->w_rect.right - sysdep.edge.cx,
                         wp->w_rect.bottom - wp->w_rect.top - sysdep.edge.cy);
 
@@ -958,6 +963,7 @@ Window::compute_geometry (const SIZE &old_size, int lcell)
       oh = max (oh, wp->w_rect.bottom);
     }
 
+  // compute normal windows geometry
   int *const ox = (int *)alloca (sizeof *ox * (nx + 1));
   int *const oy = (int *)alloca (sizeof *oy * (ny + 1));
   for (wp = app.active_frame.windows; wp->w_next; wp = wp->w_next)
@@ -969,7 +975,7 @@ Window::compute_geometry (const SIZE &old_size, int lcell)
     }
 
   compute_size (ox, nx, ow, new_size.cx);
-  compute_size (oy, ny, oh, new_size.cy - h);
+  compute_size (oy, ny, oh, new_size.cy - new_h);
 
   for (wp = app.active_frame.windows; wp->w_next; wp = wp->w_next)
     {
