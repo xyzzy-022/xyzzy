@@ -20,7 +20,8 @@
 
 
 (defun get-text-font (lang)
-  (rassoc lang (get-text-fontset) :key #'car))
+  (or (cdr (assoc lang (get-text-fontset)))
+      (error "不正な文字セットです: ~S" lang)))
 
 (defun set-text-font (lang &key face size size-pixel-p)
   (let ((font (get-text-font lang)))
@@ -28,7 +29,7 @@
       (setf (getf font :face) face)
       (setf (getf font :size) size)
       (setf (getf font :size-pixel-p) size-pixel-p)
-      (set-text-fontset (list font)))))
+      (set-text-fontset `((,lang ,@font))))))
 
 
 (defun decrease-text-font-size (&optional (arg 1))
@@ -38,15 +39,15 @@
 (defun increase-text-font-size (&optional (arg 1))
   (interactive "p")
   (let ((fontset (get-text-fontset)))
-    (dolist (font fontset)
-      (let ((size (getf font :size)))
-	(if (getf font :size-pixel-p)
+    (dolist (lang/font fontset)
+      (let ((size (getf (cdr lang/font) :size)))
+	(if (getf (cdr lang/font) :size-pixel-p)
 	    (setf size (max +font-size-min-pixel+ (min (incf size arg) +font-size-max-pixel+)))
 	  (let* ((nsize (find-nealest-font-size size +font-size-points+))
 		 (pos (+ (position nsize +font-size-points+) arg)))
 	    (setf size (nth (max 0 (min pos (1- (length +font-size-points+))))
 			    +font-size-points+))))
-	(setf (getf font :size) size)))
+	(setf (getf (cdr lang/font) :size) size)))
     (set-text-fontset fontset)))
 
 
@@ -59,9 +60,9 @@
 
   (defun set-text-font-size (size)
     (let ((fontset (get-text-fontset)))
-      (dolist (font fontset)
-	(setf (getf font :size)
-	      (funcall (if (getf font :size-pixel-p)
+      (dolist (lang/font fontset)
+	(setf (getf (cdr lang/font) :size)
+	      (funcall (if (getf (cdr lang/font) :size-pixel-p)
 			   #'calc-pixel #'calc-point)
 		       (case size
 			 (:x-small 0)

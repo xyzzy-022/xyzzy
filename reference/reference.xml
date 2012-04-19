@@ -25332,15 +25332,15 @@ skip-syntax-spec-forward / skip-syntax-spec-backwardに影響します。
 
 使用例：
   (get-text-fontset)
-  =&gt; ((:lang :ascii :face "Consolas" :size 14 :size-pixel-p nil)
-      (:lang :japanese :face "ＭＳ ゴシック" :size 14 :size-pixel-p nil)
-      (:lang :latin :face "Courier New" :size 13 :size-pixel-p nil)
-      (:lang :cyrillic :face "Courier New" :size 13 :size-pixel-p nil)
-      (:lang :greek :face "Courier New" :size 13 :size-pixel-p nil)
-      (:lang :cn-simplified :face "MS Hei" :size 14 :size-pixel-p nil)
-      (:lang :cn-traditional :face "MingLiu" :size 14 :size-pixel-p nil)
-      (:lang :ksc5601 :face "GulimChe" :size 14 :size-pixel-p nil)
-      (:lang :georgian :face "BPG Courier New U" :size 14 :size-pixel-p nil))
+  =&gt; ((:ascii :face "Consolas" :size 14 :size-pixel-p nil)
+      (:japanese :face "ＭＳ ゴシック" :size 14 :size-pixel-p nil)
+      (:latin :face "Courier New" :size 13 :size-pixel-p nil)
+      (:cyrillic :face "Courier New" :size 13 :size-pixel-p nil)
+      (:greek :face "Courier New" :size 13 :size-pixel-p nil)
+      (:cn-simplified :face "MS Hei" :size 14 :size-pixel-p nil)
+      (:cn-traditional :face "MingLiu" :size 14 :size-pixel-p nil)
+      (:ksc5601 :face "GulimChe" :size 14 :size-pixel-p nil)
+      (:georgian :face "BPG Courier New U" :size 14 :size-pixel-p nil))
 
 備考：
   xyzzy 0.2.2.238 から利用可能です。
@@ -25367,11 +25367,11 @@ FONTSETで指定したフォントの設定を更新します。
 変更した設定はxyzzy.iniに保存されます。
 
 使用例：
-  (set-text-fontset '((:lang :ascii :face "Consolas" :size 20 :size-pixel-p t)
-                      (:lang :japanese :face "ＭＳ ゴシック" :size 20 :size-pixel-p t)))
+  (set-text-fontset '((:ascii :face "Consolas" :size 20 :size-pixel-p t)
+                      (:japanese :face "ＭＳ ゴシック" :size 20 :size-pixel-p t)))
   =&gt; t
 
-  (set-text-fontset '((:lang :ascii :size 16)))
+  (set-text-fontset '((:ascii :size 16)))
   =&gt; t
 
   (set-text-fontset (get-text-fontset))
@@ -25411,10 +25411,10 @@ FONTSETで指定したフォントの設定を更新します。
 
 使用例：
   (get-text-font :ascii)
-  =&gt; (:lang :ascii :face "Consolas" :size 14 :size-pixel-p nil)
+  =&gt; (:face "Consolas" :size 14 :size-pixel-p nil)
 
   (get-text-font :japanese)
-  =&gt; (:lang :japanese :face "ＭＳ ゴシック" :size 14 :size-pixel-p nil)
+  =&gt; (:face "ＭＳ ゴシック" :size 14 :size-pixel-p nil)
 
 備考：
   xyzzy 0.2.2.238 から利用可能です。

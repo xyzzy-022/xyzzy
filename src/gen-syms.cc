@@ -1418,7 +1418,6 @@ static symbols kwd[] =
   DEFKWD2 (cn-traditional),
   DEFKWD2 (georgian),
   DEFKWD2 (face),
-  DEFKWD2 (lang),
   DEFKWD2 (size-pixel-p),
 };
 
