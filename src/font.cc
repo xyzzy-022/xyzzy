@@ -485,6 +485,7 @@ FontSet::update (FontSetParam &param, const lisp lfontset) const
           if (old_size != size)
             {
               param.fs_logfont[n].lfHeight = pixel;
+              param.fs_logfont[n].lfWidth = 0;
               update = true;
             }
         }
