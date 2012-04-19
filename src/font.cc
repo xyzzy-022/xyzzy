@@ -430,7 +430,7 @@ FontSet::make_alist () const
       int size = lf.lfHeight;
       if (!size_pixel_p ())
         size = FontObject::pixel_to_point (size);
-      r = xcons (make_list (Klang, FontSet::lang_key (i),
+      r = xcons (make_list (FontSet::lang_key (i),
                             Kface, make_string (lf.lfFaceName),
                             Ksize, make_fixnum (size),
                             Ksize_pixel_p, boole (size_pixel_p ()),
@@ -456,14 +456,15 @@ FontSet::update (FontSetParam &param, const lisp lfontset) const
   bool update = false;
   for (lisp x = lfontset; consp (x); x = xcdr (x))
     {
-      lisp keys = xcar (x);
-      lisp llang = find_keyword (Klang, keys);
+      check_cons (xcar (x));
+      lisp llang = Fcaar (x);
+      lisp keys = Fcdar (x);
       lisp lface = find_keyword (Kface, keys);
       lisp lsize = find_keyword (Ksize, keys);
 
       int n = FontSet::lang_key_index (llang);
       if (n < 0)
-        FEprogram_error (Einvalid_lang_option, llang);
+        FEprogram_error (Einvalid_charset, llang);
 
       if (lsize != Qnil && (llang == Kascii || !recommend_size_p ()))
         {
