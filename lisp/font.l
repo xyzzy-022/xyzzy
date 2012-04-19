@@ -20,7 +20,8 @@
 
 
 (defun get-text-font (lang)
-  (cdr (assoc lang (get-text-fontset))))
+  (or (cdr (assoc lang (get-text-fontset)))
+      (error "不正な文字セットです: ~S" lang)))
 
 (defun set-text-font (lang &key face size size-pixel-p)
   (let ((font (get-text-font lang)))

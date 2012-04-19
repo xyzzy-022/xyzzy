@@ -464,7 +464,7 @@ FontSet::update (FontSetParam &param, const lisp lfontset) const
 
       int n = FontSet::lang_key_index (llang);
       if (n < 0)
-        FEprogram_error (Einvalid_charset, llang);
+        FEsimple_error (Einvalid_charset, llang);
 
       if (lsize != Qnil && (llang == Kascii || !recommend_size_p ()))
         {
