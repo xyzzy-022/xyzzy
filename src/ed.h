@@ -138,9 +138,9 @@ check_regexp (lisp x)
 }
 
 #define MENU_ID_RANGE_MIN 0
-#define MENU_ID_RANGE_MAX 1024
-#define TOOL_ID_RANGE_MIN 1024
-#define TOOL_ID_RANGE_MAX 2048
+#define MENU_ID_RANGE_MAX 32768
+#define TOOL_ID_RANGE_MIN (MENU_ID_RANGE_MAX)
+#define TOOL_ID_RANGE_MAX (65536-32)
 
 class lwin32_menu: public lisp_object
 {

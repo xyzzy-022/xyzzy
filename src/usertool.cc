@@ -15,7 +15,7 @@ class user_tool_bar: public tool_bar
     };
 
   static u_long u_command_id[(TOOL_ID_RANGE_MAX - TOOL_ID_RANGE_MIN)
-                             / sizeof (u_long)];
+                             / (sizeof (u_long) * 8)];
 
   tool_item *u_item;
   int u_nitems;
@@ -37,7 +37,7 @@ public:
 };
 
 u_long user_tool_bar::u_command_id[(TOOL_ID_RANGE_MAX - TOOL_ID_RANGE_MIN)
-                                   / sizeof (u_long)];
+                                   / (sizeof (u_long) * 8)];
 
 user_tool_bar::user_tool_bar (dock_frame &frame, lisp name)
      : tool_bar (frame, name), u_item (0), u_nitems (0)
