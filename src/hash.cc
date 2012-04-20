@@ -281,7 +281,7 @@ Fmake_hash_table (lisp keys)
   int rehash_size = find_keyword_int (Krehash_size, keys, 1);
   float rehash_threshold = static_cast <float> (find_keyword_float (Krehash_threshold, keys, 0.8));
   if (rehash_threshold < 0 || 1 < rehash_threshold)
-    FEtype_error (find_keyword (Krehash_threshold, keys), make_list (Qreal, make_fixnum(0), make_fixnum(1), 0));
+    FEtype_error (find_keyword (Krehash_threshold, keys), xsymbol_value (Qreal_between_0_and_1));
   if (rehash_threshold < MIN_REHASH_THRESHOLD)
     rehash_threshold = MIN_REHASH_THRESHOLD;
   return make_hash_table (test, size, rehash_size, rehash_threshold);
