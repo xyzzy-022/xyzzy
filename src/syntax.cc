@@ -3316,7 +3316,7 @@ Fcalc_c_indent ()
           Point lbra (p);
           int r = (!bp->forward_char (p, -1)
                    ? Sbob : bp->c_skip_white_backward (p, FLAG_PURE));
-          if (r == Sbob || (!r && (p.ch () == '{' || p.ch () == ';' ||
+          if (r == Sbob || (!r && (p.ch () == '{' || p.ch () == '}' || p.ch () == ']' || p.ch () == ';' ||
                                    ((syntax_opt & SYNTAX_OPT_CPLUSPLUS_CLI) && p.ch () == ':'))))
             {
               point = lbra;
