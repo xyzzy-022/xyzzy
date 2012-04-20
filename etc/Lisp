@@ -1256,6 +1256,7 @@ si:hmac-sha-512
 si:make-chunk
 si:make-string-chunk
 si:md5
+si:octet-length
 si:putenv
 si:quoted-printable-decode
 si:sha-1
