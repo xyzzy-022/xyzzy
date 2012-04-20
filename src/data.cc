@@ -2262,6 +2262,7 @@ dump_object (FILE *fp, const lhash_table *d, int n,
         writef (fp, &test, sizeof test);
         writef (fp, &d->size, sizeof d->size);
         writef (fp, &d->rehash_size, sizeof d->rehash_size);
+        writef (fp, &d->rehash_threshold, sizeof d->rehash_threshold);
         writef (fp, &d->used, sizeof d->used);
         writef (fp, &d->count, sizeof d->count);
         for (const hash_entry *e = d->entry, *ee = e + d->size; e < ee; e++)
@@ -2291,6 +2292,7 @@ rdump_object (FILE *fp, lhash_table *d, int n,
           d->test = Fequalp;
         readf (fp, &d->size, sizeof d->size);
         readf (fp, &d->rehash_size, sizeof d->rehash_size);
+        readf (fp, &d->rehash_threshold, sizeof d->rehash_threshold);
         readf (fp, &d->used, sizeof d->used);
         readf (fp, &d->count, sizeof d->count);
         d->entry = (hash_entry *)xmalloc (sizeof *d->entry * d->size);

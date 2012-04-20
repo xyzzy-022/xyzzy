@@ -285,6 +285,7 @@ static symbols lsp[] =
   DEFUN3 (clrhash, 1, 0, 0),
   DEFUN3 (hash-table-count, 1, 0, 0),
   DEFUN3 (hash-table-rehash-size, 1, 0, 0),
+  DEFUN3 (hash-table-rehash-threshold, 1, 0, 0),
   DEFUN3 (hash-table-size, 1, 0, 0),
   DEFUN3 (hash-table-test, 1, 0, 0),
   DEFUN3 (sxhash, 1, 0, 0),
@@ -1048,6 +1049,7 @@ static symbols kwd[] =
   DEFKWD2 (key),
   DEFKWD2 (size),
   DEFKWD2 (rehash-size),
+  DEFKWD2 (rehash-threshold),
   DEFKWD2 (initial-element),
   DEFKWD2 (element-type),
   DEFKWD2 (initial-contents),
@@ -1482,6 +1484,7 @@ static symbols unint[] =
   MAKE_SYMBOL2Q (or-rational-float),
   MAKE_SYMBOL2Q (or-symbol-string),
   MAKE_SYMBOL2Q (or-string-stream),
+  MAKE_SYMBOL2Q (real-between-0-and-1),
 
   MAKE_SYMBOL2Q (temporary-string),
   MAKE_SYMBOL2 (minibuffer-message),
