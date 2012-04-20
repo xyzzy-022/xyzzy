@@ -111,6 +111,27 @@
      (setq csharp-preprocessor-offset nil)
      ,@body))
 
+(defmacro with-java-mode-bed (&body body)
+  `(with-temp-buffer
+     (java-mode)
+     (make-local-variable 'java-indent-level)
+     (setq java-indent-level 2)
+     (make-local-variable 'java-continued-statement-offset)
+     (setq java-continued-statement-offset 2)
+     (make-local-variable 'java-argdecl-indent)
+     (setq java-argdecl-indent 5)
+     (make-local-variable 'java-brace-offset)
+     (setq java-brace-offset 0)
+     (make-local-variable 'java-brace-imaginary-offset)
+     (setq java-brace-imaginary-offset 0)
+     (make-local-variable 'java-label-offset)
+     (setq java-label-offset -2)
+     (make-local-variable 'java-comment-indent)
+     (setq java-comment-indent 2)
+     (make-local-variable 'java-preprocessor-offset)
+     (setq java-preprocessor-offset nil)
+     ,@body))
+
 (defun c-indent-test (line)
   (insert line #\LFD)
   (previous-line)
@@ -582,13 +603,105 @@
   => 2
   => 4
   => 4
+  => 4
+  => 4
+  => 4
+  => 4
+  => 4
   => 2
+  => 4
+  => 4
+  => 4
+  => 6
+  => 4
+  => 4
   => 4
   => 4
   => 6
   => 4
   => 2
   => 0)
+
+(deftest c++/cli-attribute-indent-2 ()
+  (with-c++-mode-bed
+   (values
+    (c-indent-test "namespace Foo {")
+    (c-indent-test   "[Serializable]")
+    (c-indent-test   "class Foo {")
+    (c-indent-test     "[Bar]")
+    (c-indent-test     "int foo;")
+    (c-indent-test     "[Bar]")
+    (c-indent-test     "int foo;")))
+  => 0
+  => 2
+  => 2
+  => 4
+  => 4
+  => 4
+  => 4)
+
+
+(deftest java-annotation-indent-1 ()
+  (with-java-mode-bed
+   (values
+    (c-indent-test "@Serializable")
+    (c-indent-test "class Foo {")
+    (c-indent-test   "@Test")
+    (c-indent-test   "public int testFoo() {")
+    (c-indent-test     "// hoge")
+    (c-indent-test   "}")
+    (c-indent-test   "@Test()")
+    (c-indent-test   "public int testFoo() {")
+    (c-indent-test   "}")
+    (c-indent-test   "@Test({hoge = 1})")
+    (c-indent-test   "public int testFoo() {")
+    (c-indent-test   "}")))
+  => 0
+  => 0
+  => 2
+  => 2
+  => 4
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2)
+
+(deftest java-annotation-indent-2 ()
+  (with-java-mode-bed
+   (values
+    (c-indent-test "@Serializable")
+    (c-indent-test "class Foo {")
+    (c-indent-test   "@SuppressWarnings")
+    (c-indent-test   "@Test")
+    (c-indent-test   "public int testFoo() {")
+    (c-indent-test     "// hoge")
+    (c-indent-test   "}")
+    (c-indent-test   "@SuppressWarnings")
+    (c-indent-test   "@Test()")
+    (c-indent-test   "public int testFoo() {")
+    (c-indent-test   "}")
+    (c-indent-test   "@SuppressWarnings")
+    (c-indent-test   "@Test({hoge = 1})")
+    (c-indent-test   "public int testFoo() {")
+    (c-indent-test   "}")))
+  => 0
+  => 0
+  => 2
+  => 2
+  => 2
+  => 4
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2
+  => 2)
 
 
 (deftest detect-char-encoding-ascii ()
