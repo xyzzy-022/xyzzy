@@ -149,6 +149,7 @@
 (si::defun-builtin clrhash (hash-table))
 (si::defun-builtin hash-table-count (hash-table))
 (si::defun-builtin hash-table-rehash-size (hash-table))
+(si::defun-builtin hash-table-rehash-threshold (hash-table))
 (si::defun-builtin hash-table-size (hash-table))
 (si::defun-builtin hash-table-test (hash-table))
 (si::defun-builtin sxhash (object))

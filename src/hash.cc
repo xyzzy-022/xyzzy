@@ -2,6 +2,7 @@
 #include "ed.h"
 
 #define SXHASH_DEPTH 3
+#define MIN_REHASH_THRESHOLD 0.0625
 
 lhash_table *
 make_hash_table ()
@@ -242,7 +243,7 @@ hash_table_good_size (int size)
 }
 
 lhash_table *
-make_hash_table (hash_test_proc test, int size, int rehash_size)
+make_hash_table (hash_test_proc test, int size, int rehash_size, float rehash_threshold)
 {
   lhash_table *ht = make_hash_table ();
   size = hash_table_good_size (size);
@@ -251,6 +252,7 @@ make_hash_table (hash_test_proc test, int size, int rehash_size)
   ht->used = 0;
   ht->count = 0;
   ht->rehash_size = rehash_size;
+  ht->rehash_threshold = rehash_threshold;
   ht->test = test;
   return ht;
 }
@@ -277,7 +279,12 @@ Fmake_hash_table (lisp keys)
     }
   int size = find_keyword_int (Ksize, keys);
   int rehash_size = find_keyword_int (Krehash_size, keys, 1);
-  return make_hash_table (test, size, rehash_size);
+  float rehash_threshold = static_cast <float> (find_keyword_float (Krehash_threshold, keys, 0.8));
+  if (rehash_threshold < 0 || 1 < rehash_threshold)
+    FEtype_error (find_keyword (Krehash_threshold, keys), make_list (Qreal, make_fixnum(0), make_fixnum(1), 0));
+  if (rehash_threshold < MIN_REHASH_THRESHOLD)
+    rehash_threshold = MIN_REHASH_THRESHOLD;
+  return make_hash_table (test, size, rehash_size, rehash_threshold);
 }
 
 lisp
@@ -421,7 +428,8 @@ hash_table_rehash (lisp hash_table, int inc)
 
   lhash_table *new_hash_table = make_hash_table (xhash_table_test_fn (hash_table),
                                                  old_size + inc,
-                                                 xhash_table_rehash_size (hash_table));
+                                                 xhash_table_rehash_size (hash_table),
+                                                 xhash_table_rehash_threshold (hash_table));
   int new_size = xhash_table_size (new_hash_table);
   hash_entry *new_entry = xhash_table_entry (new_hash_table);
 
@@ -444,7 +452,7 @@ lisp
 Fsi_puthash (lisp key, lisp hash_table, lisp value)
 {
   check_hash_table (hash_table);
-  if (xhash_table_used (hash_table) > xhash_table_size (hash_table) * 8 / 10)
+  if (xhash_table_used (hash_table) >= xhash_table_size (hash_table) * xhash_table_rehash_threshold (hash_table))
     {
       int inc = xhash_table_rehash_size (hash_table);
       if (inc < xhash_table_size (hash_table) / 2)
@@ -475,6 +483,13 @@ Fhash_table_rehash_size (lisp hash_table)
 {
   check_hash_table (hash_table);
   return make_fixnum (xhash_table_rehash_size (hash_table));
+}
+
+lisp
+Fhash_table_rehash_threshold (lisp hash_table)
+{
+  check_hash_table (hash_table);
+  return make_single_float (xhash_table_rehash_threshold (hash_table));
 }
 
 lisp
