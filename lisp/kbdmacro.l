@@ -121,7 +121,7 @@
 (defun save-kbd-macro-to-file ()
   (interactive)
   (let ((filename (file-name-dialog :title "キーボードマクロを保存"
-				    :filter '(("Lispファイル(*.l)" . "*.l")
+				    :filter '(("Lispファイル(*.l;*.lisp)" . "*.l;*.lisp")
 					      ("すべてのファイル(*.*)" . "*.*")))))
     (when filename
       (with-open-file (s filename

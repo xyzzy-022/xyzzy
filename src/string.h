@@ -70,6 +70,7 @@ string_equal (lisp x, lisp y)
                     xstring_length (x)));
 }
 
+int string_equalp (const Char *, int, const char *, int);
 int string_equalp (const Char *, int, const Char *, int);
 
 inline int

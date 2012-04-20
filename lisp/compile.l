@@ -171,7 +171,9 @@
 (defun byte-recompile-directory-1 (dirname arg compile-fn)
   (long-operation
     (let ((count 0))
-      (dolist (src (directory (merge-pathnames "*.l" dirname) :absolute t))
+      (dolist (src (mapcan #'(lambda (ext)
+			       (directory (merge-pathnames ext dirname) :absolute t))
+			   '("*.l" "*.lisp")))
 	(let ((dst (compile-file-pathname src)))
 	  (when (if (file-exist-p dst)
 		    (file-newer-than-file-p src dst)

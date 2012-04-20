@@ -482,7 +482,7 @@
 
 (autoload 'lisp-build-summary-of-functions "lispfns" nil)
 (autoload 'lisp-maketags "lispfns" nil)
-(pushnew '(lisp-maketags "*.l") *maketags-list* :key #'car)
+(pushnew '(lisp-maketags "*.l" "*.lisp") *maketags-list* :key #'car)
 
 (defun lisp-tags-find-target ()
   (let* ((opoint (point))
