@@ -26596,6 +26596,39 @@ Quoted-Printableデコードします。
 </chapter>
 
 <chapter>
+<title>si:octet-length</title>
+<type>Function</type>
+<arguments>octet-length STRING &amp;key :encoding :start :end</arguments>
+<package>system</package>
+<description>
+指定したエンコーディングでエンコードした場合の文字列のバイトサイズを求めます。
+
+  STRING    : バイトサイズを求める文字列
+  :encoding : エンコーディング。デフォルトはエンコーディング変換なし
+  :start    : 開始位置。デフォルトは 0 で非負の整数
+  :end      : 終了位置。デフォルトは nil で、 nil の場合は文字列の長さを
+              指定した場合と等しい動作
+
+使用例：
+  (si:octet-length "abc")
+  =&gt; 3
+  (si:octet-length "abcあいう")
+  =&gt; 9
+  (si:octet-length "abcアイウ" :start 1 :end 5)
+  =&gt; 6
+  (si:octet-length "abcアイウ" :encoding *encoding-utf8n*)
+  =&gt; 12
+  (si:octet-length (convert-encoding-from-internal *encoding-utf8n* "abcアイウ"))
+  =&gt; 12
+
+補足：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>si:system-root</title>
 <type>Function</type>
 <arguments>system-root</arguments>

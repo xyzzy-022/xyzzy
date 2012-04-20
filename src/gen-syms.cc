@@ -814,6 +814,7 @@ static symbols sys[] =
   /* string.cc */
   SI_DEFUN3 (*set-char, 3, 0, 0),
   SI_DEFUN3 (*set-schar, 3, 0, 0),
+  SI_DEFUN3 (octet-length, 1, 0, FFneed_rest),
 
   /* hash.cc */
   SI_DEFUN3 (*puthash, 3, 0, 0),

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ed.h"
+#include "byte-stream.h"
 #include "sequence.h"
 #include "StrBuf.h"
 
@@ -1272,4 +1273,32 @@ Fdecode_escape_sequence (lisp string, lisp regexpp)
     }
 
   return mod ? sb.make_string () : string;
+}
+
+lisp
+Fsi_octet_length (lisp string, lisp keys)
+{
+  check_string (string);
+
+  int start, end;
+  string_start_end (string, start, end,
+                    find_keyword (Kstart, keys, make_fixnum (0)),
+                    find_keyword (Kend, keys, Qnil));
+  lisp encoding = find_keyword (Kencoding, keys);
+  if (encoding == Qnil)
+    return make_fixnum (w2sl (xstring_contents (string) + start, end - start));
+
+  check_char_encoding (encoding);
+  if (xchar_encoding_type (encoding) == encoding_auto_detect)
+    FEtype_error (encoding, Qchar_encoding);
+
+  if (start != 0 || end != xstring_length (string))
+    string = make_string (xstring_contents (string) + start, end - start);
+  xstream_iChar_helper is (string);
+  encoding_output_stream_helper s (encoding, is, eol_noconv);
+
+  int r = 0;
+  while (s->get () != xstream::eof)
+    r++;
+  return make_fixnum (r);
 }
