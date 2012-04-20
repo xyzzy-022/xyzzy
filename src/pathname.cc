@@ -905,6 +905,8 @@ Fcompile_file_pathname (lisp pathname)
         *b++ = '.';
       else if (Ffile_system_supports_long_file_name_p (pathname) == Qnil)
         b -= type_e - type;
+      else if (string_equalp (type, type_e - type, "lisp", 4))
+        b -= type_e - type;
       else
         *b++ = '.';
       *b++ = 'l';
@@ -916,7 +918,7 @@ Fcompile_file_pathname (lisp pathname)
 lisp
 Ffind_load_path (lisp filename)
 {
-  static const char *const ext[] = {".lc", ".l", "", 0};
+  static const char *const ext[] = {".lc", ".l", ".lisp", "", 0};
 
   check_string (filename);
   if (xstring_length (filename) >= WPATH_MAX)

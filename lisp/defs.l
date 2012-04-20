@@ -34,6 +34,7 @@
 			    ("\\.hpp$" . c++-mode)
 			    ("\\.inl$" . c++-mode)
 			    ("\\.l$" . lisp-mode)
+			    ("\\.lisp$" . lisp-mode)
 			    ("\\.txt$" . text-mode)
 			    ("\\.doc$" . text-mode)
 			    ("\\.log$" . text-mode)
@@ -82,7 +83,7 @@
 (defvar *file-dialog-filter*
   '(("テキストファイル(*.txt;*.doc;*.log)" . "*.txt;*.doc;*.log")
     ("C/C++(*.c;*.cpp;*.cxx;*.h)" . "*.c;*.cpp;*.cxx;*.cc;*.h;*.hxx")
-    ("Lisp(*.l)" . "*.l")
+    ("Lisp(*.l;*.lisp)" . "*.l;*.lisp")
     ("HTML(*.htm;*.html)" . "*.htm;*.html")
     ("すべてのファイル(*.*)" . "*.*")))
 

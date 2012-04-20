@@ -404,6 +404,17 @@ make_string_from_vector (lisp vector)
 }
 
 int
+string_equalp (const Char *p1, int l1, const char *p2, int l2)
+{
+  if (l1 != l2)
+    return 0;
+  for (const Char *pe = p1 + l1; p1 < pe; p1++, p2++)
+    if (char_upcase (*p1) != char_upcase (*p2))
+      return 0;
+  return 1;
+}
+
+int
 string_equalp (const Char *p1, int l1, const Char *p2, int l2)
 {
   if (l1 != l2)
