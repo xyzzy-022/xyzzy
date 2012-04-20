@@ -386,6 +386,38 @@
   => 2
   => 0)
 
+(deftest csharp-attribute-indent ()
+  (with-csharp-mode-bed
+    (values
+     (c-indent-test "namespace Foo {")
+     (c-indent-test   "[Serializable]")
+     (c-indent-test   "class Foo {")
+     (c-indent-test     "[Bar]")
+     (c-indent-test     "int foo;")
+     (c-indent-test     "[Bar]")
+     (c-indent-test     "int Bar { get; set; }")
+     (c-indent-test     "[Bar]")
+     (c-indent-test     "[Baz]")
+     (c-indent-test     "int foo() {")
+     (c-indent-test       "// baz")
+     (c-indent-test     "}")
+     (c-indent-test   "}")
+     (c-indent-test "}")))
+  => 0
+  => 2
+  => 2
+  => 4
+  => 4
+  => 4
+  => 4
+  => 4
+  => 4
+  => 4
+  => 6
+  => 4
+  => 2
+  => 0)
+
 
 (deftest c++-mode-enum-indent ()
   (with-c++-mode-bed
@@ -527,9 +559,20 @@
      (c-indent-test   "class Foo {")
      (c-indent-test     "[Bar]")
      (c-indent-test     "int foo;")
+     (c-indent-test     "[Bar]")
+     (c-indent-test     "int bar(){}")
+     (c-indent-test     "[Bar]")
+     (c-indent-test     "[Baz]")
+     (c-indent-test     "int baz(){}")
      (c-indent-test   "public:")
      (c-indent-test     "[Bar]")
-     (c-indent-test     "int foo() {")
+     (c-indent-test     "[Baz]")
+     (c-indent-test     "int foo2() {")
+     (c-indent-test       "// baz")
+     (c-indent-test     "}")
+     (c-indent-test     "[Bar]")
+     (c-indent-test     "[Baz]")
+     (c-indent-test     "int bar2() {")
      (c-indent-test       "// baz")
      (c-indent-test     "}")
      (c-indent-test   "}")
