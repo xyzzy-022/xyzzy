@@ -2872,6 +2872,21 @@ Buffer::c_check_extern_p (const Point &opoint) const
 }
 
 int
+Buffer::java_check_annotation_p (Point &point) const
+{
+  goto_bol (point);
+  return (forward_char (point, -1)
+          && !skip_white_backward (point, 0)
+          && (point.ch () == ')' ?
+              (!skip_sexp_backward (point)
+               && forward_char (point, -1))
+              : 1)
+          && !skip_sexp_backward (point)
+          && forward_char (point, -1)
+          && (point.ch () == '@'));
+}
+
+int
 Buffer::c_preprocessor_directive_p (const Point &opoint) const
 {
   Point point (opoint);
@@ -3322,6 +3337,15 @@ Fcalc_c_indent ()
               point = lbra;
               f = Csame;
             }
+        }
+    }
+  else if (f == Ccontinue && syntax_opt & (SYNTAX_OPT_JAVA))
+    {
+      Point p (wp->w_point);
+      if (bp->java_check_annotation_p (p))
+        {
+          point = p;
+          f = Csame;
         }
     }
 
