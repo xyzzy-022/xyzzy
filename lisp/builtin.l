@@ -620,6 +620,7 @@
 (si::defun-builtin performance-counter ())
 (si::defun-builtin *app-user-model-id ())
 (si::defun-builtin uuid-create (&key :sequential))
+(si::defun-builtin octet-length (string &key :encoding :start :end))
 
 (gc)
 
