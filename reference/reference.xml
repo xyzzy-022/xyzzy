@@ -14746,6 +14746,24 @@ xyzzyがエラーダイアログを出して処理を終了します。
 </chapter>
 
 <chapter>
+<title>hash-table-rehash-threshold</title>
+<type>Function</type>
+<arguments>hash-table-rehash-threshold HASH-TABLE</arguments>
+<package>lisp</package>
+<description>
+ハッシュテーブルの現在のrehash-thresholdを返します。
+
+  HASH-TABLE : ハッシュテーブルを指定します。
+
+補足：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>make-hash-table</seealso>
+<section>ハッシュ</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>hash-table-size</title>
 <type>Function</type>
 <arguments>hash-table-size HASH-TABLE</arguments>
@@ -17080,9 +17098,8 @@ OUTPUT-STREAM にエコーされます。
                  に、より大きい素数、または 2, 3, 5, 7 で割れないサイズ
                  にします。
   :rehash-threshold
-               : xyzzy では実装されていないようです。 (0.2.2.235 現在)
-                 その代わり、テーブルの使用率が 80% を超えるとテーブル
-                 を伸長します。
+               : ハッシュテーブルのテーブルサイズを増加させる使用率の目安。
+                 デフォルトでは使用率が 80% を超えるとテーブルを伸長します。
 
 とりうる素数は以下の通りです。
       17, 47, 101, 149, 199, 307, 401, 499, 599, 701, 797, 907, 997,
@@ -17109,13 +17126,20 @@ OUTPUT-STREAM にエコーされます。
   (hash-table-rehash-size hash)
   =&gt; 1
 
+  (hash-table-rehash-threshold hash)
+  =&gt; 0.8
+
   (hash-table-test hash)
   =&gt; eql
+
+備考：
+  :rehash-threshold パラメータの指定は xyzzy 0.2.2.238 から利用可能です。
 </description>
 <seealso>gethash</seealso>
 <seealso>hash-table-count</seealso>
 <seealso>hash-table-p</seealso>
 <seealso>hash-table-rehash-size</seealso>
+<seealso>hash-table-rehash-threshold</seealso>
 <seealso>hash-table-size</seealso>
 <seealso>hash-table-test</seealso>
 <seealso>remhash</seealso>

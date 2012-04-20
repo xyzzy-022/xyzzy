@@ -603,6 +603,7 @@ handler-case
 hash-table-count
 hash-table-p
 hash-table-rehash-size
+hash-table-rehash-threshold
 hash-table-size
 hash-table-test
 hide-command-bar
