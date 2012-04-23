@@ -3,7 +3,7 @@
 ;;; This file is part of xyzzy.
 ;;;
 
-(provide "fontset")
+(provide "font")
 
 (in-package "editor")
 
