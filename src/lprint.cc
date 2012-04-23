@@ -1240,7 +1240,23 @@ print_closure (wStream &stream, const print_control &pc, lisp object)
 static inline void
 print_hash_table (wStream &stream, const print_control &, lisp object)
 {
-  print_unreadable_object (stream, object, "hashtable");
+  char buf[32];
+  stream.add ("#<hashtable :test ");
+  hash_test_proc test = xhash_table_test_fn (object);
+  if (test == Feq)
+    stream.add ("eq ");
+  else if (test == Feql)
+    stream.add ("eql ");
+  else if (test == Fequal)
+    stream.add ("equal ");
+  else
+    stream.add ("equalp ");
+  stream.add (":size ");
+  stream.add (store_uint (buf + sizeof buf, xhash_table_count (object)));
+  stream.add ("/");
+  stream.add (store_uint (buf + sizeof buf, xhash_table_size (object)));
+  print_object_address (stream, object);
+  stream.add (">");
 }
 
 static void
