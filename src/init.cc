@@ -399,6 +399,11 @@ init_symbol_value_once ()
     xcons (Qor, xcons (Qstring, xcons (Qstream, Qnil)));
   xsymbol_value (Qreal_between_0_and_1) =
     make_list (Qreal, make_fixnum (0), make_fixnum (1), 0);
+  xsymbol_value (Qor_real_integer_1_star) =
+    make_list (Qor,
+               make_list (Qinteger, make_fixnum (1), Smultiply, 0),
+               make_list (Qfloat, make_single_float (1.0), Smultiply, 0),
+               0);
 
   xsymbol_value (Vread_default_float_format) = Qsingle_float;
 

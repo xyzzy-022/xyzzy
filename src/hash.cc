@@ -243,7 +243,7 @@ hash_table_good_size (int size)
 }
 
 lhash_table *
-make_hash_table (hash_test_proc test, int size, int rehash_size, float rehash_threshold)
+make_hash_table (hash_test_proc test, int size, lisp rehash_size, float rehash_threshold)
 {
   lhash_table *ht = make_hash_table ();
   size = hash_table_good_size (size);
@@ -277,14 +277,31 @@ Fmake_hash_table (lisp keys)
       if (!test)
         FEprogram_error (Einvalid_argument, xcons (Ktest, xcons (ltest, Qnil)));
     }
+
   int size = find_keyword_int (Ksize, keys);
-  int rehash_size = find_keyword_int (Krehash_size, keys, 1);
+  lisp lrehash_size = find_keyword (Krehash_size, keys, make_single_float (1.5));
+  if (fixnump (lrehash_size))
+    {
+      int rehash_size = fixnum_value (lrehash_size);
+      if (rehash_size < 1)
+        FEtype_error (lrehash_size, xsymbol_value (Qor_real_integer_1_star));
+    }
+  else if (floatp (lrehash_size))
+    {
+      double rehash_size = coerce_to_double_float (lrehash_size);
+      if (rehash_size < 1.0)
+        FEtype_error (lrehash_size, xsymbol_value (Qor_real_integer_1_star));
+    }
+  else
+    FEtype_error (lrehash_size, xsymbol_value (Qor_real_integer_1_star));
+
   float rehash_threshold = static_cast <float> (find_keyword_float (Krehash_threshold, keys, 0.8));
   if (rehash_threshold < 0 || 1 < rehash_threshold)
     FEtype_error (find_keyword (Krehash_threshold, keys), xsymbol_value (Qreal_between_0_and_1));
   if (rehash_threshold < MIN_REHASH_THRESHOLD)
     rehash_threshold = MIN_REHASH_THRESHOLD;
-  return make_hash_table (test, size, rehash_size, rehash_threshold);
+
+  return make_hash_table (test, size, lrehash_size, rehash_threshold);
 }
 
 lisp
@@ -454,7 +471,13 @@ Fsi_puthash (lisp key, lisp hash_table, lisp value)
   check_hash_table (hash_table);
   if (xhash_table_used (hash_table) >= xhash_table_size (hash_table) * xhash_table_rehash_threshold (hash_table))
     {
-      int inc = xhash_table_rehash_size (hash_table);
+      lisp rehash_size = xhash_table_rehash_size (hash_table);
+      int inc;
+      if (fixnump (rehash_size))
+        inc = fixnum_value (rehash_size);
+      else
+        inc = static_cast <int> (xhash_table_size (hash_table) * coerce_to_double_float (rehash_size)
+                                 - xhash_table_size (hash_table));
       if (inc < xhash_table_size (hash_table) / 2)
         inc = xhash_table_size (hash_table) / 2;
       hash_table_rehash (hash_table, inc);
@@ -482,7 +505,7 @@ lisp
 Fhash_table_rehash_size (lisp hash_table)
 {
   check_hash_table (hash_table);
-  return make_fixnum (xhash_table_rehash_size (hash_table));
+  return xhash_table_rehash_size (hash_table);
 }
 
 lisp
