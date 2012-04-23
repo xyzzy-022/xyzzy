@@ -14356,7 +14356,7 @@ Windowsフォルダへのパスを返します。
 
 使用例：
   (setq hash-table (make-hash-table))
-  =&gt; #&lt;hash table&gt;
+  =&gt; #&lt;hashtable :test eql :size 0/17 9900500&gt;
   (gethash 'a hash-table)
   =&gt; nil
   (setf (gethash 'a hash-table) 1)
@@ -17109,8 +17109,8 @@ OUTPUT-STREAM にエコーされます。
       10007, 19997, 29989, 39989, 49999, 59999, 70001, 79999, 90001, 99991
 
 使用例:
-  (setq hash (make-hash-table :size 3))
-  =&gt; #&lt;hashtable 51122492&gt;
+  (setq hash (make-hash-table :size 20))
+  =&gt; #&lt;hashtable :test eql :size 0/47 9900416&gt;
 
   (progn
     (setf (gethash #\C-0 hash) 0)
@@ -22175,7 +22175,7 @@ readable であるとは、具体的に言うと「文字、文字列、数値�
 
 使用例：
   (setq hash-table (make-hash-table))
-  =&gt; #&lt;hash table&gt;
+  =&gt; #&lt;hashtable :test eql :size 0/17 9900444&gt;
   (setf (gethash 'a hash-table) 1)
   =&gt; 1
   (remhash 'b hash-table)
