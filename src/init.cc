@@ -398,7 +398,7 @@ init_symbol_value_once ()
   xsymbol_value (Qor_string_stream) =
     xcons (Qor, xcons (Qstring, xcons (Qstream, Qnil)));
   xsymbol_value (Qreal_between_0_and_1) =
-    xcons (Qreal, xcons (make_fixnum(0), xcons (make_fixnum(1), Qnil)));
+    make_list (Qreal, make_fixnum (0), make_fixnum (1), 0);
 
   xsymbol_value (Vread_default_float_format) = Qsingle_float;
 
