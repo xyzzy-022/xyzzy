@@ -220,11 +220,17 @@ Buffer::read_file_contents (ReadFileContext &rfc, xread_stream &sin)
 static inline lisp
 detect_encoding (const mapf &mf)
 {
-  int size = fixnum_value (xsymbol_value (Vdetect_char_encoding_buffer_size));
+  long size;
+  if (!safe_fixnum_value (xsymbol_value (Vdetect_char_encoding_buffer_size), &size))
+    size = DEFAULT_DETECT_BUFFER_SIZE;
   if (size <= 0)
     size = DEFAULT_DETECT_BUFFER_SIZE;
-  return detect_char_encoding ((const char *)mf.base (),
-                               min ((int)mf.size (), size), mf.size ());
+  if (INT_MAX < size)
+    size = INT_MAX;
+
+  return detect_char_encoding (static_cast <const char *> (mf.base ()),
+                               min (static_cast <int> (mf.size ()), static_cast <int> (size)),
+                               mf.size ());
 }
 
 static eol_code
