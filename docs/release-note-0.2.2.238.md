@@ -49,7 +49,7 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     文字コードの判定方法および判定に利用するバッファサイズは以下の変数で指定できます。
 
     ```lisp
-    ;; デフォルト設定
+    ;; 文字コード判定処理のデフォルト設定
     (setq *detect-char-encoding-mode* :libguess)
     (setq *detect-char-encoding-buffer-size* #x40000)
     ```
@@ -102,6 +102,7 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     以下の設定で Ctrl +, Ctrl - でフォントサイズを変更できます。
 
     ```lisp
+    ;; Ctrl +, - でフォントサイズ変更
     (global-set-key #\C-+ 'increase-text-font-size)
     (global-set-key #\C-- 'decrease-text-font-size)
     ```
@@ -123,6 +124,7 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     [grep-mode] が有効になります。
 
     ```lisp
+    ;; grep-mode
     (require "grep-mode")
     (add-hook '*grep-hook* 'ed::grep-mode)
     (add-hook '*grepd-hook* 'ed::grep-mode)
@@ -148,6 +150,7 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     することが出来ます。
 
     ```lisp
+    ;; xyzzy 起動時に $XYZZY に移動
     (defun chdir-to-system-root ()
       (chdir (si:system-root)))
     (add-hook '*post-startup-hook* 'chdir-to-system-root)
@@ -158,8 +161,8 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     キーワードファイルの中から他のキーワードファイルを読み込む機能、
     および定義済みのキーワードを削除する機能を追加しました。
 
-    例えば etc/C# から LINQ のクエリ式のキーワードを削除して、
-    #region と #endregion の色を変えたい場合は以下のように設定します。
+    例えば etc/C# から LINQ のクエリ式のキーワードを削除して、#region と #endregion
+    の色を変えたい場合は以下のように設定します。
 
     まず、カスタマイズしたキーワードファイルを置く場所を
     `*keyword-load-path*` に設定します。
