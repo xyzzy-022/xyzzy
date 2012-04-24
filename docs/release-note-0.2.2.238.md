@@ -9,8 +9,9 @@ xyzzy リリースノート
 はじめに
 --------
 
-xyzzy 0.2.2.238 では主に文字コード周りの改善とフォントサイズの変更 API の追加、
-メジャーモードのインデント処理のバグ修正を行なっています。
+xyzzy 0.2.2.238 では主に文字コード自動判別周りの改善、
+メジャーモードのインデント処理のバグ修正、
+フォントサイズの変更 API の追加を行なっています。
 
 
 インストール
@@ -112,15 +113,15 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     この API は xyzzy 全体のフォントを指定するものです。
     バッファまたはウィンドウごとにフォントを指定する API は今後追加予定です。
 
-  * grep 前に実行されるフックを追加しました (x022235, #205)
+  * `grep` 前に実行されるフックを追加しました (x022235, #205)
 
     * `ed:*before-grep-hook*`
     * `ed:*before-grepd-hook*`
 
-    grep または grep-dialog 実行時に検索キーワード (or string regex) を
+    `grep` または `grep-dialog` 実行時に検索キーワード (string または regex) を
     引数に指定してこのフックを呼び出します。
 
-    例えば以下の設定をすることで grep 途中に Ctrl-g で停止しても
+    例えば以下の設定をすることで `grep` 途中に `Ctrl-g` で停止しても
     [grep-mode] が有効になります。
 
     ```lisp
@@ -260,7 +261,7 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     // ここでインデントすると「'else'が妙な場所にあります」というエラーになっていたのを修正
     ```
 
-  * c#-mode, c++-mode: 属性のインデントがおかしい (x022235, #226)
+  * c#-mode, c++-mode: 属性のインデントがおかしい問題を修正しました (x022235, #226)
 
     ```c#
     class AnimalTypeTestClass {
@@ -292,10 +293,10 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
 
     [Serializable]
     public ref class MyClass
-      : MyBase { // ここがインデントされるように修正
+      : MyBase {   // ここがインデントされるように修正
     private:
       [NonSerialized]
-      int m_nData; // ここがインデントされるように修正
+      int m_nData; // ここがインデントされないように修正
     };
     ```
 
@@ -305,10 +306,10 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     * `ed:c++-preprocessor-offset`
     * `ed:csharp-preprocessor-offset`
 
-    上記変数に `nil` を指定すると従来通りインデントはしません (デフォルト)。
-
     整数値を指定すると通常のインデント位置からのオフセットとして解釈します。
     0 の場合は通常のインデント位置と同じ場所にインデントします。
+
+    上記変数に `nil` を指定すると従来通りインデントはしません (デフォルト)。
 
     ```c
     int main() {
@@ -342,22 +343,22 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
   * ウィンドウ位置がディスプレイを 1px でも上にはみ出ると前回終了時の位置が復元されない
     問題を修正しました (x022235, #212)
 
-  * フォントサイズを大きくするとミニバッファがウィンドウサイズを越える問題を修正しました (x022235, #220)
+  * フォントサイズを大きくするとミニバッファのサイズがウィンドウサイズを越える問題を修正しました (x022235, #220)
 
   * フォントサイズを小さくしてもミニバッファのサイズが元に戻らない問題を修正しました (x022235, #218)
 
-  * 巨大なファイルの first-error が遅い問題を修正しました (x022235, #100)
+  * 巨大なファイルの `first-error` が遅い問題を修正しました (x022235, #100)
 
-  * C++ キーワードのタイポを修正しました (x022235, #187)
+  * C++ キーワードのタイポを修正しました (x022235, DeaR, #187)
 
 
-開発者向け機能追加
-------------------
+xyzzy Lisp 開発者向け機能追加
+-----------------------------
 
   * 拡張子 .lisp をサポートしました (x022235, #177)
 
     バイトコンパイルした場合は .lc ファイルが出来ます。
-    ロード順は .lc → .l → .lisp となります。
+    ロード順は .lc → .l → .lisp です。
 
   * hashtable の印字形式に情報を追加しました (x022235, #228)
 
@@ -391,6 +392,7 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
     ```
 
     デフォルトは 1.5 です。
+    また、1.5 より小さい値を指定した場合は 1.5 として扱います。
 
   * ハッシュテーブルの `:rehash-threshold` を指定できるようにしました (x022235, #55)
 
@@ -401,9 +403,55 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
 
     デフォルトは 0.8 です。
 
+    `:size`、`:rehash-threshold`、`:rehash-size` をデータの特性に合わせて
+    うまく指定することで rehash の回数を削減できます。
 
-開発者向けバグ修正
-------------------
+    ```lisp
+    (defun print-hash-table-rehash (&key rehash-threshold rehash-size)
+      (let* ((h (make-hash-table :rehash-threshold rehash-threshold
+                                 :rehash-size rehash-size))
+             (prev-size (hash-table-size h)))
+        (dotimes (i 10000)
+          (setf (gethash i h) i)
+          (let* ((size (hash-table-size h))
+                 (count (hash-table-count h))
+                 (prev-count (1- count)))
+            (when (/= prev-size size)
+              (format t "~5D/~5D (~5,2F) => ~5D/~5D (~5,2F): x ~4,2F~%"
+                      prev-count prev-size (/ prev-count prev-size)
+                      count size (/ count size)
+                      (/ size prev-size))
+              (setf prev-size size)
+              )))))
+    => print-hash-table-rehash
+
+    (print-hash-table-rehash :rehash-threshold 0.8 :rehash-size 1.5)
+       14/   17 ( 0.82) =>    15/   47 ( 0.32): x 2.76
+       38/   47 ( 0.81) =>    39/  101 ( 0.39): x 2.15
+       81/  101 ( 0.80) =>    82/  199 ( 0.41): x 1.97
+      160/  199 ( 0.80) =>   161/  307 ( 0.52): x 1.54
+      246/  307 ( 0.80) =>   247/  499 ( 0.49): x 1.63
+      400/  499 ( 0.80) =>   401/  797 ( 0.50): x 1.60
+      638/  797 ( 0.80) =>   639/ 1499 ( 0.43): x 1.88
+     1200/ 1499 ( 0.80) =>  1201/ 2999 ( 0.40): x 2.00
+     2400/ 2999 ( 0.80) =>  2401/ 4999 ( 0.48): x 1.67
+     4000/ 4999 ( 0.80) =>  4001/ 8009 ( 0.50): x 1.60
+     6408/ 8009 ( 0.80) =>  6409/19997 ( 0.32): x 2.50
+    => nil
+
+    (print-hash-table-rehash :rehash-threshold 1.0 :rehash-size 3.0)
+       17/   17 ( 1.00) =>    18/  101 ( 0.18): x 5.94
+      101/  101 ( 1.00) =>   102/  307 ( 0.33): x 3.04
+      307/  307 ( 1.00) =>   308/  997 ( 0.31): x 3.25
+      997/  997 ( 1.00) =>   998/ 2999 ( 0.33): x 3.01
+     2999/ 2999 ( 1.00) =>  3000/ 8999 ( 0.33): x 3.00
+     8999/ 8999 ( 1.00) =>  9000/29989 ( 0.30): x 3.33
+    => nil
+    ```
+
+
+xyzzy Lisp 開発者向けバグ修正
+-----------------------------
 
   * lisp-mode: Common Lisp 互換文字を補完できない問題を修正しました (x022235, #227)
 
@@ -450,7 +498,7 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
   * ole-for-each で ie.Document.all の IEnum を取得できない (#67)
   * ole-create-event-sink に TypeLib のファイル名を明示的に指定しないとエラーになる (#66)
   * 巨大な文字列に対する正規表現マッチがすごい遅い (#65)
-  * load 時の *readtable* がファイルローカルではない (#64)
+  * load 時の `*readtable*` がファイルローカルではない (#64)
   * setf の最適化に bug (#63)
   * handler-case で :no-error を指定してコンパイルするとエラー (#62)
   * labels の lambda-list 内の init-form で同じ labels 式で定義したローカル関数を呼び出してると、コンパイルで挙動が変わる (#61)
@@ -465,4 +513,3 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
   [libguess]: http://www.honeyplanet.jp/download.html#libguess
   [grep-mode]: http://nazoking.s31.xrea.com:8080/k/grep-mode.l
   [QuickTour - XyzzyWiki]: http://xyzzy.s53.xrea.com/wiki/index.php?QuickTour
-
