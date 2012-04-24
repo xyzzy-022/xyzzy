@@ -371,7 +371,11 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
 
     * `si:octet-length`
 
+    エンコーディングを指定して文字列のバイトサイズを求めることが出来ます。
+
     ```lisp
+    (si:octet-length "abcあいう")
+    => 9
     (si:octet-length "abcあいう" :encoding *encoding-utf8n*)
     => 12
     ```
