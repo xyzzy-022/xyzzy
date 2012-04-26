@@ -80,6 +80,16 @@ FontObject::create (const LOGFONT &lf)
 }
 
 void
+FontObject::get_metrics ()
+{
+  SIZE ex1, ex2;
+
+  HDC hdc = GetDC (0);
+  get_metrics (hdc, ex1, ex2);
+  ReleaseDC (0, hdc);
+}
+
+void
 FontObject::get_metrics (HDC hdc, SIZE &ex1, SIZE &ex2)
 {
   HGDIOBJ of = SelectObject (hdc, fo_hfont);

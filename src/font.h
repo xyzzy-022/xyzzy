@@ -19,8 +19,10 @@ public:
   int create (const LOGFONT &);
   int create (const char *, int, int);
   operator HFONT () const {return fo_hfont;}
+  const HFONT hfont () const {return fo_hfont;}
   int need_pad_p () const {return fo_need_pad;}
   void require_pad () {fo_need_pad = 1;}
+  void get_metrics ();
   void get_metrics (HDC, SIZE &, SIZE &);
   void calc_offset (const SIZE &);
   const SIZE &size () const {return fo_size;}
