@@ -3,19 +3,7 @@
 #include "ldialog.h"
 #include "ColorDialog.h"
 #include "conf.h"
-
-static int
-get_font_height (HWND hwnd)
-{
-  HFONT hfont = HFONT (SendMessage (hwnd, WM_GETFONT, 0, 0));
-  HDC hdc = GetDC (hwnd);
-  HGDIOBJ ofont = SelectObject (hdc, hfont);
-  TEXTMETRIC tm;
-  GetTextMetrics (hdc, &tm);
-  SelectObject (hdc, ofont);
-  ReleaseDC (hwnd, hdc);
-  return tm.tmHeight;
-}
+#include "font.h"
 
 static void
 paint_color_list (DRAWITEMSTRUCT *dis, const char *string, COLORREF color)

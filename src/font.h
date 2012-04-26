@@ -154,4 +154,6 @@ public:
     }
 };
 
+int get_font_height (HWND hwnd);
+
 #endif /* _font_h_ */

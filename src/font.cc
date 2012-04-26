@@ -528,3 +528,16 @@ Fset_text_fontset (lisp lfontset)
 
   return Qt;
 }
+
+int
+get_font_height (HWND hwnd)
+{
+  HFONT hfont = HFONT (SendMessage (hwnd, WM_GETFONT, 0, 0));
+  HDC hdc = GetDC (hwnd);
+  HGDIOBJ ofont = SelectObject (hdc, hfont);
+  TEXTMETRIC tm;
+  GetTextMetrics (hdc, &tm);
+  SelectObject (hdc, ofont);
+  ReleaseDC (hwnd, hdc);
+  return tm.tmHeight;
+}

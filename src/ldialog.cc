@@ -1195,14 +1195,7 @@ Dialog::measure_item (HWND hwnd, MEASUREITEMSTRUCT *mis)
     case ODT_COMBOBOX:
     case ODT_LISTBOX:
       {
-        HFONT hfont = HFONT (SendMessage (hwnd, WM_GETFONT, 0, 0));
-        HDC hdc = GetDC (hwnd);
-        HGDIOBJ ofont = SelectObject (hdc, hfont);
-        TEXTMETRIC tm;
-        GetTextMetrics (hdc, &tm);
-        SelectObject (hdc, ofont);
-        ReleaseDC (hwnd, hdc);
-        mis->itemHeight = tm.tmHeight;
+        mis->itemHeight = get_font_height (hwnd);
         return 1;
       }
 
