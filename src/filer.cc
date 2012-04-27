@@ -3211,3 +3211,35 @@ Ffiler_viewer ()
   Filer::current_filer ()->show_viewer ();
   return Qt;
 }
+
+lisp
+Fget_filer_font ()
+{
+  if (!filer_font.hfont ())
+    return Qnil;
+
+  LOGFONT lf = filer_font.logfont ();
+  int size = lf.lfHeight;
+  BOOL size_pixel_p = app.text_font.size_pixel_p ();
+  if (!size_pixel_p)
+    size = FontObject::pixel_to_point (size);
+
+  return make_list (Kface, make_string (lf.lfFaceName),
+                    Ksize, make_fixnum (size),
+                    Ksize_pixel_p, boole (size_pixel_p),
+                    0);
+}
+
+lisp
+Fset_filer_font (lisp keys)
+{
+  LOGFONT lf = filer_font.logfont ();
+  lf.lfCharSet = SHIFTJIS_CHARSET;
+  if (!FontObject::update (lf, keys, false))
+    return Qnil;
+
+  filer_font.create (lf);
+  filer_font.get_metrics ();
+
+  return Qt;
+}
