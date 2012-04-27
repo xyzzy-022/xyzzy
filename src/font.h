@@ -29,6 +29,7 @@ public:
   const POINT &offset () const {return fo_offset;}
   int ascent () const {return fo_ascent;}
   const LOGFONT &logfont () const {return fo_logfont;}
+  static const bool update (LOGFONT &lf, const lisp keys, const bool recommend_size_p);
   static const int dpi ()
     {
       HDC hdc = GetDC (0);
