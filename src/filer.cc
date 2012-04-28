@@ -2,6 +2,7 @@
 #include "ed.h"
 #include "environ.h"
 #include "conf.h"
+#include "font.h"
 #include "filer.h"
 #include "colors.h"
 #include "ctxmenu.h"
@@ -10,6 +11,8 @@
 #ifndef SHGFI_OVERLAYINDEX
 #define SHGFI_OVERLAYINDEX 0x000000040
 #endif
+
+static FontObject filer_font;
 
 ///////////////////////////////////////////////////////////////
 // FilerView
@@ -71,6 +74,30 @@ FilerView::~FilerView ()
     free (fv_icon_path);
   if (fv_hevent)
     CloseHandle (fv_hevent);
+}
+
+void
+FilerView::measure_item (MEASUREITEMSTRUCT *mis) const
+{
+  mis->itemHeight = get_font_height (fv_hwnd) + 5;
+}
+
+void
+FilerView::set_font () const
+{
+  if (!filer_font.hfont ())
+    {
+      LOGFONT lf;
+      if (read_conf (cfgFont, cfgFiler, lf))
+        {
+          lf.lfCharSet = SHIFTJIS_CHARSET;
+          filer_font.create (lf);
+          filer_font.get_metrics ();
+        }
+    }
+
+  if (filer_font.hfont ())
+    SendMessage (fv_hwnd, WM_SETFONT, WPARAM (filer_font.hfont ()), 1);
 }
 
 void
@@ -366,6 +393,7 @@ FilerView::init_view (HWND hwnd, HWND hwnd_mask, HWND hwnd_marks,
                   fv_sort))
     fv_sort = 0;
 
+  set_font ();
   ListView_SetExStyle (fv_hwnd, LVS_EXREPORTEX | LVS_EXTENDKBD | LVS_PROCESSKEY);
   ListView_SetSortMark (fv_hwnd,
                         (fv_sort & SORT_MASK) == SORT_EXT ? -1 : fv_sort & SORT_MASK,
@@ -388,13 +416,12 @@ FilerView::init_view (HWND hwnd, HWND hwnd_mask, HWND hwnd_marks,
   else
     {
       SHFILEINFO fi;
+      int flags = (SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES
+                   | (filer_font.size ().cy >= 32 ? SHGFI_LARGEICON : SHGFI_SMALLICON));
       HIMAGELIST hil =
-        HIMAGELIST (SHGetFileInfo ("", 0, &fi, sizeof fi,
-                                   (SHGFI_SYSICONINDEX | SHGFI_SMALLICON
-                                    | SHGFI_USEFILEATTRIBUTES)));
+        HIMAGELIST (SHGetFileInfo ("", 0, &fi, sizeof fi, flags));
       fv_regular_file_index = fi.iIcon;
-      if (SHGetFileInfo ("", FILE_ATTRIBUTE_DIRECTORY, &fi, sizeof fi,
-                         SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES))
+      if (SHGetFileInfo ("", FILE_ATTRIBUTE_DIRECTORY, &fi, sizeof fi, flags))
         fv_directory_index = fi.iIcon;
       ListView_SetImageList (fv_hwnd, hil, LVSIL_SMALL);
       hil = ImageList_LoadBitmap (app.hinst,
@@ -1364,7 +1391,8 @@ FilerView::thread_main ()
 
           SHFILEINFO fi;
           if (!SHGetFileInfo (path, attr, &fi, sizeof fi,
-                              SHGFI_ICON | SHGFI_SMALLICON | SHGFI_OVERLAYINDEX))
+                              (SHGFI_ICON | SHGFI_OVERLAYINDEX
+                               | ((filer_font.size ().cy >= 32 ? SHGFI_LARGEICON : SHGFI_SMALLICON)))))
             continue;
 
           DestroyIcon (fi.hIcon);
@@ -2268,9 +2296,22 @@ Filer::WndProc (UINT msg, WPARAM wparam, LPARAM lparam)
       return 1;
 
     case WM_INITMENUPOPUP:
+      if (f_ctx_menu2)
+        return f_ctx_menu2->HandleMenuMsg (msg, wparam, lparam) == NOERROR;
+      return 0;
+
     case WM_MEASUREITEM:
       if (f_ctx_menu2)
         return f_ctx_menu2->HandleMenuMsg (msg, wparam, lparam) == NOERROR;
+      switch (wparam)
+        {
+        case IDC_LIST1:
+          f_fv1.measure_item ((MEASUREITEMSTRUCT *)lparam);
+          return 1;
+        case IDC_LIST2:
+          f_fv2.measure_item ((MEASUREITEMSTRUCT *)lparam);
+          return 1;
+        }
       return 0;
 
     case WM_DRAWITEM:
@@ -3168,5 +3209,37 @@ lisp
 Ffiler_viewer ()
 {
   Filer::current_filer ()->show_viewer ();
+  return Qt;
+}
+
+lisp
+Fget_filer_font ()
+{
+  if (!filer_font.hfont ())
+    return Qnil;
+
+  LOGFONT lf = filer_font.logfont ();
+  int size = lf.lfHeight;
+  BOOL size_pixel_p = app.text_font.size_pixel_p ();
+  if (!size_pixel_p)
+    size = FontObject::pixel_to_point (size);
+
+  return make_list (Kface, make_string (lf.lfFaceName),
+                    Ksize, make_fixnum (size),
+                    Ksize_pixel_p, boole (size_pixel_p),
+                    0);
+}
+
+lisp
+Fset_filer_font (lisp keys)
+{
+  LOGFONT lf = filer_font.logfont ();
+  lf.lfCharSet = SHIFTJIS_CHARSET;
+  if (!FontObject::update (lf, keys, false))
+    return Qnil;
+
+  filer_font.create (lf);
+  filer_font.get_metrics ();
+
   return Qt;
 }

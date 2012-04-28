@@ -307,7 +307,7 @@ listview_draw_item (UINT id, DRAWITEMSTRUCT *dis)
         {
           HBRUSH hbr = CreateSolidBrush (data->textbkcolor);
           HGDIOBJ o = SelectObject (hdc, hbr);
-          PatBlt (hdc, r.left, r.top + cy, cx, r.bottom - r.top - cy, PATCOPY);
+          PatBlt (hdc, r.left, r.top, r.right - r.left, r.bottom - r.top, PATCOPY);
           SelectObject (hdc, o);
           DeleteObject (hbr);
         }
@@ -337,7 +337,8 @@ listview_draw_item (UINT id, DRAWITEMSTRUCT *dis)
           fg = data->highlight_color;
           flags |= ILD_BLEND50;
         }
-      ImageList_DrawEx (hil, index, hdc, r.left, r.top, 0, 0,
+      int top = r.top + ((r.bottom - r.top) / 2) - (cy / 2);
+      ImageList_DrawEx (hil, index, hdc, r.left, top, 0, 0,
                         bg, fg, flags);
     }
 

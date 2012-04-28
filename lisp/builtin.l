@@ -659,6 +659,8 @@
 (si::defun-builtin buffer-lines (&optional buffer))
 (si::defun-builtin get-text-fontset ())
 (si::defun-builtin set-text-fontset (fontset))
+(si::defun-builtin get-filer-font ())
+(si::defun-builtin set-filer-font (&key face size size-pixel-p))
 (si::defun-builtin create-new-buffer (name))
 (si::defun-builtin selected-buffer ())
 (si::defun-builtin deleted-buffer-p (buffer))

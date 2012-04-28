@@ -25541,6 +25541,63 @@ FONTSETで指定したフォントの設定を更新します。
 </chapter>
 
 <chapter>
+<title>get-filer-font</title>
+<type>Function</type>
+<arguments>get-filer-font</arguments>
+<package>editor</package>
+<description>
+ファイラのフォント設定を取得します。
+フォントを設定していない場合は nil を返します。
+
+使用例：
+  (get-filer-font)
+  =&gt; nil
+
+  (set-filer-font :face "メイリオ" :size 12 :size-pixel-p nil)
+  =&gt; t
+
+  (get-filer-font)
+  =&gt; (:face "メイリオ" :size 12 :size-pixel-p nil)
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>set-filer-font</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>set-filer-font</title>
+<type>Function</type>
+<arguments>set-filer-font &amp; :face :size :size-pixel-p</arguments>
+<package>editor</package>
+<description>
+ファイラのフォントを設定します。
+設定を変更した場合は t が、変更点がなかった場合は nil を返します。
+
+  :face         : フォント名を指定します。
+  :size         : フォントサイズを指定します。
+  :size-pixel-p : フォントサイズがピクセル単位なら t を指定します。
+
+使用例：
+  (set-filer-font :face "メイリオ" :size 12)
+  =&gt; t
+
+  (set-filer-font :face "メイリオ")
+  =&gt; nil
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>get-filer-font</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>set-window-configuration</title>
 <type>Function</type>
 <arguments>set-window-configuration CONF</arguments>
