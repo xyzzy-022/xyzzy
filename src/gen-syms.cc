@@ -34,6 +34,7 @@ struct symbols
 #define DEFSF3(name) DEFSF (name, CAT (F, name), CAT (S, name))
 #define DEFSF3Q(name) DEFSF (name, CAT (F, name), CAT (Q, name))
 #define SI_DEFSF3(name) DEFSF (name, CAT (Fsi_, name), CAT (Ssi_, name))
+#define CL_DEFSF3(name) DEFSF (name, CAT (Fcl_, name), CAT (Ssi_, name))
 
 #define DEFMACRO(a, b, c) DEF (a, b, c, 2, 0, FFspecial_form | FFmacro, 0)
 #define DEFMACRO3(name) DEFMACRO (name, CAT (F, name), CAT (S, name))
@@ -54,6 +55,10 @@ struct symbols
   DEFX (lname, CAT (Fsi_, cname), CAT (Ssi_, cname), req, opt, f, 0)
 #define SI_DEFUN3(name, req, opt, f) \
   DEFUN (name, CAT (Fsi_, name), CAT (Ssi_, name), req, opt, f)
+#define CL_DEFUN2X(lname, cname, req, opt, f) \
+  DEFX (lname, CAT (Fcl_, cname), CAT (Scl_, cname), req, opt, f, 0)
+#define CL_DEFUN3(name, req, opt, f) \
+  DEFUN (name, CAT (Fcl_, name), CAT (Scl_, name), req, opt, f)
 
 #define DEFCMD(a, b, c, d, e, f, g) DEF (a, b, c, d, e, f, g)
 #define DEFCMD2(lname, cname, req, opt, f, g) \
@@ -70,6 +75,7 @@ struct symbols
 #define DEFVAR(a, b) VDEF (a, b, SFspecial)
 #define DEFVAR2(name) DEFVAR (name, CAT (V, name))
 #define SI_DEFVAR2(name) DEFVAR (name, CAT (Vsi_, name))
+#define CL_DEFVAR2(name) DEFVAR (name, CAT (Vcl_, name))
 #define DEFLAMBDAKEY(a, b) VDEF (a, b, SFconstant | SFlambda_key)
 #define MAKE_SYMBOL(a, b) VDEF (a, b, 0)
 #define MAKE_SYMBOL2(name) MAKE_SYMBOL (name, CAT (V, name))
@@ -77,6 +83,7 @@ struct symbols
 #define MAKE_SYMBOL2QC(name) MAKE_SYMBOL (name, CAT (QC, name))
 #define MAKE_SYMBOL2F(name, f) VDEF (name, CAT (V, name), f)
 #define SI_MAKE_SYMBOL2(name) MAKE_SYMBOL (name, CAT (Vsi_, name))
+#define CL_MAKE_SYMBOL2(name) MAKE_SYMBOL (name, CAT (Vcl_, name))
 
 #define DEFCONDITION(a, b, c, d) {0, 0, "Q" STR (a), 0, 0, 0}
 
@@ -756,6 +763,11 @@ static symbols lsp[] =
   MAKE_SYMBOL2Q (warning),
   MAKE_SYMBOL2Q (simple-warning),
   MAKE_SYMBOL2Q (socket-error),
+};
+
+static symbols cl[] =
+{
+  CL_MAKE_SYMBOL2 (*dummy*), // TODO remove
 };
 
 static symbols sys[] =
@@ -1456,6 +1468,8 @@ static symbols unint[] =
   MAKE_SYMBOL2 (*system-package),
   MAKE_SYMBOL2 (*keyword-package),
   MAKE_SYMBOL2 (*editor-package),
+  MAKE_SYMBOL2 (*common-lisp-package),
+  MAKE_SYMBOL2 (*common-lisp-user-package),
   MAKE_SYMBOL2 (default-random-state),
   MAKE_SYMBOL2 (default-syntax-table),
 
@@ -2816,6 +2830,7 @@ static void
 do_all (void (*fn)(symbols *, int, const char *))
 {
   fn (lsp, numberof (lsp), "lsp");
+  fn (cl, numberof (cl), "cl");
   fn (sys, numberof (sys), "sys");
   fn (kwd, numberof (kwd), "kwd");
   fn (ed, numberof (ed), "ed");
