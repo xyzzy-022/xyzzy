@@ -767,7 +767,8 @@ static symbols lsp[] =
 
 static symbols cl[] =
 {
-  CL_MAKE_SYMBOL2 (*dummy*), // TODO remove
+  /* lprint.cc */
+  CL_DEFUN3 (format, 2, 0, FFneed_rest),
 };
 
 static symbols sys[] =

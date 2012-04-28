@@ -1821,6 +1821,7 @@ class Format
   lisp *args;
   int nargs;
   int index;
+  bool backward_compat_p;
 
   enum {IL_ILLEGAL, IL_EXIT, IL_NOT_EXIT};
   int in_loop;
@@ -1867,13 +1868,13 @@ class Format
 
   Char colon_atsign (Char);
   Char prefix_parameters ();
-  Format (const Char *, int, int);
+  Format (const Char *, int, int, bool);
   void setarg (lisp *, lisp);
   void process (wStream &);
 
   friend class SaveCtlString;
-  friend void format_internal (wStream &, const Char *, int, lisp, int);
-  friend lisp Fformat (lisp, lisp, lisp);
+  friend void format_internal (wStream &, const Char *, int, lisp, int, bool);
+  friend lisp format (lisp, lisp, lisp, bool);
 };
 
 class SaveCtlString
@@ -1911,7 +1912,8 @@ SaveCtlString::~SaveCtlString ()
   fmt.ctle = ctle;
 }
 
-Format::Format (const Char *p, int size, int il)
+Format::Format (const Char *p, int size, int il, bool backward_compat_p)
+     : backward_compat_p (backward_compat_p)
 {
   ctl = p;
   ctle = p + size;
@@ -2084,7 +2086,7 @@ Format::s_exp (wStream &stream, Char c)
   else
     ncol = minpad;
 
-  if (stringp (x))
+  if (backward_compat_p && stringp (x))
     atsign = !atsign;
   if (!atsign)
     {
@@ -2925,7 +2927,7 @@ Format::indirection (wStream &stream)
     {
       if (!atsign)
         format_internal (stream, xstring_contents (string), xstring_length (string),
-                         getarg (), IL_ILLEGAL);
+                         getarg (), IL_ILLEGAL, backward_compat_p);
       else
         {
           SaveCtlString x (*this, xstring_contents (string), xstring_length (string));
@@ -3190,7 +3192,8 @@ Format::iteration (wStream &stream)
           try
             {
               lisp x = getarg ();
-              format_internal (stream, p, pe - p, x, args_left () ? IL_NOT_EXIT : IL_EXIT);
+              format_internal (stream, p, pe - p, x, args_left () ? IL_NOT_EXIT : IL_EXIT,
+                               backward_compat_p);
             }
           catch (UpAndOut e)
             {
@@ -3212,7 +3215,8 @@ Format::iteration (wStream &stream)
           try
             {
               format_internal (stream, p, pe - p, xcar (args),
-                               consp (xcdr (args)) ? IL_NOT_EXIT : IL_EXIT);
+                               consp (xcdr (args)) ? IL_NOT_EXIT : IL_EXIT,
+                               backward_compat_p);
             }
           catch (UpAndOut e)
             {
@@ -3251,7 +3255,7 @@ Format::iteration (wStream &stream)
       lisp l = Flist_length (args);
       if (l == Qnil)
         error (Eargument_is_circle);
-      Format f (p, pe - p, IL_ILLEGAL);
+      Format f (p, pe - p, IL_ILLEGAL, backward_compat_p);
       lisp *v = (lisp *)alloca (sizeof (lisp) * fixnum_value (l));
       f.setarg (v, args);
       if (once_at_least)
@@ -3642,19 +3646,19 @@ Fwrite_to_string (lisp object, lisp keys)
 }
 
 void
-format_internal (wStream &stream, const Char *p, int size, lisp args, int in_loop)
+format_internal (wStream &stream, const Char *p, int size, lisp args, int in_loop, bool backward_compat_p)
 {
   lisp l = Flist_length (args);
   if (l == Qnil)
     FEprogram_error (Eargument_is_circle);
-  Format f (p, size, in_loop);
+  Format f (p, size, in_loop, backward_compat_p);
   lisp *v = (lisp *)alloca (sizeof (lisp) * fixnum_value (l));
   f.setarg (v, args);
   f.process (stream);
 }
 
-lisp
-Fformat (lisp dest, lisp string, lisp args)
+inline lisp
+format (lisp dest, lisp string, lisp args, bool backward_compat_p)
 {
   check_string (string);
   if (dest == Qt)
@@ -3669,7 +3673,7 @@ Fformat (lisp dest, lisp string, lisp args)
         {
           format_internal (stream, xstring_contents (string),
                            xstring_length (string), args,
-                           Format::IL_ILLEGAL);
+                           Format::IL_ILLEGAL, backward_compat_p);
         }
       catch (UpAndOut)
         {
@@ -3684,13 +3688,25 @@ Fformat (lisp dest, lisp string, lisp args)
         {
           format_internal (stream, xstring_contents (string),
                            xstring_length (string), args,
-                           Format::IL_ILLEGAL);
+                           Format::IL_ILLEGAL, backward_compat_p);
         }
       catch (UpAndOut)
         {
         }
     }
   return Qnil;
+}
+
+lisp
+Fcl_format (lisp dest, lisp string, lisp args)
+{
+  return format (dest, string, args, false);
+}
+
+lisp
+Fformat (lisp dest, lisp string, lisp args)
+{
+  return format (dest, string, args, true);
 }
 
 void
