@@ -2086,7 +2086,7 @@ Format::s_exp (wStream &stream, Char c)
   else
     ncol = minpad;
 
-  if (stringp (x))
+  if (backward_compat_p && stringp (x))
     atsign = !atsign;
   if (!atsign)
     {
