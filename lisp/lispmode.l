@@ -7,8 +7,8 @@
 
 (in-package "editor")
 
-(export '(*lisp-mode-hook* *lisp-interaction-mode-hook* *lisp-indent-offset* 
-	  *lisp-body-indention* *lisp-body-indent* lisp-complete-symbol
+(export '(*lisp-mode-hook* *lisp-interaction-mode-hook* *lisp-interaction-mode-package*
+	  *lisp-indent-offset* *lisp-body-indention* *lisp-body-indent* lisp-complete-symbol
 	  lisp-indent-hook lisp-paren-imaginary-offset
 	  lisp-indent-line lisp-newline-and-indent
 	  indent-region indent-sexp eval-region eval-buffer eval-last-sexp
@@ -21,6 +21,7 @@
 (defvar *lisp-mode-hook* nil)
 (defvar *lisp-popup-completion-list* nil)
 (defvar *lisp-interaction-mode-hook* nil)
+(defvar *lisp-interaction-mode-package* nil)
 (defvar *lisp-indent-offset* nil)
 (defvar *lisp-body-indention* 2)
 (defvar *lisp-body-indent* 2)
@@ -337,7 +338,10 @@
       (rotatef from to))
     (let ((s (make-buffer-stream (selected-buffer) from to)))
       (handler-case
-	  (let ((*package* *package*))
+	  (let ((*package* (or (when (and (eq buffer-mode 'lisp-interaction-mode)
+					  *lisp-interaction-mode-package*)
+				 (lisp::coerce-to-package *lisp-interaction-mode-package*))
+			       *package*)))
 	    (while (< (buffer-stream-point s) to)
 	      (let ((form (read s nil '#1=#:eof)))
 		(when (eq form '#1#)

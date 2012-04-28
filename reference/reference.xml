@@ -11427,8 +11427,12 @@ call-processとは違って標準出力をバッファに出力します。出�
   ┌lisp───┐←─┘  └─────┘        ┌user───┐
   │          │←────────────┬─┤          │
   └─────┘←─┐  ┌editor──┐    │  └─────┘
-                    └─┤          │←─┘
-                        └─────┘
+        ↑          └─┤          │←─┘
+        │              └─────┘←─┐
+  ┌common-lisp ┐                        │  ┌common-lisp-user┐
+  │            │←───────────┴─┤                │
+  └──────┘                            └────────┘
+
 
 上の図はどのパッケージをuse-pakcageしているかを示しています。
 パッケージがuseする他のパッケージはpackage-use-listを使って確認すること
@@ -11450,6 +11454,10 @@ use-packageしていないので修飾子が必要です。
     ;;; エクスポートされ、別のパッケージから参照できるようになる。
     (export '(aset file-name-directory file-name-nondirectory
           file-name-sans-versions))
+
+備考：
+  common-lisp パッケージと common-lisp-user パッケージは
+  xyzzy 0.2.2.239 から利用可能です。
 </description>
 <seealso>パッケージ</seealso>
 <seealso>use-package</seealso>
@@ -16127,7 +16135,12 @@ xyzzy内に存在するパッケージ一覧をリストで返します。
   (list-all-packages)
   =&gt;  (#&lt;package: win-user&gt; #&lt;package: winapi&gt; #&lt;package: 
      foreign&gt;  #&lt;package: lisp&gt; #&lt;package: system&gt; #&lt;package: 
-     keyword&gt; #&lt;package: user&gt; #&lt;package: editor&gt;)
+     keyword&gt; #&lt;package: user&gt; #&lt;package: editor&gt;
+     #&lt;package: common-lisp&gt; #&lt;package: common-lisp-user&gt;)
+
+備考：
+  common-lisp パッケージと common-lisp-user パッケージは
+  xyzzy 0.2.2.239 から利用可能です。
 </description>
 <seealso>defpackage</seealso>
 <seealso>パッケージ</seealso>
@@ -33156,6 +33169,32 @@ lisp-complete-symbol 時の補完候補をポップアップ表示するかを�
 <seealso>lisp-complete-symbol</seealso>
 <seealso>*popup-completion-list-default*</seealso>
 <link></link>
+<section>変数と定数</section>
+<file>lispmode.l</file>
+</chapter>
+
+<chapter>
+<title>*lisp-interaction-mode-package*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>lisp</package>
+<description>
+lisp-interaction-modeで評価するパッケージを保持しています。
+デフォルトは:userパッケージで評価します。
+
+使用例：
+  *package*
+  =&gt; #&lt;package: user&gt;
+
+  (setq *lisp-interaction-mode-package* :cl-user)
+  =&gt; :cl-user
+
+  *package*
+  =&gt; #&lt;package: common-lisp-user&gt;
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
 <section>変数と定数</section>
 <file>lispmode.l</file>
 </chapter>
