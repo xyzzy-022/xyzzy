@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "ed.h"
-#include <imm.h>
-#include <process.h>
 #include "appid.h"
 #include "ctl3d.h"
 #include "environ.h"

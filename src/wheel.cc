@@ -1,5 +1,4 @@
-#include <windows.h>
-#include <limits.h>
+#include "stdafx.h"
 #include "ed.h"
 #include "wheel.h"
 

@@ -23,6 +23,7 @@
  * documentation and/or software.
  */
 
+#include "stdafx.h"
 #include "cdecl.h"
 #include "md5.h"
 

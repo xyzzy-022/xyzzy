@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "cdecl.h"
 
 u_int

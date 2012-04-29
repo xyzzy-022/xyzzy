@@ -1,7 +1,6 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "StrBuf.h"
-#include <float.h>
-#include <errno.h>
 
 class Token: public StrBuf
 {

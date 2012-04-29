@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "conf.h"
 
@@ -12,6 +13,19 @@ const UINT FontSet::fs_lang_id[] =
   IDS_LANG_CN_TRADITIONAL,
   IDS_LANG_KSC5601,
   IDS_LANG_GEORGIAN,
+};
+
+const lisp *const FontSet::fs_lang_key[] =
+{
+  &Kascii,
+  &Kjapanese,
+  &Klatin,
+  &Kcyrillic,
+  &Kgreek,
+  &Kcn_simplified,
+  &Kcn_traditional,
+  &Kksc5601,
+  &Kgeorgian,
 };
 
 const char *const FontSet::fs_regent[] =
@@ -406,3 +420,111 @@ FontSet::init ()
   create (param);
 }
 
+lisp
+FontSet::make_alist () const
+{
+  lisp r = Qnil;
+  for (int i = 0; i < FONT_MAX; i++)
+    {
+      LOGFONT lf = font (i).logfont ();
+      int size = lf.lfHeight;
+      if (!size_pixel_p ())
+        size = FontObject::pixel_to_point (size);
+      r = xcons (make_list (FontSet::lang_key (i),
+                            Kface, make_string (lf.lfFaceName),
+                            Ksize, make_fixnum (size),
+                            Ksize_pixel_p, boole (size_pixel_p ()),
+                            0),
+                 r);
+    }
+
+  return Fnreverse (r);
+}
+
+const bool
+FontSet::update (FontSetParam &param, const lisp lfontset) const
+{
+  // Initialize FontSetParam by current setting.
+  param.fs_use_backsl = use_backsl_p ();
+  param.fs_line_spacing = line_spacing ();
+  param.fs_recommend_size = recommend_size_p ();
+  param.fs_size_pixel = size_pixel_p ();
+  for (int i = 0; i < FONT_MAX; i++)
+    param.fs_logfont[i] = font (i).logfont ();
+
+  // Update FontSetParam.fs_logfont by lfontset;
+  bool update = false;
+  for (lisp x = lfontset; consp (x); x = xcdr (x))
+    {
+      check_cons (xcar (x));
+      lisp llang = Fcaar (x);
+      lisp keys = Fcdar (x);
+      lisp lface = find_keyword (Kface, keys);
+      lisp lsize = find_keyword (Ksize, keys);
+
+      int n = FontSet::lang_key_index (llang);
+      if (n < 0)
+        FEsimple_error (Einvalid_charset, llang);
+
+      if (lsize != Qnil && (llang == Kascii || !recommend_size_p ()))
+        {
+          int size = fixnum_value (lsize);
+          int old_size;
+          int pixel;
+          if (find_keyword_bool (Ksize_pixel_p, keys))
+            {
+              old_size = param.fs_logfont[n].lfHeight;
+              pixel = size;
+            }
+          else
+            {
+              old_size = FontObject::pixel_to_point (param.fs_logfont[n].lfHeight);
+              pixel = FontObject::point_to_pixel (size);
+            }
+          if (pixel < FONT_SIZE_MIN_PIXEL || pixel > FONT_SIZE_MAX_PIXEL)
+            FErange_error (lsize);
+          if (old_size != size)
+            {
+              param.fs_logfont[n].lfHeight = pixel;
+              param.fs_logfont[n].lfWidth = 0;
+              update = true;
+            }
+        }
+
+      if (lface != Qnil)
+        {
+          check_string (lface);
+          char *face = (char *)alloca (xstring_length (lface) * 2 + 1);
+          w2s (face, lface);
+          if (strcmp (param.fs_logfont[n].lfFaceName, face) != 0)
+            {
+              strcpy (param.fs_logfont[n].lfFaceName, face);
+              update = true;
+            }
+        }
+    }
+
+  return update;
+}
+
+lisp
+Fget_text_fontset ()
+{
+  return app.text_font.make_alist ();
+}
+
+lisp
+Fset_text_fontset (lisp lfontset)
+{
+  check_cons (lfontset);
+
+  FontSetParam param;
+  if (!app.text_font.update (param, lfontset))
+    return Qnil;
+
+  Window::change_parameters (param);
+  refresh_screen (0);
+  multiple_value::clear (); // TODO: remove
+
+  return Qt;
+}

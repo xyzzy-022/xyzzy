@@ -154,7 +154,10 @@
     (multiple-value-bind (symbol found maybe-symbol)
 	(lookup-symbol (point)
 		       (progn
-			 (skip-syntax-spec-forward "w_")
+			 (loop
+			   (or (skip-syntax-spec-forward "w_")
+			       (skip-chars-forward "#")
+			       (return)))
 			 (point))
 		       package)
       (values symbol (and found maybe-symbol)))))
@@ -418,6 +421,10 @@
 	     ("Pause" . #\Pause) ("MouseMove" . #\MouseMove) ("Scroll" . #\Scroll)
 	     ("Apps" . #\Apps) ("Insert" . #\Insert) ("Delete" . #\Delete)
 	     ("Help" . #\Help)
+	     ("Backspace" . #\Backspace) ("Newline" . #\Newline)
+	     ("Linefeed" . #\Linefeed) ("Page" . #\Page)
+	     ("Return" . #\Return) ("Space" . #\Space)
+	     ("Rubout" . #\Rubout)
 	     ("F1" . #\F1) ("F2" . #\F2) ("F3" . #\F3) ("F4" . #\F4)
 	     ("F5" . #\F5) ("F6" . #\F6) ("F7" . #\F7) ("F8" . #\F8)
 	     ("F9" . #\F9) ("F10" . #\F10) ("F11" . #\F11) ("F12" . #\F12)
@@ -479,7 +486,7 @@
 
 (autoload 'lisp-build-summary-of-functions "lispfns" nil)
 (autoload 'lisp-maketags "lispfns" nil)
-(pushnew '(lisp-maketags "*.l") *maketags-list* :key #'car)
+(pushnew '(lisp-maketags "*.l" "*.lisp") *maketags-list* :key #'car)
 
 (defun lisp-tags-find-target ()
   (let* ((opoint (point))

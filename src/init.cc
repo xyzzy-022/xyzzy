@@ -1,10 +1,5 @@
+#include "stdafx.h"
 #include "ed.h"
-#include <float.h>
-#include <new.h>
-#include <io.h>
-#include <eh.h>
-#include <fcntl.h>
-#include <objbase.h>
 #include "ctl3d.h"
 #include "environ.h"
 #include "except.h"
@@ -13,6 +8,7 @@
 #include "fnkey.h"
 #include "syntaxinfo.h"
 #include "ipc.h"
+#include "kanji.h"
 #include "sock.h"
 #include "conf.h"
 #include "colors.h"
@@ -72,17 +68,6 @@ Application::Application ()
 Application::~Application ()
 {
   xfree (ini_file_path);
-}
-
-static lisp
-make_path (const char *s, int append_slash = 1)
-{
-  Char *b = (Char *)alloca ((strlen (s) + 1) * sizeof (Char));
-  Char *be = s2w (b, s);
-  map_backsl_to_sl (b, be - b);
-  if (append_slash && be != b && be[-1] != '/')
-    *be++ = '/';
-  return make_string (b, be - b);
 }
 
 static void
@@ -393,6 +378,8 @@ init_symbol_value_once ()
   xsymbol_value (Vcreate_buffer_hook) = Qnil;
   xsymbol_value (Vdefault_fileio_encoding) = xsymbol_value (Qencoding_sjis);
   xsymbol_value (Vexpected_fileio_encoding) = xsymbol_value (Qencoding_auto);
+  xsymbol_value (Vdetect_char_encoding_mode) = Klibguess;
+  xsymbol_value (Vdetect_char_encoding_buffer_size) = make_fixnum (DEFAULT_DETECT_BUFFER_SIZE);
   xsymbol_value (Vdefault_eol_code) = make_fixnum (eol_crlf);
   xsymbol_value (Vexpected_eol_code) = make_fixnum (eol_guess);
 
@@ -410,6 +397,13 @@ init_symbol_value_once ()
     xcons (Qor, xcons (Qsymbol, xcons (Qstring, Qnil)));
   xsymbol_value (Qor_string_stream) =
     xcons (Qor, xcons (Qstring, xcons (Qstream, Qnil)));
+  xsymbol_value (Qreal_between_0_and_1) =
+    make_list (Qreal, make_fixnum (0), make_fixnum (1), 0);
+  xsymbol_value (Qor_real_integer_1_star) =
+    make_list (Qor,
+               make_list (Qinteger, make_fixnum (1), Smultiply, 0),
+               make_list (Qfloat, make_single_float (1.0), Smultiply, 0),
+               0);
 
   xsymbol_value (Vread_default_float_format) = Qsingle_float;
 

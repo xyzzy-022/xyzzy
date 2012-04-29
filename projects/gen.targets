@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <GenerateDir>$(SolutionDir)src\gen\</GenerateDir>
+    <GenerateInputFiles>@(ClCompile);@(ClInclude)</GenerateInputFiles>
+  </PropertyGroup>
+  <Target Name="PrepareGenerate">
+    <MakeDir Directories="$(GenerateDir)" Condition="!Exists('$(GenerateDir)')"/>
+  </Target>
+  <Target Name="GenerateSource" Inputs="$(GenerateInputFiles)" Outputs="$(GenerateTargetPath)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; &gt; &quot;$(GenerateTargetPath)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+  </Target>
+  <Target Name="DeleteGeneratedSource">
+    <Delete Files="$(GenerateTargetPath)" />
+  </Target>
+</Project>

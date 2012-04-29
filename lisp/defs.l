@@ -18,7 +18,9 @@
 	  *fill-kinsoku-mode*
 	  *file-dialog-filter* *file-dialog-filter-index*
 	  *syntax-option-c-preprocessor* *syntax-option-indent-c++*
-	  *syntax-option-indent-java* *syntax-option-column-comment-char*))
+	  *syntax-option-indent-java* *syntax-option-column-comment-char*
+	  *syntax-option-indent-c++/cli*
+	  ))
 
 (or (boundp 'mode-line-format)
     (setq-default mode-line-format "--%*- %b (%M) [%k:%l] %P %f"))
@@ -32,6 +34,7 @@
 			    ("\\.hpp$" . c++-mode)
 			    ("\\.inl$" . c++-mode)
 			    ("\\.l$" . lisp-mode)
+			    ("\\.lisp$" . lisp-mode)
 			    ("\\.txt$" . text-mode)
 			    ("\\.doc$" . text-mode)
 			    ("\\.log$" . text-mode)
@@ -80,7 +83,7 @@
 (defvar *file-dialog-filter*
   '(("テキストファイル(*.txt;*.doc;*.log)" . "*.txt;*.doc;*.log")
     ("C/C++(*.c;*.cpp;*.cxx;*.h)" . "*.c;*.cpp;*.cxx;*.cc;*.h;*.hxx")
-    ("Lisp(*.l)" . "*.l")
+    ("Lisp(*.l;*.lisp)" . "*.l;*.lisp")
     ("HTML(*.htm;*.html)" . "*.htm;*.html")
     ("すべてのファイル(*.*)" . "*.*")))
 
@@ -133,6 +136,7 @@
 (defconstant *syntax-option-indent-java* 4)
 (defconstant *syntax-option-indent-csharp* 8)
 (defconstant *syntax-option-column-comment-char* 16)
+(defconstant *syntax-option-indent-c++/cli* 32)
 
 (setq-default display-newline-char t)
 (setq-default display-first-tab-char t)

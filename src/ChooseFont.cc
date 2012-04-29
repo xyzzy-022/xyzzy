@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "ChooseFont.h"
 
@@ -70,7 +71,7 @@ ChooseFontP::enum_font_size_proc (ENUMLOGFONT *elf, NEWTEXTMETRIC *, int type, L
       else
         {
           if (SendMessage (hwnd, LB_FINDSTRINGEXACT, WPARAM (-1), LPARAM ("  8")) == LB_ERR)
-            for (int i = 8; i <= 48; i++)
+            for (int i = FONT_SIZE_MIN_PIXEL; i <= FONT_SIZE_MAX_PIXEL; i++)
               {
                 sprintf (b, "%3d", i);
                 SendMessage (hwnd, LB_ADDSTRING, 0, LPARAM (b));

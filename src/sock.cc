@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #ifdef __XYZZY__
 #include "ed.h"
 #undef CONCAT

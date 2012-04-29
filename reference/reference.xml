@@ -47,6 +47,7 @@ book
 -->
 <!--
 Copyright (c) 2007 The Xyzzy Documentation Project
+Copyright (C) 2012 xyzzy Project
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the "Software"), 
@@ -1310,9 +1311,29 @@ grep-dialogでgrep対象のディレクトリを個々に設定したい場合�
 <arguments></arguments>
 <package>editor</package>
 <description>
-grep起動時に実行されます。
+grep起動後に実行されます。
 </description>
 <seealso>*grepd-hook*</seealso>
+<seealso>*before-grep-hook*</seealso>
+<seealso>*before-grepd-hook*</seealso>
+<link></link>
+<section>変数と定数</section>
+<file>grep.l</file>
+</chapter>
+
+<chapter>
+<title>*before-grep-hook*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+grep起動前に実行されます。
+フックの引数は検索キーワード(or regex string)です。
+フック実行時のselected-bufferはgrepバッファです。
+</description>
+<seealso>*grep-hook*</seealso>
+<seealso>*grepd-hook*</seealso>
+<seealso>*before-grepd-hook*</seealso>
 <link></link>
 <section>変数と定数</section>
 <file>grep.l</file>
@@ -1324,9 +1345,29 @@ grep起動時に実行されます。
 <arguments></arguments>
 <package>editor</package>
 <description>
-grep-dialog起動時に実行されます。
+grep-dialog起動後に実行されます。
 </description>
 <seealso>*grep-hook*</seealso>
+<seealso>*before-grep-hook*</seealso>
+<seealso>*before-grepd-hook*</seealso>
+<link></link>
+<section>変数と定数</section>
+<file>grepd.l</file>
+</chapter>
+
+<chapter>
+<title>*before-grepd-hook*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+grep-dialog起動前に実行されます。
+フックの引数は検索キーワード(or regex string)です。
+フック実行時のselected-bufferはgrepバッファです。
+</description>
+<seealso>*grep-hook*</seealso>
+<seealso>*grepd-hook*</seealso>
+<seealso>*before-grep-hook*</seealso>
 <link></link>
 <section>変数と定数</section>
 <file>grepd.l</file>
@@ -1461,11 +1502,13 @@ isearch-scannerで実行されます。scan-bufferするパターンを書き換
 etc-pathで取得されるパスを検索します。
 
 使用例：
-  (setq *keyword-load-path* '("C:/Program Files/xyzzy/keyword"))
+  (pushnew (merge-pathnames "keyword" (si:system-root))
+           *keyword-load-path* :test #'string=)
 </description>
 <seealso>load-keyword-file</seealso>
 <seealso>*etc-path*</seealso>
 <seealso>キーワードファイルの書き方</seealso>
+<seealso>キーワードファイルのカスタマイズ</seealso>
 <link></link>
 <section>変数と定数</section>
 <file>kwd.l</file>
@@ -3156,19 +3199,89 @@ C++での
               u underline
               s strike-out
               l 一行丸ごと
-条件：
-  xyzzy 0.2.207からload-keyword-fileにconditionを指定する
-  ことが可能になりました。conditionはitemと比較を行います。
-  $XYZZY/lisp/html-kwd.lを参照
+  ;@include &lt;path&gt;  etc-pathからの相対パスでキーワードファイルを読み込む
+  ;@include &quot;path&quot;  読み込み中のファイルからの相対パスでキーワードファイルを読み込む
+  ;*+               conditionに関わらず以降を有効にする
+  ;*-               conditionに関わらず以降を無効にする
+                    キーワードが定義済みの場合は定義されたまま
+  ;*--              conditionに関わらず以降を削除する
+  ;*+item           itemがconditionに一致した場合に以降を有効にする
+  ;*-item           itemがconditionに一致した場合に以降を無効にする
+                    キーワードが定義済みの場合は定義されたまま
+  ;*--item          itemがconditionに一致した場合に以降を削除する
+  ;*&amp;               以降はHTMLのタグ以外でも有効なキーワードとする
+  ;*&lt;               以降はHTMLのタグでのみ有効なキーワードとする
 
-  ;*+         conditionに関わらず以降を有効にする
-  ;*-         conditionに関わらず以降を無効にする
-  ;*+item     itemがconditionに一致した場合に以降を有効にする
-  ;*-item     itemがconditionに一致した場合に以降を無効にする
-  ;*&amp;         以降はHTMLのタグ以外でも有効なキーワードとする
-  ;*&lt;         以降はHTMLのタグでのみ有効なキーワードとする
+備考：
+  load-keyword-fileに指定したconditionはitemと比較を行います。
+  $XYZZY/lisp/html-kwd.lを参照。
+  xyzzy 0.2.2.238から他のキーワードファイルの読み込み (;@include) と
+  キーワードの削除 (;*--) が可能になりました。
+  属性の指定はファイルローカルです。;@includeによって読み込んだ他の
+  ファイルには影響を与えません。
 </description>
-<seealso></seealso>
+<seealso>キーワードファイルのカスタマイズ</seealso>
+<link></link>
+<section>その他</section>
+<file></file>
+</chapter>
+
+<chapter>
+<title>キーワードファイルのカスタマイズ</title>
+<type>Tips</type>
+<arguments></arguments>
+<package></package>
+<description>
+キーワードファイルをカスタマイズするには以下の方法を推奨します。
+
+  1. *keyword-load-path*にカスタマイズしたキーワードファイルを
+     置く場所を指定する
+
+     ;; 例) $XYZZY/keyword に置く場合
+     (pushnew (merge-pathnames "keyword" (si:system-root))
+              *keyword-load-path* :test #'string=)
+
+  2. 上記場所にカスタマイズしたいキーワードファイルと
+     同名のファイルを作成
+  3. 先頭に ;@include &lt;カスタマイズしたいファイル&gt; を追加
+  4. ;*-- は ;*+ などを使ってキーワードを追加・削除・色の変更
+
+例：
+  ;;;; C# のキーワードファイルのカスタマイズ
+  ;;
+  :: #reigon と #endregion はキーワード番号0の色を利用
+  ;; LINQ のクエリ式のキーワードを削除
+  ;; http://msdn.microsoft.com/en-us/library/bb310804.aspx
+
+  ;; etc/C# の読み込み
+  ;@include &lt;C#&gt;
+
+  ;; 色の変更
+  ;*0
+  #region
+  #endregion
+
+  ;; キーワードの削除
+  ;*--
+  from
+  where
+  select
+  group
+  into
+  orderby
+  join
+  let
+  in
+  on
+  equals
+  by
+  ascending
+  descending
+
+備考：
+  このカスタマイズ方法が使えるのはxyzzy 0.2.2.238以降です。
+</description>
+<seealso>キーワードファイルの書き方</seealso>
 <link></link>
 <section>その他</section>
 <file></file>
@@ -8375,7 +8488,41 @@ xyzzy.exeの作業ディレクトリを返します。プロパティの作業�
   (cwd)
   =&gt;"D:/WINNT/"
 </description>
-<seealso></seealso>
+<seealso>chdir</seealso>
+<link></link>
+<section>ファイルシステム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>chdir</title>
+<type>Function</type>
+<arguments>chdir &amp;optional DIRNAME</arguments>
+<package>editor</package>
+<description>
+xyzzy.exeの作業ディレクトリを移動します。
+移動した場合は t を、移動しなかった場合は nil を返します。
+
+  DIRNAME : 移動先のディレクトリを絶対パスまたは相対パスで指定します。
+            省略時は user-homedir-pathname に移動します。
+
+使用例： 
+  (chdir (get-windows-directory))
+  =&gt; t
+  (chdir (get-windows-directory))
+  =&gt; nil
+  (chdir "system32")
+  =&gt; t
+  (chdir "..")
+  =&gt; t
+  (chdir "c:/dir/not/found")
+  =&gt; c:/dir/not/found
+  =&gt; 指定されたパスが見つかりません。 
+
+補足：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>cwd</seealso>
 <link></link>
 <section>ファイルシステム</section>
 <file>builtin.l</file>
@@ -14210,7 +14357,7 @@ Windowsフォルダへのパスを返します。
 
 使用例：
   (setq hash-table (make-hash-table))
-  =&gt; #&lt;hash table&gt;
+  =&gt; #&lt;hashtable :test eql :size 0/17 9900500&gt;
   (gethash 'a hash-table)
   =&gt; nil
   (setf (gethash 'a hash-table) 1)
@@ -14593,6 +14740,24 @@ xyzzyがエラーダイアログを出して処理を終了します。
 ハッシュテーブルの現在のrehash-sizeを返します。
 
   HASH-TABLE : ハッシュテーブルを指定します。
+</description>
+<seealso>make-hash-table</seealso>
+<section>ハッシュ</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>hash-table-rehash-threshold</title>
+<type>Function</type>
+<arguments>hash-table-rehash-threshold HASH-TABLE</arguments>
+<package>lisp</package>
+<description>
+ハッシュテーブルの現在のrehash-thresholdを返します。
+
+  HASH-TABLE : ハッシュテーブルを指定します。
+
+補足：
+  xyzzy 0.2.2.238 から利用可能です。
 </description>
 <seealso>make-hash-table</seealso>
 <section>ハッシュ</section>
@@ -16172,6 +16337,7 @@ OBJECTがconsか空リスト()ならt、それ以外ならnilを返します。
   リストで指定可能です。
 </description>
 <seealso>キーワードファイルの書き方</seealso>
+<seealso>キーワードファイルのカスタマイズ</seealso>
 <seealso>*keyword-load-path*</seealso>
 <seealso>make-list-from-keyword-table</seealso>
 <section>その他</section>
@@ -16929,13 +17095,14 @@ OUTPUT-STREAM にエコーされます。
                  この値よりも大きい素数、または 2, 3, 5, 7 で割れない値
                  に設定されます。
   :rehash-size : ハッシュテーブルのテーブルサイズを増加させる量の目安。
-                 デフォルトは 1。現在のサイズ と :rehash-size を参考
-                 に、より大きい素数、または 2, 3, 5, 7 で割れないサイズ
-                 にします。
+                 デフォルトは 1.5。
+                 整数値を指定すると指定した数を増加量の目安とします。
+                 小数値を指定すると現在のサイズ * rehash-size で増加量の
+                 目安を計算します。現在のサイズと :rehash-size を参考に、
+                 より大きい素数、または 2, 3, 5, 7 で割れないサイズに設定されます。
   :rehash-threshold
-               : xyzzy では実装されていないようです。 (0.2.2.235 現在)
-                 その代わり、テーブルの使用率が 80% を超えるとテーブル
-                 を伸長します。
+               : ハッシュテーブルのテーブルサイズを増加させる使用率の目安。
+                 デフォルトでは使用率が 80% を超えるとテーブルを伸長します。
 
 とりうる素数は以下の通りです。
       17, 47, 101, 149, 199, 307, 401, 499, 599, 701, 797, 907, 997,
@@ -16943,8 +17110,8 @@ OUTPUT-STREAM にエコーされます。
       10007, 19997, 29989, 39989, 49999, 59999, 70001, 79999, 90001, 99991
 
 使用例:
-  (setq hash (make-hash-table :size 3))
-  =&gt; #&lt;hashtable 51122492&gt;
+  (setq hash (make-hash-table :size 20))
+  =&gt; #&lt;hashtable :test eql :size 0/47 9900416&gt;
 
   (progn
     (setf (gethash #\C-0 hash) 0)
@@ -16962,13 +17129,21 @@ OUTPUT-STREAM にエコーされます。
   (hash-table-rehash-size hash)
   =&gt; 1
 
+  (hash-table-rehash-threshold hash)
+  =&gt; 0.8
+
   (hash-table-test hash)
   =&gt; eql
+
+備考：
+  :rehash-size パラメータの小数指定は xyzzy 0.2.2.238 から利用可能です。
+  :rehash-threshold パラメータの指定は xyzzy 0.2.2.238 から利用可能です。
 </description>
 <seealso>gethash</seealso>
 <seealso>hash-table-count</seealso>
 <seealso>hash-table-p</seealso>
 <seealso>hash-table-rehash-size</seealso>
+<seealso>hash-table-rehash-threshold</seealso>
 <seealso>hash-table-size</seealso>
 <seealso>hash-table-test</seealso>
 <seealso>remhash</seealso>
@@ -22001,7 +22176,7 @@ readable であるとは、具体的に言うと「文字、文字列、数値�
 
 使用例：
   (setq hash-table (make-hash-table))
-  =&gt; #&lt;hash table&gt;
+  =&gt; #&lt;hashtable :test eql :size 0/17 9900444&gt;
   (setf (gethash 'a hash-table) 1)
   =&gt; 1
   (remhash 'b hash-table)
@@ -24770,6 +24945,8 @@ Latexの数式モードの区切りに相当します。
   *syntax-option-indent-c++*     : （詳細不明）
   *syntax-option-indent-java*    : （詳細不明）
   *syntax-option-indent-csharp*  : （詳細不明）
+  *syntax-option-indent-c++/cli* :
+        属性や ref class など C++/CLI 用のインデントを有効にします。
   *syntax-option-column-comment-char* :
         set-syntax-comment-column だけでは、指定カラムに空白以外が来ると
         コメントと見なしますが、特定のキャラクタが現れた場合にだけにした
@@ -25171,6 +25348,197 @@ skip-syntax-spec-forward / skip-syntax-spec-backwardに影響します。
 <seealso>set-text-attribute</seealso>
 <section>テキスト</section>
 <file>cmds.l</file>
+</chapter>
+
+<chapter>
+<title>get-text-fontset</title>
+<type>Function</type>
+<arguments>get-text-fontset</arguments>
+<package>editor</package>
+<description>
+フォント設定を取得します。
+
+使用例：
+  (get-text-fontset)
+  =&gt; ((:ascii :face "Consolas" :size 14 :size-pixel-p nil)
+      (:japanese :face "ＭＳ ゴシック" :size 14 :size-pixel-p nil)
+      (:latin :face "Courier New" :size 13 :size-pixel-p nil)
+      (:cyrillic :face "Courier New" :size 13 :size-pixel-p nil)
+      (:greek :face "Courier New" :size 13 :size-pixel-p nil)
+      (:cn-simplified :face "MS Hei" :size 14 :size-pixel-p nil)
+      (:cn-traditional :face "MingLiu" :size 14 :size-pixel-p nil)
+      (:ksc5601 :face "GulimChe" :size 14 :size-pixel-p nil)
+      (:georgian :face "BPG Courier New U" :size 14 :size-pixel-p nil))
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>get-text-font</seealso>
+<seealso>set-text-font</seealso>
+<seealso>set-text-fontset</seealso>
+<seealso>increase-text-font-size</seealso>
+<seealso>decrease-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>set-text-fontset</title>
+<type>Function</type>
+<arguments>set-text-fontset FONTSET</arguments>
+<package>editor</package>
+<description>
+FONTSETで指定したフォントの設定を更新します。
+変更したい設定のみを指定可能です。
+設定を変更した場合は t が、変更点がなかった場合は nil を返します。
+変更した設定はxyzzy.iniに保存されます。
+
+使用例：
+  (set-text-fontset '((:ascii :face "Consolas" :size 20 :size-pixel-p t)
+                      (:japanese :face "ＭＳ ゴシック" :size 20 :size-pixel-p t)))
+  =&gt; t
+
+  (set-text-fontset '((:ascii :size 16)))
+  =&gt; t
+
+  (set-text-fontset (get-text-fontset))
+  =&gt; nil
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>get-text-font</seealso>
+<seealso>set-text-font</seealso>
+<seealso>get-text-fontset</seealso>
+<seealso>increase-text-font-size</seealso>
+<seealso>decrease-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>get-text-font</title>
+<type>Function</type>
+<arguments>get-text-font LANG</arguments>
+<package>editor</package>
+<description>
+指定した言語のフォント設定を取得します。
+
+  LANG : フォント設定を変更する言語を指定します。
+         :ascii          : ASCII
+         :japanese       : 日本語
+         :latin          : ラテン文字
+         :cyrillic       : キリル文字
+         :greek          : ギリシャ語
+         :cn-simplified  : 中国語(簡体字)
+         :cn-traditional : 中国語(繁体字)
+         :ksc5601        : 韓国語
+         :georgian       : グルジア文字
+
+使用例：
+  (get-text-font :ascii)
+  =&gt; (:face "Consolas" :size 14 :size-pixel-p nil)
+
+  (get-text-font :japanese)
+  =&gt; (:face "ＭＳ ゴシック" :size 14 :size-pixel-p nil)
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>set-text-font</seealso>
+<seealso>set-text-fontset</seealso>
+<seealso>get-text-fontset</seealso>
+<seealso>increase-text-font-size</seealso>
+<seealso>decrease-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>set-text-font</title>
+<type>Function</type>
+<arguments>set-text-font LANG &amp; :face :size :size-pixel-p</arguments>
+<package>editor</package>
+<description>
+指定した言語のフォント設定を更新します。
+変更したい設定のみを指定可能です。
+設定を変更した場合は t が、変更点がなかった場合は nil を返します。
+変更した設定はxyzzy.iniに保存されます。
+
+  LANG          : フォント設定を変更する言語を指定します。
+                  :ascii          : ASCII
+                  :japanese       : 日本語
+                  :latin          : ラテン文字
+                  :cyrillic       : キリル文字
+                  :greek          : ギリシャ語
+                  :cn-simplified  : 中国語(簡体字)
+                  :cn-traditional : 中国語(繁体字)
+                  :ksc5601        : 韓国語
+                  :georgian       : グルジア文字
+  :face         : フォント名を指定します。
+  :size         : フォントサイズを指定します。
+  :size-pixel-p : フォントサイズがピクセル単位なら t を指定します。
+
+使用例：
+  (set-text-font :ascii :size 10)
+  =&gt; t
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>get-text-font</seealso>
+<seealso>get-text-fontset</seealso>
+<seealso>set-text-fontset</seealso>
+<seealso>increase-text-font-size</seealso>
+<seealso>decrease-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>increase-text-font-size</title>
+<type>Function</type>
+<arguments>increase-text-font-size &amp;optional (ARG 1)</arguments>
+<package>editor</package>
+<description>
+フォントサイズを大きくします。
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>get-text-font</seealso>
+<seealso>set-text-font</seealso>
+<seealso>set-text-fontset</seealso>
+<seealso>get-text-fontset</seealso>
+<seealso>decrease-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>decrease-text-font-size</title>
+<type>Function</type>
+<arguments>decrease-text-font-size &amp;optional (ARG 1)</arguments>
+<package>editor</package>
+<description>
+フォントサイズを小さくします。
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>get-text-font</seealso>
+<seealso>set-text-font</seealso>
+<seealso>set-text-fontset</seealso>
+<seealso>get-text-fontset</seealso>
+<seealso>increase-text-font-size</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
 </chapter>
 
 <chapter>
@@ -26250,6 +26618,39 @@ Quoted-Printableデコードします。
   OUTPUT-STREAM          : 出力のストリームを指定します。
         nil     デコードの結果はquoted-printable-decodeの戻り値となります。
         nil以外 デコードの結果はOUTPUT-STREAMに出力されます。
+</description>
+<section>その他</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:octet-length</title>
+<type>Function</type>
+<arguments>octet-length STRING &amp;key :encoding :start :end</arguments>
+<package>system</package>
+<description>
+指定したエンコーディングでエンコードした場合の文字列のバイトサイズを求めます。
+
+  STRING    : バイトサイズを求める文字列
+  :encoding : エンコーディング。デフォルトはエンコーディング変換なし
+  :start    : 開始位置。デフォルトは 0 で非負の整数
+  :end      : 終了位置。デフォルトは nil で、 nil の場合は文字列の長さを
+              指定した場合と等しい動作
+
+使用例：
+  (si:octet-length "abc")
+  =&gt; 3
+  (si:octet-length "abcあいう")
+  =&gt; 9
+  (si:octet-length "abcアイウ" :start 1 :end 5)
+  =&gt; 6
+  (si:octet-length "abcアイウ" :encoding *encoding-utf8n*)
+  =&gt; 12
+  (si:octet-length (convert-encoding-from-internal *encoding-utf8n* "abcアイウ"))
+  =&gt; 12
+
+補足：
+  xyzzy 0.2.2.238 から利用可能です。
 </description>
 <section>その他</section>
 <file>builtin.l</file>
@@ -32564,6 +32965,57 @@ abbrev-mode の時は self-insert-command でも実行されます。
 </chapter>
 
 <chapter>
+<title>*detect-char-encoding-mode*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+detect-char-encoding での文字エンコーディングの判別方法を設定します。
+
+  :xyzzy    : xyzzy オリジナルの判別方法を利用します。
+              Shift_JIS や半角カタカナに強いですが、
+              EUC-JP や UTF-8 では誤判定することが多いです。
+
+  :libguess : libguess (Gauche) の判別方法を利用します。
+              Shift_JIS や半角カタカナの判別では
+              xyzzy オリジナルの判別方法より劣りますが、
+              全体的に誤判定は少ないです。
+
+備考：
+  guess-char-encoding はこの変数の影響は受けません。
+  常に libguess を利用した判別結果を返します。
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>detect-char-encoding</seealso>
+<seealso>*detect-char-encoding-buffer-size*</seealso>
+<link></link>
+<section>テキスト</section>
+<file></file>
+</chapter>
+
+<chapter>
+<title>*detect-char-encoding-buffer-size*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+ファイルオープン時の文字エンコーディングの判別に利用するバッファサイズを
+指定します。
+
+ファイルの先頭から指定サイズ分を読み込んで、文字エンコーディングを
+判別します。
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>detect-char-encoding</seealso>
+<seealso>*detect-char-encoding-mode*</seealso>
+<link></link>
+<section>テキスト</section>
+<file></file>
+</chapter>
+
+<chapter>
 <title>detect-char-encoding</title>
 <type>Function</type>
 <arguments>detect-char-encoding STRING-OR-STREAM</arguments>
@@ -32575,6 +33027,32 @@ STRING-OR-STREAM の文字エンコーディングを判定します。
 <seealso>stream-encoding</seealso>
 <seealso>convert-encoding-from-internal</seealso>
 <seealso>convert-encoding-to-internal</seealso>
+<seealso>guess-char-encoding</seealso>
+<seealso>*detect-char-encoding-mode*</seealso>
+<seealso>*detect-char-encoding-buffer-size*</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>guess-char-encoding</title>
+<type>Function</type>
+<arguments>guess-char-encoding STRING-OR-STREAM</arguments>
+<package>editor</package>
+<description>
+STRING-OR-STREAM の文字エンコーディングを判定して、文字エンコーディングの
+候補とスコアを返します。
+
+例:
+  (guess-char-encoding (convert-encoding-from-internal *encoding-utf8n* "スレ違い"))
+  =&gt; ((#.(make-utf8-encoding "utf8n" "Unicode (UTF-8N)" :signature nil :windows t :byte-order nil :cjk :jp) . 1.0d0)
+      (#.(make-sjis-encoding "sjis" "日本語(Shift_JIS)") . 0.6400000000000001d0))
+
+備考：
+  xyzzy 0.2.2.238 から利用可能です。
+</description>
+<seealso>detect-char-encoding</seealso>
 <link></link>
 <section>テキスト</section>
 <file>builtin.l</file>

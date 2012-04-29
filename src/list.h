@@ -60,6 +60,13 @@ find_keyword_int (lisp var, lisp list, lisp defalt)
   return fixnum_value (x == Qnil ? defalt : x);
 }
 
+inline double
+find_keyword_float (lisp var, lisp list, double defalt = 0)
+{
+  lisp x = find_keyword (var, list, Qnil);
+  return x == Qnil ? defalt : coerce_to_double_float (x);
+}
+
 lisp subseq_list (lisp, lisp, lisp);
 
 lisp memq (lisp, lisp);
@@ -67,5 +74,31 @@ int delq (lisp, lisp *);
 lisp assq (lisp, lisp);
 int delassq (lisp, lisp *);
 lisp make_list (lisp x, ...);
+
+inline lisp
+list (lisp x)
+{
+  return xcons (x, Qnil);
+}
+
+inline lisp
+list (lisp x, lisp y)
+{
+  return xcons (x, list (y));
+}
+
+inline lisp
+list (lisp x, lisp y, lisp z)
+{
+  return xcons (x, list (y, z));
+}
+
+inline lisp
+append (lisp x, lisp y)
+{
+  if (y == Qnil)
+    return x;
+  return Fappend (list (x, y));
+}
 
 #endif

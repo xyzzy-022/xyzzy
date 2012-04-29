@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "byte-stream.h"
 

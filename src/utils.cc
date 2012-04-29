@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "cdecl.h"
 #include "ed.h"
 #include "utils.h"

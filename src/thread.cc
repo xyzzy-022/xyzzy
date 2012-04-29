@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "thread.h"
-#include <process.h>
 
 worker_thread::worker_thread ()
      : w_hthread (0), w_hlock_event (0), w_hterm_event (0), w_intr (0)

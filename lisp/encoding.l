@@ -571,6 +571,27 @@
 	      *encoding-binary*
 	)))
 
+(defvar *char-encoding-bom-alist*
+  `((,*encoding-utf8* . ,*encoding-utf8n*)
+    (,*encoding-std-utf8* . ,*encoding-std-utf8n*)
+    (,*encoding-utf8-kr* . ,*encoding-utf8n-kr*)
+    (,*encoding-utf8-gb* . ,*encoding-utf8n-gb*)
+    (,*encoding-utf8-big5* . ,*encoding-utf8n-big5*)
+    (,*encoding-utf8-cn* . ,*encoding-utf8n-cn*)
+    (,*encoding-utf16le* . ,*encoding-utf16le-bom*)
+    (,*encoding-utf16be* . ,*encoding-utf16be-bom*)
+    (,*encoding-std-utf16le* . ,*encoding-std-utf16le-bom*)
+    (,*encoding-std-utf16be* . ,*encoding-std-utf16be-bom*)
+    (,*encoding-utf16le-kr* . ,*encoding-utf16le-bom-kr*)
+    (,*encoding-utf16be-kr* . ,*encoding-utf16be-bom-kr*)
+    (,*encoding-utf16le-gb* . ,*encoding-utf16le-bom-gb*)
+    (,*encoding-utf16be-gb* . ,*encoding-utf16be-bom-gb*)
+    (,*encoding-utf16le-big5* . ,*encoding-utf16le-bom-big5*)
+    (,*encoding-utf16be-big5* . ,*encoding-utf16be-bom-big5*)
+    (,*encoding-utf16le-cn* . ,*encoding-utf16le-bom-cn*)
+    (,*encoding-utf16be-cn* . ,*encoding-utf16be-bom-cn*)
+    ))
+
 (defvar *char-encoding-tree*
   `(,*encoding-auto*
     ("“ú–{Œê" . (,*encoding-sjis*
@@ -676,7 +697,8 @@
     (setq-default *clipboard-char-encoding* *encoding-sjis*))
 
 (defvar *clipboard-char-encoding-list*
-  '(*encoding-sjis*
+  '(*encoding-auto*
+    *encoding-sjis*
     *encoding-jis*
     *encoding-euc-jp*
     *encoding-iso-2022-jp-2*

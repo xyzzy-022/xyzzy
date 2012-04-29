@@ -285,6 +285,7 @@ static symbols lsp[] =
   DEFUN3 (clrhash, 1, 0, 0),
   DEFUN3 (hash-table-count, 1, 0, 0),
   DEFUN3 (hash-table-rehash-size, 1, 0, 0),
+  DEFUN3 (hash-table-rehash-threshold, 1, 0, 0),
   DEFUN3 (hash-table-size, 1, 0, 0),
   DEFUN3 (hash-table-test, 1, 0, 0),
   DEFUN3 (sxhash, 1, 0, 0),
@@ -814,6 +815,7 @@ static symbols sys[] =
   /* string.cc */
   SI_DEFUN3 (*set-char, 3, 0, 0),
   SI_DEFUN3 (*set-schar, 3, 0, 0),
+  SI_DEFUN3 (octet-length, 1, 0, FFneed_rest),
 
   /* hash.cc */
   SI_DEFUN3 (*puthash, 3, 0, 0),
@@ -1047,6 +1049,7 @@ static symbols kwd[] =
   DEFKWD2 (key),
   DEFKWD2 (size),
   DEFKWD2 (rehash-size),
+  DEFKWD2 (rehash-threshold),
   DEFKWD2 (initial-element),
   DEFKWD2 (element-type),
   DEFKWD2 (initial-contents),
@@ -1357,6 +1360,7 @@ static symbols kwd[] =
   DEFKWD2 (ascii-eol),
   DEFKWD2 (ascii-control),
   DEFKWD2 (7bits),
+  DEFKWD2 (libguess),
   DEFKWD2 (locking-shift),
   DEFKWD2 (short-form),
   DEFKWD2 (use-cns11643),
@@ -1411,6 +1415,13 @@ static symbols kwd[] =
   DEFKWD2 (vender),
   DEFKWD2 (invalidate),
   DEFKWD2 (sequential),
+  DEFKWD2 (japanese),
+  DEFKWD2 (latin),
+  DEFKWD2 (cn-simplified),
+  DEFKWD2 (cn-traditional),
+  DEFKWD2 (georgian),
+  DEFKWD2 (face),
+  DEFKWD2 (size-pixel-p),
 };
 
 static symbols unint[] =
@@ -1473,6 +1484,8 @@ static symbols unint[] =
   MAKE_SYMBOL2Q (or-rational-float),
   MAKE_SYMBOL2Q (or-symbol-string),
   MAKE_SYMBOL2Q (or-string-stream),
+  MAKE_SYMBOL2Q (real-between-0-and-1),
+  MAKE_SYMBOL2Q (or-real-integer-1-star),
 
   MAKE_SYMBOL2Q (temporary-string),
   MAKE_SYMBOL2 (minibuffer-message),
@@ -2025,6 +2038,8 @@ static symbols ed[] =
   DEFCMD3 (begin-auto-scroll, 0, 0, 0, ""),
   MAKE_SYMBOL2 (*page-scroll-half-window*),
   MAKE_SYMBOL2 (*next-screen-context-lines*),
+  DEFUN3 (get-text-fontset, 0, 0, 0),
+  DEFUN3 (set-text-fontset, 1, 0, 0),
 
   /* syntax.cc */
   DEFUN3 (make-syntax-table, 0, 0, 0),
@@ -2098,6 +2113,7 @@ static symbols ed[] =
   MAKE_SYMBOL2 (c-brace-imaginary-offset),
   MAKE_SYMBOL2 (c-label-offset),
   MAKE_SYMBOL2 (c-comment-indent),
+  MAKE_SYMBOL2 (c-preprocessor-offset),
 
   MAKE_SYMBOL (c++-indent-level, Vcplusplus-indent-level),
   MAKE_SYMBOL (c++-brace-offset, Vcplusplus-brace-offset),
@@ -2106,6 +2122,7 @@ static symbols ed[] =
   MAKE_SYMBOL (c++-brace-imaginary-offset, Vcplusplus-brace-imaginary-offset),
   MAKE_SYMBOL (c++-label-offset, Vcplusplus-label-offset),
   MAKE_SYMBOL (c++-comment-indent, Vcplusplus-comment-indent),
+  MAKE_SYMBOL (c++-preprocessor-offset, Vcplusplus-preprocessor-offset),
 
   MAKE_SYMBOL2 (java-indent-level),
   MAKE_SYMBOL2 (java-brace-offset),
@@ -2114,6 +2131,7 @@ static symbols ed[] =
   MAKE_SYMBOL2 (java-brace-imaginary-offset),
   MAKE_SYMBOL2 (java-label-offset),
   MAKE_SYMBOL2 (java-comment-indent),
+  MAKE_SYMBOL2 (java-preprocessor-offset),
 
   MAKE_SYMBOL2 (csharp-indent-level),
   MAKE_SYMBOL2 (csharp-brace-offset),
@@ -2122,6 +2140,7 @@ static symbols ed[] =
   MAKE_SYMBOL2 (csharp-brace-imaginary-offset),
   MAKE_SYMBOL2 (csharp-label-offset),
   MAKE_SYMBOL2 (csharp-comment-indent),
+  MAKE_SYMBOL2 (csharp-preprocessor-offset),
 
   DEFUN3 (calc-c-indent, 0, 0, 0),
   DEFUN3 (tab-columns, 0, 1, 0),
@@ -2268,6 +2287,7 @@ static symbols ed[] =
   DEFUN3 (append-trail-slash, 1, 0, 0),
   DEFUN3 (remove-trail-slash, 1, 0, 0),
   DEFUN3 (cwd, 0, 0, 0),
+  DEFUN3 (chdir, 0, 1, 0),
   DEFUN3 (map-slash-to-backslash, 1, 0, 0),
   DEFUN3 (map-backslash-to-slash, 1, 0, 0),
   DEFUN3 (network-connect-dialog, 0, 0, 0),
@@ -2373,6 +2393,11 @@ static symbols ed[] =
   DEFUN3 (convert-encoding-from-internal, 2, 1, 0),
   DEFUN3 (detect-char-encoding, 1, 0, 0),
   DEFVAR2 (*accept-mule-ucs-funny-utf8*),
+  DEFVAR2 (*detect-char-encoding-mode*),
+  DEFVAR2 (*detect-char-encoding-buffer-size*),
+
+  /* guess.cc */
+  DEFUN3 (guess-char-encoding, 1, 0, 0),
 
   /* ldialog.cc */
   DEFUN3 (dialog-box, 3, 0, 0),
@@ -2846,9 +2871,6 @@ static void
 print_string ()
 {
   soffset = 0;
-  printf ("#define EXTERN /* empty */\n");
-  printf ("#include \"ed.h\"\n");
-  printf ("#include \"symtable.h\"\n\n");
   printf ("static const char SS[] = \n\"");
   do_all (print_string);
   printf ("\";\n\n");

@@ -1,7 +1,7 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "com.h"
 #include "oleconv.h"
-#include <olectl.h>
 
 class safe_variant
 {

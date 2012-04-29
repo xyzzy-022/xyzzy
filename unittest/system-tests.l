@@ -264,3 +264,110 @@ of SHA-384 and SHA-512)."
   "プロセスIDが取得できること"
   (integerp (si:getpid))
   => t)
+
+(deftest octet-length-builtin-function-p ()
+  (si:*builtin-function-p #'si:octet-length)
+  => t)
+
+(deftest octet-length-ascii ()
+  (values
+   (si:octet-length "")
+   (si:octet-length " ")
+   (si:octet-length "abc")
+   (si:octet-length "" :encoding nil)
+   (si:octet-length " " :encoding nil)
+   (si:octet-length "abc" :encoding nil))
+  => 0
+  => 1
+  => 3
+  => 0
+  => 1
+  => 3)
+
+(deftest octet-length-sjis ()
+  (values
+   (si:octet-length "あ")
+   (si:octet-length "漢字")
+   (si:octet-length "アイウ")
+   (si:octet-length "あ" :encoding *encoding-sjis*)
+   (si:octet-length "漢字" :encoding *encoding-sjis*)
+   (si:octet-length "アイウ" :encoding *encoding-sjis*))
+  => 2
+  => 4
+  => 6
+  => 2
+  => 4
+  => 6)
+
+(deftest octet-length-eucjp ()
+  (values
+   (si:octet-length (convert-encoding-from-internal *encoding-euc-jp* "あ"))
+   (si:octet-length (convert-encoding-from-internal *encoding-euc-jp* "漢字"))
+   (si:octet-length (convert-encoding-from-internal *encoding-euc-jp* (map-to-half-width-string "アイウ" :katakana t)))
+   (si:octet-length "あ" :encoding *encoding-euc-jp*)
+   (si:octet-length "漢字" :encoding *encoding-euc-jp*)
+   (si:octet-length (map-to-half-width-string "アイウ" :katakana t) :encoding *encoding-euc-jp*))
+  => 2
+  => 4
+  => 6
+  => 2
+  => 4
+  => 6)
+
+(deftest octet-length-utf8 ()
+  (values
+   (si:octet-length (convert-encoding-from-internal *encoding-utf8n* "あ"))
+   (si:octet-length (convert-encoding-from-internal *encoding-utf8n* "漢字"))
+   (si:octet-length (convert-encoding-from-internal *encoding-utf8n* "アイウ"))
+   (si:octet-length "あ" :encoding *encoding-utf8n*)
+   (si:octet-length "漢字" :encoding *encoding-utf8n*)
+   (si:octet-length "アイウ" :encoding *encoding-utf8n*))
+  => 3
+  => 6
+  => 9
+  => 3
+  => 6
+  => 9)
+
+(deftest octet-length-start-end ()
+  (values
+   (si:octet-length "abcあいうアイウ" :encoding *encoding-utf8n* :start 0)
+   (si:octet-length "abcあいうアイウ" :encoding *encoding-utf8n* :start 1)
+   (si:octet-length "abcあいうアイウ" :encoding *encoding-utf8n* :start 3)
+   (si:octet-length "abcあいうアイウ" :encoding *encoding-utf8n* :start 2 :end 2)
+   (si:octet-length "abcあいうアイウ" :encoding *encoding-utf8n* :start 2 :end 4)
+   (si:octet-length "abcあいうアイウ" :encoding *encoding-utf8n* :end 4))
+  => 21
+  => 20
+  => 18
+  => 0
+  => 4
+  => 6)
+
+(deftest octet-length-error-1 ()
+  (si:octet-length nil)
+  !! type-error)
+
+(deftest octet-length-error-2 ()
+  (si:octet-length "abc" :encoding *encoding-auto*)
+  !! type-error)
+
+(deftest octet-length-error-3 ()
+  (si:octet-length "abc" :encoding "utf8")
+  !! type-error)
+
+(deftest octet-length-error-4 ()
+  (si:octet-length "abc" :start -1)
+  !! range-error)
+
+(deftest octet-length-error-5 ()
+  (si:octet-length "abc" :end -1)
+  !! range-error)
+
+(deftest octet-length-error-6 ()
+  (si:octet-length "abc" :start 4)
+  !! range-error)
+
+(deftest octet-length-error-7 ()
+  (si:octet-length "abc" :end 4)
+  !! range-error)

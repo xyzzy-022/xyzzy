@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "dyn-handle.h"
 #include "vwin32.h"

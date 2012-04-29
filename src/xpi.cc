@@ -1,4 +1,4 @@
-#include <windows.h>
+#include "stdafx.h"
 #include "xpi.h"
 
 static const FARPROC *xpi_procs;

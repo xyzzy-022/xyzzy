@@ -175,6 +175,7 @@ char>
 char>=
 character
 characterp
+chdir
 check-type
 check-valid-pathname
 cis
@@ -285,6 +286,7 @@ declaim
 decode-escape-sequence
 decode-mime-header
 decode-universal-time
+decrease-text-font-size
 default-directory
 default-value
 defconstant
@@ -569,6 +571,8 @@ get-selection-type
 get-short-path-name
 get-special-folder-location
 get-system-directory
+get-text-font
+get-text-fontset
 get-universal-time
 get-window-handle
 get-window-line
@@ -594,10 +598,12 @@ goto-virtual-column
 goto-virtual-eol
 goto-virtual-line
 graphic-char-p
+guess-char-encoding
 handler-case
 hash-table-count
 hash-table-p
 hash-table-rehash-size
+hash-table-rehash-threshold
 hash-table-size
 hash-table-test
 hide-command-bar
@@ -610,6 +616,7 @@ ime-register-word-dialog
 import
 in-package
 incf
+increase-text-font-size
 indent-for-comment
 indent-region
 indent-relative
@@ -1207,6 +1214,8 @@ set-syntax-word
 set-tab-columns
 set-text-attribute
 set-text-color
+set-text-font
+set-text-fontset
 set-variable
 set-window
 set-window-configuration
@@ -1248,6 +1257,7 @@ si:hmac-sha-512
 si:make-chunk
 si:make-string-chunk
 si:md5
+si:octet-length
 si:putenv
 si:quoted-printable-decode
 si:sha-1
@@ -1525,6 +1535,8 @@ zerop
 *auto-mode-parameter-alist*
 *auto-update-per-device-directory*
 *before-find-file-hook*
+*before-grep-hook*
+*before-grepd-hook*
 *brackets-is-wildcard-character*
 *buffer-bar-context-menu*
 *buffer-bar-context-menu-buffer*
@@ -1547,6 +1559,8 @@ zerop
 *default-load-path*
 *default-session-directory*
 *default-write-file-directory*
+*detect-char-encoding-mode*
+*detect-char-encoding-buffer-size*
 *diff-mode-hook*
 *drag-and-drop-hook*
 *enter-minibuffer-hook*

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "kanji.h"
 #include "except.h"
@@ -218,10 +219,19 @@ Buffer::read_file_contents (ReadFileContext &rfc, xread_stream &sin)
 }
 
 static inline lisp
-detect_encoding (const mapf &mf, int size)
+detect_encoding (const mapf &mf)
 {
-  return detect_char_encoding ((const char *)mf.base (),
-                               min ((int)mf.size (), size), mf.size ());
+  long size;
+  if (!safe_fixnum_value (xsymbol_value (Vdetect_char_encoding_buffer_size), &size))
+    size = DEFAULT_DETECT_BUFFER_SIZE;
+  if (size <= 0)
+    size = DEFAULT_DETECT_BUFFER_SIZE;
+  if (INT_MAX < size)
+    size = INT_MAX;
+
+  return detect_char_encoding (static_cast <const char *> (mf.base ()),
+                               min (static_cast <int> (mf.size ()), static_cast <int> (size)),
+                               mf.size ());
 }
 
 static eol_code
@@ -279,7 +289,7 @@ Buffer::read_file_contents (ReadFileContext &rfc, const char *filename,
     {
       if (char_encoding_p (rfc.r_expect_char_encoding)
           && xchar_encoding_type (rfc.r_expect_char_encoding) == encoding_auto_detect)
-        rfc.r_expect_char_encoding = detect_encoding (mf, 0x10000);
+        rfc.r_expect_char_encoding = detect_encoding (mf);
 
       if (!char_encoding_p (rfc.r_expect_char_encoding))
         {
@@ -352,7 +362,7 @@ Buffer::readin_chunk (ReadFileContext &rfc, const char *filename)
 
   try
     {
-      rfc.r_expect_char_encoding = detect_encoding (mf, 0x8000);
+      rfc.r_expect_char_encoding = detect_encoding (mf);
       if (!char_encoding_p (rfc.r_expect_char_encoding)
           || xchar_encoding_type (rfc.r_expect_char_encoding) == encoding_auto_detect)
         rfc.r_expect_char_encoding = xsymbol_value (Qencoding_sjis);

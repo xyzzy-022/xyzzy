@@ -1,4 +1,4 @@
-#include <windows.h>
+#include "stdafx.h"
 #include "sysdep.h"
 #include "ctl3d.h"
 #include "vfs.h"

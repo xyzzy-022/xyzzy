@@ -36,6 +36,7 @@
  *
  */
 
+#include "stdafx.h"
 #include "cdecl.h"
 #include "endian.h"
 #include "sha2.h"

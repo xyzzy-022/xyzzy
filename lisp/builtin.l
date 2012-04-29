@@ -149,6 +149,7 @@
 (si::defun-builtin clrhash (hash-table))
 (si::defun-builtin hash-table-count (hash-table))
 (si::defun-builtin hash-table-rehash-size (hash-table))
+(si::defun-builtin hash-table-rehash-threshold (hash-table))
 (si::defun-builtin hash-table-size (hash-table))
 (si::defun-builtin hash-table-test (hash-table))
 (si::defun-builtin sxhash (object))
@@ -619,6 +620,8 @@
 (si::defun-builtin delete-registry-tree ())
 (si::defun-builtin performance-counter ())
 (si::defun-builtin *app-user-model-id ())
+(si::defun-builtin uuid-create (&key :sequential))
+(si::defun-builtin octet-length (string &key :encoding :start :end))
 
 (gc)
 
@@ -654,6 +657,8 @@
 (si::defun-builtin erase-buffer (buffer))
 (si::defun-builtin buffer-size (&optional buffer))
 (si::defun-builtin buffer-lines (&optional buffer))
+(si::defun-builtin get-text-fontset ())
+(si::defun-builtin set-text-fontset (fontset))
 (si::defun-builtin create-new-buffer (name))
 (si::defun-builtin selected-buffer ())
 (si::defun-builtin deleted-buffer-p (buffer))
@@ -1076,6 +1081,7 @@
 (si::defun-builtin append-trail-slash (string))
 (si::defun-builtin remove-trail-slash (string))
 (si::defun-builtin cwd ())
+(si::defun-builtin chdir (&optional dirname))
 (si::defun-builtin map-slash-to-backslash (string))
 (si::defun-builtin map-backslash-to-slash (string))
 (si::defun-builtin network-connect-dialog ())
@@ -1138,6 +1144,7 @@
 (si::defun-builtin convert-encoding-to-internal (encoding input-string-or-stream &optional output-stream))
 (si::defun-builtin convert-encoding-from-internal (encoding input-string-or-stream &optional output-stream))
 (si::defun-builtin detect-char-encoding (string-or-stream))
+(si::defun-builtin guess-char-encoding (string-or-stream))
 (si::defun-builtin dialog-box (dialog initializers handlers))
 (si::defun-builtin property-sheet (pages &optional caption start-page))
 (si::defun-builtin buffer-selector ())
@@ -1275,7 +1282,6 @@
 (si::defun-builtin ole-enumerator-next (oleobj))
 (si::defun-builtin ole-enumerator-reset (oleobj))
 (si::defun-builtin ole-enumerator-skip (oleobj &optional count))
-(si::defun-builtin uuid-create (&key :sequential))
 
 (gc)
 

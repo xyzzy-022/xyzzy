@@ -3,9 +3,11 @@ setlocal
 
 if "%1"=="" goto usage
 
-set TAG=%1
+set VERSION=%1
+
+set TAG=v%VERSION%
 set APPNAME=xyzzy
-set ARCHIVE=%APPNAME%-%TAG%.zip
+set ARCHIVE=%APPNAME%-%VERSION%.zip
 
 set BASEDIR=%~dp0
 set GIT_REPO=%BASEDIR%
@@ -13,7 +15,7 @@ set DISTROOT=%BASEDIR%\_dist
 set DISTDIR=%BASEDIR%\_dist\%APPNAME%
 set BUILDDIR=%BASEDIR%\_dist\build
 
-call git tag %TAG% -a -m "%APPNAME% %TAG% released!" || exit /b 1
+call git tag %TAG% -a -m "%APPNAME% %VERSION% released!" || exit /b 1
 call git tag
 
 cd %BASEDIR%
@@ -47,5 +49,5 @@ cd %DISTROOT%
 goto :eof
 
 :usage
-echo Usage: %0 TAG
+echo Usage: %0 VERSION
 goto :eof

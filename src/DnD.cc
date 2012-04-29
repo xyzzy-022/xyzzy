@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "ed.h"
-#include <shlobj.h>
 #include "ctxmenu.h"
 #include "com.h"
 #include "filer.h"

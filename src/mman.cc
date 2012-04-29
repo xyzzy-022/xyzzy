@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "cdecl.h"
 #include "mman.h"
 #include "vfs.h"

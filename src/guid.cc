@@ -1,4 +1,4 @@
-#include <windows.h>
+#include "stdafx.h"
 #include <initguid.h>
 
 DEFINE_GUID (CLSID_CActiveIMM, 0x4955dd33, 0xb159, 0x11d0,

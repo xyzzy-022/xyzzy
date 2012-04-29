@@ -777,3 +777,123 @@ lisp-indent-hook property"
         (:documentation "test package")))
     (documentation (find-package pkg-name) nil))
   !! si::check-type-error)
+
+
+(deftest hash-table-rehash-threshold-1 ()
+  (values
+   (hash-table-rehash-threshold (make-hash-table))
+   (hash-table-rehash-threshold (make-hash-table :rehash-threshold 9/10))
+   (hash-table-rehash-threshold (make-hash-table :rehash-threshold 0.9))
+   (hash-table-rehash-threshold (make-hash-table :rehash-threshold 0.9d0))
+   (hash-table-rehash-threshold (make-hash-table :rehash-threshold 1))
+   (hash-table-rehash-threshold (make-hash-table :rehash-threshold 1.0)))
+  => 0.8
+  => 0.9
+  => 0.9
+  => 0.9
+  => 1.0
+  => 1.0)
+
+(deftest hash-table-rehash-threshold-2 ()
+  (let ((h (make-hash-table :rehash-threshold 5/10)))
+    (dotimes (i 9)
+      (setf (gethash i h) i))
+    (values
+     (list (hash-table-rehash-threshold h)
+           (hash-table-count h)
+           (hash-table-size h))
+     (progn
+       (setf (gethash :x h) :x)
+       (list (hash-table-rehash-threshold h)
+             (hash-table-count h)
+             (hash-table-size h)))))
+  => (0.5 9 17)
+  => (0.5 10 47))
+
+(deftest hash-table-rehash-threshold-3 ()
+  (let ((h (make-hash-table :rehash-threshold 1)))
+    (dotimes (i 17)
+      (setf (gethash i h) i))
+    (values
+     (list (hash-table-rehash-threshold h)
+           (hash-table-count h)
+           (hash-table-size h))
+     (progn
+       (setf (gethash :x h) :x)
+       (list (hash-table-rehash-threshold h)
+             (hash-table-count h)
+             (hash-table-size h)))))
+  => (1.0 17 17)
+  => (1.0 18 47))
+
+(deftest hash-table-rehash-threshold-error-1 ()
+  (make-hash-table :rehash-threshold -1)
+  !! type-error)
+
+(deftest hash-table-rehash-threshold-error-2 ()
+  (make-hash-table :rehash-threshold 1.1)
+  !! type-error)
+
+
+(deftest hash-table-rehash-size-1 ()
+  (values
+   (hash-table-rehash-size (make-hash-table))
+   (hash-table-rehash-size (make-hash-table :rehash-size 1))
+   (hash-table-rehash-size (make-hash-table :rehash-size 2))
+   (hash-table-rehash-size (make-hash-table :rehash-size 100))
+   (hash-table-rehash-size (make-hash-table :rehash-size 1.1))
+   (hash-table-rehash-size (make-hash-table :rehash-size 2.2)))
+  => 1.5
+  => 1
+  => 2
+  => 100
+  => 1.1
+  => 2.2)
+
+(deftest hash-table-rehash-size-2 ()
+  (let ((h (make-hash-table :rehash-size 2.0)))
+    (dotimes (i 14)
+      (setf (gethash i h) i))
+    (values
+     (list (hash-table-rehash-size h)
+           (hash-table-count h)
+           (hash-table-size h))
+     (progn
+       (setf (gethash :x h) :x)
+       (list (hash-table-rehash-size h)
+             (hash-table-count h)
+             (hash-table-size h)))))
+  => (2.0 14 17)
+  => (2.0 15 47))
+
+(deftest hash-table-rehash-size-3 ()
+  (let ((h (make-hash-table :rehash-size 100)))
+    (dotimes (i 14)
+      (setf (gethash i h) i))
+    (values
+     (list (hash-table-rehash-size h)
+           (hash-table-count h)
+           (hash-table-size h))
+     (progn
+       (setf (gethash :x h) :x)
+       (list (hash-table-rehash-size h)
+             (hash-table-count h)
+             (hash-table-size h)))))
+  => (100 14 17)
+  => (100 15 149))
+
+(deftest hash-table-rehash-size-error-1 ()
+  (make-hash-table :rehash-size -1)
+  !! type-error)
+
+(deftest hash-table-rehash-size-error-2 ()
+  (make-hash-table :rehash-size 0)
+  !! type-error)
+
+(deftest hash-table-rehash-size-error-3 ()
+  (make-hash-table :rehash-size 0.9)
+  !! type-error)
+
+(deftest hash-table-rehash-size-error-3 ()
+  (make-hash-table :rehash-size -2.2)
+  !! type-error)

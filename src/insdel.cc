@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "syntaxinfo.h"
 #include "sequence.h"
@@ -1023,10 +1024,16 @@ Fbuffer_substring (lisp p1, lisp p2)
 }
 
 static int
+encoding_auto_detect_p (lisp encoding)
+{
+  return (char_encoding_p (encoding)
+          && xchar_encoding_type (encoding) == encoding_auto_detect);
+}
+
+static int
 encoding_sjis_p (lisp encoding)
 {
   return (!char_encoding_p (encoding)
-          || xchar_encoding_type (encoding) == encoding_auto_detect
           || xchar_encoding_type (encoding) == encoding_sjis);
 }
 
@@ -1100,7 +1107,7 @@ make_cf_text_sjis (CLIPBOARDTEXT &clp, lisp string)
 static int
 make_cf_text (CLIPBOARDTEXT &clp, lisp string, lisp encoding)
 {
-  if (encoding_sjis_p (encoding))
+  if (encoding_sjis_p (encoding) || encoding_auto_detect_p (encoding))
     return make_cf_text_sjis (clp, string);
 
   Char_input_string_stream str1 (string);
@@ -1192,13 +1199,26 @@ Fcopy_to_clipboard (lisp string)
 
   CLIPBOARDTEXT clp[2];
   bzero (clp, sizeof clp);
-  if (!make_clipboard_text (clp[0], string, 0))
-    FEstorage_error ();
-  if (clp[0].fmt == CF_UNICODETEXT && !sysdep.WinNTp ()
-      && !make_cf_text_sjis (clp[1], string))
+  lisp encoding = symbol_value (Vclipboard_char_encoding, selected_buffer ());
+  if (encoding_utf16_p (encoding))
     {
-      GlobalFree (clp[0].hgl);
-      FEstorage_error ();
+      if (!make_cf_wtext (clp[0], string))
+        FEstorage_error ();
+    }
+  else if (encoding_sjis_p (encoding) || encoding_auto_detect_p (encoding))
+    {
+      if (!make_cf_text_sjis (clp[0], string))
+        FEstorage_error ();
+    }
+  else
+    {
+      if (!make_cf_wtext (clp[0], string))
+        FEstorage_error ();
+      if (!make_cf_text (clp[1], string, encoding))
+        {
+          GlobalFree (clp[0].hgl);
+          FEstorage_error ();
+        }
     }
 
   int result = 0;
@@ -1281,19 +1301,22 @@ make_string_from_cf_text_sjis (lisp lstring, const u_char *s)
 static int
 make_string_from_cf_text (lisp lstring, const u_char *s)
 {
+  const char* ss = reinterpret_cast<const char*> (s);
   lisp encoding = symbol_value (Vclipboard_char_encoding, selected_buffer ());
+  if (encoding_auto_detect_p (encoding))
+    encoding = detect_char_encoding (ss, strlen (ss));
   if (encoding_sjis_p (encoding))
     return make_string_from_cf_text_sjis (lstring, s);
 
-  int sl = strlen ((const char *)s);
-  xinput_strstream str1 ((const char *)s, sl);
+  int sl = strlen (ss);
+  xinput_strstream str1 (ss, sl);
   encoding_input_stream_helper is1 (encoding, str1);
   int l = is1->total_length ();
   Char *b = (Char *)malloc (l * sizeof *b);
   if (!b)
     return 0;
   xstring_contents (lstring) = b;
-  xinput_strstream str2 ((const char *)s, sl);
+  xinput_strstream str2 (ss, sl);
   encoding_input_stream_helper is2 (encoding, str2);
   int c;
   while ((c = is2->get ()) != xstream::eof)

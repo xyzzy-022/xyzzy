@@ -1,6 +1,7 @@
+#include "stdafx.h"
 #include "cdecl.h"
 #include "version.h"
-#include "version-describe.gen.h"
+#include "version-describe.h"
 
 #if !PROGRAM_PATCH_LEVEL
 # if !PROGRAM_MINOR_REVISION

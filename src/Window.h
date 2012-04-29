@@ -671,9 +671,11 @@ struct Window
   void update_mode_line_vars (int, lisp);
   void update_mode_line_vars ();
 
+  static void change_parameters (const FontSetParam &);
   static void change_parameters (const FontSetParam &,
                                  const XCOLORREF *, const XCOLORREF *,
-                                 const XCOLORREF *, const XCOLORREF *);
+                                 const XCOLORREF *, const XCOLORREF *,
+                                 bool change_color_p = true);
   void invalidate_glyphs ();
 
   void discard_invalid_region (const PAINTSTRUCT &, RECT &);

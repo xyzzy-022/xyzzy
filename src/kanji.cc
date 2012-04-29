@@ -1,8 +1,10 @@
+#include "stdafx.h"
 #include "ed.h"
 #include "StrBuf.h"
 #include "safe_ptr.h"
 #include "byte-stream.h"
 #include "iso2022state.h"
+#include "guess.h"
 
 int
 check_kanji2 (const char *string, u_int off)
@@ -436,12 +438,6 @@ simple_rev_unicode_p (const ucs2_t *w, int l)
   return 1;
 }
 
-static inline int
-utf8_signature_p (const char *string, int size)
-{
-  return size >= 3 && !memcmp (string, "\xef\xbb\xbf", 3);
-}
-
 static lisp
 judge_char_encoding (const iso2022_state &iso2022, const euc_state &euc,
                      const sjis_state &sjis, const utf8_state &utf8,
@@ -488,8 +484,8 @@ judge_char_encoding (const iso2022_state &iso2022, const euc_state &euc,
     }
 }
 
-lisp
-detect_char_encoding (const char *string, int size, int real_size)
+static lisp
+detect_char_encoding_xyzzy (const char *string, int size, int real_size)
 {
   if (size >= 2 && !(real_size & 1))
     {
@@ -523,8 +519,8 @@ detect_char_encoding (const char *string, int size, int real_size)
   return judge_char_encoding (iso2022, euc, sjis, utf8, big5, sum, string, size);
 }
 
-lisp
-Fdetect_char_encoding (lisp string)
+static lisp
+detect_char_encoding_xyzzy (lisp string)
 {
   xstream_ibyte_helper is (string);
 
@@ -550,6 +546,95 @@ Fdetect_char_encoding (lisp string)
     }
 
   return judge_char_encoding (iso2022, euc, sjis, utf8, big5, sum, buf, nb);
+}
+
+static lisp
+detect_char_encoding_libguess (const char *string, int size, int real_size)
+{
+  if (!string || size == 0)
+    return Qnil;
+  return Fdetect_char_encoding (make_string_simple (string, size));
+}
+
+static lisp
+detect_char_encoding_libguess (lisp string)
+{
+#define score xcdr
+#define encoding xcar
+  // r == ((<encoding> . <score>) (<encoding> . <score>) ...)
+
+  lisp r = Fguess_char_encoding (string);
+  if (r == Qnil)
+    return Qnil;
+
+  if (xlist_length (r) == 1)
+    return encoding (xcar (r));
+
+  // 曖昧な場合は一番高いスコアのエンコーディングを返す。
+  // 一番高いスコアが複数ある場合は nil を返す。
+  lisp top = Qnil;
+  for (; consp (r); r = xcdr (r))
+    {
+      lisp x = xcar (r);
+      // sjis の半角カナだけだと big5 のスコアが高くなるので
+      // 曖昧な場合は big5 は無視して判定する。
+      if (xchar_encoding_type (encoding (x)) == encoding_big5)
+          continue;
+
+      if (top == Qnil || number_compare (score (xcar (top)), score (x)) < 0)
+        top = xcons (x, Qnil);
+      else if (number_compare (score (xcar (top)), score (x)) == 0)
+        top = xcons (x, top);
+    }
+
+  size_t len = xlist_length (top);
+  if (len == 1)
+    return encoding (xcar (top));
+
+  if (len == 2)
+    {
+      // sjis を utf-8 と誤認することはあまりないが、
+      // utf-8 を sjis と誤認することが多いので、
+      // sjis と utf-8 が同スコアの場合は utf-8 を優先する。
+      lisp a = xcar (top);
+      lisp b = Fcadr (top);
+      if (xchar_encoding_type (encoding (a)) == encoding_sjis &&
+          xchar_encoding_type (encoding (b)) == encoding_utf8)
+        return encoding (b);
+      if (xchar_encoding_type (encoding (b)) == encoding_sjis &&
+          xchar_encoding_type (encoding (a)) == encoding_utf8)
+        return encoding (a);
+    }
+
+  return Qnil;
+#undef score
+#undef encoding
+}
+
+lisp
+detect_char_encoding (const char *string, int size)
+{
+  return detect_char_encoding (string, size, size);
+}
+
+lisp
+detect_char_encoding (const char *string, int size, int real_size)
+{
+  lisp mode = xsymbol_value (Vdetect_char_encoding_mode);
+  if (mode == Kxyzzy)
+    return detect_char_encoding_xyzzy (string, size, real_size);
+  else
+    return detect_char_encoding_libguess (string, size, real_size);
+}
+
+lisp
+Fdetect_char_encoding (lisp string)
+{
+  lisp mode = xsymbol_value (Vdetect_char_encoding_mode);
+  if (mode == Kxyzzy)
+    return detect_char_encoding_xyzzy (string);
+  else
+    return detect_char_encoding_libguess (string);
 }
 
 lisp

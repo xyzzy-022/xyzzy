@@ -9,7 +9,7 @@
 
 (export '(*c-mode-hook* c-indent-level c-continued-statement-offset
 	  c-argdecl-indent c-brace-offset c-brace-imaginary-offset
-	  c-label-offset c-comment-indent))
+	  c-label-offset c-preprocessor-offset c-comment-indent))
 (export '(c-mode c-indent-line c-newline-and-indent c-electric-insert
 	  c-electric-close indent-cpp-directive
 	  *c-keyword-file* *c-indent-tabs-mode*
@@ -25,6 +25,7 @@
   (setq c-brace-offset 0)
   (setq c-brace-imaginary-offset 0)
   (setq c-label-offset -2)
+  (setq c-preprocessor-offset nil)
   (setq c-comment-indent 2))
 
 (defvar *c-tab-always-indent* t)
@@ -131,21 +132,20 @@
 (defun indent-cpp-directive ()
   (interactive)
   (save-excursion
-    (let ((column 1))
+    (let ((nest 0))
       (goto-char (point-min))
-      (while (scan-buffer "^#" :regexp t)
-	(forward-char 1)
+      (while (scan-buffer "^[ \t]*#" :regexp t :tail t)
 	(cond ((looking-at "[ \t]*if")
-	       (cpp-indent-to column)
-	       (setq column (1+ column)))
+	       (cpp-indent-to (+ (current-column) nest))
+	       (incf nest))
 	      ((looking-at "[ \t]*el\\(se\\|if\\)")
-	       (cpp-indent-to (1- column)))
+	       (cpp-indent-to (+ (current-column) (1- nest))))
 	      ((looking-at "[ \t]*endif")
-	       (setq column (1- column))
-	       (when (zerop column)
+	       (decf nest)
+	       (when (minusp nest)
 		 (error "Unmatched \"#endif\" at line ~d" (current-line-number)))
-	       (cpp-indent-to column))
-	      (t (cpp-indent-to column)
+	       (cpp-indent-to (+ (current-column) nest)))
+	      (t (cpp-indent-to (+ (current-column) nest))
 		 (if (looking-for "define")
 		     (while (and (progn
 				   (goto-eol)
@@ -153,7 +153,7 @@
 				   (looking-for "\\"))
 				 (forward-line 1))
 		       (c-indent-line))))))
-      (when (/= column 1)
+      (when (/= nest 0)
 	(error "Unmatched \"#if\" or \"#ifdef\""))))
   t)
 

@@ -19,7 +19,8 @@ class lhash_table: public lisp_object
 public:
   hash_test_proc test;
   int size;
-  int rehash_size;
+  lisp rehash_size;
+  float rehash_threshold;
   int used;
   int count;
   hash_entry *entry;
@@ -49,11 +50,18 @@ xhash_table_size (lisp x)
   return ((lhash_table *)x)->size;
 }
 
-inline int &
+inline lisp &
 xhash_table_rehash_size (lisp x)
 {
   assert (hash_table_p (x));
   return ((lhash_table *)x)->rehash_size;
+}
+
+inline float &
+xhash_table_rehash_threshold (lisp x)
+{
+  assert (hash_table_p (x));
+  return ((lhash_table *)x)->rehash_threshold;
 }
 
 inline int &

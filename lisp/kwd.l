@@ -62,17 +62,17 @@
 
 (defun load-keyword-file (name &optional icase table condition)
   (if (listp name)
-      (progn
-	(dolist (n name)
-	  (when n
-	    (setf table (or (load-keyword-file-1 n icase table condition)
-			    table))))
-	(when table
-	  (setf (gethash 'keyword-file table) name))
-	table)
-    (load-keyword-file-1 name icase table condition)))
+      (dolist (n name)
+	(when n
+	  (setf table (or (load-keyword-file-1 n icase table condition)
+			  table))))
+    (setf table (load-keyword-file-1 name icase table condition)))
+  (when table
+    (setf (gethash 'keyword-file table) name)
+    (setf (gethash 'keyword-condition table) condition))
+  table)
 
-(defun load-keyword-file-1 (name &optional icase table condition)
+(defun load-keyword-file-1 (name &optional icase table condition loading)
   (let (filename)
     (dolist (d *keyword-load-path*
 	       (unless (file-exist-p (setq filename
@@ -84,16 +84,17 @@
     (let ((num #x400)
 	  (entity-ok 0)
 	  (valid t)
+	  (remove nil)
 	  buffer)
       (unwind-protect
 	  (save-excursion
 	    (setq buffer (create-new-buffer "*load kwd*"))
 	    (set-buffer buffer)
-	    (insert-file (merge-pathnames filename (etc-path)))
+	    (setq filename (merge-pathnames filename (etc-path)))
+	    (setq loading (cons filename loading))
+	    (insert-file filename)
 	    (unless table
 	      (setq table (make-keyword-table icase (truncate (buffer-lines) 3/4))))
-	    (setf (gethash 'keyword-file table) name)
-	    (setf (gethash 'keyword-condition table) condition)
 	    (and condition
 		 (not (equal condition "*"))
 		 (setq condition (compile-regexp (concat (regexp-quote condition)
@@ -105,21 +106,27 @@
 			  (cond ((looking-for "*+")
 				 (forward-char 2)
 				 (when (or (equal condition "*")
-					   (progn
-					     (skip-chars-forward " \t")
-					     (eolp))
-					   (and condition
-						(looking-at condition)))
-				   (setq valid t)))
+					   (match-keyword-condition condition))
+				   (setq valid t remove nil)))
+				((looking-for "*--")
+				 (forward-char 3)
+				 (when (match-keyword-condition condition)
+				   (setq valid nil remove t)))
 				((looking-for "*-")
 				 (forward-char 2)
-				 (when (or (progn
-					     (skip-chars-forward " \t")
-					     (eolp))
-					   (and condition
-						(looking-at condition)))
-				   (setq valid nil)))
+				 (when (match-keyword-condition condition)
+				   (setq valid nil remove nil)))
 				((not valid))
+				((looking-at "@include[ \t]+\\(?:\"\\(.+\\)\"\\|<\\(.+\\)>\\)$")
+				 (let ((include (if (match-string 1)
+						    (merge-pathnames (match-string 1) (directory-namestring filename))
+						  (merge-pathnames (match-string 2) (etc-path)))))
+				   (cond ((not (file-exist-p include))
+					  (warn "Keyword file not found: ~A" include))
+					 ((member include loading :test #'path-equal)
+					  (warn "Include recursion detected: ~S" (cons include loading)))
+					 (t
+					  (load-keyword-file-1 include icase table condition loading)))))
 				((looking-for "*&")
 				 (setq entity-ok 4)
 				 (setq num (logior num 4)))
@@ -146,19 +153,28 @@
 			  (forward-line 1))
 			 ((eolp)
 			  (forward-char 1))
-			 ((not valid)
+			 ((and (not valid) (not remove))
 			  (forward-line 1))
 			 (t
-			  (setf (gethash (buffer-substring (point)
+			  (let ((keyword (buffer-substring (point)
 							   (progn
 							     (goto-eol)
-							     (point)))
-					 table)
-				num)
+							     (point)))))
+			    (cond ((and (not valid) remove)
+				   (remhash keyword table))
+				  (valid
+				   (setf (gethash keyword table) num))))
 			  (forward-char 1)))))
 	(when buffer
 	  (delete-buffer buffer)))))
   table)
+
+(defun match-keyword-condition (condition)
+  (or (progn
+	(skip-chars-forward " \t")
+	(eolp))
+      (and condition
+	   (looking-at condition))))
 
 (defun make-list-from-keyword-table (hash)
   (let ((list nil))

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "xlist.h"
 
 xlistP::x_node_ptr

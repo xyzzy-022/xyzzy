@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ed.h"
 
 utimer::timer_entry::timer_entry (const utime_t &time, u_long interval,

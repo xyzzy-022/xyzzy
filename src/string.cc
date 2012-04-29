@@ -1,4 +1,6 @@
+#include "stdafx.h"
 #include "ed.h"
+#include "byte-stream.h"
 #include "sequence.h"
 #include "StrBuf.h"
 
@@ -400,6 +402,17 @@ make_string_from_vector (lisp vector)
   for (p = xvector_contents (vector); p < pe; p++)
     *s++ = xchar_code (*p);
   return string;
+}
+
+int
+string_equalp (const Char *p1, int l1, const char *p2, int l2)
+{
+  if (l1 != l2)
+    return 0;
+  for (const Char *pe = p1 + l1; p1 < pe; p1++, p2++)
+    if (char_upcase (*p1) != char_upcase (*p2))
+      return 0;
+  return 1;
 }
 
 int
@@ -1260,4 +1273,32 @@ Fdecode_escape_sequence (lisp string, lisp regexpp)
     }
 
   return mod ? sb.make_string () : string;
+}
+
+lisp
+Fsi_octet_length (lisp string, lisp keys)
+{
+  check_string (string);
+
+  int start, end;
+  string_start_end (string, start, end,
+                    find_keyword (Kstart, keys, make_fixnum (0)),
+                    find_keyword (Kend, keys, Qnil));
+  lisp encoding = find_keyword (Kencoding, keys);
+  if (encoding == Qnil)
+    return make_fixnum (w2sl (xstring_contents (string) + start, end - start));
+
+  check_char_encoding (encoding);
+  if (xchar_encoding_type (encoding) == encoding_auto_detect)
+    FEtype_error (encoding, Qchar_encoding);
+
+  if (start != 0 || end != xstring_length (string))
+    string = make_string (xstring_contents (string) + start, end - start);
+  xstream_iChar_helper is (string);
+  encoding_output_stream_helper s (encoding, is, eol_noconv);
+
+  int r = 0;
+  while (s->get () != xstream::eof)
+    r++;
+  return make_fixnum (r);
 }

@@ -1,5 +1,4 @@
-#include <windows.h>
-#include <stdlib.h>
+#include "stdafx.h"
 #include "cdecl.h"
 
 #ifdef DEBUG

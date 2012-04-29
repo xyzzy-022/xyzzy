@@ -11,7 +11,7 @@
 	  *csharp-keyword-file* *csharp-indent-tabs-mode*
 	  csharp-indent-level csharp-continued-statement-offset
 	  csharp-argdecl-indent csharp-brace-offset csharp-brace-imaginary-offset
-	  csharp-label-offset csharp-comment-indent))
+	  csharp-label-offset csharp-preprocessor-offset csharp-comment-indent))
 
 (defvar *csharp-mode-hook* nil)
 
@@ -22,6 +22,7 @@
   (setq csharp-brace-offset 0)
   (setq csharp-brace-imaginary-offset 0)
   (setq csharp-label-offset -2)
+  (setq csharp-preprocessor-offset nil)
   (setq csharp-comment-indent 2))
 
 (defvar *csharp-keyword-hash-table* nil)

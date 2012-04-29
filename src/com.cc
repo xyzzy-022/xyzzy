@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "ed.h"
-#include <shlobj.h>
-#include <propkey.h>
 #include "com.h"
 #include "oleconv.h"
 #include "sysdep.h"
