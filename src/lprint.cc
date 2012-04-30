@@ -1550,9 +1550,15 @@ print_win32_dde_handle (wStream &stream, const print_control &, lisp object)
 }
 
 static inline void
-print_chunk (wStream &stream, const print_control &, lisp object)
+print_chunk (wStream &stream, const print_control &pc, lisp object)
 {
-  print_unreadable_object (stream, object, "chunk");
+  char buf[32];
+  stream.add ("#<chunk :type ");
+  print_symbol (stream, pc, xchunk_type (object));
+  stream.add (" :size ");
+  stream.add (store_uint (buf + sizeof buf, xchunk_size (object)));
+  print_object_address (stream, object);
+  stream.add (">");
 }
 
 static inline void
