@@ -371,3 +371,40 @@ of SHA-384 and SHA-512)."
 (deftest octet-length-error-7 ()
   (si:octet-length "abc" :end 4)
   !! range-error)
+
+(deftest chunkp ()
+  (values
+   (si:*chunkp (si:make-string-chunk ""))
+   (si:*chunkp (si:make-chunk nil 0))
+   (si:*chunkp nil)
+   (si:*chunkp 0)
+   (si:*chunkp ""))
+  => t
+  => t
+  => nil
+  => nil
+  => nil)
+
+(deftest chunk-typep ()
+  (values
+   (typep (si:make-string-chunk "") 'si:chunk)
+   (typep (si:make-chunk nil 0) 'si:chunk)
+   (typep nil 'si:chunk)
+   (typep 0 'si:chunk)
+   (typep "" 'si:chunk))
+  => t
+  => t
+  => nil
+  => nil
+  => nil)
+
+(deftest chunk-check-type-1 ()
+  (values
+   (check-type (si:make-string-chunk "") si:chunk)
+   (check-type (si:make-chunk nil 0) si:chunk))
+  => nil
+  => nil)
+
+(deftest chunk-check-type-2 ()
+  (check-type "" si:chunk)
+  !! type-error)
