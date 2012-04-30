@@ -3114,6 +3114,7 @@ si:*bignump
 si:*bq-completely-process
 si:*byte-code
 si:*c-callable-p
+si:*chunkp
 si:*closurep
 si:*condition-string
 si:*copy-into-seq
