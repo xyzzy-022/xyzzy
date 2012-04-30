@@ -934,6 +934,7 @@ static symbols sys[] =
   DEFCONST2Q (*performance-counter-frequency*),
 
   /* chunk.cc */
+  SI_DEFUN3 (*chunkp, 1, 0, 0),
   SI_DEFUN3 (make-chunk, 2, 2, 0),
   SI_DEFUN3 (make-string-chunk, 1, 0, 0),
   SI_DEFUN3 (chunk-data, 1, 0, 0),
