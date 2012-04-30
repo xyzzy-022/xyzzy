@@ -97,6 +97,12 @@ Fsi_make_string_chunk (lisp string)
 }
 
 lisp
+Fsi_chunkp (lisp data)
+{
+  return boole (chunkp (data));
+}
+
+lisp
 Fsi_chunk_data (lisp chunk)
 {
   check_chunk (chunk);
