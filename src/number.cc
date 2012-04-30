@@ -107,6 +107,26 @@ make_integer (large_int li)
   return lb;
 }
 
+lisp
+make_integer (int64_t x)
+{
+  if (x < LONG_MAX)
+    return make_fixnum (static_cast <long> (x));
+  lbignum *lb = make_bignum ();
+  lb->rep = br_copy (0, x);
+  return lb;
+}
+
+lisp
+make_integer (uint64_t x)
+{
+  if (x < LONG_MAX)
+    return make_fixnum (static_cast <long> (x));
+  lbignum *lb = make_bignum ();
+  lb->rep = br_copy (0, x);
+  return lb;
+}
+
 static inline lisp
 flonum_to_integer (double x)
 {

@@ -50,6 +50,8 @@ xdll_module_loaded (lisp x)
 # define CTYPE_UINT32 6
 # define CTYPE_FLOAT 7
 # define CTYPE_DOUBLE 8
+# define CTYPE_INT64 9
+# define CTYPE_UINT64 10
 
 # define CALLING_CONVENTION_STDCALL 0
 # define CALLING_CONVENTION_CDECL 1

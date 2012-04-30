@@ -297,6 +297,8 @@ numberp (lisp x)
 
 #include "largeint.h"
 lisp make_integer (large_int);
+lisp make_integer (int64_t);
+lisp make_integer (uint64_t);
 lisp make_integer (bignum_rep *);
 
 int safe_fixnum_value (lisp, long *);
@@ -305,6 +307,7 @@ double coerce_to_double_float (lisp);
 float coerce_to_single_float (lisp);
 bignum_rep *coerce_to_bignum_rep (lisp, bignum_rep_long *);
 long coerce_to_long (lisp);
+int64_t coerce_to_int64 (lisp);
 
 lisp number_add (lisp, lisp);
 lisp number_subtract (lisp, lisp);
