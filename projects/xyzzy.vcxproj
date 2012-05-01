@@ -470,8 +470,8 @@
   </Target>
   <Target Name="BeforeClean" DependsOnTargets="DeleteXyzzyDumpFile">
     <Delete Files="$(SolutionDir)$(TargetName)$(TargetExt)" Condition="Exists('$(SolutionDir)$(TargetName)$(TargetExt)')" />
-    <Delete Files="$(SolutionDir)src\xyzzy.rc" Condition="Exists('$(SolutionDir)src\xyzzy.rc')" />
-    <Delete Files="$(SolutionDir)src\version-describe.h" Condition="Exists('$(SolutionDir)src\version-describe.h')" />
+    <Delete Files="$(SolutionDir)src\gen\xyzzy.rc" Condition="Exists('$(SolutionDir)src\gen\xyzzy.rc')" />
+    <Delete Files="$(SolutionDir)src\gen\version-describe.h" Condition="Exists('$(SolutionDir)src\gen\version-describe.h')" />
     <RemoveDir Directories="$(TargetDir)lisp;$(TargetDir)etc" />
   </Target>
 </Project>
