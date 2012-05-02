@@ -67,11 +67,14 @@ struct symbols
   DEFCMD (name, CAT (F, name), CAT (S, name), req, opt, f, g)
 
 #define VDEF(a, b, c) {STR (a), 0, STR (b), 0, 0, c}
+#define VDEFX(a, b, c) {a, 0, STR (b), 0, 0, c}
 
 #define DEFCONST(a, b) VDEF (a, b, SFconstant | SFspecial)
+#define DEFCONSTX(a, b) VDEFX (a, b, SFconstant | SFspecial)
 #define DEFCONST2Q(name) DEFCONST (name, CAT (Q, name))
 #define DEFKWD DEFCONST
 #define DEFKWD2(name) DEFCONST (name, CAT (K, name))
+#define DEFKWD2X(name, lname) DEFCONSTX (name, lname)
 #define DEFVAR(a, b) VDEF (a, b, SFspecial)
 #define DEFVAR2(name) DEFVAR (name, CAT (V, name))
 #define SI_DEFVAR2(name) DEFVAR (name, CAT (Vsi_, name))
@@ -967,7 +970,7 @@ static symbols sys[] =
   /* dll.cc */
   SI_DEFUN3 (load-dll-module, 1, 0, 0),
   SI_DEFUN3 (make-c-function, 4, 0, 0),
-  SI_DEFUN3 (make-c-callable, 3, 0, 0),
+  SI_DEFUN3 (make-c-callable, 3, 0, FFneed_rest),
 
   MAKE_SYMBOL (dll-module, Qsi_dll_module),
   MAKE_SYMBOL (c-function, Qsi_c_function),
@@ -1297,6 +1300,9 @@ static symbols kwd[] =
   DEFKWD2 (float),
   DEFKWD2 (double),
   DEFKWD2 (void),
+  DEFKWD2 (convention),
+  DEFKWD2 (stdcall),
+  DEFKWD2X ("cdecl", Kcdecl),
   DEFKWD2 (encoding),
   DEFKWD2 (text),
   DEFKWD2 (canonical),
