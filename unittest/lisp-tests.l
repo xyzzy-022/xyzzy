@@ -897,3 +897,30 @@ lisp-indent-hook property"
 (deftest hash-table-rehash-size-error-3 ()
   (make-hash-table :rehash-size -2.2)
   !! type-error)
+
+(deftest copy-tree-circular-list-1 ()
+  (let* ((a '#1=(#1#))
+         (b (copy-tree a)))
+    (values
+     (eq a (car a))
+     (eq b (car b))
+     (not (eq a b))))
+  => t
+  => t
+  => t)
+
+(deftest copy-tree-circular-list-2 ()
+  (let* ((a '#1=(1 2 3 #2=(4 5 6) #2# #1#))
+         (b (copy-tree a)))
+    (values
+     (not (eql (butlast a) (butlast b)))
+     (equal (butlast a) (butlast b))
+
+     (not (eq (car (last a)) (car (last b))))
+     (eq a (car (last a)))
+     (eq b (car (last b)))))
+  => t
+  => t
+  => t
+  => t
+  => t)
