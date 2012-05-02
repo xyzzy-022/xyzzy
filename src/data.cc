@@ -2576,6 +2576,7 @@ dump_object (FILE *fp, const lc_callable *d, int n,
         writef (fp, d->arg_types, d->nargs);
         writef (fp, &d->arg_size, sizeof d->arg_size);
         writef (fp, &d->return_type, sizeof d->return_type);
+        writef (fp, &d->convention, sizeof d->convention);
       }
 }
 
@@ -2592,6 +2593,7 @@ rdump_object (FILE *fp, lc_callable *d, int n,
         readf (fp, d->arg_types, d->nargs);
         readf (fp, &d->arg_size, sizeof d->arg_size);
         readf (fp, &d->return_type, sizeof d->return_type);
+        readf (fp, &d->convention, sizeof d->convention);
         init_c_callable (d);
       }
 }
