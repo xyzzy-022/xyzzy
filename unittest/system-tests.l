@@ -408,3 +408,58 @@ of SHA-384 and SHA-512)."
 (deftest chunk-check-type-2 ()
   (check-type "" si:chunk)
   !! type-error)
+
+(deftest pack-unpack-int64 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-int64 c 0 #x1234567890)
+    (si:unpack-int64 c 0))
+  => #x1234567890)
+
+(deftest pack-unpack-uint64 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-uint64 c 0 #xFFFFFFFFFFFFFFFF)
+    (values
+     (si:unpack-uint64 c 0)
+     (si:unpack-int64 c 0)))
+  => #xFFFFFFFFFFFFFFFF
+  => -1)
+
+(deftest pack-unpack-int64-offset ()
+  (let ((c (si:make-chunk nil 16)))
+    (si:pack-int64 c 0 #x1234567890)
+    (si:pack-int64 c 8 #x1234567891)
+    (values
+     (si:unpack-int64 c 0)
+     (si:unpack-int64 c 8)))
+  => #x1234567890
+  => #x1234567891)
+
+(deftest pack-unpack-uint64-offset ()
+  (let ((c (si:make-chunk nil 16)))
+    (si:pack-uint64 c 0 #xFFFFFFFFFFFFFFFF)
+    (si:pack-uint64 c 8 #xFFFFFFFFFFFFFFFF)
+    (values
+     (si:unpack-uint64 c 0)
+     (si:unpack-uint64 c 8)))
+  => #xFFFFFFFFFFFFFFFF
+  => #xFFFFFFFFFFFFFFFF)
+
+(deftest pack-int64-range-error ()
+  (let ((c (si:make-chunk nil 4)))
+    (si:pack-int64 c 0 #x1234567890))
+  !! range-error)
+
+(deftest pack-uint64-range-error ()
+  (let ((c (si:make-chunk nil 4)))
+    (si:pack-uint64 c 0 #x1234567890))
+  !! range-error)
+
+(deftest unpack-int64-range-error ()
+  (let ((c (si:make-chunk nil 4)))
+    (si:unpack-uint64 c 0))
+  !! range-error)
+
+(deftest unpack-uint64-range-error ()
+  (let ((c (si:make-chunk nil 4)))
+    (si:unpack-uint64 c 0))
+  !! range-error)
