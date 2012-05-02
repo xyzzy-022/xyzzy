@@ -2207,7 +2207,7 @@ xyzzy終了時に実行されます。このフック変数の実行がnilだと
 <package>lisp</package>
 <description>
 読み取り時評価(read-time evaluation)を制御します。
-*read-eval*がnon-nilなら #. リーダマクロは通常どうりに動作します。
+*read-eval*がnon-nilなら #. リーダマクロは通常どおり直後のS式を評価した結果を値とします。
 nilならreader-errorが発生します。
 
 標準はtです。
