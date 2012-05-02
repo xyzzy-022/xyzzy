@@ -3249,10 +3249,12 @@ si:pack-double
 si:pack-float
 si:pack-int16
 si:pack-int32
+si:pack-int64
 si:pack-int8
 si:pack-string
 si:pack-uint16
 si:pack-uint32
+si:pack-uint64
 si:pack-uint8
 si:performance-counter
 si:plugin-arg
@@ -3261,9 +3263,11 @@ si:unpack-double
 si:unpack-float
 si:unpack-int16
 si:unpack-int32
+si:unpack-int64
 si:unpack-int8
 si:unpack-uint16
 si:unpack-uint32
+si:unpack-uint64
 si:unpack-uint8
 si:|"-reader|
 si:|##-reader|

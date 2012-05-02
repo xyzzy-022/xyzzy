@@ -96,6 +96,10 @@ check_c_type (lisp type)
     return CTYPE_INT32;
   if (type == Kuint32)
     return CTYPE_UINT32;
+  if (type == Kint64)
+    return CTYPE_INT64;
+  if (type == Kuint64)
+    return CTYPE_UINT64;
   if (type == Kfloat)
     return CTYPE_FLOAT;
   if (type == Kdouble)
@@ -135,6 +139,11 @@ calc_argument_size (u_char *at, lisp largs)
         case CTYPE_INT32:
         case CTYPE_UINT32:
           size += sizeof (int);
+          break;
+
+        case CTYPE_INT64:
+        case CTYPE_UINT64:
+          size += sizeof (int64_t);
           break;
 
         case CTYPE_FLOAT:
@@ -213,6 +222,12 @@ funcall_dll (lisp fn, lisp arglist)
           stack += sizeof (long);
           break;
 
+        case CTYPE_INT64:
+        case CTYPE_UINT64:
+          *(int64_t *)stack = cast_to_int64 (a);
+          stack += sizeof (int64_t);
+          break;
+
         case CTYPE_FLOAT:
           *(float *)stack = coerce_to_single_float (a);
           stack += sizeof (float);
@@ -255,6 +270,12 @@ funcall_dll (lisp fn, lisp arglist)
 
     case CTYPE_UINT32:
       return make_integer (long_to_large_int (u_long (proc ())));
+
+    case CTYPE_INT64:
+      return make_integer (((int64_t (__stdcall *)())proc)());
+
+    case CTYPE_UINT64:
+      return make_integer (((uint64_t (__stdcall *)())proc)());
 
     case CTYPE_FLOAT:
       return make_single_float (((float (__stdcall *)())proc)());
@@ -329,6 +350,16 @@ c_callable_stub (lisp cc, char *stack)
         case CTYPE_UINT32:
           cargs -= sizeof (int);
           v = make_integer (long_to_large_int (*(u_long *)cargs));
+          break;
+
+        case CTYPE_INT64:
+          cargs -= sizeof (int64_t);
+          v = make_integer (*(int64_t *)cargs);
+          break;
+
+        case CTYPE_UINT64:
+          cargs -= sizeof (int64_t);
+          v = make_integer (*(uint64_t *)cargs);
           break;
 
         case CTYPE_FLOAT:

@@ -57,3 +57,47 @@
                 (unpack-int32-array array n)))))
   => (10 9 8 7 6 5 4 3 2 1)
   => (1 2 3 4 5 6 7 8 9 10))
+
+
+(c:define-dll-entry
+  c:int64
+  _atoi64 ((c:void *))
+  "msvcrt")
+
+(deftest define-dll-entry-return-int64 ()
+  (flet ((atoi (str)
+           (_atoi64 (si:make-string-chunk str))))
+    (values
+     (atoi "0")
+     (atoi "1")
+     (atoi "-1")
+     (atoi "4294967295")
+     (atoi "9223372036854775807")))
+  => 0
+  => 1
+  => -1
+  => #xFFFFFFFF
+  => #x7FFFFFFFFFFFFFFF)
+
+
+(c:define-dll-entry
+  (c:void *)
+  _i64toa (c:int64 (c:void *) c:int)
+  "msvcrt")
+
+(deftest define-dll-entry-int64-arg ()
+  (flet ((itoa (n)
+           (let ((c (si:make-chunk nil 30)))
+             (_i64toa n c 10)
+             (si:unpack-string c 0))))
+    (values
+     (itoa 0)
+     (itoa 1)
+     (itoa -1)
+     (itoa #xFFFFFFFF)
+     (itoa #x7FFFFFFFFFFFFFFF)))
+  => "0"
+  => "1"
+  => "-1"
+  => "4294967295"
+  => "9223372036854775807")

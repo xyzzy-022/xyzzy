@@ -257,6 +257,20 @@ Fsi_unpack_uint32 (lisp chunk, lisp offset)
 }
 
 lisp
+Fsi_unpack_int64 (lisp chunk, lisp offset)
+{
+  int64_t *p = (int64_t *)chunk_ptr (chunk, offset, sizeof *p);
+  return make_integer (*p);
+}
+
+lisp
+Fsi_unpack_uint64 (lisp chunk, lisp offset)
+{
+  uint64_t *p = (uint64_t *)chunk_ptr (chunk, offset, sizeof *p);
+  return make_integer (*p);
+}
+
+lisp
 Fsi_unpack_float (lisp chunk, lisp offset)
 {
   float *p = (float *)chunk_ptr (chunk, offset, sizeof *p);
@@ -295,25 +309,31 @@ Fsi_unpack_string (lisp chunk, lisp loffset, lisp lsize, lisp lzero_term)
   return string;
 }
 
-long
-cast_to_long (lisp object)
+int64_t
+cast_to_int64 (lisp object)
 {
   if (pointerp (object))
     switch (object_typeof (object))
       {
       case Tchunk:
-        return long (xchunk_data (object));
+        return int64_t (xchunk_data (object));
 
       case Tdll_module:
-        return long (xdll_module_handle (object));
+        return int64_t (xdll_module_handle (object));
 
       case Tdll_function:
-        return long (xdll_function_proc (object));
+        return int64_t (xdll_function_proc (object));
 
       case Tc_callable:
-        return long (xc_callable_insn (object));
+        return int64_t (xc_callable_insn (object));
       }
-  return coerce_to_long (object);
+  return coerce_to_int64 (object);
+}
+
+long
+cast_to_long (lisp object)
+{
+  return static_cast <long> (cast_to_int64 (object));
 }
 
 lisp
@@ -361,6 +381,22 @@ Fsi_pack_uint32 (lisp chunk, lisp offset, lisp value)
 {
   u_long *p = (u_long *)chunk_ptr (chunk, offset, sizeof *p);
   *p = u_long (cast_to_long (value));
+  return value;
+}
+
+lisp
+Fsi_pack_int64 (lisp chunk, lisp offset, lisp value)
+{
+  int64_t *p = (int64_t *)chunk_ptr (chunk, offset, sizeof *p);
+  *p = int64_t (cast_to_int64 (value));
+  return value;
+}
+
+lisp
+Fsi_pack_uint64 (lisp chunk, lisp offset, lisp value)
+{
+  uint64_t *p = (uint64_t *)chunk_ptr (chunk, offset, sizeof *p);
+  *p = uint64_t (cast_to_int64 (value));
   return value;
 }
 

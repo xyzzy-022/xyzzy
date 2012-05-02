@@ -3,6 +3,8 @@
 
 # define SHORT_PER_LONG \
   ((sizeof (long) + sizeof (short) - 1) / sizeof (short))
+# define SHORT_PER_INT64 \
+  ((sizeof (int64_t) + sizeof (short) - 1) / sizeof (short))
 
 enum logope_code
 {
@@ -58,6 +60,7 @@ struct bignum_rep
   u_long to_ulong () const;
   double to_double () const;
   long coerce_to_long () const;
+  int64_t coerce_to_int64 () const;
   int is_long () const;
   int is_ulong () const;
   int fmtwidth (u_long) const;
@@ -176,6 +179,8 @@ int br_compare (const bignum_rep *, const bignum_rep *);
 bignum_rep *br_copy (bignum_rep *, const bignum_rep *, int);
 bignum_rep *br_copy (bignum_rep *, u_long);
 bignum_rep *br_copy (bignum_rep *, long);
+bignum_rep *br_copy (bignum_rep *, uint64_t);
+bignum_rep *br_copy (bignum_rep *, int64_t);
 struct large_int;
 bignum_rep *br_copy (bignum_rep *, large_int);
 
