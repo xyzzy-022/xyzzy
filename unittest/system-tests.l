@@ -463,3 +463,11 @@ of SHA-384 and SHA-512)."
   (let ((c (si:make-chunk nil 4)))
     (si:unpack-uint64 c 0))
   !! range-error)
+
+
+(deftest binhex-decode ()
+  (si:binhex-decode ":#(4PFh3ZG(Kd!&4&@&3rN!3!N!8'!*!%&+PiHATkH3VEZ!!!:")
+  => "xyzzy\n"
+  => 1413830740
+  => 1061109567
+  => "test.txt")
