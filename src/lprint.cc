@@ -1587,6 +1587,10 @@ static void
 print_c_callable (wStream &stream, const print_control &pc, lisp object)
 {
   stream.add ("#<c-callable: ");
+  if (xc_callable_convention (object) == CALLING_CONVENTION_STDCALL)
+    stream.add ("stdcall ");
+  else
+    stream.add ("cdecl ");
   print_sexp (stream, pc, xc_callable_function (object), 0);
   stream.add ('>');
 }

@@ -104,6 +104,18 @@ check_c_type (lisp type)
   return 0;
 }
 
+static u_char
+check_calling_convention (lisp keys)
+{
+  lisp convention = find_keyword (Kconvention, keys);
+  if (convention == Qnil || convention == Kstdcall)
+    return CALLING_CONVENTION_STDCALL;
+  if (convention == Kcdecl)
+    return CALLING_CONVENTION_CDECL;
+  FEprogram_error (Eunknown_calling_convention, convention);
+  return 0;
+}
+
 static int
 calc_argument_size (u_char *at, lisp largs)
 {
@@ -387,10 +399,18 @@ c_callable_stub_double (lisp cc)
   return 0.0;
 }
 
-/* stub code:
+/* stub code (stdcall):
 0000: 68 XX XX XX XX : push SELF
 0005: e8 XX XX XX XX : call C-CALLABLE-STUB
 000a: c2 NN NN       : ret  N
+000d:
+
+   stub code (cdecl):
+0000: 68 XX XX XX XX : push SELF
+0005: e8 XX XX XX XX : call C-CALLABLE-STUB
+000a: c3             : ret
+000b: cc             : int 3
+000c: cc             : int 3
 000d:
  */
 
@@ -423,8 +443,17 @@ init_c_callable (lisp cc)
   *(lisp *)&insn[1] = cc;
   insn[5] = 0xe8;
   *(long *)&insn[6] = stub - ((char *)insn + 0xa);
-  insn[0xa] = 0xc2;
-  *(short *)&insn[0xb] = short (xc_callable_arg_size (cc));
+  if (xc_callable_convention (cc) == CALLING_CONVENTION_STDCALL)
+    {
+      insn[0xa] = 0xc2;
+      *(short *)&insn[0xb] = short (xc_callable_arg_size (cc));
+    }
+  else
+    {
+      insn[0xa] = 0xc3;
+      insn[0xb] = 0xcc;
+      insn[0xc] = 0xcc;
+    }
 }
 #endif
 
@@ -454,7 +483,7 @@ check_fn (lisp fn)
 }
 
 lisp
-Fsi_make_c_callable (lisp fn, lisp largs, lisp lrettype)
+Fsi_make_c_callable (lisp fn, lisp largs, lisp lrettype, lisp keys)
 {
   fn = check_fn (fn);
   int return_type = check_c_type (lrettype);
@@ -467,6 +496,7 @@ Fsi_make_c_callable (lisp fn, lisp largs, lisp lrettype)
   xc_callable_function (cc) = fn;
   xc_callable_return_type (cc) = return_type;
   xc_callable_nargs (cc) = nargs;
+  xc_callable_convention (cc) = check_calling_convention (keys);
   if (nargs)
     {
       u_char *at = (u_char *)xmalloc (nargs);

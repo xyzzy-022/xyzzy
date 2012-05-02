@@ -564,7 +564,7 @@
 (si::defun-builtin pack-string (chunk offset value &optional size))
 (si::defun-builtin load-dll-module (module-name))
 (si::defun-builtin make-c-function (module name args result-type))
-(si::defun-builtin make-c-callable (function args result-type))
+(si::defun-builtin make-c-callable (function args result-type &key convention))
 (si::defun-builtin base64-decode (input-string-or-stream &optional output-stream fold-width))
 (si::defun-builtin base64-encode (input-string-or-stream &optional output-stream))
 (si::defun-builtin uuencode (input-string-or-stream &optional output-stream))
