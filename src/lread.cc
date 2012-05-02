@@ -852,7 +852,7 @@ parse_digit_char (lisp stream, Token &token, const Char *p, const Char *pe)
           lisp hash = xsymbol_value (Vsi_character_name_hash_table);
           if (hash_table_p (hash))
             {
-              lisp c = Fgethash (name, hash, Qnil);
+              lisp c = gethash (name, hash, Qnil);
               if (charp (c))
                 return xchar_code (c);
             }
