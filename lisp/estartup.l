@@ -9,7 +9,9 @@
 
 (export '(*inhibit-history-load* *pre-startup-hook* *post-startup-hook*
 	  *command-line-mailto-hook* *print-option-show-dialog*
-	  *process-command-line-hook* *loading-user-initial-file*))
+	  *process-command-line-hook* *loading-user-initial-file*
+	  *command-line-args-base-directory*
+	  ))
 
 (defvar *inhibit-history-load* nil)
 (defvar *pre-startup-hook* nil)
@@ -18,6 +20,7 @@
 (defvar *print-option-show-dialog* t)
 (defvar *process-command-line-hook* nil)
 (defvar *loading-user-initial-file* nil)
+(defvar *command-line-args-base-directory* nil)
 
 (defun parse-command-line (arg short long warn)
   (if (or (equal short arg)
@@ -36,7 +39,8 @@
 
 (defun process-command-line-1 (dir waitobj)
   (let ((mode nil)
-	(ro nil))
+	(ro nil)
+	(*command-line-args-base-directory* dir))
     (catch 'warn
       (while si:*command-line-args*
 	(let ((arg (pop si:*command-line-args*))
