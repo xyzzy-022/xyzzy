@@ -1549,6 +1549,7 @@ zerop
 *buffer-package*
 *change-buffer-colors-hook*
 *char-encoding-list*
+*command-line-args-base-directory*
 *command-line-mailto-hook*
 *command-output-mode-hook*
 *create-buffer-hook*
