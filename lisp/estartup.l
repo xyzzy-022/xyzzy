@@ -43,6 +43,12 @@
 	      opt)
 	  (cond ((setq opt (parse-command-line arg "-l" "-load" 'file))
 		 (load opt))
+		((setq opt (parse-command-line arg "-I" "-load-path" 'dir))
+		 (push (merge-pathnames opt dir) *load-path*))
+		((setq opt (parse-command-line arg "-r" "-require" 'module))
+		 (require opt))
+		((setq opt (parse-command-line arg nil "-work-dir" 'dir))
+		 (chdir opt))
 		((setq opt (parse-command-line arg "-f" "-funcall" 'function))
 		 (funcall (read-from-string opt)))
 		((setq opt (parse-command-line arg "-e" "-eval" 'string))
@@ -51,6 +57,11 @@
 		 (goto-line (parse-integer opt)))
 		((setq opt (parse-command-line arg "-c" "-column" 'number))
 		 (goto-column (parse-integer opt)))
+		((equal "-trace" arg)
+		 (toggle-trace-on-error t))
+		((equal "-kill" arg)
+		 (when si:*accept-kill-xyzzy*
+		   (kill-xyzzy)))
 		((setq opt (parse-command-line arg nil "-mailto" 'args))
 		 (when *command-line-mailto-hook*
 		   (trap-errors
