@@ -457,8 +457,8 @@ Feql (lisp x, lisp y)
 }
 
 /*GENERIC_FUNCTION*/
-lisp
-Fequal (lisp x, lisp y)
+static lisp
+equal (lisp x, lisp y, lisp seen)
 {
   if (x == y)
     return Qt;
@@ -477,9 +477,12 @@ Fequal (lisp x, lisp y)
     {
     case Tcons:
       QUIT;
-      if (Fequal (xcar (x), xcar (y)) == Qnil)
+      if (lisp dup = assq (x, seen))
+        return boole (xcdr (dup) == y);
+      seen = xcons (xcons (x, y), seen);
+      if (equal (xcar (x), xcar (y), seen) == Qnil)
         return Qnil;
-      return Fequal (xcdr (x), xcdr (y));
+      return equal (xcdr (x), xcdr (y), seen);
 
     case Tcomplex_string:
       return boole (string_equal (x, y));
@@ -487,6 +490,12 @@ Fequal (lisp x, lisp y)
     default:
       return Qnil;
     }
+}
+
+lisp
+Fequal (lisp x, lisp y)
+{
+  return equal (x, y, Qnil);
 }
 
 static lisp
@@ -523,8 +532,8 @@ array_rank_matchp (lisp x, lisp y)
 }
 
 /*GENERIC_FUNCTION*/
-lisp
-Fequalp (lisp x, lisp y)
+static lisp
+equalp (lisp x, lisp y, lisp seen)
 {
   if (x == y)
     return Qt;
@@ -603,9 +612,12 @@ Fequalp (lisp x, lisp y)
     {
     case Tcons:
       QUIT;
-      if (Fequalp (xcar (x), xcar (y)) == Qnil)
+      if (lisp dup = assq (x, seen))
+        return boole (xcdr (dup) == y);
+      seen = xcons (xcons (x, y), seen);
+      if (equalp (xcar (x), xcar (y), seen) == Qnil)
         return Qnil;
-      return Fequalp (xcdr (x), xcdr (y));
+      return equalp (xcdr (x), xcdr (y), seen);
 
     case Thash_table:
       return boole (equalp ((lhash_table *)x, (lhash_table *)y));
@@ -616,4 +628,10 @@ Fequalp (lisp x, lisp y)
     default:
       return Qnil;
     }
+}
+
+lisp
+Fequalp (lisp x, lisp y)
+{
+  return equalp (x, y, Qnil);
 }
