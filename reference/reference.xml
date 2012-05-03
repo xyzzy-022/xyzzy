@@ -2146,6 +2146,32 @@ xyzzy.exeに渡されたオプション引数を判定する際に呼び出さ�
    '*process-command-line-hook* arg)
 </description>
 <seealso>起動時処理フロー</seealso>
+<seealso>*command-line-args-base-directory*</seealso>
+<link></link>
+<section>システム</section>
+<file>estartup.l</file>
+</chapter>
+
+<chapter>
+<title>*command-line-args-base-directory*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+xyzzy.exeまたはxyzzycli.exeの実行ディレクトリです。
+*process-command-line-hook*に渡される引数が相対パスの場合は
+このディレクトリを起点にパスを解決する必要があります。
+
+例：
+  (add-hook '*process-command-line-hook*
+            #'(lambda (arg)
+                (ed::find-file-internal
+                 (merge-pathnames arg *command-line-args-base-directory*))))
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>*process-command-line-hook*</seealso>
 <link></link>
 <section>システム</section>
 <file>estartup.l</file>
