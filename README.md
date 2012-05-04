@@ -139,7 +139,7 @@ https://github.com/xyzzy はすでにアカウントが取られていたので https://github.com
  2. bytecompile.bat
  3. ぽけーと待つ
  4. できあがり
- 5. run-all-tests.bat でユニットテストを実行
+ 5. run-tests.bat でユニットテストを実行
 
 ----
 

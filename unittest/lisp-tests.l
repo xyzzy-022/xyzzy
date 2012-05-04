@@ -336,6 +336,22 @@
       (simple-error-format-arguments c)))
   => (:shadow :shadowing-import-from "car"))
 
+(deftest test-defpackage-parse-options-11 ()
+  (lisp::defpackage-parse-options
+   :foo
+   '((:documentation "hogehoge")
+     (:documentation "fugafuga")))
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => "fugafuga")
+
 
 (deftest test-defstruct-print-function-1 ()
   "print-function を事前に定義。0.2.2.235 でもパスする"
@@ -746,22 +762,6 @@ lisp-indent-hook property"
     (path-equal path (truename path)))
   => t)
 
-(deftest test-defpackage-parse-options-1 ()
-  (lisp::defpackage-parse-options
-   :foo
-   '((:documentation "hogehoge")
-     (:documentation "fugafuga")))
-  => nil
-  => nil
-  => nil
-  => nil
-  => nil
-  => nil
-  => nil
-  => nil
-  => nil
-  => "fugafuga")
-
 (deftest defpackage-documentation ()
   (let* ((pkg-name (gensym "pkg-")))
     (eval
@@ -894,7 +894,7 @@ lisp-indent-hook property"
   (make-hash-table :rehash-size 0.9)
   !! type-error)
 
-(deftest hash-table-rehash-size-error-3 ()
+(deftest hash-table-rehash-size-error-4 ()
   (make-hash-table :rehash-size -2.2)
   !! type-error)
 
