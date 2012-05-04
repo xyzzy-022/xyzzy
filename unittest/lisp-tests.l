@@ -924,3 +924,77 @@ lisp-indent-hook property"
   => t
   => t
   => t)
+
+
+(deftest equal-circular-list-regression-test ()
+  (values
+   (equal nil nil)
+   (equal nil "hoge")
+   (equal 123 (+ 100 23))
+   (equal "hoge" (copy-seq "hoge"))
+   (equal '(1 2 (3 "foo")) (copy-tree '(1 2 (3 "foo")))))
+  => t
+  => nil
+  => t
+  => t
+  => t)
+
+(deftest equal-circular-list-1 ()
+  (let* ((a '#1=(#1#))
+         (b (copy-tree a)))
+    (values
+     (equal a b)
+     (equal a nil)
+     (equal a '#2=(#2# #2#))))
+  => t
+  => nil
+  => nil)
+
+(deftest equal-circular-list-2 ()
+  (let ((a '#1=(1 2 3 #2=(4 5 6) #2# #1#))
+        (b '#3=(1 2 3 (4 5 6) (4 5 6) #3#))
+        (c '#4=(1 2 3 (4 5 6) "2" #4#)))
+    (values
+     (equal a b)
+     (equal a c)
+     (equal b c)))
+  => t
+  => nil
+  => nil)
+
+
+(deftest equalp-circular-list-regression-test ()
+  (values
+   (equalp nil nil)
+   (equalp nil "hoge")
+   (equalp 123 (+ 100 23))
+   (equalp "hoge" "HOGE")
+   (equalp '(1 2 (3 "foo")) (copy-tree '(1 2 (3 "FOO")))))
+  => t
+  => nil
+  => t
+  => t
+  => t)
+
+(deftest equalp-circular-list-1 ()
+  (let* ((a '#1=(#1#))
+         (b (copy-tree a)))
+    (values
+     (equalp a b)
+     (equalp a nil)
+     (equalp a '#2=(#2# #2#))))
+  => t
+  => nil
+  => nil)
+
+(deftest equalp-circular-list-2 ()
+  (let ((a '#1=(1 2 3 #2=(4 5 6) #2# #1#))
+        (b '#3=(1 2 3 (4 5 6) (4 5 6) #3#))
+        (c '#4=(1 2 3 (4 5 6) "2" #4#)))
+    (values
+     (equalp a b)
+     (equalp a c)
+     (equalp b c)))
+  => t
+  => nil
+  => nil)
