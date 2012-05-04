@@ -1044,7 +1044,7 @@ lisp-indent-hook property"
   => nil
   => ("doc-string" t))
 
-(deftest find-declaration-inteactive ()
+(deftest find-declaration-inteactive-none ()
   (parse-body
    '((interactive)
      "not-doc-string"))
