@@ -238,7 +238,7 @@ of SHA-384 and SHA-512)."
   => t
   => t)
 
-(deftest fix-file-stream-column-2 ()
+(deftest fix-file-stream-column-1 ()
   "ファイルの si:*stream-column が正しい値を返すか"
   (with-temp-files (out)
     (with-open-file (s out :direction :output)
