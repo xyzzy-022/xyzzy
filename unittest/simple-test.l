@@ -838,7 +838,7 @@ Returns list of failures."
 
 (defun run-all-tests ()
   (interactive)
-  (run-tests *tests*))
+  (run-tests (reverse *tests*)))
 
 (defvar *run-tests-from-file-history* nil)
 
