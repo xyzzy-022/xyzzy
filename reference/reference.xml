@@ -33201,32 +33201,6 @@ lisp-complete-symbol 時の補完候補をポップアップ表示するかを�
 </chapter>
 
 <chapter>
-<title>*lisp-interaction-mode-package*</title>
-<type>Variable</type>
-<arguments></arguments>
-<package>lisp</package>
-<description>
-lisp-interaction-modeで評価するパッケージを保持しています。
-デフォルトは:userパッケージで評価します。
-
-使用例：
-  *package*
-  =&gt; #&lt;package: user&gt;
-
-  (setq *lisp-interaction-mode-package* :cl-user)
-  =&gt; :cl-user
-
-  *package*
-  =&gt; #&lt;package: common-lisp-user&gt;
-
-備考：
-  xyzzy 0.2.2.239 から利用可能です。
-</description>
-<section>変数と定数</section>
-<file>lispmode.l</file>
-</chapter>
-
-<chapter>
 <title>*gmark-keep-column*</title>
 <type>Variable</type>
 <arguments></arguments>

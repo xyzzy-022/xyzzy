@@ -1622,7 +1622,6 @@ zerop
 *kill-ring-max*
 *kill-xyzzy-hook*
 *last-command*
-*lisp-interaction-mode-package*
 *lisp-popup-completion-list*
 *load-history-hook*
 *load-path*
