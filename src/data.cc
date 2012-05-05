@@ -618,7 +618,7 @@ gc_mark_object (lisp object)
                 gc_mark_object (e->value);
               }
             object = xhash_table_rehash_size (object);
-            return;
+            break;
           }
 
         case Tstruct_def:
