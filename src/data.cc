@@ -618,7 +618,7 @@ gc_mark_object (lisp object)
                 gc_mark_object (e->value);
               }
             object = xhash_table_rehash_size (object);
-            return;
+            break;
           }
 
         case Tstruct_def:
@@ -1986,6 +1986,7 @@ dump_object (FILE *fp, const lpackage *d, int n,
         writef (fp, d->shadowings);
         writef (fp, d->internal);
         writef (fp, d->external);
+        writef (fp, d->documentation);
       }
 }
 
@@ -2003,6 +2004,7 @@ rdump_object (FILE *fp, lpackage *d, int n,
         d->shadowings = readl (fp);
         d->internal = readl (fp);
         d->external = readl (fp);
+        d->documentation = readl (fp);
       }
 }
 
