@@ -655,7 +655,7 @@
 (defun set-buffer-package (package-name)
   (interactive
       (list (completing-read
-	     "Package:" #1=(mapcar #'package-name (list-all-packages))
+	     "Package: " #1=(mapcar #'package-name (list-all-packages))
 	     :case-fold t
 	     :default (or *buffer-package* "user")
 	     :must-match t)))

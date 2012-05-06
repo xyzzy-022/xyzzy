@@ -22,7 +22,7 @@
 (defvar *lisp-mode-hook* nil)
 (defvar *lisp-popup-completion-list* nil)
 (defvar *lisp-interaction-mode-hook* nil)
-(defvar *find-buffer-package-hook* '())
+(defvar *find-buffer-package-hook* nil)
 (defvar *lisp-indent-offset* nil)
 (defvar *lisp-body-indention* 2)
 (defvar *lisp-body-indent* 2)
@@ -192,13 +192,18 @@
 		  (and ep (< ep p) (decf p 2))
 		  p))))))))
 
+(defvar *lisp-search-in-package-regexp*
+  (compile-regexp
+   "^(\\(?:\\(?:lisp|cl|common-lisp\\)::?\\)?in-package\\([^)]+\\))"))
+
 (defun lisp-search-in-package ()
   (ignore-errors
-    (save-excursion
-      (or (scan-buffer "(\\(lisp:|lisp::\\)?in-package\\([^)]+\\))" :reverse t :regexp t)
-	  (scan-buffer "(\\(lisp:|lisp::\\)?in-package\\([^)]+\\))" :reverse nil :regexp t))
-      (let (*read-eval*)
-	(find-package (read-from-string (match-string 2)))))))
+    (protect-match-data
+      (save-excursion
+	(or (scan-buffer *lisp-search-in-package-regexp* :reverse t)
+	    (scan-buffer *lisp-search-in-package-regexp* :reverse nil))
+	(let (*read-eval*)
+	  (find-package (read-from-string (match-string 1))))))))
 
 (defun find-buffer-package ()
   (or (and (stringp *buffer-package*)
