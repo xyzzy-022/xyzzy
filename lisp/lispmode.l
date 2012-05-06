@@ -7,7 +7,8 @@
 
 (in-package "editor")
 
-(export '(*lisp-mode-hook* *lisp-interaction-mode-hook* *lisp-indent-offset* 
+(export '(*lisp-mode-hook* *lisp-interaction-mode-hook* *lisp-indent-offset*
+	  *find-buffer-package-hook*
 	  *lisp-body-indention* *lisp-body-indent* lisp-complete-symbol
 	  lisp-indent-hook lisp-paren-imaginary-offset
 	  lisp-indent-line lisp-newline-and-indent
@@ -21,6 +22,7 @@
 (defvar *lisp-mode-hook* nil)
 (defvar *lisp-popup-completion-list* nil)
 (defvar *lisp-interaction-mode-hook* nil)
+(defvar *find-buffer-package-hook* '())
 (defvar *lisp-indent-offset* nil)
 (defvar *lisp-body-indention* 2)
 (defvar *lisp-body-indent* 2)
@@ -190,6 +192,23 @@
 		  (and ep (< ep p) (decf p 2))
 		  p))))))))
 
+(defun lisp-search-in-package ()
+  (ignore-errors
+    (save-excursion
+      (or (scan-buffer "(\\(lisp:|lisp::\\)?in-package\\([^)]+\\))" :reverse t :regexp t)
+	  (scan-buffer "(\\(lisp:|lisp::\\)?in-package\\([^)]+\\))" :reverse nil :regexp t))
+      (let (*read-eval*)
+	(find-package (read-from-string (match-string 2)))))))
+
+(defun find-buffer-package ()
+  (or (and (stringp *buffer-package*)
+	   (find-package *buffer-package*))
+      (dolist (func *find-buffer-package-hook*)
+	(let ((ret (funcall func)))
+	  (when ret
+	    (return ret))))
+      *package*))
+
 (defun calc-lisp-indent (opoint)
   (protect-match-data
     (let ((begin-paren (and lisp-indent-close-paren
@@ -208,9 +227,7 @@
 		      (looking-back "'")))
 	     (+ (current-column) 1))
 	    (t
-	     (let ((package (or (and (stringp *buffer-package*)
-				     (find-package *buffer-package*))
-				*package*)))
+	     (let ((package (find-buffer-package)))
 	       (when (save-excursion
 		       (when (and (up-list -1 t)
 				  (looking-for "((")
@@ -337,7 +354,7 @@
       (rotatef from to))
     (let ((s (make-buffer-stream (selected-buffer) from to)))
       (handler-case
-	  (let ((*package* *package*))
+	  (let ((*package* (find-buffer-package)))
 	    (while (< (buffer-stream-point s) to)
 	      (let ((form (read s nil '#1=#:eof)))
 		(when (eq form '#1#)
@@ -562,6 +579,8 @@
     (setq need-not-save t)
     (make-local-variable 'auto-save)
     (setq auto-save nil))
+  (make-local-variable '*find-buffer-package-hook*)
+  (add-hook '*find-buffer-package-hook* 'lisp-search-in-package)
   (run-hooks '*lisp-interaction-mode-hook*))
 
 (defvar *kill-buffer-kills-scratch* nil)
