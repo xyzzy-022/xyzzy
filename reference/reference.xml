@@ -1253,7 +1253,7 @@ eval-region時パッケージの決定は以下の順序になります。
 2.*find-buffer-package-hook*の評価結果
 
 補足：
-  xyzzy 0.2.2.239? から利用可能です。
+  xyzzy 0.2.2.239 から利用可能です。
 </description>
 <seealso>eval-region</seealso>
 <seealso>*buffer-package*</seealso>
@@ -24292,7 +24292,7 @@ buffer-fileio-encodingで参照することができます。
 *buffer-package*を設定するコマンドです。
 
 補足：
-  xyzzy 0.2.2.239? から利用可能です。
+  xyzzy 0.2.2.239 から利用可能です。
 </description>
 <seealso>eval-region</seealso>
 <seealso>*buffer-package*</seealso>

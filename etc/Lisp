@@ -1162,6 +1162,7 @@ set-buffer-fold-type-window
 set-buffer-fold-type-window-update
 set-buffer-fold-width
 set-buffer-modified-p
+set-buffer-package
 set-default
 set-default-directory
 set-default-fold-width
@@ -1595,6 +1596,7 @@ zerop
 *filer-secondary-directory*
 *filer-secondary-file-mask*
 *filer-use-recycle-bin*
+*find-buffer-package-hook*
 *find-file-auto-mode-function*
 *find-file-file-not-found-hook*
 *find-file-hooks*
