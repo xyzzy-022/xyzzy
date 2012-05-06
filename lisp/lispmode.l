@@ -208,10 +208,20 @@
 (defun find-buffer-package ()
   (or (and (stringp *buffer-package*)
 	   (find-package *buffer-package*))
-      (dolist (func *find-buffer-package-hook*)
-	(let ((ret (funcall func)))
-	  (when ret
-	    (return ret))))
+      (let ((result (ignore-errors
+		      (run-hook-with-args-until-success
+		       '*find-buffer-package-hook*))))
+	(cond ((packagep result) result)
+	      ((or (symbolp result)
+		   (stringp result))
+	       (find (string result)
+		     (mapcan
+		      #'(lambda (p)
+			  (copy-list
+			   (cons (package-name p)
+				 (package-nicknames p))))
+		      (list-all-packages))
+		     :test #'equalp))))
       *package*))
 
 (defun calc-lisp-indent (opoint)
@@ -354,25 +364,25 @@
 
 (defun eval-region (from to &optional stream)
   (interactive "r")
-  (let ((result nil))
+  (let ((result nil)
+	(*package* (find-buffer-package)))
     (when (> from to)
       (rotatef from to))
     (let ((s (make-buffer-stream (selected-buffer) from to)))
       (handler-case
-	  (let ((*package* (find-buffer-package)))
-	    (while (< (buffer-stream-point s) to)
-	      (let ((form (read s nil '#1=#:eof)))
-		(when (eq form '#1#)
-		  (return))
-		(setq result (multiple-value-list (eval form))))))
+	  (while (< (buffer-stream-point s) to)
+	    (let ((form (read s nil '#1=#:eof)))
+	      (when (eq form '#1#)
+		(return))
+	      (setq result (multiple-value-list (eval form)))))
 	((or error reader-error quit) (c)
-	  (when (<= (buffer-stream-point s) to)
-	    (goto-char (buffer-stream-point s))
-	    (when stream
-	      (eval-region-print stream
-		(format t "~A~%" c)))
-	    (let ((si:*trace-on-error* nil))
-	      (error c))))))
+	 (when (<= (buffer-stream-point s) to)
+	   (goto-char (buffer-stream-point s))
+	   (when stream
+	     (eval-region-print stream
+	       (format t "~A~%" c)))
+	   (let ((si:*trace-on-error* nil))
+	     (error c))))))
     (eval-region-print stream
       (if (null stream)
 	  (message "~s" (car result))
