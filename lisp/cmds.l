@@ -27,7 +27,7 @@
 	  fast-scroll-up fast-scroll-down scroll-up-both-window
 	  scroll-down-both-window scroll-other-window scroll-up-other-window
 	  scroll-down-other-window scroll-left scroll-right
-	  eval-expression set-variable
+	  eval-expression set-buffer-package set-variable
 	  digit-argument negative-argument universal-argument
 	  quote-char undefined what-cursor-position *executing-macro*
 	  repeat-complex-command overwrite-char
@@ -651,6 +651,17 @@
 (defun eval-expression (x)
   (interactive "xEval: ")
   (message "~S" (eval x)))
+
+(defun set-buffer-package (package-name)
+  (interactive
+      (list (completing-read
+	     "Package:" #1=(mapcar #'package-name (list-all-packages))
+	     :case-fold t
+	     :default (or *buffer-package* "user")
+	     :must-match t)))
+  (setf *buffer-package*
+	(find package-name #1#
+	      :test #'string-equal)))
 
 (defun set-variable (var)
   (interactive "vSet variable: ")

@@ -1241,6 +1241,29 @@ non-nil のとき、ファイラでファイルタイプに応じたアイコン
 </chapter>
 
 <chapter>
+<title>*find-buffer-package-hook*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+eval-region時のパッケージを決定する際に利用します。
+
+eval-region時パッケージの決定は以下の順序になります。
+1.*buffer-package*に代入された値
+2.*find-buffer-package-hook*の評価結果
+
+補足：
+  xyzzy 0.2.2.239? から利用可能です。
+</description>
+<seealso>eval-region</seealso>
+<seealso>*buffer-package*</seealso>
+<seealso>set-buffer-package</seealso>
+<link></link>
+<section>変数と定数</section>
+<file>lispmode.l</file>
+</chapter>
+
+<chapter>
 <title>*find-file-file-not-found-hook*</title>
 <type>Variable</type>
 <arguments></arguments>
@@ -24258,6 +24281,24 @@ buffer-fileio-encodingで参照することができます。
 <seealso>not-modified</seealso>
 <section>バッファ</section>
 <file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>set-buffer-package</title>
+<type>Function</type>
+<arguments>set-buffer-package PACKAGE-NAME</arguments>
+<package>editor</package>
+<description>
+*buffer-package*を設定するコマンドです。
+
+補足：
+  xyzzy 0.2.2.239? から利用可能です。
+</description>
+<seealso>eval-region</seealso>
+<seealso>*buffer-package*</seealso>
+<link></link>
+<section>バッファ</section>
+<file>cmds.l</file>
 </chapter>
 
 <chapter>
