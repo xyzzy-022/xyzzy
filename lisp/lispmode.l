@@ -194,7 +194,7 @@
 
 (defvar *lisp-search-in-package-regexp*
   (compile-regexp
-   "^(\\(?:\\(?:lisp|cl|common-lisp\\)::?\\)?in-package\\([^)]+\\))"))
+   "^(\\(?:\\(?:lisp\\|cl\\|common-lisp\\)::?\\)?in-package\\([^)]+\\))"))
 
 (defun lisp-search-in-package ()
   (ignore-errors
