@@ -67,14 +67,11 @@ struct symbols
   DEFCMD (name, CAT (F, name), CAT (S, name), req, opt, f, g)
 
 #define VDEF(a, b, c) {STR (a), 0, STR (b), 0, 0, c}
-#define VDEFX(a, b, c) {a, 0, STR (b), 0, 0, c}
 
 #define DEFCONST(a, b) VDEF (a, b, SFconstant | SFspecial)
-#define DEFCONSTX(a, b) VDEFX (a, b, SFconstant | SFspecial)
 #define DEFCONST2Q(name) DEFCONST (name, CAT (Q, name))
 #define DEFKWD DEFCONST
 #define DEFKWD2(name) DEFCONST (name, CAT (K, name))
-#define DEFKWD2X(name, lname) DEFCONSTX (name, lname)
 #define DEFVAR(a, b) VDEF (a, b, SFspecial)
 #define DEFVAR2(name) DEFVAR (name, CAT (V, name))
 #define SI_DEFVAR2(name) DEFVAR (name, CAT (Vsi_, name))
@@ -1308,7 +1305,8 @@ static symbols kwd[] =
   DEFKWD2 (void),
   DEFKWD2 (convention),
   DEFKWD2 (stdcall),
-  DEFKWD2X ("cdecl", Kcdecl),
+#undef cdecl
+  DEFKWD2 (cdecl),
   DEFKWD2 (encoding),
   DEFKWD2 (text),
   DEFKWD2 (canonical),
