@@ -796,7 +796,7 @@
    (chdir (get-system-directory))
    (progn
      ;; call-process は一時的にディレクトリを変更し、最後に Qdefault_dir に移動する
-     (call-process "dir" :directory (get-system-directory) :show :hide)
+     (call-process "cmd /c dir" :exec-directory (get-system-directory) :show :hide)
      (path-equal (get-system-directory) (cwd))))
   => t
   => t)
