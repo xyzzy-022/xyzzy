@@ -74,6 +74,7 @@ lt
 ne
 not
 or
+x
 
 ;*2
 abs
@@ -197,6 +198,7 @@ push
 pwent
 pwnam
 pwuid
+q
 qq
 qr
 quotemeta
