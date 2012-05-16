@@ -471,3 +471,21 @@ of SHA-384 and SHA-512)."
   => 1413830740
   => 1061109567
   => "test.txt")
+
+(defun closure-variable-helper ()
+  (let (a
+        (b)
+        (c 1)
+        (d '(1 2 3))
+        (buffer-read-only 4)
+        (*kill-xyzzy-hook* 5))
+    (si:closure-variable #'(lambda ()))))
+
+(deftest closure-variable ()
+  (closure-variable-helper)
+  => ((*kill-xyzzy-hook* . 5)
+      (buffer-read-only . 4)
+      (d 1 2 3)
+      (c . 1)
+      (b)
+      (a)))
