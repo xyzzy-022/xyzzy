@@ -662,6 +662,7 @@ kill-selection
 kill-selection-to-clipboard
 kill-subprocess
 kill-word
+kill-xyzzy
 kinsoku-bol-chars
 kinsoku-eol-chars
 kinsoku-extend-limit
@@ -2783,7 +2784,6 @@ keyboard-stream-p
 kill-all-abbrevs
 kill-sexp
 kill-winhelp
-kill-xyzzy
 labels
 last-modified-point
 latex-mode

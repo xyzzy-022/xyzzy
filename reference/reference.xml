@@ -37365,6 +37365,32 @@ list とよく似て ARGS を要素とするリストを作りますが、 最�
 </chapter>
 
 <chapter>
+<title>kill-xyzzy</title>
+<type>Function</type>
+<arguments>kill-xyzzy &amp;optional (EXIT-CODE t)</arguments>
+<package>editor</package>
+<description>
+xyzzyを終了します。
+
+  EXIT-CODE : xyzzyの終了ステータスを指定します。
+              省略時はEXIT_SUCCESSを終了ステータスとします。
+       nil  : EXIT_FAILUREを終了ステータスとします。
+       t    : EXIT_SUCCESSを終了ステータスとします。
+       整数 : その値を終了ステータスとします。
+
+補足：
+  EXIT-CODE の指定は xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>*kill-xyzzy-hook*</seealso>
+<seealso>*query-kill-xyzzy-hook*</seealso>
+<seealso>save-all-buffers-kill-xyzzy</seealso>
+<seealso>save-buffers-kill-xyzzy</seealso>
+<link></link>
+<section>プロセス</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>next-xyzzy-window</title>
 <type>Function</type>
 <arguments>next-xyzzy-window</arguments>
