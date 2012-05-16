@@ -1,6 +1,13 @@
+_Alignas
+_Alignof
+_Atomic
 _Bool
 _Complex
+_Generic
 _Imaginary
+_Noreturn
+_Static_assert
+_Thread_local
 auto
 break
 case
@@ -17,6 +24,7 @@ float
 for
 goto
 if
+inline
 int
 long
 register
@@ -66,6 +74,7 @@ _fastcall
 __fastcall
 _finally
 __finally
+__func__
 _inline
 __inline
 _int8
@@ -84,3 +93,8 @@ __stdcall
 thread
 _try
 __try
+__DATE__
+__FILE__
+__LINE__
+__TIME__
+__VA_ARGS__
