@@ -384,11 +384,13 @@ Fsi_closure_variable (lisp closure)
   for (lisp var = vars; consp (var); var = xcdr (var))
     {
       lisp v = xcar (var);
-      xcar (var) = (consp (v)
-                    ? (xcdr (v) == Qunbound
-                       ? xcar (v)
-                       : xcons (xcar (v), xcdr (v)))
-                    : Qnil);
+      if (consp (v))
+        if (xcdr (v) == Qunbound)
+          xcar (var) = xcar (v);
+        else
+          xcar (var) = xcons (xcar (v), xcdr (v));
+      else
+        xcar (var) = Qnil;
     }
   return vars;
 }
