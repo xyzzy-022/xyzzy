@@ -3523,6 +3523,8 @@ xyzzyの外部と入出力するためのデータを格納するオブジェク
   si:pack-uint16        si:unpack-uint16 : 16ビット符号無し整数用
   si:pack-int32         si:unpack-int32  : 32ビット符号付き整数用
   si:pack-uint32        si:unpack-uint32 : 32ビット符号無し整数用
+  si:pack-int64         si:unpack-int64  : 64ビット符号付き整数用
+  si:pack-uint64        si:unpack-uint64 : 64ビット符号無し整数用
   si:pack-float         si:unpack-float  : float用
   si:pack-double        si:unpack-double : double用
   si:pack-string        si:unpack-string : 文字列用
