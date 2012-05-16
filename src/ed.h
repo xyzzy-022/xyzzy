@@ -430,6 +430,7 @@ public:
 
   void *initial_stack;
   int in_gc;
+  int exit_code;
 };
 
 extern Application app;

@@ -1259,8 +1259,17 @@ Buffer::kill_xyzzy (int query)
 }
 
 lisp
-Fkill_xyzzy ()
+Fkill_xyzzy (lisp lexit_code)
 {
+  if (!lexit_code)
+    lexit_code = Qt;
+  if (lexit_code == Qt)
+    app.exit_code = EXIT_SUCCESS;
+  else if (lexit_code == Qnil)
+    app.exit_code = EXIT_FAILURE;
+  else
+    app.exit_code = fixnum_value (lexit_code);
+
   if (Buffer::kill_xyzzy (1))
     {
       nonlocal_data *nld = nonlocal_jump::data ();

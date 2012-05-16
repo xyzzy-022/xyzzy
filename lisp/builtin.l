@@ -701,7 +701,7 @@
 (si::defun-builtin need-buffer-save-p (buffer))
 (si::defun-builtin count-modified-buffers ())
 (si::defun-builtin count-buffers (&optional all))
-(si::defun-builtin kill-xyzzy ())
+(si::defun-builtin kill-xyzzy (&optional (exit-code t)))
 (si::defun-builtin lock-file (&optional buffer))
 (si::defun-builtin unlock-file (&optional buffer))
 (si::defun-builtin file-locked-p (&optional buffer))
