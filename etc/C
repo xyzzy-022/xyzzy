@@ -17,6 +17,7 @@ float
 for
 goto
 if
+inline
 int
 long
 register
@@ -66,6 +67,7 @@ _fastcall
 __fastcall
 _finally
 __finally
+__func__
 _inline
 __inline
 _int8
@@ -84,3 +86,8 @@ __stdcall
 thread
 _try
 __try
+__DATE__
+__FILE__
+__LINE__
+__TIME__
+__VA_ARGS__
