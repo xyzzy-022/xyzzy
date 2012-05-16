@@ -831,3 +831,32 @@
 (deftest chdir-path-not-found ()
   (chdir (format nil "path/not/found/~A" (gensym)))
   !! path-not-found)
+
+(deftest kill-xyzzy-exit-code ()
+  (flet ((run-xyzzy-and-kill (&optional (exit-code nil sp))
+           (call-process (format nil "~A -e \"(kill-xyzzy ~A)\""
+                                 (merge-pathnames "xyzzy.exe" (si:system-root))
+                                 (if sp exit-code ""))
+                         :show :minimize
+                         :wait t)))
+    (values
+     (run-xyzzy-and-kill)
+     (run-xyzzy-and-kill t)
+     (run-xyzzy-and-kill nil)
+     (run-xyzzy-and-kill 123)))
+  => 0
+  => 0
+  => 1
+  => 123)
+
+(deftest kill-xyzzy-exit-code-error-float ()
+  (kill-xyzzy 1.2)
+  !! type-error)
+
+(deftest kill-xyzzy-exit-code-error-symbol ()
+  (kill-xyzzy 'foo)
+  !! type-error)
+
+(deftest kill-xyzzy-exit-code-error-string ()
+  (kill-xyzzy "foo")
+  !! type-error)
