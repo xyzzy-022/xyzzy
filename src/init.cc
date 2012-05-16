@@ -63,6 +63,7 @@ Application::Application ()
   int tem;
   initial_stack = &tem;
   in_gc = 0;
+  exit_code = 0;
 }
 
 Application::~Application ()
@@ -1017,5 +1018,5 @@ WinMain (HINSTANCE hinst, HINSTANCE, LPSTR, int cmdshow)
     _CrtSetDbgFlag (_CrtSetDbgFlag (_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
   }
 #endif
-  return 0;
+  return app.exit_code;
 }
