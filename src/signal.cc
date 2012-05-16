@@ -155,6 +155,7 @@ init_condition ()
   D1 (      socket_error, QCerror, Ssi_report_socket_error, 1, Kdatum);
   E0 (    storage_condition, QCserious_condition, Estorage_condition, 1);
   E0 (    stack_overflow, QCserious_condition, Estack_overflow, 1);
+  E1 (    access_violation, QCserious_condition, Eaccess_violation, 1, Kaddress);
   E0 (    invalid_byte_code, QCserious_condition, Einvalid_byte_code, 1);
   E0 (  quit, QCcondition, Equit, 0);
   E0 (    silent_quit, QCquit, Esilent_quit, 0);
@@ -402,6 +403,12 @@ lisp
 FEstack_overflow ()
 {
   COND0 (stack_overflow);
+}
+
+lisp
+FEaccess_violation (void* ptr)
+{
+  COND1 (access_violation, make_fixnum (reinterpret_cast <long> (ptr)));
 }
 
 lisp
@@ -770,6 +777,7 @@ check_condition_def ()
   message_code e = message_code (0);
   try {FEstorage_error ();} catch (nonlocal_jump &) {}
   try {FEstack_overflow ();} catch (nonlocal_jump &) {}
+  try {FEaccess_violation (0);} catch (nonlocal_jump &) {}
   try {FEtoo_few_arguments ();} catch (nonlocal_jump &) {}
   try {FEtoo_many_arguments ();} catch (nonlocal_jump &) {}
   try {FEquit ();} catch (nonlocal_jump &) {}
