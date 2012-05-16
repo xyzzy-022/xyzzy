@@ -757,6 +757,7 @@ static symbols lsp[] =
   MAKE_SYMBOL2Q (dde-terminated-transaction),
   MAKE_SYMBOL2Q (storage-condition),
   MAKE_SYMBOL2Q (stack-overflow),
+  MAKE_SYMBOL2Q (access-violation),
   MAKE_SYMBOL2Q (invalid-byte-code),
   MAKE_SYMBOL2Q (quit),
   MAKE_SYMBOL2Q (silent-quit),
@@ -1446,6 +1447,7 @@ static symbols kwd[] =
   DEFKWD2 (georgian),
   DEFKWD2 (face),
   DEFKWD2 (size-pixel-p),
+  DEFKWD2 (address),
 };
 
 static symbols unint[] =
@@ -1597,6 +1599,7 @@ static symbols unint[] =
   MAKE_SYMBOL2QC (*dde-terminated-transaction),
   MAKE_SYMBOL2QC (*storage-condition),
   MAKE_SYMBOL2QC (*stack-overflow),
+  MAKE_SYMBOL2QC (*access-violation),
   MAKE_SYMBOL2QC (*invalid-byte-code),
   MAKE_SYMBOL2QC (*quit),
   MAKE_SYMBOL2QC (*silent-quit),

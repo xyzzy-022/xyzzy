@@ -125,6 +125,7 @@
   (si::define-condition-accessors dde-terminated-transaction t)
   (si::define-condition-accessors storage-condition t)
   (si::define-condition-accessors stack-overflow t)
+  (si::define-condition-accessors access-violation t)
   (si::define-condition-accessors invalid-byte-code t)
   (si::define-condition-accessors quit t)
   (si::define-condition-accessors silent-quit t)
