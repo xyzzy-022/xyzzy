@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ed.h"
-#include "except.h"
 
 lchunk *
 make_chunk ()
@@ -39,12 +38,9 @@ chunk_ptr (lisp chunk, lisp loffset, lisp lsize)
 static void *
 chunk_ptr (char *address, lisp lsize)
 {
-  size_t size = fixnum_value (lsize);
-  char *ae = address + size;
+  char *ae = address + fixnum_value (lsize);
   if (ae < address)
     FErange_error (lsize);
-  if (IsBadReadPtr (address, size) && IsBadWritePtr (address, size))
-    FEprogram_error (Eaccess_violation, make_fixnum (reinterpret_cast <long> (address)));
   return address;
 }
 
@@ -222,90 +218,70 @@ lisp
 Fsi_unpack_int8 (lisp chunk, lisp offset)
 {
   char *p = (char *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   return make_fixnum (*p);
-  CATCH_ACCESS_VIOLATION;
 }
 
 lisp
 Fsi_unpack_uint8 (lisp chunk, lisp offset)
 {
   u_char *p = (u_char *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   return make_fixnum (*p);
-  CATCH_ACCESS_VIOLATION;
 }
 
 lisp
 Fsi_unpack_int16 (lisp chunk, lisp offset)
 {
   short *p = (short *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   return make_fixnum (*p);
-  CATCH_ACCESS_VIOLATION;
 }
 
 lisp
 Fsi_unpack_uint16 (lisp chunk, lisp offset)
 {
   u_short *p = (u_short *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   return make_fixnum (*p);
-  CATCH_ACCESS_VIOLATION;
 }
 
 lisp
 Fsi_unpack_int32 (lisp chunk, lisp offset)
 {
   long *p = (long *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   return make_fixnum (*p);
-  CATCH_ACCESS_VIOLATION;
 }
 
 lisp
 Fsi_unpack_uint32 (lisp chunk, lisp offset)
 {
   u_long *p = (u_long *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   return make_integer (long_to_large_int (*p));
-  CATCH_ACCESS_VIOLATION;
 }
 
 lisp
 Fsi_unpack_int64 (lisp chunk, lisp offset)
 {
   int64_t *p = (int64_t *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   return make_integer (*p);
-  CATCH_ACCESS_VIOLATION;
 }
 
 lisp
 Fsi_unpack_uint64 (lisp chunk, lisp offset)
 {
   uint64_t *p = (uint64_t *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   return make_integer (*p);
-  CATCH_ACCESS_VIOLATION;
 }
 
 lisp
 Fsi_unpack_float (lisp chunk, lisp offset)
 {
   float *p = (float *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   return make_single_float (*p);
-  CATCH_ACCESS_VIOLATION;
 }
 
 lisp
 Fsi_unpack_double (lisp chunk, lisp offset)
 {
   double *p = (double *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   return make_double_float (*p);
-  CATCH_ACCESS_VIOLATION;
 }
 
 // si:unpack-string chunk offset &optional size (zero_term t)
@@ -327,12 +303,10 @@ Fsi_unpack_string (lisp chunk, lisp loffset, lisp lsize, lisp lzero_term)
         FErange_error (lsize);
     }
   int zero_term = !lzero_term || lzero_term != Qnil;
-  TRY_ACCESS_VIOLATION;
   size_t l = s2wl (p, pe, zero_term);
   lisp string = make_string (l);
   s2w (xstring_contents (string), p, pe, zero_term);
   return string;
-  CATCH_ACCESS_VIOLATION;
 }
 
 int64_t
@@ -366,9 +340,7 @@ lisp
 Fsi_pack_int8 (lisp chunk, lisp offset, lisp value)
 {
   char *p = (char *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   *p = char (cast_to_long (value));
-  CATCH_ACCESS_VIOLATION;
   return value;
 }
 
@@ -376,9 +348,7 @@ lisp
 Fsi_pack_uint8 (lisp chunk, lisp offset, lisp value)
 {
   u_char *p = (u_char *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   *p = u_char (cast_to_long (value));
-  CATCH_ACCESS_VIOLATION;
   return value;
 }
 
@@ -386,9 +356,7 @@ lisp
 Fsi_pack_int16 (lisp chunk, lisp offset, lisp value)
 {
   short *p = (short *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   *p = short (cast_to_long (value));
-  CATCH_ACCESS_VIOLATION;
   return value;
 }
 
@@ -396,9 +364,7 @@ lisp
 Fsi_pack_uint16 (lisp chunk, lisp offset, lisp value)
 {
   u_short *p = (u_short *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   *p = u_short (cast_to_long (value));
-  CATCH_ACCESS_VIOLATION;
   return value;
 }
 
@@ -406,9 +372,7 @@ lisp
 Fsi_pack_int32 (lisp chunk, lisp offset, lisp value)
 {
   long *p = (long *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   *p = long (cast_to_long (value));
-  CATCH_ACCESS_VIOLATION;
   return value;
 }
 
@@ -416,9 +380,7 @@ lisp
 Fsi_pack_uint32 (lisp chunk, lisp offset, lisp value)
 {
   u_long *p = (u_long *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   *p = u_long (cast_to_long (value));
-  CATCH_ACCESS_VIOLATION;
   return value;
 }
 
@@ -426,9 +388,7 @@ lisp
 Fsi_pack_int64 (lisp chunk, lisp offset, lisp value)
 {
   int64_t *p = (int64_t *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   *p = int64_t (cast_to_int64 (value));
-  CATCH_ACCESS_VIOLATION;
   return value;
 }
 
@@ -436,9 +396,7 @@ lisp
 Fsi_pack_uint64 (lisp chunk, lisp offset, lisp value)
 {
   uint64_t *p = (uint64_t *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   *p = uint64_t (cast_to_int64 (value));
-  CATCH_ACCESS_VIOLATION;
   return value;
 }
 
@@ -446,9 +404,7 @@ lisp
 Fsi_pack_float (lisp chunk, lisp offset, lisp value)
 {
   float *p = (float *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   *p = coerce_to_single_float (value);
-  CATCH_ACCESS_VIOLATION;
   return value;
 }
 
@@ -456,9 +412,7 @@ lisp
 Fsi_pack_double (lisp chunk, lisp offset, lisp value)
 {
   double *p = (double *)chunk_ptr (chunk, offset, sizeof *p);
-  TRY_ACCESS_VIOLATION;
   *p = coerce_to_double_float (value);
-  CATCH_ACCESS_VIOLATION;
   return value;
 }
 
@@ -480,8 +434,6 @@ Fsi_pack_string (lisp chunk, lisp loffset, lisp value, lisp lsize)
       if (pe < p || pe > p0 + xchunk_size (chunk))
         FErange_error (lsize);
     }
-  TRY_ACCESS_VIOLATION;
   w2s (p, pe, xstring_contents (value), xstring_length (value));
-  CATCH_ACCESS_VIOLATION;
   return value;
 }

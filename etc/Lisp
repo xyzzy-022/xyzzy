@@ -1756,7 +1756,6 @@ abbrev-prefix-mark
 abbreviate-string-column
 about-dialog
 accept-connection
-access-violation-address
 access-denied-datum
 access-denied-pathname
 add-abbrev
