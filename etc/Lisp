@@ -1756,7 +1756,6 @@ abbrev-prefix-mark
 abbreviate-string-column
 about-dialog
 accept-connection
-access-violation-address
 access-denied-datum
 access-denied-pathname
 add-abbrev
@@ -3381,6 +3380,9 @@ view-lossage
 view-mode
 view-nifty-log
 wait-object-p
+win32-exception-description
+win32-exception-code
+win32-exception-address
 write-abbrev-file
 write-protected-datum
 write-protected-pathname

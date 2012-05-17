@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ed.h"
 #include "except.h"
+#include "signal.h"
 #include "version.h"
 
 #define MAX_LISP_CALL_STACK_DEPTH 64
@@ -16,14 +17,38 @@ static lisp_call_stack lisp_call_stack_buf[MAX_LISP_CALL_STACK_DEPTH];
 const Win32Exception::known_exception Win32Exception::known_excep[] =
 {
   {EXCEPTION_ACCESS_VIOLATION, "Access violation"},
-  {EXCEPTION_DATATYPE_MISALIGNMENT, "Data type misalignment"},
   {EXCEPTION_ARRAY_BOUNDS_EXCEEDED, "Array bounds exceeded"},
+  {EXCEPTION_BREAKPOINT, "Breakpoint"},
+  {EXCEPTION_DATATYPE_MISALIGNMENT, "Data type misalignment"},
+  {EXCEPTION_FLT_DENORMAL_OPERAND, "Floating point denormal operand"},
   {EXCEPTION_FLT_DIVIDE_BY_ZERO, "Floating point divide by zero"},
-  {EXCEPTION_INT_DIVIDE_BY_ZERO, "Integer divide by zero"},
+  {EXCEPTION_FLT_INEXACT_RESULT, "Floating point inexact result"},
+  {EXCEPTION_FLT_INVALID_OPERATION, "Floating point invalid operation"},
+  {EXCEPTION_FLT_OVERFLOW, "Floating point overflow"},
+  {EXCEPTION_FLT_STACK_CHECK, "Floating point stack check"},
+  {EXCEPTION_FLT_UNDERFLOW, "Floating point underflow"},
+  {EXCEPTION_GUARD_PAGE, "Guard page violation"},
   {EXCEPTION_ILLEGAL_INSTRUCTION, "Illegal instruction"},
-  {EXCEPTION_STACK_OVERFLOW, "Stack overflow"},
   {EXCEPTION_IN_PAGE_ERROR, "In page error"},
+  {EXCEPTION_INT_DIVIDE_BY_ZERO, "Integer divide by zero"},
+  {EXCEPTION_INT_OVERFLOW, "Integer overflow"},
+  {EXCEPTION_INVALID_DISPOSITION, "Invalid disposition"},
+  {EXCEPTION_INVALID_HANDLE, "Invalid handle"},
+  {EXCEPTION_NONCONTINUABLE_EXCEPTION, "Noncontinuable exception"},
+  {EXCEPTION_PRIV_INSTRUCTION, "Privileged instruction"},
+  {EXCEPTION_SINGLE_STEP, "Single step"},
+  {EXCEPTION_STACK_OVERFLOW, "Stack overflow"},
 };
+
+static const char*
+get_exception_description (u_int code)
+{
+  for (int i = 0; i < numberof (Win32Exception::known_excep); i++)
+    if (code == Win32Exception::known_excep[i].code)
+      return Win32Exception::known_excep[i].desc;
+  return "Unknown exception";
+}
+
 
 EXCEPTION_RECORD Win32Exception::r;
 CONTEXT Win32Exception::c;
@@ -35,6 +60,20 @@ Win32Exception::Win32Exception (u_int code_, const EXCEPTION_POINTERS *ep)
   code = code_;
   r = *ep->ExceptionRecord;
   c = *ep->ContextRecord;
+}
+
+void Win32Exception::throw_lisp_error ()
+{
+  switch (code)
+    {
+    case EXCEPTION_BREAKPOINT:
+    case EXCEPTION_NONCONTINUABLE_EXCEPTION:
+    case EXCEPTION_SINGLE_STEP:
+      return;
+    default:
+      const char* desc = get_exception_description (code);
+      FEwin32_exception (desc, code, r.ExceptionAddress);
+    }
 }
 
 void __cdecl
@@ -360,14 +399,7 @@ lisp_stack_trace (FILE *fp)
 void
 cleanup_exception ()
 {
-  const char *desc = "Unknown exception";
-  for (int i = 0; i < numberof (Win32Exception::known_excep); i++)
-    if (Win32Exception::code == Win32Exception::known_excep[i].code)
-      {
-        desc = Win32Exception::known_excep[i].desc;
-        break;
-      }
-
+  const char* desc = get_exception_description (Win32Exception::code);
   char path[PATH_MAX];
   GetModuleFileName (0, path, PATH_MAX);
   int l = strlen (path);

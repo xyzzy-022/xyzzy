@@ -409,11 +409,76 @@ of SHA-384 and SHA-512)."
   (check-type "" si:chunk)
   !! type-error)
 
+(deftest pack-unpack-int8 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-int8 c 0 #x12)
+    (si:unpack-int8 c 0))
+  => #x12)
+
+(deftest pack-unpack-uint8 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-uint8 c 0 #xFF)
+    (values
+     (si:unpack-uint8 c 0)
+     (si:unpack-int8 c 0)))
+  => #xFF
+  => -1)
+
+(deftest pack-unpack-int16 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-int16 c 0 #x1234)
+    (si:unpack-int16 c 0))
+  => #x1234)
+
+(deftest pack-unpack-uint16 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-uint16 c 0 #xFFFF)
+    (values
+     (si:unpack-uint16 c 0)
+     (si:unpack-int16 c 0)))
+  => #xFFFF
+  => -1)
+
+(deftest pack-unpack-int32 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-int32 c 0 #x12345678)
+    (si:unpack-int32 c 0))
+  => #x12345678)
+
+(deftest pack-unpack-uint32 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-uint32 c 0 #xFFFFFFFF)
+    (values
+     (si:unpack-uint32 c 0)
+     (si:unpack-int32 c 0)))
+  => #xFFFFFFFF
+  => -1)
+
+(deftest pack-unpack-float ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-float c 0 1.1111)
+    (si:unpack-float c 0))
+  => 1.1111)
+
+(deftest pack-unpack-double ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-double c 0 1.1111d0)
+    (si:unpack-double c 0))
+  => 1.1111d0)
+
+(deftest pack-unpack-string ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-string c 0 "hoge")
+    (si:unpack-string c 0))
+  => "hoge")
+
+
+
 (deftest pack-unpack-int64 ()
   (let ((c (si:make-chunk nil 8)))
-    (si:pack-int64 c 0 #x1234567890)
+    (si:pack-int64 c 0 #x1234567890ABCDEF)
     (si:unpack-int64 c 0))
-  => #x1234567890)
+  => #x1234567890ABCDEF)
 
 (deftest pack-unpack-uint64 ()
   (let ((c (si:make-chunk nil 8)))
@@ -465,32 +530,6 @@ of SHA-384 and SHA-512)."
   !! range-error)
 
 
-(deftest binhex-decode ()
-  (si:binhex-decode ":#(4PFh3ZG(Kd!&4&@&3rN!3!N!8'!*!%&+PiHATkH3VEZ!!!:")
-  => "xyzzy\n"
-  => 1413830740
-  => 1061109567
-  => "test.txt")
-
-(defun closure-variable-helper ()
-  (let (a
-        (b)
-        (c 1)
-        (d '(1 2 3))
-        (buffer-read-only 4)
-        (*kill-xyzzy-hook* 5))
-    (si:closure-variable #'(lambda ()))))
-
-(deftest closure-variable ()
-  (closure-variable-helper)
-  => ((*kill-xyzzy-hook* . 5)
-      (buffer-read-only . 4)
-      (d 1 2 3)
-      (c . 1)
-      (b)
-      (a)))
-
-
 (deftest make-chunk-bad-ptr-1 ()
   (si:make-chunk nil 4 nil 0)
   => non-nil)
@@ -499,22 +538,26 @@ of SHA-384 and SHA-512)."
   (si:make-chunk nil 4 nil 123)
   => non-nil)
 
-(deftest access-violation-address ()
+(deftest win32-exception-slots ()
   (handler-case
       (let ((chunk (si:make-chunk nil 100 nil 123)))
         (si:pack-int8 chunk 0 1))
-    (access-violation (e)
-      (access-violation-address e)))
-  => 123)
+    (win32-exception (e)
+      (values (win32-exception-description e)
+              (win32-exception-code e)
+              (win32-exception-address e))))
+  => "Access violation"
+  => #xc0000005
+  => non-nil)
 
 (deftest pack/unpack-bad-ptr ()
   (macrolet ((test (&body body)
                `(handler-case
                     (progn
                       (progn ,@body)
-                      (format nil "access-violation not throw: ~S" ',body))
-                  (access-violation (e)
-                    (si:*condition-string e)))))
+                      nil)
+                  (win32-exception (e)
+                    t))))
     (let ((chunk (si:make-chunk nil 100 nil 123)))
       (values
        (test (si:pack-int8 chunk 0 1))
@@ -539,25 +582,51 @@ of SHA-384 and SHA-512)."
        (test (si:unpack-float chunk 0))
        (test (si:unpack-double chunk 0))
        (test (si:unpack-string chunk 0)))))
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123"
-  => "不正なメモリアドレスです: 123")
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t)
+
+
+(deftest binhex-decode ()
+  (si:binhex-decode ":#(4PFh3ZG(Kd!&4&@&3rN!3!N!8'!*!%&+PiHATkH3VEZ!!!:")
+  => "xyzzy\n"
+  => 1413830740
+  => 1061109567
+  => "test.txt")
+
+(defun closure-variable-helper ()
+  (let (a
+        (b)
+        (c 1)
+        (d '(1 2 3))
+        (buffer-read-only 4)
+        (*kill-xyzzy-hook* 5))
+    (si:closure-variable #'(lambda ()))))
+
+(deftest closure-variable ()
+  (closure-variable-helper)
+  => ((*kill-xyzzy-hook* . 5)
+      (buffer-read-only . 4)
+      (d 1 2 3)
+      (c . 1)
+      (b)
+      (a)))

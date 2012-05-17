@@ -757,7 +757,7 @@ static symbols lsp[] =
   MAKE_SYMBOL2Q (dde-terminated-transaction),
   MAKE_SYMBOL2Q (storage-condition),
   MAKE_SYMBOL2Q (stack-overflow),
-  MAKE_SYMBOL2Q (access-violation),
+  MAKE_SYMBOL2Q (win32-exception),
   MAKE_SYMBOL2Q (invalid-byte-code),
   MAKE_SYMBOL2Q (quit),
   MAKE_SYMBOL2Q (silent-quit),
@@ -807,6 +807,7 @@ static symbols sys[] =
   SI_DEFUN3 (*report-reader-error, 2, 0, 0),
   SI_DEFUN3 (*report-simple-package-error, 2, 0, 0),
   SI_DEFUN3 (*report-socket-error, 2, 0, 0),
+  SI_DEFUN3 (*report-win32-exception, 2, 0, 0),
   SI_DEFVAR2 (*trace-on-error*),
   SI_DEFVAR2 (*report-simple-errors-mildly*),
 
@@ -1447,6 +1448,7 @@ static symbols kwd[] =
   DEFKWD2 (georgian),
   DEFKWD2 (face),
   DEFKWD2 (size-pixel-p),
+  DEFKWD2 (code),
   DEFKWD2 (address),
 };
 
@@ -1599,7 +1601,7 @@ static symbols unint[] =
   MAKE_SYMBOL2QC (*dde-terminated-transaction),
   MAKE_SYMBOL2QC (*storage-condition),
   MAKE_SYMBOL2QC (*stack-overflow),
-  MAKE_SYMBOL2QC (*access-violation),
+  MAKE_SYMBOL2QC (*win32-exception),
   MAKE_SYMBOL2QC (*invalid-byte-code),
   MAKE_SYMBOL2QC (*quit),
   MAKE_SYMBOL2QC (*silent-quit),
