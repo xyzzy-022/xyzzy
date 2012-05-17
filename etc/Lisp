@@ -3380,6 +3380,9 @@ view-lossage
 view-mode
 view-nifty-log
 wait-object-p
+win32-exception-description
+win32-exception-code
+win32-exception-address
 write-abbrev-file
 write-protected-datum
 write-protected-pathname
