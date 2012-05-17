@@ -39,12 +39,9 @@ chunk_ptr (lisp chunk, lisp loffset, lisp lsize)
 static void *
 chunk_ptr (char *address, lisp lsize)
 {
-  size_t size = fixnum_value (lsize);
-  char *ae = address + size;
+  char *ae = address + fixnum_value (lsize);
   if (ae < address)
     FErange_error (lsize);
-  if (IsBadReadPtr (address, size) && IsBadWritePtr (address, size))
-    FEprogram_error (Eaccess_violation, make_fixnum (reinterpret_cast <long> (address)));
   return address;
 }
 
