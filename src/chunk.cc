@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ed.h"
+#include "except.h"
 
 lchunk *
 make_chunk ()
@@ -214,74 +215,98 @@ chunk_ptr (lisp chunk, lisp loffset, int size)
   return p;
 }
 
+template<typename T>
+lisp
+unpack_integer (lisp chunk, lisp offset)
+{
+  T *p = static_cast <T *> (chunk_ptr (chunk, offset, sizeof *p));
+  try
+    {
+      return make_integer (*p);
+    }
+  catch (Win32Exception &e)
+    {
+      e.throw_lisp_error ();
+      throw;
+    }
+}
+
 lisp
 Fsi_unpack_int8 (lisp chunk, lisp offset)
 {
-  char *p = (char *)chunk_ptr (chunk, offset, sizeof *p);
-  return make_fixnum (*p);
+  return unpack_integer <char> (chunk, offset);
 }
 
 lisp
 Fsi_unpack_uint8 (lisp chunk, lisp offset)
 {
-  u_char *p = (u_char *)chunk_ptr (chunk, offset, sizeof *p);
-  return make_fixnum (*p);
+  return unpack_integer <u_char> (chunk, offset);
 }
 
 lisp
 Fsi_unpack_int16 (lisp chunk, lisp offset)
 {
-  short *p = (short *)chunk_ptr (chunk, offset, sizeof *p);
-  return make_fixnum (*p);
+  return unpack_integer <short> (chunk, offset);
 }
 
 lisp
 Fsi_unpack_uint16 (lisp chunk, lisp offset)
 {
-  u_short *p = (u_short *)chunk_ptr (chunk, offset, sizeof *p);
-  return make_fixnum (*p);
+  return unpack_integer <u_short> (chunk, offset);
 }
 
 lisp
 Fsi_unpack_int32 (lisp chunk, lisp offset)
 {
-  long *p = (long *)chunk_ptr (chunk, offset, sizeof *p);
-  return make_fixnum (*p);
+  return unpack_integer <long> (chunk, offset);
 }
 
 lisp
 Fsi_unpack_uint32 (lisp chunk, lisp offset)
 {
-  u_long *p = (u_long *)chunk_ptr (chunk, offset, sizeof *p);
-  return make_integer (long_to_large_int (*p));
+  return unpack_integer <u_long> (chunk, offset);
 }
 
 lisp
 Fsi_unpack_int64 (lisp chunk, lisp offset)
 {
-  int64_t *p = (int64_t *)chunk_ptr (chunk, offset, sizeof *p);
-  return make_integer (*p);
+  return unpack_integer <int64_t> (chunk, offset);
 }
 
 lisp
 Fsi_unpack_uint64 (lisp chunk, lisp offset)
 {
-  uint64_t *p = (uint64_t *)chunk_ptr (chunk, offset, sizeof *p);
-  return make_integer (*p);
+  return unpack_integer <uint64_t> (chunk, offset);
 }
 
 lisp
 Fsi_unpack_float (lisp chunk, lisp offset)
 {
   float *p = (float *)chunk_ptr (chunk, offset, sizeof *p);
-  return make_single_float (*p);
+  try
+    {
+      return make_single_float (*p);
+    }
+  catch (Win32Exception &e)
+    {
+      e.throw_lisp_error ();
+      throw;
+    }
 }
 
 lisp
 Fsi_unpack_double (lisp chunk, lisp offset)
 {
   double *p = (double *)chunk_ptr (chunk, offset, sizeof *p);
-  return make_double_float (*p);
+  try
+    {
+      return make_double_float (*p);
+    }
+  catch (Win32Exception &e)
+    {
+      e.throw_lisp_error ();
+      throw;
+    }
 }
 
 // si:unpack-string chunk offset &optional size (zero_term t)
@@ -303,10 +328,18 @@ Fsi_unpack_string (lisp chunk, lisp loffset, lisp lsize, lisp lzero_term)
         FErange_error (lsize);
     }
   int zero_term = !lzero_term || lzero_term != Qnil;
-  size_t l = s2wl (p, pe, zero_term);
-  lisp string = make_string (l);
-  s2w (xstring_contents (string), p, pe, zero_term);
-  return string;
+  try
+    {
+      size_t l = s2wl (p, pe, zero_term);
+      lisp string = make_string (l);
+      s2w (xstring_contents (string), p, pe, zero_term);
+      return string;
+    }
+  catch (Win32Exception &e)
+    {
+      e.throw_lisp_error ();
+      throw;
+    }
 }
 
 int64_t
@@ -336,75 +369,84 @@ cast_to_long (lisp object)
   return static_cast <long> (cast_to_int64 (object));
 }
 
+template<typename T>
+lisp
+pack_integer (lisp chunk, lisp offset, lisp value)
+{
+  T *p = static_cast <T *> (chunk_ptr (chunk, offset, sizeof *p));
+  try
+    {
+      *p = static_cast <T> (cast_to_int64 (value));
+    }
+  catch (Win32Exception &e)
+    {
+      e.throw_lisp_error ();
+      throw;
+    }
+  return value;
+}
+
 lisp
 Fsi_pack_int8 (lisp chunk, lisp offset, lisp value)
 {
-  char *p = (char *)chunk_ptr (chunk, offset, sizeof *p);
-  *p = char (cast_to_long (value));
-  return value;
+  return pack_integer <char> (chunk, offset, value);
 }
 
 lisp
 Fsi_pack_uint8 (lisp chunk, lisp offset, lisp value)
 {
-  u_char *p = (u_char *)chunk_ptr (chunk, offset, sizeof *p);
-  *p = u_char (cast_to_long (value));
-  return value;
+  return pack_integer <u_char> (chunk, offset, value);
 }
 
 lisp
 Fsi_pack_int16 (lisp chunk, lisp offset, lisp value)
 {
-  short *p = (short *)chunk_ptr (chunk, offset, sizeof *p);
-  *p = short (cast_to_long (value));
-  return value;
+  return pack_integer <short> (chunk, offset, value);
 }
 
 lisp
 Fsi_pack_uint16 (lisp chunk, lisp offset, lisp value)
 {
-  u_short *p = (u_short *)chunk_ptr (chunk, offset, sizeof *p);
-  *p = u_short (cast_to_long (value));
-  return value;
+  return pack_integer <u_short> (chunk, offset, value);
 }
 
 lisp
 Fsi_pack_int32 (lisp chunk, lisp offset, lisp value)
 {
-  long *p = (long *)chunk_ptr (chunk, offset, sizeof *p);
-  *p = long (cast_to_long (value));
-  return value;
+  return pack_integer <long> (chunk, offset, value);
 }
 
 lisp
 Fsi_pack_uint32 (lisp chunk, lisp offset, lisp value)
 {
-  u_long *p = (u_long *)chunk_ptr (chunk, offset, sizeof *p);
-  *p = u_long (cast_to_long (value));
-  return value;
+  return pack_integer <u_long> (chunk, offset, value);
 }
 
 lisp
 Fsi_pack_int64 (lisp chunk, lisp offset, lisp value)
 {
-  int64_t *p = (int64_t *)chunk_ptr (chunk, offset, sizeof *p);
-  *p = int64_t (cast_to_int64 (value));
-  return value;
+  return pack_integer <int64_t> (chunk, offset, value);
 }
 
 lisp
 Fsi_pack_uint64 (lisp chunk, lisp offset, lisp value)
 {
-  uint64_t *p = (uint64_t *)chunk_ptr (chunk, offset, sizeof *p);
-  *p = uint64_t (cast_to_int64 (value));
-  return value;
+  return pack_integer <uint64_t> (chunk, offset, value);
 }
 
 lisp
 Fsi_pack_float (lisp chunk, lisp offset, lisp value)
 {
   float *p = (float *)chunk_ptr (chunk, offset, sizeof *p);
-  *p = coerce_to_single_float (value);
+  try
+    {
+      *p = coerce_to_single_float (value);
+    }
+  catch (Win32Exception &e)
+    {
+      e.throw_lisp_error ();
+      throw;
+    }
   return value;
 }
 
@@ -412,7 +454,15 @@ lisp
 Fsi_pack_double (lisp chunk, lisp offset, lisp value)
 {
   double *p = (double *)chunk_ptr (chunk, offset, sizeof *p);
-  *p = coerce_to_double_float (value);
+  try
+    {
+      *p = coerce_to_double_float (value);
+    }
+  catch (Win32Exception &e)
+    {
+      e.throw_lisp_error ();
+      throw;
+    }
   return value;
 }
 
@@ -434,6 +484,14 @@ Fsi_pack_string (lisp chunk, lisp loffset, lisp value, lisp lsize)
       if (pe < p || pe > p0 + xchunk_size (chunk))
         FErange_error (lsize);
     }
-  w2s (p, pe, xstring_contents (value), xstring_length (value));
+  try
+    {
+      w2s (p, pe, xstring_contents (value), xstring_length (value));
+    }
+  catch (Win32Exception &e)
+    {
+      e.throw_lisp_error ();
+      throw;
+    }
   return value;
 }

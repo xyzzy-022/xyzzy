@@ -296,6 +296,14 @@ numberp (lisp x)
 }
 
 #include "largeint.h"
+lisp make_integer (char x);
+lisp make_integer (u_char x);
+lisp make_integer (short x);
+lisp make_integer (u_short x);
+lisp make_integer (int x);
+lisp make_integer (u_int x);
+lisp make_integer (long x);
+lisp make_integer (u_long x);
 lisp make_integer (large_int);
 lisp make_integer (int64_t);
 lisp make_integer (uint64_t);

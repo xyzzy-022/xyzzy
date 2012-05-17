@@ -78,6 +78,15 @@ signal_divide_by_zero ()
   FEdivision_by_zero ();
 }
 
+lisp make_integer (char x) { return make_fixnum (x); }
+lisp make_integer (u_char x) { return make_fixnum (x); }
+lisp make_integer (short x) { return make_fixnum (x); }
+lisp make_integer (u_short x) { return make_fixnum (x); }
+lisp make_integer (int x) { return make_fixnum (x); }
+lisp make_integer (u_int x) { return make_fixnum (x); }
+lisp make_integer (long x) { return make_fixnum (x); }
+lisp make_integer (u_long x) { return make_integer (long_to_large_int (x)); }
+
 lisp
 make_integer (bignum_rep *rep)
 {

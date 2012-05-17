@@ -10,6 +10,7 @@ void check_condition (lisp);
 
 void FEstorage_error ();
 lisp FEstack_overflow ();
+lisp FEwin32_exception (const char* desc, u_int code, PVOID address);
 lisp FEtype_error (lisp, lisp);
 lisp FErange_error (lisp);
 lisp FEsimple_error (message_code);

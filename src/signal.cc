@@ -155,6 +155,7 @@ init_condition ()
   D1 (      socket_error, QCerror, Ssi_report_socket_error, 1, Kdatum);
   E0 (    storage_condition, QCserious_condition, Estorage_condition, 1);
   E0 (    stack_overflow, QCserious_condition, Estack_overflow, 1);
+  D3 (    win32_exception, QCserious_condition, Ssi_report_win32_exception, 1, Kdescription, Kcode, Kaddress);
   E0 (    invalid_byte_code, QCserious_condition, Einvalid_byte_code, 1);
   E0 (  quit, QCcondition, Equit, 0);
   E0 (    silent_quit, QCquit, Esilent_quit, 0);
@@ -355,6 +356,12 @@ Fsi_report_socket_error (lisp c, lisp s)
   return report_raw (c, s);
 }
 
+lisp
+Fsi_report_win32_exception (lisp c, lisp s)
+{
+  return report_raw (c, s);
+}
+
 void
 handle_quit ()
 {
@@ -402,6 +409,15 @@ lisp
 FEstack_overflow ()
 {
   COND0 (stack_overflow);
+}
+
+lisp
+FEwin32_exception (const char* desc, u_int code, PVOID address)
+{
+  lisp ldesc = make_string (desc);
+  lisp lcode = make_integer (long_to_large_int (static_cast <u_long> (code)));
+  lisp laddress = make_integer (long_to_large_int (reinterpret_cast <u_long> (address)));
+  COND3 (win32_exception, ldesc, lcode, laddress);
 }
 
 lisp
@@ -770,6 +786,7 @@ check_condition_def ()
   message_code e = message_code (0);
   try {FEstorage_error ();} catch (nonlocal_jump &) {}
   try {FEstack_overflow ();} catch (nonlocal_jump &) {}
+  try {FEwin32_exception (0, 0, 0);} catch (nonlocal_jump &) {}
   try {FEtoo_few_arguments ();} catch (nonlocal_jump &) {}
   try {FEtoo_many_arguments ();} catch (nonlocal_jump &) {}
   try {FEquit ();} catch (nonlocal_jump &) {}
