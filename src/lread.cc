@@ -2142,6 +2142,7 @@ load_file (lisp filename, lisp realname, lisp if_does_not_exist,
   dynamic_bind dynb2 (Vload_pathname,
                       ((streamp (stream) && file_stream_p (stream))
                        ? xfile_stream_pathname (stream) : stream));
+  dynamic_bind dynb3 (Vreadtable, xsymbol_value (Vreadtable));
   protect_gc gcpro (stream);
 
   with_open_file s (stream == filename ? 0 : stream);
