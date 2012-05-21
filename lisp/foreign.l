@@ -17,7 +17,9 @@
 	  define-c-struct *define-c-struct
 	  c-struct-size-of c-struct-offset-of
 	  define *define *define-c-macro
-	  *c-typedef-auto-export* *c-structure-packing-align*))
+	  *c-typedef-auto-export* *c-structure-packing-align*
+	  last-win32-error
+	  ))
 
 (defsetf si:unpack-int8 si:pack-int8)
 (defsetf si:unpack-uint8 si:pack-uint8)
@@ -358,6 +360,9 @@
   `(progn
      (defmacro ,name ,lambda-list ,@body)
      (export ',name)))
+
+(defun last-win32-error ()
+  (si:*last-win32-error))
 
 #|
 struct foo

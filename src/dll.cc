@@ -191,11 +191,32 @@ Fsi_make_c_function (lisp lmodule, lisp lname, lisp largs, lisp lrettype)
   return fn;
 }
 
+lisp
+Fsi_last_win32_error ()
+{
+  return xsymbol_value (Vlast_win32_error);
+}
+
+static __forceinline void
+clear_last_error ()
+{
+  xsymbol_value (Vlast_win32_error) = make_fixnum (0);
+}
+
+static __forceinline void
+save_last_error ()
+{
+  xsymbol_value (Vlast_win32_error) = make_fixnum (GetLastError ());
+}
+
 template<typename T>
 static __forceinline T
 call_proc (FARPROC proc)
 {
-  return (reinterpret_cast <T (__stdcall *)()> (proc))();
+  clear_last_error ();
+  T r = (reinterpret_cast <T (__stdcall *)()> (proc))();
+  save_last_error ();
+  return r;
 }
 
 lisp

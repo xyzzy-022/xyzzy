@@ -974,6 +974,7 @@ static symbols sys[] =
   SI_DEFUN3 (load-dll-module, 1, 0, 0),
   SI_DEFUN3 (make-c-function, 4, 0, 0),
   SI_DEFUN3 (make-c-callable, 3, 0, FFneed_rest),
+  SI_DEFUN3 (*last-win32-error, 0, 0, 0),
 
   MAKE_SYMBOL (dll-module, Qsi_dll_module),
   MAKE_SYMBOL (c-function, Qsi_c_function),
@@ -1616,6 +1617,7 @@ static symbols unint[] =
   MAKE_SYMBOL2 (ierror-read-only-buffer),
 
   MAKE_SYMBOL2 (dll_module_list),
+  MAKE_SYMBOL2 (last-win32-error),
   MAKE_SYMBOL2 (function_bar_labels),
 
   MAKE_SYMBOL2 (default-readtable),
