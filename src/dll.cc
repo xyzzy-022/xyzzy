@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ed.h"
+#include "except.h"
 
 ldll_module *
 make_dll_module ()
@@ -272,44 +273,52 @@ funcall_dll (lisp fn, lisp arglist)
     FEtoo_many_arguments ();
 
   FARPROC proc = xdll_function_proc (fn);
-  switch (xdll_function_return_type (fn))
+  try
     {
-    default:
-      assert (0);
+      switch (xdll_function_return_type (fn))
+        {
+        default:
+          assert (0);
 
-    case CTYPE_VOID:
-      proc ();
-      return Qnil;
+        case CTYPE_VOID:
+          proc ();
+          return Qnil;
 
-    case CTYPE_INT8:
-      return make_fixnum (call_proc <char> (proc));
+        case CTYPE_INT8:
+          return make_fixnum (call_proc <char> (proc));
 
-    case CTYPE_UINT8:
-      return make_fixnum (call_proc <u_char> (proc));
+        case CTYPE_UINT8:
+          return make_fixnum (call_proc <u_char> (proc));
 
-    case CTYPE_INT16:
-      return make_fixnum (call_proc <short> (proc));
+        case CTYPE_INT16:
+          return make_fixnum (call_proc <short> (proc));
 
-    case CTYPE_UINT16:
-      return make_fixnum (call_proc <u_short> (proc));
+        case CTYPE_UINT16:
+          return make_fixnum (call_proc <u_short> (proc));
 
-    case CTYPE_INT32:
-      return make_fixnum (call_proc <long> (proc));
+        case CTYPE_INT32:
+          return make_fixnum (call_proc <long> (proc));
 
-    case CTYPE_UINT32:
-      return make_integer (long_to_large_int (call_proc <u_long> (proc)));
+        case CTYPE_UINT32:
+          return make_integer (long_to_large_int (call_proc <u_long> (proc)));
 
-    case CTYPE_INT64:
-      return make_integer (call_proc <int64_t> (proc));
+        case CTYPE_INT64:
+          return make_integer (call_proc <int64_t> (proc));
 
-    case CTYPE_UINT64:
-      return make_integer (call_proc <uint64_t> (proc));
+        case CTYPE_UINT64:
+          return make_integer (call_proc <uint64_t> (proc));
 
-    case CTYPE_FLOAT:
-      return make_single_float (call_proc <float> (proc));
+        case CTYPE_FLOAT:
+          return make_single_float (call_proc <float> (proc));
 
-    case CTYPE_DOUBLE:
-      return make_double_float (call_proc <double> (proc));
+        case CTYPE_DOUBLE:
+          return make_double_float (call_proc <double> (proc));
+        }
+    }
+  catch (Win32Exception &e)
+    {
+      e.throw_lisp_error ();
+      throw;
     }
 #else
 # error "yet"
