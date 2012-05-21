@@ -205,3 +205,40 @@
   => "4294967295"
   => "9223372036854775807"
   => "18446744073709551615")
+
+
+(c:define-dll-entry
+  c:int
+  MultiByteToWideChar (c:u_int         ; code page
+                       c:u_long        ; character-type options
+                       (c:void *)      ; string to map
+                       c:int           ; number of bytes in string
+                       (c:void *)      ; wide-character buffer
+                       c:int)          ; size of buffer
+  "kernel32")
+
+(deftest last-win32-error ()
+  (let ((a (si:make-string-chunk "abc"))
+        (u (si:make-chunk nil 9)))
+    (si:clear-chunk u)
+    (values
+     (progn
+       (MultiByteToWideChar 932 0
+                            a (si:chunk-size a)
+                            u (si:chunk-size u))
+       (c:last-win32-error))
+     (progn
+       (MultiByteToWideChar 932932 0
+                            a (si:chunk-size a)
+                            u (si:chunk-size u))
+       (c:last-win32-error))
+     (progn
+       (setf u (si:make-chunk nil 1))
+       (MultiByteToWideChar 932 0
+                            a (si:chunk-size a)
+                            u (si:chunk-size u))
+       (c:last-win32-error))
+     ))
+  => 0
+  => 87   ; ERROR_INVALID_PARAMETER
+  => 122) ; ERROR_INSUFFICIENT_BUFFER
