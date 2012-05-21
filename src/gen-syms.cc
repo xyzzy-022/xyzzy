@@ -1694,6 +1694,7 @@ static symbols ed[] =
   MAKE_SYMBOL2 (windows-7),
   MAKE_SYMBOL2 (windows-8),
   DEFUN3 (user-config-path, 0, 0, 0),
+  DEFUN3 (xyzzy-ini-path, 0, 0, 0),
   DEFVAR2 (*convert-registry-to-file-p*),
 
   /* Buffer.cc */

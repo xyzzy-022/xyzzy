@@ -981,6 +981,12 @@ Fuser_config_path ()
 }
 
 lisp
+Fxyzzy_ini_path ()
+{
+  return make_string (app.ini_file_path);
+}
+
+lisp
 Fsi_dump_image_path ()
 {
   return xsymbol_value (Qdump_image_path);
