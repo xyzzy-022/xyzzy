@@ -242,3 +242,59 @@
   => 0
   => 87   ; ERROR_INVALID_PARAMETER
   => 122) ; ERROR_INSUFFICIENT_BUFFER
+
+
+(c:define-dll-entry
+  c:u_int64 ; ほんとは div_t だが構造体の戻り値は未サポート
+  (div :convention :cdecl)
+  (c:int c:int)
+  "msvcrt")
+
+(deftest handle-divide-by-zero ()
+  (flet ((unpack-div_t (div_t)
+           (list (logand #xFFFF div_t)
+                 (logand #xFFFF (ash div_t -32)))))
+    (values
+     (unpack-div_t (div 10 3))
+     (handler-case
+         (div 10 0)
+       (win32-exception (e)
+         (list (win32-exception-description e)
+               (win32-exception-code e))))))
+  => (3 1)
+  => ("Integer divide by zero" #xc0000094))
+
+
+(c:define-dll-entry
+  (c:char *)
+  (strcat :convention :cdecl)
+  ((c:char *) (c:char *))
+  "msvcrt")
+
+(deftest handle-access-violation ()
+  (let ((c (si:make-chunk nil 5)))
+    (si:clear-chunk c)
+    (strcat c (si:make-string-chunk "hoge"))
+    (values
+     (si:unpack-string c 0)
+     (handler-case
+         (strcat 0 (si:make-string-chunk "fuga"))
+       (win32-exception (e)
+         (list (win32-exception-description e)
+               (win32-exception-code e))))))
+  => "hoge"
+  => ("Access violation" #xc0000005))
+
+
+(c:define-dll-entry
+  c:int
+  GetModuleHandleA ((c:void *))
+  "kernel32")
+
+(deftest handle-access-violation-2 ()
+  (handler-case
+      (GetModuleHandleA 32)
+    (win32-exception (e)
+      (list (win32-exception-description e)
+            (win32-exception-code e))))
+  => ("Access violation" #xc0000005))
