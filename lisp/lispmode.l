@@ -214,14 +214,15 @@
 	(cond ((packagep result) result)
 	      ((or (symbolp result)
 		   (stringp result))
-	       (find (string result)
-		     (mapcan
-		      #'(lambda (p)
-			  (copy-list
-			   (cons (package-name p)
-				 (package-nicknames p))))
-		      (list-all-packages))
-		     :test #'equalp))))
+	       (find-package
+		(find (string result)
+		      (mapcan
+		       #'(lambda (p)
+			   (copy-list
+			    (cons (package-name p)
+				  (package-nicknames p))))
+		       (list-all-packages))
+		      :test #'equalp)))))
       *package*))
 
 (defun calc-lisp-indent (opoint)
