@@ -860,3 +860,96 @@
 (deftest kill-xyzzy-exit-code-error-string ()
   (kill-xyzzy "foo")
   !! type-error)
+
+
+(deftest find-buffer-package ()
+  (let ((ed-package (find-package :editor))
+        (*find-buffer-package-hook* nil))
+    (values
+     (let ((*buffer-package* "editor"))
+       (declare (special *buffer-package*))
+       (eql ed-package (ed::find-buffer-package)))
+     (let ((*buffer-package* "no such package"))
+       (declare (special *buffer-package*))
+       (eql *package* (ed::find-buffer-package)))
+     (let ((*buffer-package* nil))
+       (declare (special *buffer-package*))
+       (eql *package* (ed::find-buffer-package)))
+     (eql *package* (ed::find-buffer-package))
+     ))
+  => t
+  => t
+  => t
+  => t)
+
+(deftest find-buffer-package-hook ()
+  (let ((*package* (find-package :user))
+        (*buffer-package* nil))
+    (declare (special *buffer-package*))
+    (values
+     (let ((*find-buffer-package-hook* #'(lambda () (error "hoge"))))
+       (package-name (ed::find-buffer-package)))
+     (let ((*find-buffer-package-hook* #'(lambda () (find-package :editor))))
+       (package-name (ed::find-buffer-package)))
+     (let ((*find-buffer-package-hook* #'(lambda () "editor")))
+       (package-name (ed::find-buffer-package)))
+     (let ((*find-buffer-package-hook* #'(lambda () "EdItOr")))
+       (package-name (ed::find-buffer-package)))
+     (let ((*find-buffer-package-hook* #'(lambda () :editor)))
+       (package-name (ed::find-buffer-package)))
+     ))
+  => "user"
+  => "editor"
+  => "editor"
+  => "editor"
+  => "editor")
+
+(deftest find-buffer-package-hook-list ()
+  (let ((*package* (find-package :user))
+        (*buffer-package* nil))
+    (declare (special *buffer-package*))
+    (values
+     (let ((ed:*find-buffer-package-hook* (list #'(lambda () (find-package :editor))
+                                                #'(lambda () (error "hoge")))))
+       (package-name (ed::find-buffer-package)))
+     (let ((ed:*find-buffer-package-hook* (list #'(lambda () nil)
+                                                #'(lambda () (find-package :editor)))))
+       (package-name (ed::find-buffer-package)))
+     (let ((ed:*find-buffer-package-hook* (list #'(lambda () (error "hoge"))
+                                                #'(lambda () (find-package :editor)))))
+       (package-name (ed::find-buffer-package)))
+     ))
+  => "editor"
+  => "editor"
+  => "user")
+
+(deftest lisp-search-in-package ()
+  (let ((*package* (find-package :user))
+        (*buffer-package* nil)
+        (*find-buffer-package-hook* '(ed::lisp-search-in-package)))
+    (declare (special *buffer-package*))
+    (with-temp-buffer
+      (insert "(in-package :editor)" #\LFD)
+      (insert "(in-package   \"user\" )" #\LFD)
+      (insert "(cl:in-package \"cl-user\")" #\LFD)
+      (insert "(lisp:in-package \"cl\")" #\LFD)
+      (insert "(common-lisp::in-package \"lisp\")" #\LFD)
+      (insert "(common-lisp::in-package \"no-such-package\")" #\LFD)
+      (flet ((test (n)
+               (goto-line n)
+               (goto-bol)
+               (package-name (ed::find-buffer-package))))
+        (values
+         (test 1)
+         (test 2)
+         (test 3)
+         (test 4)
+         (test 5)
+         (test 6)
+         ))))
+  => "editor"
+  => "user"
+  => "common-lisp-user"
+  => "common-lisp"
+  => "lisp"
+  => "user")
