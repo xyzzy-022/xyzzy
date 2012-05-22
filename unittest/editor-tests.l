@@ -953,3 +953,38 @@
   => "common-lisp"
   => "lisp"
   => "user")
+
+
+(deftest xyzzy-ini-path ()
+  (values
+   (si:*builtin-function-p #'xyzzy-ini-path)
+   (path-equal (merge-pathnames "xyzzy.ini" (user-config-path))
+               (xyzzy-ini-path)))
+  => t
+  => t)
+
+(deftest xyzzy-ini-path-startup-option ()
+  (with-temp-files (ini-path)
+    (path-equal ini-path
+                (eval-in-another-xyzzy
+                 '(xyzzy-ini-path)
+                 :options (format nil "-ini \"~A\" -q" ini-path))))
+  => t)
+
+(deftest xyzzy-ini-path-XYZZYINIFILE ()
+  (with-temp-files (ini-path)
+    (path-equal ini-path
+                (eval-in-another-xyzzy
+                 '(xyzzy-ini-path)
+                 :options "-q"
+                 :environ `(("XYZZYINIFILE" . ,ini-path)))))
+  => t)
+
+(deftest xyzzy-ini-path-startup-option-and-XYZZYINIFILE ()
+  (with-temp-files (ini-path1 ini-path2)
+    (path-equal ini-path1
+                (eval-in-another-xyzzy
+                 '(xyzzy-ini-path)
+                 :options (format nil "-ini \"~A\" -q" ini-path1)
+                 :environ `(("XYZZYINIFILE" . ,ini-path2)))))
+  => t)

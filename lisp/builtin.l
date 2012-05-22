@@ -651,6 +651,7 @@
 (si::defun-builtin read-registry (section key &optional root))
 (si::defun-builtin list-registry-key (section &optional root))
 (si::defun-builtin user-config-path ())
+(si::defun-builtin xyzzy-ini-path ())
 (si::defun-builtin user-name ())
 (si::defun-builtin machine-name ())
 (si::defun-builtin os-major-version ())
