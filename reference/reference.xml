@@ -30374,6 +30374,34 @@ CHAR が大文字なら t 、そうでなければ nil を返します。
   =&gt;"H:/xyzzy/usr/Administrator/w2k/"
 </description>
 <seealso>user-homedir-pathname</seealso>
+<seealso>xyzzy-ini-path</seealso>
+<seealso>si:system-root</seealso>
+<link></link>
+<section>ファイルシステム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>xyzzy-ini-path</title>
+<type>Function</type>
+<arguments>xyzzy-ini-path</arguments>
+<package>editor</package>
+<description>
+xyzzy.iniのフルパスを返します。
+
+起動時オプション -ini で指定したり，XYZZYINIFILE
+で指定可能です。両方指定された場合，起動時オプションが
+優先されます。
+
+使用例：
+  (xyzzy-ini-path)
+  =&gt; "H:/xyzzy/usr/Administrator/wxp/xyzzy.ini"
+
+補足：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>user-config-path</seealso>
+<seealso>user-homedir-pathname</seealso>
 <seealso>si:system-root</seealso>
 <link></link>
 <section>ファイルシステム</section>
@@ -30409,6 +30437,7 @@ xyzzyを格納した場合には、ユーザ毎にホームディレクトリの
 </description>
 <seealso>si:system-root</seealso>
 <seealso>user-config-path</seealso>
+<seealso>xyzzy-ini-path</seealso>
 <section>ファイルシステム</section>
 <file>builtin.l</file>
 </chapter>

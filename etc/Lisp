@@ -1513,6 +1513,7 @@ write-region
 write-registry
 wrong-disk-pathname
 xyzzy-dumped-p
+xyzzy-ini-path
 y-or-n-p
 yank
 yank-and-pop
