@@ -192,6 +192,34 @@ Fsi_make_c_function (lisp lmodule, lisp lname, lisp largs, lisp lrettype)
 }
 
 lisp
+Fsi_last_win32_error ()
+{
+  return xsymbol_value (Vlast_win32_error);
+}
+
+static __forceinline void
+clear_last_error ()
+{
+  xsymbol_value (Vlast_win32_error) = make_fixnum (0);
+}
+
+static __forceinline void
+save_last_error ()
+{
+  xsymbol_value (Vlast_win32_error) = make_fixnum (GetLastError ());
+}
+
+template<typename T>
+static __forceinline T
+call_proc (FARPROC proc)
+{
+  clear_last_error ();
+  T r = (reinterpret_cast <T (__stdcall *)()> (proc))();
+  save_last_error ();
+  return r;
+}
+
+lisp
 funcall_dll (lisp fn, lisp arglist)
 {
   assert (dll_function_p (fn));
@@ -254,34 +282,34 @@ funcall_dll (lisp fn, lisp arglist)
       return Qnil;
 
     case CTYPE_INT8:
-      return make_fixnum (char (proc ()));
+      return make_fixnum (call_proc <char> (proc));
 
     case CTYPE_UINT8:
-      return make_fixnum (u_char (proc ()));
+      return make_fixnum (call_proc <u_char> (proc));
 
     case CTYPE_INT16:
-      return make_fixnum (short (proc ()));
+      return make_fixnum (call_proc <short> (proc));
 
     case CTYPE_UINT16:
-      return make_fixnum (u_short (proc ()));
+      return make_fixnum (call_proc <u_short> (proc));
 
     case CTYPE_INT32:
-      return make_fixnum (proc ());
+      return make_fixnum (call_proc <long> (proc));
 
     case CTYPE_UINT32:
-      return make_integer (long_to_large_int (u_long (proc ())));
+      return make_integer (long_to_large_int (call_proc <u_long> (proc)));
 
     case CTYPE_INT64:
-      return make_integer (((int64_t (__stdcall *)())proc)());
+      return make_integer (call_proc <int64_t> (proc));
 
     case CTYPE_UINT64:
-      return make_integer (((uint64_t (__stdcall *)())proc)());
+      return make_integer (call_proc <uint64_t> (proc));
 
     case CTYPE_FLOAT:
-      return make_single_float (((float (__stdcall *)())proc)());
+      return make_single_float (call_proc <float> (proc));
 
     case CTYPE_DOUBLE:
-      return make_double_float (((double (__stdcall *)())proc)());
+      return make_double_float (call_proc <double> (proc));
     }
 #else
 # error "yet"

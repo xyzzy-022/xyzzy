@@ -59,9 +59,82 @@
   => (1 2 3 4 5 6 7 8 9 10))
 
 
+;; int32
+
+(c:define-dll-entry
+  c:int
+  (_atoi :convention :cdecl) ((c:void *))
+  "msvcrt" "atoi")
+
+(deftest define-dll-entry-return-int32 ()
+  (flet ((atoi (str)
+           (_atoi (si:make-string-chunk str))))
+    (values
+     (atoi "0")
+     (atoi "1")
+     (atoi "-1")
+     (atoi "2147483647")
+     (atoi "4294967295")))
+  => 0
+  => 1
+  => -1
+  => #x7FFFFFFF
+  => -1)
+
+
+(c:define-dll-entry
+  (c:void *)
+  (_itoa :convention :cdecl) (c:int (c:void *) c:int)
+  "msvcrt")
+
+(deftest define-dll-entry-int32-arg ()
+  (flet ((itoa (n)
+           (let ((c (si:make-chunk nil 30)))
+             (_itoa n c 10)
+             (si:unpack-string c 0))))
+    (values
+     (itoa 0)
+     (itoa 1)
+     (itoa -1)
+     (itoa #x7FFFFFFF)
+     (itoa #xFFFFFFFF)))
+  => "0"
+  => "1"
+  => "-1"
+  => "2147483647"
+  => "-1")
+
+
+;; uint32
+
+(c:define-dll-entry
+  (c:void *)
+  (_ultoa :convention :cdecl) (c:u_int (c:void *) c:int)
+  "msvcrt")
+
+(deftest define-dll-entry-uint32-arg ()
+  (flet ((itoa (n)
+           (let ((c (si:make-chunk nil 30)))
+             (_ultoa n c 10)
+             (si:unpack-string c 0))))
+    (values
+     (itoa 0)
+     (itoa 1)
+     (itoa -1)
+     (itoa #x7FFFFFFF)
+     (itoa #xFFFFFFFF)))
+  => "0"
+  => "1"
+  => "4294967295"
+  => "2147483647"
+  => "4294967295")
+
+
+;; int64
+
 (c:define-dll-entry
   c:int64
-  _atoi64 ((c:void *))
+  (_atoi64 :convention :cdecl) ((c:void *))
   "msvcrt")
 
 (deftest define-dll-entry-return-int64 ()
@@ -72,17 +145,19 @@
      (atoi "1")
      (atoi "-1")
      (atoi "4294967295")
-     (atoi "9223372036854775807")))
+     (atoi "9223372036854775807")
+     (atoi "18446744073709551615")))
   => 0
   => 1
   => -1
   => #xFFFFFFFF
+  => #x7FFFFFFFFFFFFFFF
   => #x7FFFFFFFFFFFFFFF)
 
 
 (c:define-dll-entry
   (c:void *)
-  _i64toa (c:int64 (c:void *) c:int)
+  (_i64toa :convention :cdecl) (c:int64 (c:void *) c:int)
   "msvcrt")
 
 (deftest define-dll-entry-int64-arg ()
@@ -95,9 +170,75 @@
      (itoa 1)
      (itoa -1)
      (itoa #xFFFFFFFF)
-     (itoa #x7FFFFFFFFFFFFFFF)))
+     (itoa #x7FFFFFFFFFFFFFFF)
+     (itoa #xFFFFFFFFFFFFFFFF)))
   => "0"
   => "1"
   => "-1"
   => "4294967295"
-  => "9223372036854775807")
+  => "9223372036854775807"
+  => "-1")
+
+
+;; u_int64
+
+(c:define-dll-entry
+  (c:void *)
+  (_ui64toa :convention :cdecl) (c:u_int64 (c:void *) c:int)
+  "msvcrt")
+
+(deftest define-dll-entry-uint64-arg ()
+  (flet ((itoa (n)
+           (let ((c (si:make-chunk nil 30)))
+             (_ui64toa n c 10)
+             (si:unpack-string c 0))))
+    (values
+     (itoa 0)
+     (itoa 1)
+     (itoa -1)
+     (itoa #xFFFFFFFF)
+     (itoa #x7FFFFFFFFFFFFFFF)
+     (itoa #xFFFFFFFFFFFFFFFF)))
+  => "0"
+  => "1"
+  => "18446744073709551615"
+  => "4294967295"
+  => "9223372036854775807"
+  => "18446744073709551615")
+
+
+(c:define-dll-entry
+  c:int
+  MultiByteToWideChar (c:u_int         ; code page
+                       c:u_long        ; character-type options
+                       (c:void *)      ; string to map
+                       c:int           ; number of bytes in string
+                       (c:void *)      ; wide-character buffer
+                       c:int)          ; size of buffer
+  "kernel32")
+
+(deftest last-win32-error ()
+  (let ((a (si:make-string-chunk "abc"))
+        (u (si:make-chunk nil 9)))
+    (si:clear-chunk u)
+    (values
+     (progn
+       (MultiByteToWideChar 932 0
+                            a (si:chunk-size a)
+                            u (si:chunk-size u))
+       (c:last-win32-error))
+     (progn
+       (MultiByteToWideChar 932932 0
+                            a (si:chunk-size a)
+                            u (si:chunk-size u))
+       (c:last-win32-error))
+     (progn
+       (setf u (si:make-chunk nil 1))
+       (MultiByteToWideChar 932 0
+                            a (si:chunk-size a)
+                            u (si:chunk-size u))
+       (c:last-win32-error))
+     ))
+  => 0
+  => 87   ; ERROR_INVALID_PARAMETER
+  => 122) ; ERROR_INSUFFICIENT_BUFFER
