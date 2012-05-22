@@ -15,4 +15,6 @@ rem  run-tests.bat unittest/lisp-tests.l unittest/editor-tests.l
 setlocal
 set TESTDIR=%~dp0unittest
 set XYZZYHOME=%TESTDIR%\..
-"%XYZZYHOME%\xyzzy.exe" -trace -l "%TESTDIR%\run-tests.l" %*
+set XYZZYINIFILE=
+set XYZZYCONFIGPATH=
+"%XYZZYHOME%\xyzzy.exe" -q -trace -l "%TESTDIR%\run-tests.l" %*
