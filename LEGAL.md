@@ -1,6 +1,6 @@
 ## LEGAL NOTICE INFORMATION
 
-ˆÈ‰º‚Åà–¾‚·‚éƒtƒ@ƒCƒ‹ˆÈŠO‚Í LICENSE ƒtƒ@ƒCƒ‹‚ðŽQÆ‚µ‚Ä‚­‚¾‚³‚¢B
+ä»¥ä¸‹ã§èª¬æ˜Žã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ä»¥å¤–ã¯ LICENSE ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‚ç…§ã—ã¦ãã ã•ã„ã€‚
 
 ----
 
