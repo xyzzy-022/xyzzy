@@ -983,7 +983,7 @@ Returns list of failures."
                          (t (again)))))
           (start-timer 6 #'delete-tmpbuf t))))))
 
-(defun eval-in-another-xyzzy (form &key (options "") (timeout 60))
+(defun eval-in-another-xyzzy (form &key environ (options "") (timeout 60))
   (let* ((tmpfile (make-temp-file-name))
          (create-time (file-write-time tmpfile))
          (command-string
@@ -992,7 +992,7 @@ Returns list of failures."
          (tmpbuf (let ((buffer (create-new-buffer "*Temp*")))
                    (setup-temp-buffer buffer)
                    buffer))
-         (proc (make-process command-string :output tmpbuf)))
+         (proc (make-process command-string :output tmpbuf :environ environ)))
     (unwind-protect
         (progn
           ;; wait for finish.
