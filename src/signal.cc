@@ -786,7 +786,7 @@ check_condition_def ()
   message_code e = message_code (0);
   try {FEstorage_error ();} catch (nonlocal_jump &) {}
   try {FEstack_overflow ();} catch (nonlocal_jump &) {}
-  try {FEwin32_exception (0, 0, 0);} catch (nonlocal_jump &) {}
+  try {FEwin32_exception ("", 0, 0);} catch (nonlocal_jump &) {}
   try {FEtoo_few_arguments ();} catch (nonlocal_jump &) {}
   try {FEtoo_many_arguments ();} catch (nonlocal_jump &) {}
   try {FEquit ();} catch (nonlocal_jump &) {}
