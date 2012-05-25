@@ -1,4 +1,6 @@
 @echo off
+setlocal
+cd /d %~dp0
 
 echo Byte compile...
 rem startup.lc だけ「存在するファイルを作成することは出来ません」と言われて
