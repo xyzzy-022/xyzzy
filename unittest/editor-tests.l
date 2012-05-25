@@ -997,6 +997,23 @@
   => ("ディスパッチングマクロ副文字ではありません" (#\<))
   => "foo\\bar")
 
+(deftest lisp-tags-find-target ()
+  (with-temp-buffer
+    (flet ((insert-and-find-target (str)
+             (goto-char (point-max))
+             (insert #\LFD str)
+             (backward-char)
+             (multiple-value-bind (class name functionp)
+                 (ed::lisp-tags-find-target)
+               name)))
+      (values
+       (insert-and-find-target "si:getenv")
+       (insert-and-find-target "si::getenv")
+       (insert-and-find-target "getenv"))))
+  => "getenv"
+  => "getenv"
+  => "getenv")
+
 (deftest xyzzy-ini-path ()
   (values
    (si:*builtin-function-p #'xyzzy-ini-path)
