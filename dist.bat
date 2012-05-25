@@ -36,7 +36,7 @@ call git clone %GIT_REPO% %SRCDIR% || exit /b 1
 call git checkout %TAG% || git tag exit /b 1
 rd /S /Q .git 2> nul
 7za a %SRC_ARCHIVE% %SRCDIR%
-call build.bat || exit /b 1
+call build.bat Release Build normal "/p:GenerateDebugInformation=false" || exit /b 1
 call bytecompile.bat || exit /b 1
 
 xcopy /F /G /H /R /K /Y *.exe %DISTDIR%
