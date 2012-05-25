@@ -542,6 +542,7 @@
 			     (looking-back "("))
 			(looking-back "#'"))))
     (goto-char opoint)
+    (setq name (substitute-string name "\\`[^:]+::?" ""))
     (values nil name functionp)))
 
 (defun lisp-tags-find-point (class name functionp point)
