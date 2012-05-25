@@ -465,7 +465,8 @@
     <Delete Files="$(SolutionDir)xyzzy.wxp" Condition="Exists('$(SolutionDir)xyzzy.wxp')" />
   </Target>
   <Target Name="BeforeClCompile" DependsOnTargets="UpdateVersionDescribe" />
-  <Target Name="AfterBuild" DependsOnTargets="CopyLispFiles;CopyEtcFiles;DeleteXyzzyDumpFile">
+  <Target Name="AfterBuild" DependsOnTargets="DeleteXyzzyDumpFile">
+    <CallTarget Targets="CopyLispFiles;CopyEtcFiles" Condition="'$(BuildingInsideVisualStudio)'=='true'"/>
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
   </Target>
   <Target Name="BeforeClean" DependsOnTargets="DeleteXyzzyDumpFile">
