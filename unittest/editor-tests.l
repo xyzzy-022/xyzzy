@@ -954,6 +954,48 @@
   => "lisp"
   => "user")
 
+(require "foreign")
+(deftest lisp-mode-eval-last-sexp (:compare equalp)
+  (with-temp-buffer
+    (flet ((insert-and-eval (sexp)
+             (insert sexp #\LFD)
+             (eval-last-sexp)))
+      (values
+       (insert-and-eval "123")
+       (insert-and-eval "#x123")
+       (insert-and-eval "#o123")
+       (insert-and-eval "#b111")
+       (insert-and-eval "(list 1 2)")
+       (insert-and-eval "#.(list 1 2)")
+       (insert-and-eval "#(1 2)")
+       (insert-and-eval "#3(1 2)")
+       (insert-and-eval "#2A((1))")
+       (insert-and-eval "#3A(((1)))")
+       (insert-and-eval "#C(1 2)")
+       (insert-and-eval "#S(foreign::c-type-definition type :int32 size 4 slots nil accessor system:unpack-int32)")
+       (handler-case
+           (insert-and-eval "#<function: car>")
+         (reader-error (c)
+           (list (format nil "~A" (reader-error-datum c)) (reader-error-arguments c))))
+       (progn
+         (insert-and-eval "(require \"ole\")")
+         (insert-and-eval "(setf fso (ole-create-object \"Scripting.FileSystemObject\"))")
+         (insert-and-eval "#{fso.BuildPath[\"foo\" \"bar\"]}"))
+       )))
+  => 123
+  => #x123
+  => #o123
+  => #b111
+  => (1 2)
+  => (1 2)
+  => #(1 2)
+  => #3(1 2)
+  => #2A((1))
+  => #3A(((1)))
+  => #C(1 2)
+  => #S(foreign::c-type-definition type :int32 size 4 slots nil accessor system:unpack-int32)
+  => ("ディスパッチングマクロ副文字ではありません" (#\<))
+  => "foo\\bar")
 
 (deftest xyzzy-ini-path ()
   (values
