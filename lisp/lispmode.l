@@ -398,17 +398,26 @@
 
 (defun eval-last-sexp (&optional stream)
   (interactive "p")
-  (let ((syntab (syntax-table)))
+  (let ((syntab (syntax-table))
+	(syntax (copy-syntax-table *lisp-mode-syntax-table*
+				   (make-syntax-table))))
+    (set-syntax-match syntax #\{ #\})
+    (set-syntax-match syntax #\< #\>)
     (let (from to)
       (cond ((selection-start-end (start end)
 	       (setq from start to end)))
 	    (t
-	     (use-syntax-table *lisp-mode-syntax-table*)
+	     (use-syntax-table syntax)
 	     (unwind-protect
 		 (let ((opoint (point)))
 		   (setq from (progn
 				(backward-sexp)
-				(point))
+				(if (and (save-excursion
+					   (scan-buffer "#[0-9]*[ACS=]?"
+							:reverse t :regexp t :case-fold t))
+					 (= (point) (match-end 0)))
+				    (match-beginning 0)
+				  (point)))
 			 to (progn
 			      (forward-sexp)
 			      (point)))
