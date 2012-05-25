@@ -1,5 +1,6 @@
 @echo off
 setlocal
+cd /d %~dp0
 
 if "%1"=="" goto usage
 

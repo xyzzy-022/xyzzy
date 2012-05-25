@@ -1,6 +1,7 @@
 @echo off
-
 setlocal
+cd /d %~dp0
+
 call "%VS100COMNTOOLS%\vsvars32.bat"
 
 if "%1"=="" (set CONFIGURATION=Release) else (set CONFIGURATION=%1)

@@ -1,4 +1,6 @@
 @echo off
+setlocal
+cd /d %~dp0
 
 rem Usage: run-tests.bat [TESTS...]
 rem
@@ -12,7 +14,6 @@ rem
 rem  lisp-tests.l ‚Æ editor-tests.l ‚¾‚¯‚ğÀs
 rem  run-tests.bat unittest/lisp-tests.l unittest/editor-tests.l
 
-setlocal
 set TESTDIR=%~dp0unittest
 set XYZZYHOME=%TESTDIR%\..
 set XYZZYINIFILE=

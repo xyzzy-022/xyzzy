@@ -1,6 +1,6 @@
 @echo off
 setlocal
-cd %~dp0\..
+cd /d %~dp0\..
 
 set VERSION_DESCRIBE_H=src\gen\version-describe.h
 set VERSION_DESCRIBE_TMP=src\gen\version-describe.%RANDOM%.tmp
