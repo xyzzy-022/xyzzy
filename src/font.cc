@@ -546,7 +546,6 @@ Fset_text_fontset (lisp lfontset)
 
   Window::change_parameters (param);
   refresh_screen (0);
-  multiple_value::clear (); // TODO: remove
 
   return Qt;
 }
