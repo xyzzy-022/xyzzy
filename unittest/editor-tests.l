@@ -1074,3 +1074,49 @@
   => "#define FOO 1
 #define BAR 2
 ")
+
+(deftest lisp-mode-save-buffer-package-1 ()
+  (with-temp-buffer
+    (setq *buffer-package* (find-package :editor))
+    (lisp-mode)
+    (setq *buffer-package* (find-package :system))
+    (lisp-mode)
+    (package-name *buffer-package*))
+  => "system")
+
+(deftest lisp-mode-save-buffer-package-2 ()
+  (with-temp-buffer
+    (setq *buffer-package* (find-package :editor))
+    (lisp-mode)
+    (setq *buffer-package* (find-package :system))
+    (lisp-interaction-mode)
+    (lisp-mode)
+    (package-name *buffer-package*))
+  => "system")
+
+(deftest lisp-interaction-mode-save-buffer-package-1 ()
+  (with-temp-buffer
+    (setq *buffer-package* (find-package :editor))
+    (lisp-interaction-mode)
+    (setq *buffer-package* (find-package :system))
+    (lisp-interaction-mode)
+    (package-name *buffer-package*))
+  => "system")
+
+(deftest lisp-interaction-mode-save-buffer-package-2 ()
+  (with-temp-buffer
+    (setq *buffer-package* (find-package :editor))
+    (lisp-interaction-mode)
+    (setq *buffer-package* (find-package :system))
+    (lisp-mode)
+    (lisp-interaction-mode)
+    (package-name *buffer-package*))
+  => "system")
+
+(deftest text-mode-does-not-save-buffer-package ()
+  (with-temp-buffer
+    (setq *buffer-package* (find-package :editor))
+    (text-mode)
+    (lisp-mode)
+    *buffer-package*)
+  => nil)

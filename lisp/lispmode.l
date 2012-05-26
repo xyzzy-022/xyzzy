@@ -574,7 +574,9 @@
 
 (defun lisp-mode ()
   (interactive)
-  (kill-all-local-variables)
+  (let ((buffer-package *buffer-package*))
+    (kill-all-local-variables)
+    (setq *buffer-package* buffer-package))
   (setq buffer-mode 'lisp-mode)
   (setq mode-name "Lisp")
   (use-keymap *lisp-mode-map*)
