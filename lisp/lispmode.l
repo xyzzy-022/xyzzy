@@ -326,11 +326,14 @@
       (goto-char from)
       (goto-eol)
       (delete-trailing-spaces)
-      (while (forward-line 1)
+      (loop
 	(goto-eol)
 	(delete-trailing-spaces)
 	(unless (bolp)
-	  (funcall mode-specific-indent-command)))))
+	  (funcall mode-specific-indent-command))
+	(unless (forward-line 1)
+	  (return))
+	)))
   t)
 
 (defun indent-sexp ()
