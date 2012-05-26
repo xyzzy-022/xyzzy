@@ -1047,3 +1047,26 @@
                  :options (format nil "-ini \"~A\" -q" ini-path1)
                  :environ `(("XYZZYINIFILE" . ,ini-path2)))))
   => t)
+
+
+(deftest lisp-mode-indent-region-first-line ()
+  (with-temp-buffer
+    (insert "  (defvar foo 1)" #\LFD)
+    (insert "  (defvar bar 2)" #\LFD)
+    (lisp-mode)
+    (indent-region (point-min) (point-max))
+    (buffer-substring (point-min) (point-max)))
+  => "(defvar foo 1)
+(defvar bar 2)
+")
+
+(deftest c-mode-indent-region-first-line ()
+  (with-temp-buffer
+    (insert "  #define FOO 1" #\LFD)
+    (insert "  #define BAR 2" #\LFD)
+    (c-mode)
+    (indent-region (point-min) (point-max))
+    (buffer-substring (point-min) (point-max)))
+  => "#define FOO 1
+#define BAR 2
+")
