@@ -250,7 +250,8 @@
       (let ((doc (find-documentation body)))
 	`(let ()
 	   ,(if doc
-		`(si:*putprop ',name ,doc 'function-documentation))
+		`(si:*putprop ',name ,doc 'function-documentation)
+	      `(remprop ',name 'function-documentation))
 	   (si:*fset ',name
 		     (si:*set-function-name
 		      #'(lambda ,lambda-list ,@decl ,@intr
