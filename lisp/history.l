@@ -99,7 +99,7 @@
 	      (use-package (getf package :use-list) name)))
 	packages))
 
-(defvar *predefined-packages* '("lisp" "system" "editor" "user" "keyword"))
+(defvar *predefined-packages* (mapcar #'package-name (si:list-builtin-packages)))
 
 (defun save-history-symbol-packages (stream vars)
   (let ((packages
