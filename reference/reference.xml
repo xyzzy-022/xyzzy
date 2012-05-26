@@ -16195,9 +16195,34 @@ xyzzy内に存在するパッケージ一覧をリストで返します。
   xyzzy 0.2.2.239 から利用可能です。
 </description>
 <seealso>defpackage</seealso>
+<seealso>si:list-builtin-packages</seealso>
 <seealso>パッケージ</seealso>
 <section>パッケージ</section>
 <file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:list-builtin-packages</title>
+<type>Function</type>
+<arguments>list-builtin-packages</arguments>
+<package>system</package>
+<description>
+xyzzy内に存在する組み込みのパッケージ一覧をリストで返します。
+
+使用例：
+  (si:list-builtin-packages)
+  =&gt; (#&lt;package: lisp&gt; #&lt;package: system&gt; #&lt;package: keyword&gt;
+      #&lt;package: user&gt; #&lt;package: editor&gt; #&lt;package: common-lisp&gt;
+      #&lt;package: common-lisp-user&gt;)
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>list-all-packages</seealso>
+<seealso>si:*builtin-package-p</seealso>
+<seealso>パッケージ</seealso>
+<section>パッケージ</section>
+<file>package.l</file>
 </chapter>
 
 <chapter>
@@ -26162,6 +26187,31 @@ Windows 7以降のタスクバーではこのアプリケーションIDを元に
 </description>
 <section>データ型</section>
 <file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:*builtin-package-p</title>
+<type>Function</type>
+<arguments>*builtin-package-p OBJECT</arguments>
+<package>system</package>
+<description>
+オブジェクトがビルトイン・パッケージかどうかを調べます。
+
+使用例：
+  ;;; lisp パッケージを調べてみる。
+  (si:*builtin-package-p :lisp)
+  =&gt; t
+  (si:*builtin-package-p "editor")
+  =&gt; t
+  (si:*builtin-package-p (find-package :user))
+  =&gt; t
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<section>データ型</section>
+<seealso>si:list-builtin-packages</seealso>
+<file>package.l</file>
 </chapter>
 
 <chapter>

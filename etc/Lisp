@@ -1242,6 +1242,7 @@ shrink-window-horizontally
 si:*activate-toplevel
 si:*app-user-model-id
 si:*builtin-function-p
+si:*builtin-package-p
 si:*load-library
 si:*set-readtable-case
 si:*stream-line-number
@@ -1258,6 +1259,7 @@ si:hmac-sha-224
 si:hmac-sha-256
 si:hmac-sha-384
 si:hmac-sha-512
+si:list-builtin-packages
 si:make-chunk
 si:make-string-chunk
 si:md5
