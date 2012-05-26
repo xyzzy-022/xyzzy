@@ -7,7 +7,8 @@
 
 (in-package "editor")
 
-(export '(*lisp-mode-hook* *lisp-interaction-mode-hook* *lisp-indent-offset* 
+(export '(*lisp-mode-hook* *lisp-interaction-mode-hook* *lisp-indent-offset*
+	  *find-buffer-package-hook*
 	  *lisp-body-indention* *lisp-body-indent* lisp-complete-symbol
 	  lisp-indent-hook lisp-paren-imaginary-offset
 	  lisp-indent-line lisp-newline-and-indent
@@ -21,6 +22,7 @@
 (defvar *lisp-mode-hook* nil)
 (defvar *lisp-popup-completion-list* nil)
 (defvar *lisp-interaction-mode-hook* nil)
+(defvar *find-buffer-package-hook* nil)
 (defvar *lisp-indent-offset* nil)
 (defvar *lisp-body-indention* 2)
 (defvar *lisp-body-indent* 2)
@@ -190,6 +192,39 @@
 		  (and ep (< ep p) (decf p 2))
 		  p))))))))
 
+(defvar *lisp-search-in-package-regexp*
+  (compile-regexp
+   "^(\\(?:\\(?:lisp\\|cl\\|common-lisp\\)::?\\)?in-package\\([^)]+\\))"))
+
+(defun lisp-search-in-package ()
+  (ignore-errors
+    (protect-match-data
+      (save-excursion
+	(or (scan-buffer *lisp-search-in-package-regexp* :reverse t)
+	    (scan-buffer *lisp-search-in-package-regexp* :reverse nil))
+	(let (*read-eval*)
+	  (find-package (read-from-string (match-string 1))))))))
+
+(defun find-buffer-package ()
+  (or (and (stringp *buffer-package*)
+	   (find-package *buffer-package*))
+      (let ((result (ignore-errors
+		      (run-hook-with-args-until-success
+		       '*find-buffer-package-hook*))))
+	(cond ((packagep result) result)
+	      ((or (symbolp result)
+		   (stringp result))
+	       (find-package
+		(find (string result)
+		      (mapcan
+		       #'(lambda (p)
+			   (copy-list
+			    (cons (package-name p)
+				  (package-nicknames p))))
+		       (list-all-packages))
+		      :test #'equalp)))))
+      *package*))
+
 (defun calc-lisp-indent (opoint)
   (protect-match-data
     (let ((begin-paren (and lisp-indent-close-paren
@@ -208,9 +243,7 @@
 		      (looking-back "'")))
 	     (+ (current-column) 1))
 	    (t
-	     (let ((package (or (and (stringp *buffer-package*)
-				     (find-package *buffer-package*))
-				*package*)))
+	     (let ((package (find-buffer-package)))
 	       (when (save-excursion
 		       (when (and (up-list -1 t)
 				  (looking-for "((")
@@ -293,11 +326,14 @@
       (goto-char from)
       (goto-eol)
       (delete-trailing-spaces)
-      (while (forward-line 1)
+      (loop
 	(goto-eol)
 	(delete-trailing-spaces)
 	(unless (bolp)
-	  (funcall mode-specific-indent-command)))))
+	  (funcall mode-specific-indent-command))
+	(unless (forward-line 1)
+	  (return))
+	)))
   t)
 
 (defun indent-sexp ()
@@ -332,25 +368,25 @@
 
 (defun eval-region (from to &optional stream)
   (interactive "r")
-  (let ((result nil))
+  (let ((result nil)
+	(*package* (find-buffer-package)))
     (when (> from to)
       (rotatef from to))
     (let ((s (make-buffer-stream (selected-buffer) from to)))
       (handler-case
-	  (let ((*package* *package*))
-	    (while (< (buffer-stream-point s) to)
-	      (let ((form (read s nil '#1=#:eof)))
-		(when (eq form '#1#)
-		  (return))
-		(setq result (multiple-value-list (eval form))))))
+	  (while (< (buffer-stream-point s) to)
+	    (let ((form (read s nil '#1=#:eof)))
+	      (when (eq form '#1#)
+		(return))
+	      (setq result (multiple-value-list (eval form)))))
 	((or error reader-error quit) (c)
-	  (when (<= (buffer-stream-point s) to)
-	    (goto-char (buffer-stream-point s))
-	    (when stream
-	      (eval-region-print stream
-		(format t "~A~%" c)))
-	    (let ((si:*trace-on-error* nil))
-	      (error c))))))
+	 (when (<= (buffer-stream-point s) to)
+	   (goto-char (buffer-stream-point s))
+	   (when stream
+	     (eval-region-print stream
+	       (format t "~A~%" c)))
+	   (let ((si:*trace-on-error* nil))
+	     (error c))))))
     (eval-region-print stream
       (if (null stream)
 	  (message "~s" (car result))
@@ -373,12 +409,34 @@
 	     (use-syntax-table *lisp-mode-syntax-table*)
 	     (unwind-protect
 		 (let ((opoint (point)))
-		   (setq from (progn
-				(backward-sexp)
-				(point))
-			 to (progn
-			      (forward-sexp)
-			      (point)))
+		   (flet ((goto-reader-macro (open-char close-char)
+			    (when (char= (preceding-char) close-char)
+			      (let* ((syntab (syntax-table))
+				     (syntax (copy-syntax-table syntab (make-syntax-table))))
+				(set-syntax-match syntax open-char close-char)
+				(use-syntax-table syntax)
+				(unwind-protect
+				    (and (backward-char)
+					 (goto-matched-parenthesis)
+					 (char= (preceding-char) #\#)
+					 (backward-char))
+				  (use-syntax-table syntab))))))
+		     (skip-chars-backward " \r\t\f\n")
+		     (cond ((or (goto-reader-macro #\< #\>)
+				(goto-reader-macro #\{ #\}))
+			    (setq from (point) to opoint))
+			   (t
+			    (setq from (progn
+					 (backward-sexp)
+					 (if (and (save-excursion
+						    (scan-buffer "#[0-9]*[ACS=]?"
+								 :reverse t :regexp t :case-fold t))
+						  (= (point) (match-end 0)))
+					     (match-beginning 0)
+					   (point)))
+				  to (progn
+				       (forward-sexp)
+				       (point))))))
 		   (goto-char (max opoint to)))
 	       (use-syntax-table syntab))))
       (save-excursion
@@ -500,6 +558,7 @@
 			     (looking-back "("))
 			(looking-back "#'"))))
     (goto-char opoint)
+    (setq name (substitute-string name "\\`[^:]+::?" ""))
     (values nil name functionp)))
 
 (defun lisp-tags-find-point (class name functionp point)
@@ -562,6 +621,8 @@
     (setq need-not-save t)
     (make-local-variable 'auto-save)
     (setq auto-save nil))
+  (make-local-variable '*find-buffer-package-hook*)
+  (add-hook '*find-buffer-package-hook* 'lisp-search-in-package)
   (run-hooks '*lisp-interaction-mode-hook*))
 
 (defvar *kill-buffer-kills-scratch* nil)

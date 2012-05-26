@@ -317,3 +317,23 @@
 		     (setq ,x (svref (caar ,vl) ,i))
 		     (incf ,i)))))
 	   ,@body)))))
+
+(in-package "system")
+
+(export '(list-builtin-packages
+	  *builtin-package-p
+	  ))
+
+(defconstant +builtin-packages+ (list-all-packages))
+
+(defun list-builtin-packages ()
+  (copy-list +builtin-packages+))
+
+(defun *builtin-package-p (object)
+  (let ((pkg (cond ((or (stringp object)
+			(symbolp object))
+		    (find-package object))
+		   ((packagep object)
+		    object))))
+    (when pkg
+      (not (null (member pkg +builtin-packages+))))))

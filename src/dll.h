@@ -50,6 +50,11 @@ xdll_module_loaded (lisp x)
 # define CTYPE_UINT32 6
 # define CTYPE_FLOAT 7
 # define CTYPE_DOUBLE 8
+# define CTYPE_INT64 9
+# define CTYPE_UINT64 10
+
+# define CALLING_CONVENTION_STDCALL 0
+# define CALLING_CONVENTION_CDECL 1
 
 class ldll_function: public lisp_object
 {
@@ -130,6 +135,7 @@ public:
   u_short arg_size;   // 引数全体のサイズ
   u_char nargs;       // 引数の数
   u_char return_type; // 戻り値の型
+  u_char convention;  // 呼び出し規約
   u_char insn[16];    // stubコード
 
   ~lc_callable () {xfree (arg_types);}
@@ -176,6 +182,13 @@ xc_callable_arg_size (lisp x)
 {
   assert (c_callable_p (x));
   return ((lc_callable *)x)->arg_size;
+}
+
+inline u_char &
+xc_callable_convention (lisp x)
+{
+  assert (c_callable_p (x));
+  return ((lc_callable *)x)->convention;
 }
 
 inline u_char *

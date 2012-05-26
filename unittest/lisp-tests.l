@@ -336,6 +336,22 @@
       (simple-error-format-arguments c)))
   => (:shadow :shadowing-import-from "car"))
 
+(deftest test-defpackage-parse-options-11 ()
+  (lisp::defpackage-parse-options
+   :foo
+   '((:documentation "hogehoge")
+     (:documentation "fugafuga")))
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => "fugafuga")
+
 
 (deftest test-defstruct-print-function-1 ()
   "print-function を事前に定義。0.2.2.235 でもパスする"
@@ -746,22 +762,6 @@ lisp-indent-hook property"
     (path-equal path (truename path)))
   => t)
 
-(deftest test-defpackage-parse-options-1 ()
-  (lisp::defpackage-parse-options
-   :foo
-   '((:documentation "hogehoge")
-     (:documentation "fugafuga")))
-  => nil
-  => nil
-  => nil
-  => nil
-  => nil
-  => nil
-  => nil
-  => nil
-  => nil
-  => "fugafuga")
-
 (deftest defpackage-documentation ()
   (let* ((pkg-name (gensym "pkg-")))
     (eval
@@ -894,6 +894,313 @@ lisp-indent-hook property"
   (make-hash-table :rehash-size 0.9)
   !! type-error)
 
-(deftest hash-table-rehash-size-error-3 ()
+(deftest hash-table-rehash-size-error-4 ()
   (make-hash-table :rehash-size -2.2)
   !! type-error)
+
+(deftest copy-tree-circular-list-1 ()
+  (let* ((a '#1=(#1#))
+         (b (copy-tree a)))
+    (values
+     (eq a (car a))
+     (eq b (car b))
+     (not (eq a b))))
+  => t
+  => t
+  => t)
+
+(deftest copy-tree-circular-list-2 ()
+  (let* ((a '#1=(1 2 3 #2=(4 5 6) #2# #1#))
+         (b (copy-tree a)))
+    (values
+     (not (eql (butlast a) (butlast b)))
+     (equal (butlast a) (butlast b))
+
+     (not (eq (car (last a)) (car (last b))))
+     (eq a (car (last a)))
+     (eq b (car (last b)))))
+  => t
+  => t
+  => t
+  => t
+  => t)
+
+
+(deftest equal-circular-list-regression-test ()
+  (values
+   (equal nil nil)
+   (equal nil "hoge")
+   (equal 123 (+ 100 23))
+   (equal "hoge" (copy-seq "hoge"))
+   (equal '(1 2 (3 "foo")) (copy-tree '(1 2 (3 "foo")))))
+  => t
+  => nil
+  => t
+  => t
+  => t)
+
+(deftest equal-circular-list-1 ()
+  (let* ((a '#1=(#1#))
+         (b (copy-tree a)))
+    (values
+     (equal a b)
+     (equal a nil)
+     (equal a '#2=(#2# #2#))))
+  => t
+  => nil
+  => nil)
+
+(deftest equal-circular-list-2 ()
+  (let ((a '#1=(1 2 3 #2=(4 5 6) #2# #1#))
+        (b '#3=(1 2 3 (4 5 6) (4 5 6) #3#))
+        (c '#4=(1 2 3 (4 5 6) "2" #4#)))
+    (values
+     (equal a b)
+     (equal a c)
+     (equal b c)))
+  => t
+  => nil
+  => nil)
+
+
+(deftest equalp-circular-list-regression-test ()
+  (values
+   (equalp nil nil)
+   (equalp nil "hoge")
+   (equalp 123 (+ 100 23))
+   (equalp "hoge" "HOGE")
+   (equalp '(1 2 (3 "foo")) (copy-tree '(1 2 (3 "FOO")))))
+  => t
+  => nil
+  => t
+  => t
+  => t)
+
+(deftest equalp-circular-list-1 ()
+  (let* ((a '#1=(#1#))
+         (b (copy-tree a)))
+    (values
+     (equalp a b)
+     (equalp a nil)
+     (equalp a '#2=(#2# #2#))))
+  => t
+  => nil
+  => nil)
+
+(deftest equalp-circular-list-2 ()
+  (let ((a '#1=(1 2 3 #2=(4 5 6) #2# #1#))
+        (b '#3=(1 2 3 (4 5 6) (4 5 6) #3#))
+        (c '#4=(1 2 3 (4 5 6) "2" #4#)))
+    (values
+     (equalp a b)
+     (equalp a c)
+     (equalp b c)))
+  => t
+  => nil
+  => nil)
+
+
+(defun parse-body (body)
+  (multiple-value-bind (decl body)
+      (lisp::find-declaration body)
+    (multiple-value-bind (intr body)
+        (lisp::find-interactive body)
+      (let ((doc (lisp::find-documentation body)))
+        (values doc intr decl body)))))
+
+(deftest find-declaration-none ()
+  (parse-body
+   '("not-doc-string"))
+  => nil
+  => nil
+  => nil
+  => ("not-doc-string"))
+
+(deftest find-declaration-inteactive ()
+  (parse-body
+   '((interactive)))
+  => nil
+  => ((interactive))
+  => nil
+  => nil)
+
+(deftest find-declaration-docstring-inteactive ()
+  (parse-body
+   '("doc-string"
+     (interactive)
+     t))
+  => "doc-string"
+  => ((interactive))
+  => nil
+  => ("doc-string" t))
+
+(deftest find-declaration-inteactive-docstring ()
+  (parse-body
+   '((interactive)
+     "doc-string"
+     t))
+  => "doc-string"
+  => ((interactive))
+  => nil
+  => ("doc-string" t))
+
+(deftest find-declaration-inteactive-none ()
+  (parse-body
+   '((interactive)
+     "not-doc-string"))
+  => nil
+  => ((interactive))
+  => nil
+  => ("not-doc-string"))
+
+(deftest find-declaration-inteactive-2 ()
+  (parse-body
+   '("not-doc-string"
+     (interactive)))
+  => nil
+  => ((interactive))
+  => nil
+  => ("not-doc-string"))
+
+(deftest find-declaration-declare-docstring ()
+  (parse-body
+   '((declare (special a))
+     "doc-string"
+     t))
+  => "doc-string"
+  => nil
+  => ((declare (special a)))
+  => ("doc-string" t))
+
+(deftest find-declaration-docstring-declare ()
+  (parse-body
+   '("doc-string"
+     (declare (special a))
+     t))
+  => "doc-string"
+  => nil
+  => ((declare (special a)))
+  => ("doc-string" t))
+
+(deftest find-declaration-declare-interactive ()
+  (parse-body
+   '((declare (special a))
+     (interactive)
+     t))
+  => nil
+  => ((interactive))
+  => ((declare (special a)))
+  => (t))
+
+(deftest find-declaration-interactive-declare ()
+  (parse-body
+   '((interactive)
+     (declare (special a))
+     t))
+  => nil
+  => ((interactive))
+  => ((declare (special a)))
+  => (t))
+
+(deftest find-declaration-docstring-interactive-declare ()
+  (parse-body
+   '("doc-string"
+     (interactive)
+     (declare (special a))
+     t))
+  => "doc-string"
+  => ((interactive))
+  => ((declare (special a)))
+  => ("doc-string" t))
+
+(deftest find-declaration-interactive-docstirng-declare ()
+  (parse-body
+   '((interactive)
+     "doc-string"
+     (declare (special a))
+     t))
+  => "doc-string"
+  => ((interactive))
+  => ((declare (special a)))
+  => ("doc-string" t))
+
+(deftest find-declaration-declare-interactive-declare ()
+  (parse-body
+   '((declare (special a))
+     (interactive)
+     (declare (special b))
+     "not-doc-string"))
+  => nil
+  => ((interactive))
+  => ((declare (special a) (special b)))
+  => ("not-doc-string"))
+
+(deftest find-declaration-declare-interactive-declare-docstring ()
+  (parse-body
+   '((declare (special a))
+     (interactive)
+     (declare (special b))
+     "doc-string"
+     t))
+  => "doc-string"
+  => ((interactive))
+  => ((declare (special a) (special b)))
+  => ("doc-string" t))
+
+(deftest find-declaration-declare-interactive-declare-docstring-declare ()
+  (parse-body
+   '((declare (special a))
+     (interactive)
+     (declare (special b))
+     "doc-string"
+     (declare (special c))
+     t))
+  => "doc-string"
+  => ((interactive))
+  => ((declare (special a) (special b) (special c)))
+  => ("doc-string" t))
+
+(deftest find-declaration-declare-interctive-declare-docstring-let-declare ()
+  (parse-body
+   '((declare (special a))
+     (interactive)
+     (declare (special b))
+     "doc-string"
+     (let ((c 1))
+       (declare (special c))
+       t)))
+  => "doc-string"
+  => ((interactive))
+  => ((declare (special a) (special b)))
+  => ("doc-string" (let ((c 1)) (declare (special c)) t)))
+
+(deftest find-declaration-extra-declare-1 ()
+  (parse-body
+   '((declare (special a))
+     (interactive)
+     (declare (special b))
+     "not-doc-string"
+     (declare (special c))))
+  !! simple-error)
+
+(deftest find-declaration-extra-declare-2 ()
+  (parse-body
+   '(t
+     (declare (special a))))
+  !! simple-error)
+
+(deftest redefun-docstring ()
+  (let ((sym (gensym)))
+    (eval `(values
+            (progn
+              (defun ,sym () "docstring1" 123)
+              (documentation ',sym 'function))
+            (progn
+              (defun ,sym () "docstring2" 123)
+              (documentation ',sym 'function))
+            (progn
+              (defun ,sym () 123)
+              (documentation ',sym 'function)))))
+  => "docstring1"
+  => "docstring2"
+  => nil)

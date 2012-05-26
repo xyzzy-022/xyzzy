@@ -85,6 +85,20 @@ xyzzy は Windows XP 以降で動作する日本語テキストエディタの�
 
     `file` を <b>load</b> します。
 
+  * <b>-I</b> `dir`
+  * <b>-load-path</b> `dir`
+
+    `dir` を <b>*load-path*</b> の先頭に追加します。
+
+  * <b>-r</b> `module`
+  * <b>-require</b> `module`
+
+    `module` を <b>require</b> します。
+
+  * <b>-work-dir</b> `dir`
+
+    xyzzy の作業ディレクトリを `dir` に変更します。
+
   * <b>-f</b> `fn`
   * <b>-funcall</b> `fn`
 
@@ -104,6 +118,15 @@ xyzzy は Windows XP 以降で動作する日本語テキストエディタの�
   * <b>-column</b> `column`
 
     直前に指定したファイルの `column` 桁に移動します。
+
+  * <b>-trace</b>
+
+    <b>*Trace Output*</b> バッファを有効にし、エラー発生時にスタックトレースが
+    出力されるようにます。
+
+  * <b>-kill</b>
+
+    xyzzy を終了します。これ以降の引数は無視されます。
 
   * <b>-p</b> `filename`
 

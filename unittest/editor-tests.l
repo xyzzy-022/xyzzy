@@ -796,7 +796,7 @@
    (chdir (get-system-directory))
    (progn
      ;; call-process は一時的にディレクトリを変更し、最後に Qdefault_dir に移動する
-     (call-process "dir" :directory (get-system-directory) :show :hide)
+     (call-process "cmd /c dir" :exec-directory (get-system-directory) :show :hide)
      (path-equal (get-system-directory) (cwd))))
   => t
   => t)
@@ -831,3 +831,246 @@
 (deftest chdir-path-not-found ()
   (chdir (format nil "path/not/found/~A" (gensym)))
   !! path-not-found)
+
+(deftest kill-xyzzy-exit-code ()
+  (flet ((run-xyzzy-and-kill (&optional (exit-code nil sp))
+           (call-process (format nil "~A -e \"(kill-xyzzy ~A)\""
+                                 (merge-pathnames "xyzzy.exe" (si:system-root))
+                                 (if sp exit-code ""))
+                         :show :minimize
+                         :wait t)))
+    (values
+     (run-xyzzy-and-kill)
+     (run-xyzzy-and-kill t)
+     (run-xyzzy-and-kill nil)
+     (run-xyzzy-and-kill 123)))
+  => 0
+  => 0
+  => 1
+  => 123)
+
+(deftest kill-xyzzy-exit-code-error-float ()
+  (kill-xyzzy 1.2)
+  !! type-error)
+
+(deftest kill-xyzzy-exit-code-error-symbol ()
+  (kill-xyzzy 'foo)
+  !! type-error)
+
+(deftest kill-xyzzy-exit-code-error-string ()
+  (kill-xyzzy "foo")
+  !! type-error)
+
+
+(deftest find-buffer-package ()
+  (let ((ed-package (find-package :editor))
+        (*find-buffer-package-hook* nil))
+    (values
+     (let ((*buffer-package* "editor"))
+       (declare (special *buffer-package*))
+       (eql ed-package (ed::find-buffer-package)))
+     (let ((*buffer-package* "no such package"))
+       (declare (special *buffer-package*))
+       (eql *package* (ed::find-buffer-package)))
+     (let ((*buffer-package* nil))
+       (declare (special *buffer-package*))
+       (eql *package* (ed::find-buffer-package)))
+     (eql *package* (ed::find-buffer-package))
+     ))
+  => t
+  => t
+  => t
+  => t)
+
+(deftest find-buffer-package-hook ()
+  (let ((*package* (find-package :user))
+        (*buffer-package* nil))
+    (declare (special *buffer-package*))
+    (values
+     (let ((*find-buffer-package-hook* #'(lambda () (error "hoge"))))
+       (package-name (ed::find-buffer-package)))
+     (let ((*find-buffer-package-hook* #'(lambda () (find-package :editor))))
+       (package-name (ed::find-buffer-package)))
+     (let ((*find-buffer-package-hook* #'(lambda () "editor")))
+       (package-name (ed::find-buffer-package)))
+     (let ((*find-buffer-package-hook* #'(lambda () "EdItOr")))
+       (package-name (ed::find-buffer-package)))
+     (let ((*find-buffer-package-hook* #'(lambda () :editor)))
+       (package-name (ed::find-buffer-package)))
+     ))
+  => "user"
+  => "editor"
+  => "editor"
+  => "editor"
+  => "editor")
+
+(deftest find-buffer-package-hook-list ()
+  (let ((*package* (find-package :user))
+        (*buffer-package* nil))
+    (declare (special *buffer-package*))
+    (values
+     (let ((ed:*find-buffer-package-hook* (list #'(lambda () (find-package :editor))
+                                                #'(lambda () (error "hoge")))))
+       (package-name (ed::find-buffer-package)))
+     (let ((ed:*find-buffer-package-hook* (list #'(lambda () nil)
+                                                #'(lambda () (find-package :editor)))))
+       (package-name (ed::find-buffer-package)))
+     (let ((ed:*find-buffer-package-hook* (list #'(lambda () (error "hoge"))
+                                                #'(lambda () (find-package :editor)))))
+       (package-name (ed::find-buffer-package)))
+     ))
+  => "editor"
+  => "editor"
+  => "user")
+
+(deftest lisp-search-in-package ()
+  (let ((*package* (find-package :user))
+        (*buffer-package* nil)
+        (*find-buffer-package-hook* '(ed::lisp-search-in-package)))
+    (declare (special *buffer-package*))
+    (with-temp-buffer
+      (insert "(in-package :editor)" #\LFD)
+      (insert "(in-package   \"user\" )" #\LFD)
+      (insert "(cl:in-package \"cl-user\")" #\LFD)
+      (insert "(lisp:in-package \"cl\")" #\LFD)
+      (insert "(common-lisp::in-package \"lisp\")" #\LFD)
+      (insert "(common-lisp::in-package \"no-such-package\")" #\LFD)
+      (flet ((test (n)
+               (goto-line n)
+               (goto-bol)
+               (package-name (ed::find-buffer-package))))
+        (values
+         (test 1)
+         (test 2)
+         (test 3)
+         (test 4)
+         (test 5)
+         (test 6)
+         ))))
+  => "editor"
+  => "user"
+  => "common-lisp-user"
+  => "common-lisp"
+  => "lisp"
+  => "user")
+
+(require "foreign")
+(deftest lisp-mode-eval-last-sexp (:compare equalp)
+  (with-temp-buffer
+    (flet ((insert-and-eval (sexp)
+             (insert sexp #\LFD)
+             (eval-last-sexp)))
+      (values
+       (insert-and-eval "(< 1 2)")
+       (insert-and-eval "(string< 'a 'b)")
+       (insert-and-eval "123")
+       (insert-and-eval "#x123")
+       (insert-and-eval "#o123")
+       (insert-and-eval "#b111")
+       (insert-and-eval "(list 1 2)")
+       (insert-and-eval "#.(list 1 2)")
+       (insert-and-eval "#(1 2)")
+       (insert-and-eval "#3(1 2)")
+       (insert-and-eval "#2A((1))")
+       (insert-and-eval "#3A(((1)))")
+       (insert-and-eval "#C(1 2)")
+       (insert-and-eval "#S(foreign::c-type-definition type :int32 size 4 slots nil accessor system:unpack-int32)")
+       (handler-case
+           (insert-and-eval "#<function: car>")
+         (reader-error (c)
+           (list (format nil "~A" (reader-error-datum c)) (reader-error-arguments c))))
+       (progn
+         (insert-and-eval "(require \"ole\")")
+         (insert-and-eval "(setf fso (ole-create-object \"Scripting.FileSystemObject\"))")
+         (insert-and-eval "#{fso.BuildPath[\"foo\" \"bar\"]}"))
+       )))
+  => t
+  => 0
+  => 123
+  => #x123
+  => #o123
+  => #b111
+  => (1 2)
+  => (1 2)
+  => #(1 2)
+  => #3(1 2)
+  => #2A((1))
+  => #3A(((1)))
+  => #C(1 2)
+  => #S(foreign::c-type-definition type :int32 size 4 slots nil accessor system:unpack-int32)
+  => ("ディスパッチングマクロ副文字ではありません" (#\<))
+  => "foo\\bar")
+
+(deftest lisp-tags-find-target ()
+  (with-temp-buffer
+    (flet ((insert-and-find-target (str)
+             (goto-char (point-max))
+             (insert #\LFD str)
+             (backward-char)
+             (multiple-value-bind (class name functionp)
+                 (ed::lisp-tags-find-target)
+               name)))
+      (values
+       (insert-and-find-target "si:getenv")
+       (insert-and-find-target "si::getenv")
+       (insert-and-find-target "getenv"))))
+  => "getenv"
+  => "getenv"
+  => "getenv")
+
+(deftest xyzzy-ini-path ()
+  (values
+   (si:*builtin-function-p #'xyzzy-ini-path)
+   (path-equal (merge-pathnames "xyzzy.ini" (user-config-path))
+               (xyzzy-ini-path)))
+  => t
+  => t)
+
+(deftest xyzzy-ini-path-startup-option ()
+  (with-temp-files (ini-path)
+    (path-equal ini-path
+                (eval-in-another-xyzzy
+                 '(xyzzy-ini-path)
+                 :options (format nil "-ini \"~A\" -q" ini-path))))
+  => t)
+
+(deftest xyzzy-ini-path-XYZZYINIFILE ()
+  (with-temp-files (ini-path)
+    (path-equal ini-path
+                (eval-in-another-xyzzy
+                 '(xyzzy-ini-path)
+                 :options "-q"
+                 :environ `(("XYZZYINIFILE" . ,ini-path)))))
+  => t)
+
+(deftest xyzzy-ini-path-startup-option-and-XYZZYINIFILE ()
+  (with-temp-files (ini-path1 ini-path2)
+    (path-equal ini-path1
+                (eval-in-another-xyzzy
+                 '(xyzzy-ini-path)
+                 :options (format nil "-ini \"~A\" -q" ini-path1)
+                 :environ `(("XYZZYINIFILE" . ,ini-path2)))))
+  => t)
+
+
+(deftest lisp-mode-indent-region-first-line ()
+  (with-temp-buffer
+    (insert "  (defvar foo 1)" #\LFD)
+    (insert "  (defvar bar 2)" #\LFD)
+    (lisp-mode)
+    (indent-region (point-min) (point-max))
+    (buffer-substring (point-min) (point-max)))
+  => "(defvar foo 1)
+(defvar bar 2)
+")
+
+(deftest c-mode-indent-region-first-line ()
+  (with-temp-buffer
+    (insert "  #define FOO 1" #\LFD)
+    (insert "  #define BAR 2" #\LFD)
+    (c-mode)
+    (indent-region (point-min) (point-max))
+    (buffer-substring (point-min) (point-max)))
+  => "#define FOO 1
+#define BAR 2
+")

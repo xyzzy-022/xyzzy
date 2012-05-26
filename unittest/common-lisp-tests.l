@@ -27,3 +27,14 @@
   => ("cl-user")
   => ("common-lisp" "editor")
   => non-nil)
+
+(deftest cl-format-tilde-A ()
+  (values
+   (lisp:format nil "~10@A" "hoge")
+   (cl:format nil "~10@A" "hoge")
+   (lisp:format nil "~10@A" :hoge)
+   (cl:format nil "~10@A" :hoge))
+  => "hoge      "
+  => "      hoge"
+  => "      hoge"
+  => "      hoge")

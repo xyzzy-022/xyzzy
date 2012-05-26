@@ -852,7 +852,7 @@ parse_digit_char (lisp stream, Token &token, const Char *p, const Char *pe)
           lisp hash = xsymbol_value (Vsi_character_name_hash_table);
           if (hash_table_p (hash))
             {
-              lisp c = Fgethash (name, hash, Qnil);
+              lisp c = gethash (name, hash, Qnil);
               if (charp (c))
                 return xchar_code (c);
             }
@@ -2142,6 +2142,7 @@ load_file (lisp filename, lisp realname, lisp if_does_not_exist,
   dynamic_bind dynb2 (Vload_pathname,
                       ((streamp (stream) && file_stream_p (stream))
                        ? xfile_stream_pathname (stream) : stream));
+  dynamic_bind dynb3 (Vreadtable, xsymbol_value (Vreadtable));
   protect_gc gcpro (stream);
 
   with_open_file s (stream == filename ? 0 : stream);

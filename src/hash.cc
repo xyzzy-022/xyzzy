@@ -370,6 +370,15 @@ Char_hash (Char key, lisp hash_table)
 }
 
 lisp
+gethash (lisp key, lisp hash_table, lisp defalt)
+{
+  hash_entry *entry = find_hash_entry (key, hash_table);
+  if (entry)
+    return entry->value;
+  return defalt ? defalt : Qnil;
+}
+
+lisp
 Fgethash (lisp key, lisp hash_table, lisp defalt)
 {
   hash_entry *entry = find_hash_entry (key, hash_table);

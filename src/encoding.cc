@@ -2402,7 +2402,7 @@ xdecode_hqx_stream::read (u_long &x)
 }
 
 xdecode_hqx_stream::xdecode_hqx_stream (xinput_stream <u_char> &in)
-     : xdecode_stream (s_hqx7), s_hqx7 (in), s_corrupted (0),
+     : xdecode_stream (static_cast <xinput_stream <u_char> &> (s_hqx7)), s_hqx7 (in), s_corrupted (0),
        s_rest_bytes (0), s_cc (eof), s_rep (0)
 {
   *s_name = 0;

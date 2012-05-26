@@ -1169,7 +1169,7 @@ Window::kwdmatch (lisp kwdhash, const Char *p, const Chunk *cp,
   if (sl < numberof (buf))
     {
       temporary_string t (buf, sl);
-      lisp x = Fgethash (t.string (), kwdhash, Qnil);
+      lisp x = gethash (t.string (), kwdhash, Qnil);
       if (x != Qnil)
         {
           if (!short_int_p (x))

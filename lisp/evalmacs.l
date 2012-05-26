@@ -166,19 +166,43 @@
 	 (return s))))))
 
 (defun find-declaration (body)
-  (let ((decl '()))
+  (let ((decl '())
+	(new-body '())
+	(form nil)
+	(intr-p nil)
+	(doc-p nil)
+	(body-p nil))
     (*loop
-      (if (and (consp body)
-	       (consp (car body))
-	       (eq (car (car body)) 'declare))
-	  (setq decl (cons (car body) decl)
-		body (cdr body))
-	(return (values (if decl
-			    (list (cons 'declare
-					(apply #'append
-					       (mapcar #'cdr (nreverse decl)))))
-			  nil)
-			body))))))
+      (unless body (return))
+      (setq form (car body)
+	    body (cdr body))
+      (if (and (consp form)
+	       (eq (car form) 'declare))
+	  (progn
+	    (when body-p
+	      (error "ïsê≥Ç» declare Ç≈Ç∑: ~S" form))
+	    (setq decl (cons form decl)))
+	(if (and (not intr-p)
+		 (consp form)
+		 (eq (car form) 'editor:interactive))
+	    (progn
+	      (setq new-body (cons form new-body))
+	      (setq intr-p t))
+	  (if (and (not doc-p)
+		   (stringp form)
+		   (find-if #'(lambda (e) (not (eq (safe-car e) 'declare))) body))
+	      (progn
+		(setq new-body (cons form new-body))
+		(setq doc-p t))
+	    (progn
+	      (setq new-body (cons form new-body))
+	      (setq body-p t))))))
+    (values (if decl
+		(list (cons 'declare
+			    (apply #'append
+				   (mapcar #'cdr (nreverse decl)))))
+	      nil)
+	    (nreverse new-body))))
 
 (defun find-documentation (body)
   (*loop
@@ -226,7 +250,8 @@
       (let ((doc (find-documentation body)))
 	`(let ()
 	   ,(if doc
-		`(si:*putprop ',name ,doc 'function-documentation))
+		`(si:*putprop ',name ,doc 'function-documentation)
+	      `(remprop ',name 'function-documentation))
 	   (si:*fset ',name
 		     (si:*set-function-name
 		      #'(lambda ,lambda-list ,@decl ,@intr

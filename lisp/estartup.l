@@ -9,7 +9,9 @@
 
 (export '(*inhibit-history-load* *pre-startup-hook* *post-startup-hook*
 	  *command-line-mailto-hook* *print-option-show-dialog*
-	  *process-command-line-hook* *loading-user-initial-file*))
+	  *process-command-line-hook* *loading-user-initial-file*
+	  *command-line-args-base-directory*
+	  ))
 
 (defvar *inhibit-history-load* nil)
 (defvar *pre-startup-hook* nil)
@@ -18,6 +20,7 @@
 (defvar *print-option-show-dialog* t)
 (defvar *process-command-line-hook* nil)
 (defvar *loading-user-initial-file* nil)
+(defvar *command-line-args-base-directory* nil)
 
 (defun parse-command-line (arg short long warn)
   (if (or (equal short arg)
@@ -36,13 +39,20 @@
 
 (defun process-command-line-1 (dir waitobj)
   (let ((mode nil)
-	(ro nil))
+	(ro nil)
+	(*command-line-args-base-directory* dir))
     (catch 'warn
       (while si:*command-line-args*
 	(let ((arg (pop si:*command-line-args*))
 	      opt)
 	  (cond ((setq opt (parse-command-line arg "-l" "-load" 'file))
 		 (load opt))
+		((setq opt (parse-command-line arg "-I" "-load-path" 'dir))
+		 (push (merge-pathnames opt dir) *load-path*))
+		((setq opt (parse-command-line arg "-r" "-require" 'module))
+		 (require opt))
+		((setq opt (parse-command-line arg nil "-work-dir" 'dir))
+		 (chdir opt))
 		((setq opt (parse-command-line arg "-f" "-funcall" 'function))
 		 (funcall (read-from-string opt)))
 		((setq opt (parse-command-line arg "-e" "-eval" 'string))
@@ -51,6 +61,11 @@
 		 (goto-line (parse-integer opt)))
 		((setq opt (parse-command-line arg "-c" "-column" 'number))
 		 (goto-column (parse-integer opt)))
+		((equal "-trace" arg)
+		 (toggle-trace-on-error t))
+		((equal "-kill" arg)
+		 (when si:*accept-kill-xyzzy*
+		   (kill-xyzzy)))
 		((setq opt (parse-command-line arg nil "-mailto" 'args))
 		 (when *command-line-mailto-hook*
 		   (trap-errors

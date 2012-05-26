@@ -17,7 +17,9 @@
 	  define-c-struct *define-c-struct
 	  c-struct-size-of c-struct-offset-of
 	  define *define *define-c-macro
-	  *c-typedef-auto-export* *c-structure-packing-align*))
+	  *c-typedef-auto-export* *c-structure-packing-align*
+	  last-win32-error
+	  ))
 
 (defsetf si:unpack-int8 si:pack-int8)
 (defsetf si:unpack-uint8 si:pack-uint8)
@@ -25,6 +27,8 @@
 (defsetf si:unpack-uint16 si:pack-uint16)
 (defsetf si:unpack-int32 si:pack-int32)
 (defsetf si:unpack-uint32 si:pack-uint32)
+(defsetf si:unpack-int64 si:pack-int64)
+(defsetf si:unpack-uint64 si:pack-uint64)
 (defsetf si:unpack-float si:pack-float)
 (defsetf si:unpack-double si:pack-double)
 
@@ -54,6 +58,8 @@
 		 (:uint16 2 si:unpack-uint16)
 		 (:int32 4 si:unpack-int32)
 		 (:uint32 4 si:unpack-uint32)
+		 (:int64 8 si:unpack-int64)
+		 (:uint64 8 si:unpack-uint64)
 		 (:float 4 si:unpack-float)
 		 (:double 8 si:unpack-double)))
       (setf (get (car x) 'c-type-specifier)
@@ -106,10 +112,12 @@
 (*define-c-type :int16 short)
 (*define-c-type :int32 int)
 (*define-c-type :int32 long)
+(*define-c-type :int64 int64)
 (*define-c-type :uint8 u_char)
 (*define-c-type :uint16 u_short)
 (*define-c-type :uint32 u_int)
 (*define-c-type :uint32 u_long)
+(*define-c-type :uint64 u_int64)
 (*define-c-type :float float)
 (*define-c-type :double double)
 
@@ -141,14 +149,16 @@
 (setf (get 'define-dll-entry 'ed:lisp-indent-hook) 'defun)
 (setf (get '*define-dll-entry 'ed:lisp-indent-hook) 'defun)
 
-(defmacro define-dll-entry (return-type name (&rest args) dll-name &optional export-name)
-  `(defun ,name (&rest args)
-     (setf (symbol-function ',name)
-	   (si:make-c-function (si:load-dll-module ,dll-name)
-			       ',(or export-name (symbol-name name))
-			       ',(mapcar #'c-argument-type args)
-			       ',(c-return-type return-type)))
-     (apply #',name args)))
+(defmacro define-dll-entry (return-type name-and-options (&rest args) dll-name &optional export-name)
+  (multiple-value-bind (name ignored)
+      (parse-func-name-and-options name-and-options)
+    `(defun ,name (&rest args)
+       (setf (symbol-function ',name)
+	     (si:make-c-function (si:load-dll-module ,dll-name)
+				 ',(or export-name (symbol-name name))
+				 ',(mapcar #'c-argument-type args)
+				 ',(c-return-type return-type)))
+       (apply #',name args))))
 
 (defmacro *define-dll-entry (return-type name (&rest args) dll-name &optional export-name)
   `(progn
@@ -158,19 +168,27 @@
 (setf (get 'defun-c-callable 'ed:lisp-indent-hook) 'defun)
 (setf (get '*defun-c-callable 'ed:lisp-indent-hook) 'defun)
 
-(defmacro defun-c-callable (return-type name (&rest args) &body body)
-  `(setf (symbol-function ',name)
-	 (si:make-c-callable #'(lambda ,(mapcar #'cadr args)
-				 (block ,name ,@body))
-			     ',(mapcar #'(lambda (arg)
-					   (c-argument-type (car arg)))
-				       args)
-			     ',(c-return-type return-type))))
+(defmacro defun-c-callable (return-type name-and-options (&rest args) &body body)
+  (multiple-value-bind (name options)
+      (parse-func-name-and-options name-and-options)
+    `(setf (symbol-function ',name)
+	   (si:make-c-callable #'(lambda ,(mapcar #'cadr args)
+				   (block ,name ,@body))
+			       ',(mapcar #'(lambda (arg)
+					     (c-argument-type (car arg)))
+					 args)
+			       ',(c-return-type return-type)
+			       ,@options))))
 
 (defmacro *defun-c-callable (return-type name (&rest args) &body body)
   `(progn
      (defun-c-callable ,return-type ,name ,args ,@body)
      (export ',name)))
+
+(defun parse-func-name-and-options (name-and-options)
+  (if (atom name-and-options)
+      (values name-and-options nil)
+    (values (car name-and-options) (cdr name-and-options))))
 
 (defun make-c-struct-accessors (slotdef conc-name offset export)
   (mapcan #'(lambda (slot)
@@ -342,6 +360,9 @@
   `(progn
      (defmacro ,name ,lambda-list ,@body)
      (export ',name)))
+
+(defun last-win32-error ()
+  (si:*last-win32-error))
 
 #|
 struct foo

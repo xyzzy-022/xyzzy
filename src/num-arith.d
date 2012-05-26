@@ -32,6 +32,17 @@ F: {return long (x);}
 D: {return long (x);}
 }
 
+int64_t
+coerce_to_int64 (x) real
+{
+s: {return x;}
+l: {return x;}
+b: {return x->coerce_to_int64 ();}
+r: {return int64_t (fract_to_double_float (x));}
+F: {return int64_t (x);}
+D: {return int64_t (x);}
+}
+
 ##define PBIGNUM_REP bignum_rep *
 PBIGNUM_REP
 coerce_to_bignum_rep (x) (bignum_rep_long *rl) integer

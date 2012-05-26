@@ -238,7 +238,7 @@ of SHA-384 and SHA-512)."
   => t
   => t)
 
-(deftest fix-file-stream-column-2 ()
+(deftest fix-file-stream-column-1 ()
   "ファイルの si:*stream-column が正しい値を返すか"
   (with-temp-files (out)
     (with-open-file (s out :direction :output)
@@ -371,3 +371,315 @@ of SHA-384 and SHA-512)."
 (deftest octet-length-error-7 ()
   (si:octet-length "abc" :end 4)
   !! range-error)
+
+(deftest chunkp ()
+  (values
+   (si:*chunkp (si:make-string-chunk ""))
+   (si:*chunkp (si:make-chunk nil 0))
+   (si:*chunkp nil)
+   (si:*chunkp 0)
+   (si:*chunkp ""))
+  => t
+  => t
+  => nil
+  => nil
+  => nil)
+
+(deftest chunk-typep ()
+  (values
+   (typep (si:make-string-chunk "") 'si:chunk)
+   (typep (si:make-chunk nil 0) 'si:chunk)
+   (typep nil 'si:chunk)
+   (typep 0 'si:chunk)
+   (typep "" 'si:chunk))
+  => t
+  => t
+  => nil
+  => nil
+  => nil)
+
+(deftest chunk-check-type-1 ()
+  (values
+   (check-type (si:make-string-chunk "") si:chunk)
+   (check-type (si:make-chunk nil 0) si:chunk))
+  => nil
+  => nil)
+
+(deftest chunk-check-type-2 ()
+  (check-type "" si:chunk)
+  !! type-error)
+
+(deftest pack-unpack-int8 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-int8 c 0 #x12)
+    (si:unpack-int8 c 0))
+  => #x12)
+
+(deftest pack-unpack-uint8 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-uint8 c 0 #xFF)
+    (values
+     (si:unpack-uint8 c 0)
+     (si:unpack-int8 c 0)))
+  => #xFF
+  => -1)
+
+(deftest pack-unpack-int16 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-int16 c 0 #x1234)
+    (si:unpack-int16 c 0))
+  => #x1234)
+
+(deftest pack-unpack-uint16 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-uint16 c 0 #xFFFF)
+    (values
+     (si:unpack-uint16 c 0)
+     (si:unpack-int16 c 0)))
+  => #xFFFF
+  => -1)
+
+(deftest pack-unpack-int32 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-int32 c 0 #x12345678)
+    (si:unpack-int32 c 0))
+  => #x12345678)
+
+(deftest pack-unpack-uint32 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-uint32 c 0 #xFFFFFFFF)
+    (values
+     (si:unpack-uint32 c 0)
+     (si:unpack-int32 c 0)))
+  => #xFFFFFFFF
+  => -1)
+
+(deftest pack-unpack-float ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-float c 0 1.1111)
+    (si:unpack-float c 0))
+  => 1.1111)
+
+(deftest pack-unpack-double ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-double c 0 1.1111d0)
+    (si:unpack-double c 0))
+  => 1.1111d0)
+
+(deftest pack-unpack-string ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-string c 0 "hoge")
+    (si:unpack-string c 0))
+  => "hoge")
+
+
+
+(deftest pack-unpack-int64 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-int64 c 0 #x1234567890ABCDEF)
+    (si:unpack-int64 c 0))
+  => #x1234567890ABCDEF)
+
+(deftest pack-unpack-uint64 ()
+  (let ((c (si:make-chunk nil 8)))
+    (si:pack-uint64 c 0 #xFFFFFFFFFFFFFFFF)
+    (values
+     (si:unpack-uint64 c 0)
+     (si:unpack-int64 c 0)))
+  => #xFFFFFFFFFFFFFFFF
+  => -1)
+
+(deftest pack-unpack-int64-offset ()
+  (let ((c (si:make-chunk nil 16)))
+    (si:pack-int64 c 0 #x1234567890)
+    (si:pack-int64 c 8 #x1234567891)
+    (values
+     (si:unpack-int64 c 0)
+     (si:unpack-int64 c 8)))
+  => #x1234567890
+  => #x1234567891)
+
+(deftest pack-unpack-uint64-offset ()
+  (let ((c (si:make-chunk nil 16)))
+    (si:pack-uint64 c 0 #xFFFFFFFFFFFFFFFF)
+    (si:pack-uint64 c 8 #xFFFFFFFFFFFFFFFF)
+    (values
+     (si:unpack-uint64 c 0)
+     (si:unpack-uint64 c 8)))
+  => #xFFFFFFFFFFFFFFFF
+  => #xFFFFFFFFFFFFFFFF)
+
+(deftest pack-int64-range-error ()
+  (let ((c (si:make-chunk nil 4)))
+    (si:pack-int64 c 0 #x1234567890))
+  !! range-error)
+
+(deftest pack-uint64-range-error ()
+  (let ((c (si:make-chunk nil 4)))
+    (si:pack-uint64 c 0 #x1234567890))
+  !! range-error)
+
+(deftest unpack-int64-range-error ()
+  (let ((c (si:make-chunk nil 4)))
+    (si:unpack-uint64 c 0))
+  !! range-error)
+
+(deftest unpack-uint64-range-error ()
+  (let ((c (si:make-chunk nil 4)))
+    (si:unpack-uint64 c 0))
+  !! range-error)
+
+
+(deftest make-chunk-bad-ptr-1 ()
+  (si:make-chunk nil 4 nil 0)
+  => non-nil)
+
+(deftest make-chunk-bad-ptr-2 ()
+  (si:make-chunk nil 4 nil 123)
+  => non-nil)
+
+(deftest win32-exception-slots ()
+  (handler-case
+      (let ((chunk (si:make-chunk nil 100 nil 123)))
+        (si:pack-int8 chunk 0 1))
+    (win32-exception (e)
+      (values (win32-exception-description e)
+              (win32-exception-code e)
+              (win32-exception-address e))))
+  => "Access violation"
+  => #xc0000005
+  => non-nil)
+
+(deftest pack/unpack-bad-ptr ()
+  (macrolet ((test (&body body)
+               `(handler-case
+                    (progn
+                      (progn ,@body)
+                      nil)
+                  (win32-exception (e)
+                    t))))
+    (let ((chunk (si:make-chunk nil 100 nil 123)))
+      (values
+       (test (si:pack-int8 chunk 0 1))
+       (test (si:pack-int16 chunk 0 1))
+       (test (si:pack-int32 chunk 0 1))
+       (test (si:pack-int64 chunk 0 1))
+       (test (si:pack-uint8 chunk 0 1))
+       (test (si:pack-uint16 chunk 0 1))
+       (test (si:pack-uint32 chunk 0 1))
+       (test (si:pack-uint64 chunk 0 1))
+       (test (si:pack-float chunk 0 1))
+       (test (si:pack-double chunk 0 1))
+       (test (si:pack-string chunk 0 "hoge"))
+       (test (si:unpack-int8 chunk 0))
+       (test (si:unpack-int16 chunk 0))
+       (test (si:unpack-int32 chunk 0))
+       (test (si:unpack-int64 chunk 0))
+       (test (si:unpack-uint8 chunk 0))
+       (test (si:unpack-uint16 chunk 0))
+       (test (si:unpack-uint32 chunk 0))
+       (test (si:unpack-uint64 chunk 0))
+       (test (si:unpack-float chunk 0))
+       (test (si:unpack-double chunk 0))
+       (test (si:unpack-string chunk 0)))))
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t)
+
+
+(deftest binhex-decode ()
+  (si:binhex-decode ":#(4PFh3ZG(Kd!&4&@&3rN!3!N!8'!*!%&+PiHATkH3VEZ!!!:")
+  => "xyzzy\n"
+  => 1413830740
+  => 1061109567
+  => "test.txt")
+
+(defun closure-variable-helper ()
+  (let (a
+        (b)
+        (c 1)
+        (d '(1 2 3))
+        (buffer-read-only 4)
+        (*kill-xyzzy-hook* 5))
+    (si:closure-variable #'(lambda ()))))
+
+(deftest closure-variable ()
+  (closure-variable-helper)
+  => ((*kill-xyzzy-hook* . 5)
+      (buffer-read-only . 4)
+      (d 1 2 3)
+      (c . 1)
+      (b)
+      (a)))
+
+(deftest list-builtin-packages-1 ()
+  (values
+   (length (si:list-builtin-packages))
+   (member (find-package :lisp) (si:list-builtin-packages))
+   (member (find-package :editor) (si:list-builtin-packages))
+   (member (find-package :system) (si:list-builtin-packages))
+   (member (find-package :user) (si:list-builtin-packages))
+   (member (find-package :common-lisp) (si:list-builtin-packages))
+   (member (find-package :common-lisp-user) (si:list-builtin-packages)))
+  => 6
+  => non-nil
+  => non-nil
+  => non-nil
+  => non-nil
+  => non-nil
+  => non-nil)
+
+(deftest list-builtin-packages-1 ()
+  (let ((pkgname (gensym))
+        (all-pkg-len (length (list-all-packages)))
+        (builtin-pkg-len (length (si:list-builtin-packages))))
+    (eval `(defpackage ,pkgname))
+    (values
+     (= all-pkg-len (length (list-all-packages)))
+     (= builtin-pkg-len (length (si:list-builtin-packages)))))
+  => nil
+  => t)
+
+(deftest builtin-package-p ()
+  (values
+   (si:*builtin-package-p nil)
+   (si:*builtin-package-p t)
+   (si:*builtin-package-p 123)
+   (si:*builtin-package-p 1.1)
+   (si:*builtin-package-p '(:lisp))
+   (si:*builtin-package-p :lisp)
+   (si:*builtin-package-p "editor")
+   (si:*builtin-package-p 'system)
+   (si:*builtin-package-p (find-package :user))
+   (si:*builtin-package-p :cl)
+   (si:*builtin-package-p "cl-user"))
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t)

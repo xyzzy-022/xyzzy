@@ -384,11 +384,20 @@ Fsi_closure_variable (lisp closure)
   for (lisp var = vars; consp (var); var = xcdr (var))
     {
       lisp v = xcar (var);
-      xcar (var) = (consp (v)
-                    ? (xcdr (v) == Qunbound
-                       ? xcar (v)
-                       : xcons (xcar (v), xcdr (v)))
-                    : Qnil);
+      if (!consp (v))
+        {
+          xcar (var) = Qnil;
+          continue;
+        }
+      if (xcdr (v) == Qunbound)
+        {
+          if (xsymbol_flags (xcar (v)) & SFdynamic_bind | SFspecial)
+            xcar (var) = xcons (xcar (v), xsymbol_value (xcar (v)));
+          else
+            xcar (var) = xcar (v);
+          continue;
+        }
+      xcar (var) = xcons (xcar (v), xcdr (v));
     }
   return vars;
 }

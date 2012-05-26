@@ -35,6 +35,24 @@ up (u_long x)
   return x << BR_SHIFT;
 }
 
+static inline u_short
+lowpart64 (uint64_t x)
+{
+  return u_short (x & BR_MAX);
+}
+
+static inline uint64_t
+down64 (uint64_t x)
+{
+  return (x >> BR_SHIFT);
+}
+
+static inline uint64_t
+up64 (uint64_t x)
+{
+  return x << BR_SHIFT;
+}
+
 bignum_rep *
 bignum_rep::normalize ()
 {
@@ -220,6 +238,34 @@ br_copy (bignum_rep *old, long x)
 }
 
 bignum_rep *
+br_copy (bignum_rep *old, uint64_t x)
+{
+  bignum_rep *r = br_alloc (old, 0, SHORT_PER_INT64, BR_POSITIVE);
+  u_short *d = r->br_data;
+  while (x)
+    {
+      *d++ = lowpart64 (x);
+      x = down64 (x);
+    }
+  r->br_len = d - r->br_data;
+  return r;
+}
+
+bignum_rep *
+br_copy (bignum_rep *old, int64_t x)
+{
+  bignum_rep *r;
+  if (x < 0)
+    {
+      r = br_copy (old, uint64_t (-x));
+      r->br_sign = BR_NEGATIVE;
+    }
+  else
+    r = br_copy (old, uint64_t (x));
+  return r;
+}
+
+bignum_rep *
 br_copy (bignum_rep *old, large_int li)
 {
   int sign;
@@ -373,6 +419,18 @@ bignum_rep::coerce_to_long () const
   for (int i = l - 1; i >= 0; i--)
     sum = up (sum) + br_data[i];
   return plusp () ? sum : -long (sum);
+}
+
+int64_t
+bignum_rep::coerce_to_int64 () const
+{
+  if (!br_len)
+    return (int64_t)0;
+  int l = min (br_len, int (SHORT_PER_INT64));
+  uint64_t sum = 0;
+  for (int i = l - 1; i >= 0; i--)
+    sum = up64 (sum) + br_data[i];
+  return plusp () ? sum : -int64_t (sum);
 }
 
 double

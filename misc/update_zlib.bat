@@ -1,5 +1,6 @@
 @echo off
 setlocal
+cd /d %~dp0
 
 REM src/zlib を更新します
 REM curl.exe, 7za.exe が必要です。
@@ -8,7 +9,6 @@ set ZLIBVER=zlib-1.2.6
 set ZLIBZIP=zlib126.zip
 set ZLIBDIST=%~dp0\..\src\zlib
 
-cd %~dp0
 curl http://zlib.net/%ZLIBZIP% -o %ZLIBZIP%
 7za x -y %ZLIBZIP%
 
