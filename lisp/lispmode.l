@@ -406,12 +406,34 @@
 	     (use-syntax-table *lisp-mode-syntax-table*)
 	     (unwind-protect
 		 (let ((opoint (point)))
-		   (setq from (progn
-				(backward-sexp)
-				(point))
-			 to (progn
-			      (forward-sexp)
-			      (point)))
+		   (flet ((goto-reader-macro (open-char close-char)
+			    (when (char= (preceding-char) close-char)
+			      (let* ((syntab (syntax-table))
+				     (syntax (copy-syntax-table syntab (make-syntax-table))))
+				(set-syntax-match syntax open-char close-char)
+				(use-syntax-table syntax)
+				(unwind-protect
+				    (and (backward-char)
+					 (goto-matched-parenthesis)
+					 (char= (preceding-char) #\#)
+					 (backward-char))
+				  (use-syntax-table syntab))))))
+		     (skip-chars-backward " \r\t\f\n")
+		     (cond ((or (goto-reader-macro #\< #\>)
+				(goto-reader-macro #\{ #\}))
+			    (setq from (point) to opoint))
+			   (t
+			    (setq from (progn
+					 (backward-sexp)
+					 (if (and (save-excursion
+						    (scan-buffer "#[0-9]*[ACS=]?"
+								 :reverse t :regexp t :case-fold t))
+						  (= (point) (match-end 0)))
+					     (match-beginning 0)
+					   (point)))
+				  to (progn
+				       (forward-sexp)
+				       (point))))))
 		   (goto-char (max opoint to)))
 	       (use-syntax-table syntab))))
       (save-excursion
