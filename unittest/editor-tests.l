@@ -961,6 +961,8 @@
              (insert sexp #\LFD)
              (eval-last-sexp)))
       (values
+       (insert-and-eval "(< 1 2)")
+       (insert-and-eval "(string< 'a 'b)")
        (insert-and-eval "123")
        (insert-and-eval "#x123")
        (insert-and-eval "#o123")
@@ -982,6 +984,8 @@
          (insert-and-eval "(setf fso (ole-create-object \"Scripting.FileSystemObject\"))")
          (insert-and-eval "#{fso.BuildPath[\"foo\" \"bar\"]}"))
        )))
+  => t
+  => 0
   => 123
   => #x123
   => #o123
