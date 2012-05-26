@@ -1188,3 +1188,19 @@ lisp-indent-hook property"
    '(t
      (declare (special a))))
   !! simple-error)
+
+(deftest redefun-docstring ()
+  (let ((sym (gensym)))
+    (eval `(values
+            (progn
+              (defun ,sym () "docstring1" 123)
+              (documentation ',sym 'function))
+            (progn
+              (defun ,sym () "docstring2" 123)
+              (documentation ',sym 'function))
+            (progn
+              (defun ,sym () 123)
+              (documentation ',sym 'function)))))
+  => "docstring1"
+  => "docstring2"
+  => nil)
