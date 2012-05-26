@@ -1204,3 +1204,37 @@ lisp-indent-hook property"
   => "docstring1"
   => "docstring2"
   => nil)
+
+(deftest nth-value-1 ()
+  (values
+   (nth-value 0 (values 1 2 3))
+   (nth-value 1 (values 1 2 3))
+   (nth-value 2 (values 1 2 3))
+   (nth-value 3 (values 1 2 3))
+   (nth-value 4 (values 1 2 3))
+   (nth-value 1000 (values 1 2 3)))
+  => 1
+  => 2
+  => 3
+  => nil
+  => nil
+  => nil)
+
+(deftest nth-value-2 ()
+  (values
+   (nth-value 0 "hoge")
+   (nth-value 1 "hoge")
+   (nth-value 2 "hoge")
+   (nth-value 3 "hoge")
+   (nth-value 4 "hoge")
+   (nth-value 1000 "hoge"))
+  => "hoge"
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil)
+
+(deftest nth-value-type-error ()
+  (nth-value -1 (values 1 2 3))
+  !! type-error)
