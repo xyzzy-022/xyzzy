@@ -19654,6 +19654,7 @@ N がリストの長さを越えていれば nil を返します。 N が負数�
   =&gt; 範囲外の値です: -3
 </description>
 <seealso>nthcdr</seealso>
+<seealso>nth-value</seealso>
 <seealso>elt</seealso>
 <seealso>first</seealso>
 <seealso>second</seealso>
@@ -19692,8 +19693,40 @@ N がリストの長さを越えていれば nil を返します。 N が負数�
   =&gt; 範囲外の値です: -3
 </description>
 <seealso>nth</seealso>
+<seealso>nth-value</seealso>
 <section>リスト</section>
 <file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>nth-value</title>
+<type>Macro</type>
+<arguments>nth-value N FORM</arguments>
+<package>lisp</package>
+<description>
+フォームが返す多値の N 番目を返します。
+
+  N    : リストのインデックスを指定します。0を基底とします。
+  FORM : 要素を返すフォームです。
+
+N が多値の数より多い場合は nil を返します。 N が負数であればエラーを
+返します。
+
+使用例：
+  (nth-value 1 (values 1 2 3 4))
+  =&gt; 2
+  (nth-value 10 (values 1 2 3 4))
+  =&gt; nil
+  (nth-value -3 (values 1 2 3 4))
+  =&gt; 範囲外の値です: -3
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>nth</seealso>
+<seealso>nthcdr</seealso>
+<section>変数と定数</section>
+<file>evalmacs.l</file>
 </chapter>
 
 <chapter>

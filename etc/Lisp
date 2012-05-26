@@ -860,6 +860,7 @@ nsubstitute
 nsubstitute-if
 nsubstitute-if-not
 nth
+nth-value
 nthcdr
 null
 number-of-function-bar-labels
