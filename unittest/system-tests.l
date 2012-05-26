@@ -630,3 +630,56 @@ of SHA-384 and SHA-512)."
       (c . 1)
       (b)
       (a)))
+
+(deftest list-builtin-packages-1 ()
+  (values
+   (length (si:list-builtin-packages))
+   (member (find-package :lisp) (si:list-builtin-packages))
+   (member (find-package :editor) (si:list-builtin-packages))
+   (member (find-package :system) (si:list-builtin-packages))
+   (member (find-package :user) (si:list-builtin-packages))
+   (member (find-package :common-lisp) (si:list-builtin-packages))
+   (member (find-package :common-lisp-user) (si:list-builtin-packages)))
+  => 6
+  => non-nil
+  => non-nil
+  => non-nil
+  => non-nil
+  => non-nil
+  => non-nil)
+
+(deftest list-builtin-packages-1 ()
+  (let ((pkgname (gensym))
+        (all-pkg-len (length (list-all-packages)))
+        (builtin-pkg-len (length (si:list-builtin-packages))))
+    (eval `(defpackage ,pkgname))
+    (values
+     (= all-pkg-len (length (list-all-packages)))
+     (= builtin-pkg-len (length (si:list-builtin-packages)))))
+  => nil
+  => t)
+
+(deftest builtin-package-p ()
+  (values
+   (si:*builtin-package-p nil)
+   (si:*builtin-package-p t)
+   (si:*builtin-package-p 123)
+   (si:*builtin-package-p 1.1)
+   (si:*builtin-package-p '(:lisp))
+   (si:*builtin-package-p :lisp)
+   (si:*builtin-package-p "editor")
+   (si:*builtin-package-p 'system)
+   (si:*builtin-package-p (find-package :user))
+   (si:*builtin-package-p :cl)
+   (si:*builtin-package-p "cl-user"))
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t)
