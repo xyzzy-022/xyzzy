@@ -12,6 +12,7 @@
 (export '(*gensym-counter* gensym gentemp))
 (export '(defmacro defun defvar defparameter defconstant do* psetq do dolist dotimes
 	  while prog prog* cond case when unless return loop and or prog1 prog2
+	  nth-value
 	  lambda-list-keywords type otherwise))
 (export '(*modules* require provide modulep featurep mc-require))
 
@@ -368,6 +369,11 @@
 	     (setq newform `(if (eql #1# ',(car f))
 				(progn ,@(cdr f))
 			      ,newform)))))))
+
+(defmacro nth-value (n form)
+  `(let ((#1=#:n ,n))
+     (check-type #1# (integer 0 *))
+     (nth #1# (multiple-value-list ,form))))
 
 (defconstant lambda-list-keywords
   '(&optional &rest &key &aux &body &whole &environment))
