@@ -961,6 +961,14 @@
              (insert sexp #\LFD)
              (eval-last-sexp)))
       (values
+       (handler-case
+           (insert-and-eval "1\n>")
+         (error (c)
+           (si:*condition-string c)))
+       (handler-case
+           (insert-and-eval "1\n}")
+         (error (c)
+           (si:*condition-string c)))
        (insert-and-eval "(< 1 2)")
        (insert-and-eval "(string< 'a 'b)")
        (insert-and-eval "123")
@@ -984,6 +992,8 @@
          (insert-and-eval "(setf fso (ole-create-object \"Scripting.FileSystemObject\"))")
          (insert-and-eval "#{fso.BuildPath[\"foo\" \"bar\"]}"))
        )))
+  => "•Ï”‚ª’è‹`‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ: >"
+  => "•Ï”‚ª’è‹`‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ: }"
   => t
   => 0
   => 123
