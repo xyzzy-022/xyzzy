@@ -3136,6 +3136,7 @@ si:*fset
 si:*get-string-input-stream-index
 si:*index-slot-value
 si:*instance-number
+si:*last-win32-error
 si:*make-array
 si:*make-constant
 si:*make-special
