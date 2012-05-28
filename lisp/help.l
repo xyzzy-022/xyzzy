@@ -151,7 +151,8 @@
 			   (eq state :external)))
 		  (format t "~S" sym)
 		(format t "~A:~:[~;:~]~A"
-			(if (si:*builtin-package-p pkg)
+			(if (or (si:*builtin-package-p pkg)
+				(string= (package-name pkg) "foreign"))
 			    (or (car (package-nicknames pkg))
 				(package-name pkg))
 			  (package-name pkg))
