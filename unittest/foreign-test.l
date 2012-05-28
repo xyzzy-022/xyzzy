@@ -233,12 +233,12 @@
                             u (si:chunk-size u))
        (c:last-win32-error))
      (progn
-       (setf u (si:make-chunk nil 1))
        (MultiByteToWideChar 932 0
                             a (si:chunk-size a)
                             u (si:chunk-size u))
        (c:last-win32-error))
      (progn
+       (setf u (si:make-chunk nil 1))
        (MultiByteToWideChar 932 0
                             a (si:chunk-size a)
                             u (si:chunk-size u))
@@ -246,8 +246,8 @@
      ))
   => 0
   => 87   ; ERROR_INVALID_PARAMETER
-  => 122  ; ERROR_INSUFFICIENT_BUFFER
-  => 0)
+  => 0
+  => 122) ; ERROR_INSUFFICIENT_BUFFER
 
 
 (c:define-dll-entry
