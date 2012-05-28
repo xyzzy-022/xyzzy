@@ -238,7 +238,13 @@
                             a (si:chunk-size a)
                             u (si:chunk-size u))
        (c:last-win32-error))
+     (progn
+       (MultiByteToWideChar 932 0
+                            a (si:chunk-size a)
+                            u (si:chunk-size u))
+       (c:last-win32-error))
      ))
   => 0
   => 87   ; ERROR_INVALID_PARAMETER
-  => 122) ; ERROR_INSUFFICIENT_BUFFER
+  => 122  ; ERROR_INSUFFICIENT_BUFFER
+  => 0)
