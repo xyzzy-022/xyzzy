@@ -390,9 +390,10 @@ xyzzy Lisp 開発者向け機能追加
 
   * Win32 API 呼び出し時の `GetLastError` を取得する関数を追加 (x022235, #50)
 
-    FFI 呼び出し後に GetLastError を自動的に保存するようにしました。
+    FFI 呼び出し後に GetLastError の結果を自動的に保存するようにしました。
     次の FFI 呼び出しをするまで、保存されたエラーコードを `c:last-win32-error` で
     取得できます。
+    また、`c:last-win32-error` に `setf` することでエラーコードを設定できます。
 
     ```lisp
     (c:define-dll-entry
@@ -409,6 +410,7 @@ xyzzy Lisp 開発者向け機能追加
     (let ((a (si:make-string-chunk "abc"))
           (u (si:make-chunk nil 9)))
       (si:clear-chunk u)
+         (setf (c:last-win32-error) 0)
          (MultiByteToWideChar 932932 0
                               a (si:chunk-size a)
                               u (si:chunk-size u))
