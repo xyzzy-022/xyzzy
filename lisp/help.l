@@ -130,6 +130,7 @@
       (setq string (regexp-quote string)))
   (long-operation
     (with-output-to-temp-buffer ("*Help*")
+      (setq kept-undo-information (default-value 'kept-undo-information))
       (lisp-interaction-mode)
       (message "Building apropos list...")
       (let ((local-keymap (local-keymap))
