@@ -200,6 +200,7 @@ Fsi_last_win32_error ()
 static __forceinline void
 clear_last_error ()
 {
+  SetLastError (0);
   xsymbol_value (Vlast_win32_error) = make_fixnum (0);
 }
 
