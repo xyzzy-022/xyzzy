@@ -931,8 +931,7 @@
     (with-temp-buffer
       (insert "(in-package :editor)" #\LFD)
       (insert "(in-package   \"user\" )" #\LFD)
-      (insert "(cl:in-package \"cl-user\")" #\LFD)
-      (insert "(lisp:in-package \"cl\")" #\LFD)
+      (insert "(lisp:in-package \"cl-user\")" #\LFD)
       (insert "(common-lisp::in-package \"lisp\")" #\LFD)
       (insert "(common-lisp::in-package \"no-such-package\")" #\LFD)
       (flet ((test (n)
@@ -945,12 +944,10 @@
          (test 3)
          (test 4)
          (test 5)
-         (test 6)
          ))))
   => "editor"
   => "user"
   => "common-lisp-user"
-  => "common-lisp"
   => "lisp"
   => "user")
 

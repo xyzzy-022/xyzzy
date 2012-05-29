@@ -1056,8 +1056,7 @@ init_syms ()
 
   lisp lsp = make_package (SIMPLE_STRING ("lisp"), Qnil,
                            LISP_INTSIZE, LISP_EXTSIZE);
-  lisp cl = make_package (SIMPLE_STRING ("common-lisp"),
-                           make_list (SIMPLE_STRING ("cl"), 0),
+  lisp cl = make_package (SIMPLE_STRING ("common-lisp"), Qnil,
                            CL_INTSIZE, CL_EXTSIZE);
   lisp sys = make_package (SIMPLE_STRING ("system"),
                            make_list (SIMPLE_STRING ("si"),
