@@ -670,14 +670,12 @@ of SHA-384 and SHA-512)."
    (si:*builtin-package-p "editor")
    (si:*builtin-package-p 'system)
    (si:*builtin-package-p (find-package :user))
-   (si:*builtin-package-p :cl)
    (si:*builtin-package-p "cl-user"))
   => nil
   => nil
   => nil
   => nil
   => nil
-  => t
   => t
   => t
   => t
