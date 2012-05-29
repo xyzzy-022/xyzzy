@@ -198,11 +198,13 @@ Fsi_last_win32_error ()
   return xsymbol_value (Vlast_win32_error);
 }
 
-static __forceinline void
-clear_last_error ()
+lisp
+Fsi_set_last_win32_error (lisp lerror)
 {
-  SetLastError (0);
-  xsymbol_value (Vlast_win32_error) = make_fixnum (0);
+  DWORD error = fixnum_value (lerror);
+  SetLastError (error);
+  xsymbol_value (Vlast_win32_error) = lerror;
+  return lerror;
 }
 
 static __forceinline void
@@ -215,7 +217,6 @@ template<typename T>
 static __forceinline T
 call_proc (FARPROC proc)
 {
-  clear_last_error ();
   T r = (reinterpret_cast <T (__stdcall *)()> (proc))();
   save_last_error ();
   return r;

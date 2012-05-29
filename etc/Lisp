@@ -3163,6 +3163,7 @@ si:*set-elt
 si:*set-fill-pointer
 si:*set-function-name
 si:*set-index-slot-value
+si:*set-last-win32-error
 si:*set-package-documentation
 si:*set-schar
 si:*set-slot-value
