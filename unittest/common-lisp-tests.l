@@ -1,15 +1,13 @@
 (deftest cl-package ()
   (values
-   (find-package :cl)
    (find-package :common-lisp)
-   (package-name :cl)
-   (package-nicknames :cl)
-   (mapcar 'package-name (package-use-list :cl))
-   (member (find-package :cl) (list-all-packages)))
-  => non-nil
+   (package-name :common-lisp)
+   (package-nicknames :common-lisp)
+   (mapcar 'package-name (package-use-list :common-lisp))
+   (member (find-package :common-lisp) (list-all-packages)))
   => non-nil
   => "common-lisp"
-  => ("cl")
+  => nil
   => ("lisp")
   => non-nil)
 
@@ -31,9 +29,9 @@
 (deftest cl-format-tilde-A ()
   (values
    (lisp:format nil "~10@A" "hoge")
-   (cl:format nil "~10@A" "hoge")
+   (common-lisp:format nil "~10@A" "hoge")
    (lisp:format nil "~10@A" :hoge)
-   (cl:format nil "~10@A" :hoge))
+   (common-lisp:format nil "~10@A" :hoge))
   => "hoge      "
   => "      hoge"
   => "      hoge"
