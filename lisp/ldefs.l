@@ -36,16 +36,3 @@
 	     (not (si:*builtin-function-p #'si:*structure-reader)))
   (fmakunbound 'si:*structure-reader)
   (autoload 'si:*structure-reader "struct"))
-
-
-(in-package "common-lisp")
-
-(export '(nil))
-
-(do-external-symbols (lspsym "lisp")
-  (multiple-value-bind (sym state)
-      (find-symbol (string lspsym) "common-lisp")
-    (case state
-      (:inherited (export sym "common-lisp"))
-      (:external (shadow sym "common-lisp"))
-      )))
