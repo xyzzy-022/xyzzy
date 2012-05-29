@@ -125,6 +125,7 @@
   (si::define-condition-accessors dde-terminated-transaction t)
   (si::define-condition-accessors storage-condition t)
   (si::define-condition-accessors stack-overflow t)
+  (si::define-condition-accessors win32-exception t)
   (si::define-condition-accessors invalid-byte-code t)
   (si::define-condition-accessors quit t)
   (si::define-condition-accessors silent-quit t)
@@ -174,6 +175,12 @@
 
 (defun *report-socket-error (c s)
   (format s "~a" (socket-error-datum c)))
+
+(defun *report-win32-exception (c s)
+  (format s "Win32ó·äOÇ™î≠ê∂ÇµÇ‹ÇµÇΩ: ~A (~X) at 0x~X"
+	  (win32-exception-description c)
+	  (win32-exception-code c)
+	  (win32-exception-address c)))
 
 (defun define-condition-helper (name parent-type body)
   (let ((slot-spec (car body))

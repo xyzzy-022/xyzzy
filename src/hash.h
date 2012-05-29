@@ -91,5 +91,6 @@ int equalp (lhash_table *, lhash_table *);
 lChar Char_hash (Char, lisp);
 
 void hash_table_rehash (lisp hash_table, int inc = 0);
+lisp gethash (lisp key, lisp hash_table, lisp defalt);
 
 #endif

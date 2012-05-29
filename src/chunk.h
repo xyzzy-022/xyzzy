@@ -50,5 +50,6 @@ xchunk_owner (lisp x)
 }
 
 long cast_to_long (lisp object);
+int64_t cast_to_int64 (lisp object);
 
 #endif

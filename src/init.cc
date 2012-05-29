@@ -63,6 +63,7 @@ Application::Application ()
   int tem;
   initial_stack = &tem;
   in_gc = 0;
+  exit_code = 0;
 }
 
 Application::~Application ()
@@ -466,6 +467,7 @@ init_symbol_value_once ()
   xsymbol_value (Vfiler_click_toggle_marks_always) = Qt;
 
   xsymbol_value (Vdll_module_list) = Qnil;
+  xsymbol_value (Vlast_win32_error) = make_fixnum (0);
 
   xsymbol_value (Vfunction_bar_labels) =
     make_vector (MAX_FUNCTION_BAR_LABEL, Qnil);
@@ -1017,5 +1019,5 @@ WinMain (HINSTANCE hinst, HINSTANCE, LPSTR, int cmdshow)
     _CrtSetDbgFlag (_CrtSetDbgFlag (_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
   }
 #endif
-  return 0;
+  return app.exit_code;
 }

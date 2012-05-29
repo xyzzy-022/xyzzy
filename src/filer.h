@@ -212,6 +212,8 @@ public:
 
   void activate (int);
   void subscribe_reload (lisp, int);
+  void measure_item (MEASUREITEMSTRUCT *mis) const;
+  void set_font () const;
   void set_colors () const;
   int modify_column_width (int, int) const;
 

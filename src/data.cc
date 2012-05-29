@@ -618,7 +618,7 @@ gc_mark_object (lisp object)
                 gc_mark_object (e->value);
               }
             object = xhash_table_rehash_size (object);
-            return;
+            break;
           }
 
         case Tstruct_def:
@@ -804,9 +804,11 @@ gc_mark_object ()
   gc_mark_object (Qunbound);
 
   gc_mark (lsp_fns);
+  gc_mark (cl_fns);
   gc_mark (sys_fns);
   gc_mark (ed_fns);
   gc_mark (lsp_vars);
+  gc_mark (cl_vars);
   gc_mark (sys_vars);
   gc_mark (kwd_vars);
   lisp olist = xsymbol_value (Vdll_module_list); // module‚Í‚ ‚Æ‚Å‚â‚é
@@ -903,6 +905,7 @@ gc (int nomsg)
 
 #ifdef DEBUG_GC
   shift_funcall_mark (lsp_fns);
+  shift_funcall_mark (cl_fns);
   shift_funcall_mark (sys_fns);
   shift_funcall_mark (ed_fns);
   mark_stack_trace ();
@@ -1018,12 +1021,16 @@ init_default_nonlocal_data ()
 
 #define LISP_INTSIZE 101
 #define LISP_EXTSIZE 331
+#define CL_INTSIZE 101
+#define CL_EXTSIZE 331
 #define SYS_INTSIZE 101
 #define SYS_EXTSIZE 101
 #define KWD_INTSIZE 11
 #define KWD_EXTSIZE 331
 #define USR_INTSIZE 331
 #define USR_EXTSIZE 211
+#define CL_USR_INTSIZE 331
+#define CL_USR_EXTSIZE 211
 #define ED_INTSIZE 211
 #define ED_EXTSIZE 331
 
@@ -1049,6 +1056,9 @@ init_syms ()
 
   lisp lsp = make_package (SIMPLE_STRING ("lisp"), Qnil,
                            LISP_INTSIZE, LISP_EXTSIZE);
+  lisp cl = make_package (SIMPLE_STRING ("common-lisp"),
+                           make_list (SIMPLE_STRING ("cl"), 0),
+                           CL_INTSIZE, CL_EXTSIZE);
   lisp sys = make_package (SIMPLE_STRING ("system"),
                            make_list (SIMPLE_STRING ("si"),
                                       SIMPLE_STRING ("sys"),
@@ -1058,6 +1068,9 @@ init_syms ()
                            KWD_INTSIZE, KWD_EXTSIZE);
   lisp usr = make_package (SIMPLE_STRING ("user"), Qnil,
                            USR_INTSIZE, USR_EXTSIZE);
+  lisp cl_usr = make_package (SIMPLE_STRING ("common-lisp-user"),
+                              make_list (SIMPLE_STRING ("cl-user"), 0),
+                              CL_USR_INTSIZE, CL_USR_EXTSIZE);
   lisp ed = make_package (SIMPLE_STRING ("editor"),
                           xcons (SIMPLE_STRING ("ed"), Qnil),
                           ED_INTSIZE, ED_EXTSIZE);
@@ -1067,14 +1080,18 @@ init_syms ()
   xpackage_use_list (sys) = xcons (lsp, Qnil);
   xpackage_use_list (ed) = xcons (lsp, Qnil);
   xpackage_use_list (usr) = make_list (lsp, ed, 0);
-  xpackage_used_by_list (lsp) = make_list (sys, ed, usr, 0);
-  xpackage_used_by_list (ed) = xcons (usr, Qnil);
+  xpackage_use_list (cl) = make_list (lsp, 0);
+  xpackage_use_list (cl_usr) = make_list (cl, ed, 0);
+  xpackage_used_by_list (lsp) = make_list (sys, ed, usr, cl, 0);
+  xpackage_used_by_list (cl) = make_list (cl_usr, 0);
+  xpackage_used_by_list (ed) = make_list (cl_usr, usr, 0);
 
   u_int hash = hashpjw (xsymbol_name (Qnil), LISP_EXTSIZE);
   lisp *vec = xvector_contents (xpackage_external (lsp));
   vec[hash] = xcons (Qnil, vec[hash]);
 
   init_syms (lsp_vars, lsp_fns, lsp, 0);
+  init_syms (cl_vars, cl_fns, cl, 0);
   init_syms (sys_vars, sys_fns, sys, 0);
   init_syms (kwd_vars, 0, kwd, 1);
   init_syms (ed_vars, ed_fns, ed, 0);
@@ -1087,11 +1104,13 @@ init_syms ()
     }
 
   xsymbol_value (Vlisp_package) = lsp;
+  xsymbol_value (Vcommon_lisp_package) = cl;
   xsymbol_value (Vsystem_package) = sys;
   xsymbol_value (Vkeyword_package) = kwd;
   xsymbol_value (Vuser_package) = usr;
+  xsymbol_value (Vcommon_lisp_user_package) = cl_usr;
   xsymbol_value (Veditor_package) = ed;
-  xsymbol_value (Vpackage_list) = make_list (lsp, sys, kwd, usr, ed, 0);
+  xsymbol_value (Vpackage_list) = make_list (lsp, sys, kwd, usr, ed, cl, cl_usr, 0);
   xsymbol_value (Vpackage) = usr;
 
   multiple_value::value (0) = Qnil;
@@ -1188,6 +1207,7 @@ combine_syms ()
       li->str = Qnil;
 
   combine_syms (lsp_vars, lsp_fns, syms, fns);
+  combine_syms (cl_vars, cl_fns, syms, fns);
   combine_syms (sys_vars, sys_fns, syms, fns);
   combine_syms (kwd_vars, 0, syms, fns);
   combine_syms (ed_vars, ed_fns, syms, fns);
@@ -1966,6 +1986,7 @@ dump_object (FILE *fp, const lpackage *d, int n,
         writef (fp, d->shadowings);
         writef (fp, d->internal);
         writef (fp, d->external);
+        writef (fp, d->documentation);
       }
 }
 
@@ -1983,6 +2004,7 @@ rdump_object (FILE *fp, lpackage *d, int n,
         d->shadowings = readl (fp);
         d->internal = readl (fp);
         d->external = readl (fp);
+        d->documentation = readl (fp);
       }
 }
 
@@ -2556,6 +2578,7 @@ dump_object (FILE *fp, const lc_callable *d, int n,
         writef (fp, d->arg_types, d->nargs);
         writef (fp, &d->arg_size, sizeof d->arg_size);
         writef (fp, &d->return_type, sizeof d->return_type);
+        writef (fp, &d->convention, sizeof d->convention);
       }
 }
 
@@ -2572,6 +2595,7 @@ rdump_object (FILE *fp, lc_callable *d, int n,
         readf (fp, d->arg_types, d->nargs);
         readf (fp, &d->arg_size, sizeof d->arg_size);
         readf (fp, &d->return_type, sizeof d->return_type);
+        readf (fp, &d->convention, sizeof d->convention);
         init_c_callable (d);
       }
 }
@@ -2851,6 +2875,7 @@ output_funcall_mark (FILE *fp)
 {
   fprintf (fp, "Funcall list:\n");
   output_funcall_mark (fp, lsp_fns);
+  output_funcall_mark (fp, cl_fns);
   output_funcall_mark (fp, sys_fns, "si:");
   output_funcall_mark (fp, ed_fns);
 }

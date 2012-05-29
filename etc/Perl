@@ -11,6 +11,7 @@ else
 elseif
 elsif
 eval
+evalbytes
 exists
 exit
 for
@@ -47,6 +48,7 @@ __END__
 __FILE__
 __LINE__
 __PACKAGE__
+__SUB__
 AUTOLOAD
 BEGIN
 CHECK
@@ -72,6 +74,7 @@ lt
 ne
 not
 or
+x
 
 ;*2
 abs
@@ -105,6 +108,7 @@ endservent
 eof
 exec
 exp
+fc
 fcntl
 fileno
 flock
@@ -194,6 +198,7 @@ push
 pwent
 pwnam
 pwuid
+q
 qq
 qr
 quotemeta

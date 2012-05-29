@@ -1241,6 +1241,29 @@ non-nil のとき、ファイラでファイルタイプに応じたアイコン
 </chapter>
 
 <chapter>
+<title>*find-buffer-package-hook*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+eval-region時のパッケージを決定する際に利用します。
+
+eval-region時パッケージの決定は以下の順序になります。
+1.*buffer-package*に代入された値
+2.*find-buffer-package-hook*の評価結果
+
+補足：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>eval-region</seealso>
+<seealso>*buffer-package*</seealso>
+<seealso>set-buffer-package</seealso>
+<link></link>
+<section>変数と定数</section>
+<file>lispmode.l</file>
+</chapter>
+
+<chapter>
 <title>*find-file-file-not-found-hook*</title>
 <type>Variable</type>
 <arguments></arguments>
@@ -2146,6 +2169,32 @@ xyzzy.exeに渡されたオプション引数を判定する際に呼び出さ�
    '*process-command-line-hook* arg)
 </description>
 <seealso>起動時処理フロー</seealso>
+<seealso>*command-line-args-base-directory*</seealso>
+<link></link>
+<section>システム</section>
+<file>estartup.l</file>
+</chapter>
+
+<chapter>
+<title>*command-line-args-base-directory*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+xyzzy.exeまたはxyzzycli.exeの実行ディレクトリです。
+*process-command-line-hook*に渡される引数が相対パスの場合は
+このディレクトリを起点にパスを解決する必要があります。
+
+例：
+  (add-hook '*process-command-line-hook*
+            #'(lambda (arg)
+                (ed::find-file-internal
+                 (merge-pathnames arg *command-line-args-base-directory*))))
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>*process-command-line-hook*</seealso>
 <link></link>
 <section>システム</section>
 <file>estartup.l</file>
@@ -2207,7 +2256,7 @@ xyzzy終了時に実行されます。このフック変数の実行がnilだと
 <package>lisp</package>
 <description>
 読み取り時評価(read-time evaluation)を制御します。
-*read-eval*がnon-nilなら #. リーダマクロは通常どうりに動作します。
+*read-eval*がnon-nilなら #. リーダマクロは通常どおり直後のS式を評価した結果を値とします。
 nilならreader-errorが発生します。
 
 標準はtです。
@@ -3497,6 +3546,8 @@ xyzzyの外部と入出力するためのデータを格納するオブジェク
   si:pack-uint16        si:unpack-uint16 : 16ビット符号無し整数用
   si:pack-int32         si:unpack-int32  : 32ビット符号付き整数用
   si:pack-uint32        si:unpack-uint32 : 32ビット符号無し整数用
+  si:pack-int64         si:unpack-int64  : 64ビット符号付き整数用
+  si:pack-uint64        si:unpack-uint64 : 64ビット符号無し整数用
   si:pack-float         si:unpack-float  : float用
   si:pack-double        si:unpack-double : double用
   si:pack-string        si:unpack-string : 文字列用
@@ -11428,8 +11479,12 @@ call-processとは違って標準出力をバッファに出力します。出�
   ┌lisp───┐←─┘  └─────┘        ┌user───┐
   │          │←────────────┬─┤          │
   └─────┘←─┐  ┌editor──┐    │  └─────┘
-                    └─┤          │←─┘
-                        └─────┘
+        ↑          └─┤          │←─┘
+        │              └─────┘←─┐
+  ┌common-lisp ┐                        │  ┌common-lisp-user┐
+  │            │←───────────┴─┤                │
+  └──────┘                            └────────┘
+
 
 上の図はどのパッケージをuse-pakcageしているかを示しています。
 パッケージがuseする他のパッケージはpackage-use-listを使って確認すること
@@ -11451,6 +11506,10 @@ use-packageしていないので修飾子が必要です。
     ;;; エクスポートされ、別のパッケージから参照できるようになる。
     (export '(aset file-name-directory file-name-nondirectory
           file-name-sans-versions))
+
+備考：
+  common-lisp パッケージと common-lisp-user パッケージは
+  xyzzy 0.2.2.239 から利用可能です。
 </description>
 <seealso>パッケージ</seealso>
 <seealso>use-package</seealso>
@@ -16128,12 +16187,42 @@ xyzzy内に存在するパッケージ一覧をリストで返します。
   (list-all-packages)
   =&gt;  (#&lt;package: win-user&gt; #&lt;package: winapi&gt; #&lt;package: 
      foreign&gt;  #&lt;package: lisp&gt; #&lt;package: system&gt; #&lt;package: 
-     keyword&gt; #&lt;package: user&gt; #&lt;package: editor&gt;)
+     keyword&gt; #&lt;package: user&gt; #&lt;package: editor&gt;
+     #&lt;package: common-lisp&gt; #&lt;package: common-lisp-user&gt;)
+
+備考：
+  common-lisp パッケージと common-lisp-user パッケージは
+  xyzzy 0.2.2.239 から利用可能です。
 </description>
 <seealso>defpackage</seealso>
+<seealso>si:list-builtin-packages</seealso>
 <seealso>パッケージ</seealso>
 <section>パッケージ</section>
 <file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:list-builtin-packages</title>
+<type>Function</type>
+<arguments>list-builtin-packages</arguments>
+<package>system</package>
+<description>
+xyzzy内に存在する組み込みのパッケージ一覧をリストで返します。
+
+使用例：
+  (si:list-builtin-packages)
+  =&gt; (#&lt;package: lisp&gt; #&lt;package: system&gt; #&lt;package: keyword&gt;
+      #&lt;package: user&gt; #&lt;package: editor&gt; #&lt;package: common-lisp&gt;
+      #&lt;package: common-lisp-user&gt;)
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>list-all-packages</seealso>
+<seealso>si:*builtin-package-p</seealso>
+<seealso>パッケージ</seealso>
+<section>パッケージ</section>
+<file>package.l</file>
 </chapter>
 
 <chapter>
@@ -19565,6 +19654,7 @@ N がリストの長さを越えていれば nil を返します。 N が負数�
   =&gt; 範囲外の値です: -3
 </description>
 <seealso>nthcdr</seealso>
+<seealso>nth-value</seealso>
 <seealso>elt</seealso>
 <seealso>first</seealso>
 <seealso>second</seealso>
@@ -19603,8 +19693,40 @@ N がリストの長さを越えていれば nil を返します。 N が負数�
   =&gt; 範囲外の値です: -3
 </description>
 <seealso>nth</seealso>
+<seealso>nth-value</seealso>
 <section>リスト</section>
 <file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>nth-value</title>
+<type>Macro</type>
+<arguments>nth-value N FORM</arguments>
+<package>lisp</package>
+<description>
+フォームが返す多値の N 番目を返します。
+
+  N    : リストのインデックスを指定します。0を基底とします。
+  FORM : 要素を返すフォームです。
+
+N が多値の数より多い場合は nil を返します。 N が負数であればエラーを
+返します。
+
+使用例：
+  (nth-value 1 (values 1 2 3 4))
+  =&gt; 2
+  (nth-value 10 (values 1 2 3 4))
+  =&gt; nil
+  (nth-value -3 (values 1 2 3 4))
+  =&gt; 範囲外の値です: -3
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>nth</seealso>
+<seealso>nthcdr</seealso>
+<section>変数と定数</section>
+<file>evalmacs.l</file>
 </chapter>
 
 <chapter>
@@ -24222,6 +24344,24 @@ buffer-fileio-encodingで参照することができます。
 </chapter>
 
 <chapter>
+<title>set-buffer-package</title>
+<type>Function</type>
+<arguments>set-buffer-package PACKAGE-NAME</arguments>
+<package>editor</package>
+<description>
+*buffer-package*を設定するコマンドです。
+
+補足：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>eval-region</seealso>
+<seealso>*buffer-package*</seealso>
+<link></link>
+<section>バッファ</section>
+<file>cmds.l</file>
+</chapter>
+
+<chapter>
 <title>set-buffer</title>
 <type>Function</type>
 <arguments>set-buffer BUFFER</arguments>
@@ -25542,6 +25682,63 @@ FONTSETで指定したフォントの設定を更新します。
 </chapter>
 
 <chapter>
+<title>get-filer-font</title>
+<type>Function</type>
+<arguments>get-filer-font</arguments>
+<package>editor</package>
+<description>
+ファイラのフォント設定を取得します。
+フォントを設定していない場合は nil を返します。
+
+使用例：
+  (get-filer-font)
+  =&gt; nil
+
+  (set-filer-font :face "メイリオ" :size 12 :size-pixel-p nil)
+  =&gt; t
+
+  (get-filer-font)
+  =&gt; (:face "メイリオ" :size 12 :size-pixel-p nil)
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>set-filer-font</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>set-filer-font</title>
+<type>Function</type>
+<arguments>set-filer-font &amp; :face :size :size-pixel-p</arguments>
+<package>editor</package>
+<description>
+ファイラのフォントを設定します。
+設定を変更した場合は t が、変更点がなかった場合は nil を返します。
+
+  :face         : フォント名を指定します。
+  :size         : フォントサイズを指定します。
+  :size-pixel-p : フォントサイズがピクセル単位なら t を指定します。
+
+使用例：
+  (set-filer-font :face "メイリオ" :size 12)
+  =&gt; t
+
+  (set-filer-font :face "メイリオ")
+  =&gt; nil
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>get-filer-font</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>set-window-configuration</title>
 <type>Function</type>
 <arguments>set-window-configuration CONF</arguments>
@@ -26023,6 +26220,31 @@ Windows 7以降のタスクバーではこのアプリケーションIDを元に
 </description>
 <section>データ型</section>
 <file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:*builtin-package-p</title>
+<type>Function</type>
+<arguments>*builtin-package-p OBJECT</arguments>
+<package>system</package>
+<description>
+オブジェクトがビルトイン・パッケージかどうかを調べます。
+
+使用例：
+  ;;; lisp パッケージを調べてみる。
+  (si:*builtin-package-p :lisp)
+  =&gt; t
+  (si:*builtin-package-p "editor")
+  =&gt; t
+  (si:*builtin-package-p (find-package :user))
+  =&gt; t
+
+備考：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<section>データ型</section>
+<seealso>si:list-builtin-packages</seealso>
+<file>package.l</file>
 </chapter>
 
 <chapter>
@@ -30235,6 +30457,34 @@ CHAR が大文字なら t 、そうでなければ nil を返します。
   =&gt;"H:/xyzzy/usr/Administrator/w2k/"
 </description>
 <seealso>user-homedir-pathname</seealso>
+<seealso>xyzzy-ini-path</seealso>
+<seealso>si:system-root</seealso>
+<link></link>
+<section>ファイルシステム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>xyzzy-ini-path</title>
+<type>Function</type>
+<arguments>xyzzy-ini-path</arguments>
+<package>editor</package>
+<description>
+xyzzy.iniのフルパスを返します。
+
+起動時オプション -ini で指定したり，XYZZYINIFILE
+で指定可能です。両方指定された場合，起動時オプションが
+優先されます。
+
+使用例：
+  (xyzzy-ini-path)
+  =&gt; "H:/xyzzy/usr/Administrator/wxp/xyzzy.ini"
+
+補足：
+  xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>user-config-path</seealso>
+<seealso>user-homedir-pathname</seealso>
 <seealso>si:system-root</seealso>
 <link></link>
 <section>ファイルシステム</section>
@@ -30270,6 +30520,7 @@ xyzzyを格納した場合には、ユーザ毎にホームディレクトリの
 </description>
 <seealso>si:system-root</seealso>
 <seealso>user-config-path</seealso>
+<seealso>xyzzy-ini-path</seealso>
 <section>ファイルシステム</section>
 <file>builtin.l</file>
 </chapter>
@@ -37265,6 +37516,32 @@ list とよく似て ARGS を要素とするリストを作りますが、 最�
 <seealso>list</seealso>
 <link></link>
 <section>リスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>kill-xyzzy</title>
+<type>Function</type>
+<arguments>kill-xyzzy &amp;optional (EXIT-CODE t)</arguments>
+<package>editor</package>
+<description>
+xyzzyを終了します。
+
+  EXIT-CODE : xyzzyの終了ステータスを指定します。
+              省略時はEXIT_SUCCESSを終了ステータスとします。
+       nil  : EXIT_FAILUREを終了ステータスとします。
+       t    : EXIT_SUCCESSを終了ステータスとします。
+       整数 : その値を終了ステータスとします。
+
+補足：
+  EXIT-CODE の指定は xyzzy 0.2.2.239 から利用可能です。
+</description>
+<seealso>*kill-xyzzy-hook*</seealso>
+<seealso>*query-kill-xyzzy-hook*</seealso>
+<seealso>save-all-buffers-kill-xyzzy</seealso>
+<seealso>save-buffers-kill-xyzzy</seealso>
+<link></link>
+<section>プロセス</section>
 <file>builtin.l</file>
 </chapter>
 

@@ -2,13 +2,18 @@
 ;;
 ;;; Usage:
 ;;
-;; - M-x makelc
+;; - M-x makelc:makelc
 ;;   compiler パッケージと lisp パッケージの関数をコンパイル後、
 ;;   $XYZZY/lisp フォルダ以下の更新された*.l を再コンパイルしてリロード
 ;;
-;; - C-u M-x makelc
+;; - C-u M-x makelc:makelc
 ;;   compiler パッケージと lisp パッケージの関数をコンパイル後、
 ;;   $XYZZY/lisp フォルダ以下の*.l を再コンパイルしてリロード
+;;
+;; - (makelc:makelc-and-exit &optional force-recompile)
+;;   compiler パッケージと lisp パッケージの関数をコンパイル後、
+;;   $XYZZY/lisp フォルダ以下の*.l を再コンパイルして xyzzy を終了
+;;   force-recompile が non-nil の場合は常に再コンパイル
 ;;
 ;; - (makelc:compile-files &key dir force-recompile)
 ;;   指定ディレクトリ以下の更新された*.l を再コンパイル
@@ -32,6 +37,8 @@
 (export '(compile-package
 	  compile-files
 	  reload-files
+          makelc
+          makelc-and-exit
 	  ))
 
 (defmacro time (form)
@@ -81,6 +88,7 @@
        (let ((bin (compile-file-pathname src)))
 	 (when (or force-recompile
 		   (file-newer-than-file-p src bin))
+           (message "Compiling ~A" src)
 	   (byte-compile-file src)
 	   (refresh)
 	   ))))))
@@ -102,7 +110,7 @@
   (goto-char (point-max))
   (refresh-screen))
 
-(defun user::makelc (&optional (force-recompile *prefix-args*))
+(defun makelc (&optional (force-recompile *prefix-args*))
   (interactive)
   (let ((buf (create-new-buffer "*compile log*")))
     (set-buffer buf)
@@ -118,5 +126,15 @@
 	(when (file-exist-p dump)
 	  (delete-file dump)))
       )))
+
+(defun makelc-and-exit (&optional (force-recompile *prefix-args*))
+  (handler-case
+      (progn
+        (makelc force-recompile)
+        (kill-xyzzy t))
+    (condition (e)
+      (msgbox "~A" e)
+      (kill-xyzzy nil))))
+
 
 (provide "makelc")

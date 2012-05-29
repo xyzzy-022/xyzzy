@@ -80,6 +80,16 @@ FontObject::create (const LOGFONT &lf)
 }
 
 void
+FontObject::get_metrics ()
+{
+  SIZE ex1, ex2;
+
+  HDC hdc = GetDC (0);
+  get_metrics (hdc, ex1, ex2);
+  ReleaseDC (0, hdc);
+}
+
+void
 FontObject::get_metrics (HDC hdc, SIZE &ex1, SIZE &ex2)
 {
   HGDIOBJ of = SelectObject (hdc, fo_hfont);
@@ -98,6 +108,54 @@ FontObject::calc_offset (const SIZE &sz)
 {
   fo_offset.x = (sz.cx - fo_size.cx) / 2;
   fo_offset.y = (sz.cy - fo_size.cy) / 2;
+}
+
+const bool
+FontObject::update (LOGFONT &lf, const lisp keys, const bool recommend_size_p)
+{
+  check_cons (keys);
+  lisp lface = find_keyword (Kface, keys);
+  lisp lsize = find_keyword (Ksize, keys);
+
+  bool update = false;
+  if (lsize != Qnil && !recommend_size_p)
+    {
+      int size = fixnum_value (lsize);
+      int old_size;
+      int pixel;
+      if (find_keyword_bool (Ksize_pixel_p, keys))
+        {
+          old_size =lf.lfHeight;
+          pixel = size;
+        }
+      else
+        {
+          old_size = FontObject::pixel_to_point (lf.lfHeight);
+          pixel = FontObject::point_to_pixel (size);
+        }
+      if (pixel < FONT_SIZE_MIN_PIXEL || pixel > FONT_SIZE_MAX_PIXEL)
+        FErange_error (lsize);
+      if (old_size != size)
+        {
+          lf.lfHeight = pixel;
+          lf.lfWidth = 0;
+          update = true;
+        }
+    }
+
+  if (lface != Qnil)
+    {
+      check_string (lface);
+      char *face = (char *)alloca (xstring_length (lface) * 2 + 1);
+      w2s (face, lface);
+      if (strcmp (lf.lfFaceName, face) != 0)
+        {
+          strcpy (lf.lfFaceName, face);
+          update = true;
+        }
+    }
+
+  return update;
 }
 
 void
@@ -459,49 +517,13 @@ FontSet::update (FontSetParam &param, const lisp lfontset) const
       check_cons (xcar (x));
       lisp llang = Fcaar (x);
       lisp keys = Fcdar (x);
-      lisp lface = find_keyword (Kface, keys);
-      lisp lsize = find_keyword (Ksize, keys);
 
       int n = FontSet::lang_key_index (llang);
       if (n < 0)
         FEsimple_error (Einvalid_charset, llang);
 
-      if (lsize != Qnil && (llang == Kascii || !recommend_size_p ()))
-        {
-          int size = fixnum_value (lsize);
-          int old_size;
-          int pixel;
-          if (find_keyword_bool (Ksize_pixel_p, keys))
-            {
-              old_size = param.fs_logfont[n].lfHeight;
-              pixel = size;
-            }
-          else
-            {
-              old_size = FontObject::pixel_to_point (param.fs_logfont[n].lfHeight);
-              pixel = FontObject::point_to_pixel (size);
-            }
-          if (pixel < FONT_SIZE_MIN_PIXEL || pixel > FONT_SIZE_MAX_PIXEL)
-            FErange_error (lsize);
-          if (old_size != size)
-            {
-              param.fs_logfont[n].lfHeight = pixel;
-              param.fs_logfont[n].lfWidth = 0;
-              update = true;
-            }
-        }
-
-      if (lface != Qnil)
-        {
-          check_string (lface);
-          char *face = (char *)alloca (xstring_length (lface) * 2 + 1);
-          w2s (face, lface);
-          if (strcmp (param.fs_logfont[n].lfFaceName, face) != 0)
-            {
-              strcpy (param.fs_logfont[n].lfFaceName, face);
-              update = true;
-            }
-        }
+      if (FontObject::update (param.fs_logfont[n], keys, (llang != Kascii && recommend_size_p ())))
+        update = true;
     }
 
   return update;
@@ -524,7 +546,19 @@ Fset_text_fontset (lisp lfontset)
 
   Window::change_parameters (param);
   refresh_screen (0);
-  multiple_value::clear (); // TODO: remove
 
   return Qt;
+}
+
+int
+get_font_height (HWND hwnd)
+{
+  HFONT hfont = HFONT (SendMessage (hwnd, WM_GETFONT, 0, 0));
+  HDC hdc = GetDC (hwnd);
+  HGDIOBJ ofont = SelectObject (hdc, hfont);
+  TEXTMETRIC tm;
+  GetTextMetrics (hdc, &tm);
+  SelectObject (hdc, ofont);
+  ReleaseDC (hwnd, hdc);
+  return tm.tmHeight;
 }

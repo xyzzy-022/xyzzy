@@ -399,13 +399,30 @@ Fcopy_alist (lisp list)
   return result;
 }
 
-lisp
-Fcopy_tree (lisp object)
+static lisp
+copy_tree (lisp object, lisp seen)
 {
   if (!consp (object))
     return object;
   QUIT;
-  return xcons (Fcopy_tree (xcar (object)), Fcopy_tree (xcdr (object)));
+
+  // circular list.
+  lisp copy = assq (object, seen);
+  if (copy)
+    return xcdr (copy);
+
+  copy = xcons (Qnil, Qnil);
+  seen = xcons (xcons (object, copy), seen);
+  xcar (copy) = copy_tree (xcar (object), seen);
+  xcdr (copy) = copy_tree (xcdr (object), seen);
+
+  return copy;
+}
+
+lisp
+Fcopy_tree (lisp object)
+{
+  return copy_tree (object, Qnil);
 }
 
 lisp

@@ -559,6 +559,7 @@ get-dispatch-macro-character
 get-file-attributes
 get-file-buffer
 get-file-info
+get-filer-font
 get-ime-mode
 get-internal-real-time
 get-local-window-flags
@@ -661,6 +662,7 @@ kill-selection
 kill-selection-to-clipboard
 kill-subprocess
 kill-word
+kill-xyzzy
 kinsoku-bol-chars
 kinsoku-eol-chars
 kinsoku-extend-limit
@@ -858,6 +860,7 @@ nsubstitute
 nsubstitute-if
 nsubstitute-if-not
 nth
+nth-value
 nthcdr
 null
 number-of-function-bar-labels
@@ -1161,6 +1164,7 @@ set-buffer-fold-type-window
 set-buffer-fold-type-window-update
 set-buffer-fold-width
 set-buffer-modified-p
+set-buffer-package
 set-default
 set-default-directory
 set-default-fold-width
@@ -1169,6 +1173,7 @@ set-dispatch-macro-character
 set-exclusive-or
 set-extended-key-translate-table
 set-file-write-time
+set-filer-font
 set-fill-column
 set-fill-prefix
 set-function-bar-label
@@ -1238,6 +1243,7 @@ shrink-window-horizontally
 si:*activate-toplevel
 si:*app-user-model-id
 si:*builtin-function-p
+si:*builtin-package-p
 si:*load-library
 si:*set-readtable-case
 si:*stream-line-number
@@ -1254,6 +1260,7 @@ si:hmac-sha-224
 si:hmac-sha-256
 si:hmac-sha-384
 si:hmac-sha-512
+si:list-builtin-packages
 si:make-chunk
 si:make-string-chunk
 si:md5
@@ -1509,6 +1516,7 @@ write-region
 write-registry
 wrong-disk-pathname
 xyzzy-dumped-p
+xyzzy-ini-path
 y-or-n-p
 yank
 yank-and-pop
@@ -1547,6 +1555,7 @@ zerop
 *buffer-package*
 *change-buffer-colors-hook*
 *char-encoding-list*
+*command-line-args-base-directory*
 *command-line-mailto-hook*
 *command-output-mode-hook*
 *create-buffer-hook*
@@ -1592,6 +1601,7 @@ zerop
 *filer-secondary-directory*
 *filer-secondary-file-mask*
 *filer-use-recycle-bin*
+*find-buffer-package-hook*
 *find-file-auto-mode-function*
 *find-file-file-not-found-hook*
 *find-file-hooks*
@@ -2780,7 +2790,6 @@ keyboard-stream-p
 kill-all-abbrevs
 kill-sexp
 kill-winhelp
-kill-xyzzy
 labels
 last-modified-point
 latex-mode
@@ -3111,6 +3120,7 @@ si:*bignump
 si:*bq-completely-process
 si:*byte-code
 si:*c-callable-p
+si:*chunkp
 si:*closurep
 si:*condition-string
 si:*copy-into-seq
@@ -3126,6 +3136,7 @@ si:*fset
 si:*get-string-input-stream-index
 si:*index-slot-value
 si:*instance-number
+si:*last-win32-error
 si:*make-array
 si:*make-constant
 si:*make-special
@@ -3152,6 +3163,7 @@ si:*set-elt
 si:*set-fill-pointer
 si:*set-function-name
 si:*set-index-slot-value
+si:*set-last-win32-error
 si:*set-package-documentation
 si:*set-schar
 si:*set-slot-value
@@ -3245,10 +3257,12 @@ si:pack-double
 si:pack-float
 si:pack-int16
 si:pack-int32
+si:pack-int64
 si:pack-int8
 si:pack-string
 si:pack-uint16
 si:pack-uint32
+si:pack-uint64
 si:pack-uint8
 si:performance-counter
 si:plugin-arg
@@ -3257,9 +3271,11 @@ si:unpack-double
 si:unpack-float
 si:unpack-int16
 si:unpack-int32
+si:unpack-int64
 si:unpack-int8
 si:unpack-uint16
 si:unpack-uint32
+si:unpack-uint64
 si:unpack-uint8
 si:|"-reader|
 si:|##-reader|
@@ -3372,6 +3388,9 @@ view-lossage
 view-mode
 view-nifty-log
 wait-object-p
+win32-exception-description
+win32-exception-code
+win32-exception-address
 write-abbrev-file
 write-protected-datum
 write-protected-pathname

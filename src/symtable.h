@@ -36,9 +36,11 @@ struct lintr
 };
 
 extern lfns lsp_fns[];
+extern lfns cl_fns[];
 extern lfns sys_fns[];
 extern lfns ed_fns[];
 extern lvars lsp_vars[];
+extern lvars cl_vars[];
 extern lvars sys_vars[];
 extern lvars ed_vars[];
 extern lvars kwd_vars[];

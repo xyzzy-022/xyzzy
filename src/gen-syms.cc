@@ -34,6 +34,7 @@ struct symbols
 #define DEFSF3(name) DEFSF (name, CAT (F, name), CAT (S, name))
 #define DEFSF3Q(name) DEFSF (name, CAT (F, name), CAT (Q, name))
 #define SI_DEFSF3(name) DEFSF (name, CAT (Fsi_, name), CAT (Ssi_, name))
+#define CL_DEFSF3(name) DEFSF (name, CAT (Fcl_, name), CAT (Ssi_, name))
 
 #define DEFMACRO(a, b, c) DEF (a, b, c, 2, 0, FFspecial_form | FFmacro, 0)
 #define DEFMACRO3(name) DEFMACRO (name, CAT (F, name), CAT (S, name))
@@ -54,6 +55,10 @@ struct symbols
   DEFX (lname, CAT (Fsi_, cname), CAT (Ssi_, cname), req, opt, f, 0)
 #define SI_DEFUN3(name, req, opt, f) \
   DEFUN (name, CAT (Fsi_, name), CAT (Ssi_, name), req, opt, f)
+#define CL_DEFUN2X(lname, cname, req, opt, f) \
+  DEFX (lname, CAT (Fcl_, cname), CAT (Scl_, cname), req, opt, f, 0)
+#define CL_DEFUN3(name, req, opt, f) \
+  DEFUN (name, CAT (Fcl_, name), CAT (Scl_, name), req, opt, f)
 
 #define DEFCMD(a, b, c, d, e, f, g) DEF (a, b, c, d, e, f, g)
 #define DEFCMD2(lname, cname, req, opt, f, g) \
@@ -70,6 +75,7 @@ struct symbols
 #define DEFVAR(a, b) VDEF (a, b, SFspecial)
 #define DEFVAR2(name) DEFVAR (name, CAT (V, name))
 #define SI_DEFVAR2(name) DEFVAR (name, CAT (Vsi_, name))
+#define CL_DEFVAR2(name) DEFVAR (name, CAT (Vcl_, name))
 #define DEFLAMBDAKEY(a, b) VDEF (a, b, SFconstant | SFlambda_key)
 #define MAKE_SYMBOL(a, b) VDEF (a, b, 0)
 #define MAKE_SYMBOL2(name) MAKE_SYMBOL (name, CAT (V, name))
@@ -77,6 +83,7 @@ struct symbols
 #define MAKE_SYMBOL2QC(name) MAKE_SYMBOL (name, CAT (QC, name))
 #define MAKE_SYMBOL2F(name, f) VDEF (name, CAT (V, name), f)
 #define SI_MAKE_SYMBOL2(name) MAKE_SYMBOL (name, CAT (Vsi_, name))
+#define CL_MAKE_SYMBOL2(name) MAKE_SYMBOL (name, CAT (Vcl_, name))
 
 #define DEFCONDITION(a, b, c, d) {0, 0, "Q" STR (a), 0, 0, 0}
 
@@ -750,12 +757,19 @@ static symbols lsp[] =
   MAKE_SYMBOL2Q (dde-terminated-transaction),
   MAKE_SYMBOL2Q (storage-condition),
   MAKE_SYMBOL2Q (stack-overflow),
+  MAKE_SYMBOL2Q (win32-exception),
   MAKE_SYMBOL2Q (invalid-byte-code),
   MAKE_SYMBOL2Q (quit),
   MAKE_SYMBOL2Q (silent-quit),
   MAKE_SYMBOL2Q (warning),
   MAKE_SYMBOL2Q (simple-warning),
   MAKE_SYMBOL2Q (socket-error),
+};
+
+static symbols cl[] =
+{
+  /* lprint.cc */
+  CL_DEFUN3 (format, 2, 0, FFneed_rest),
 };
 
 static symbols sys[] =
@@ -793,6 +807,7 @@ static symbols sys[] =
   SI_DEFUN3 (*report-reader-error, 2, 0, 0),
   SI_DEFUN3 (*report-simple-package-error, 2, 0, 0),
   SI_DEFUN3 (*report-socket-error, 2, 0, 0),
+  SI_DEFUN3 (*report-win32-exception, 2, 0, 0),
   SI_DEFVAR2 (*trace-on-error*),
   SI_DEFVAR2 (*report-simple-errors-mildly*),
 
@@ -921,6 +936,7 @@ static symbols sys[] =
   DEFCONST2Q (*performance-counter-frequency*),
 
   /* chunk.cc */
+  SI_DEFUN3 (*chunkp, 1, 0, 0),
   SI_DEFUN3 (make-chunk, 2, 2, 0),
   SI_DEFUN3 (make-string-chunk, 1, 0, 0),
   SI_DEFUN3 (chunk-data, 1, 0, 0),
@@ -937,6 +953,8 @@ static symbols sys[] =
   SI_DEFUN3 (unpack-uint16, 2, 0, 0),
   SI_DEFUN3 (unpack-int32, 2, 0, 0),
   SI_DEFUN3 (unpack-uint32, 2, 0, 0),
+  SI_DEFUN3 (unpack-int64, 2, 0, 0),
+  SI_DEFUN3 (unpack-uint64, 2, 0, 0),
   SI_DEFUN3 (unpack-float, 2, 0, 0),
   SI_DEFUN3 (unpack-double, 2, 0, 0),
   SI_DEFUN3 (unpack-string, 2, 2, 0),
@@ -946,6 +964,8 @@ static symbols sys[] =
   SI_DEFUN3 (pack-uint16, 3, 0, 0),
   SI_DEFUN3 (pack-int32, 3, 0, 0),
   SI_DEFUN3 (pack-uint32, 3, 0, 0),
+  SI_DEFUN3 (pack-int64, 3, 0, 0),
+  SI_DEFUN3 (pack-uint64, 3, 0, 0),
   SI_DEFUN3 (pack-float, 3, 0, 0),
   SI_DEFUN3 (pack-double, 3, 0, 0),
   SI_DEFUN3 (pack-string, 3, 1, 0),
@@ -953,7 +973,9 @@ static symbols sys[] =
   /* dll.cc */
   SI_DEFUN3 (load-dll-module, 1, 0, 0),
   SI_DEFUN3 (make-c-function, 4, 0, 0),
-  SI_DEFUN3 (make-c-callable, 3, 0, 0),
+  SI_DEFUN3 (make-c-callable, 3, 0, FFneed_rest),
+  SI_DEFUN3 (*last-win32-error, 0, 0, 0),
+  SI_DEFUN3 (*set-last-win32-error, 1, 0, 0),
 
   MAKE_SYMBOL (dll-module, Qsi_dll_module),
   MAKE_SYMBOL (c-function, Qsi_c_function),
@@ -1280,9 +1302,15 @@ static symbols kwd[] =
   DEFKWD2 (uint16),
   DEFKWD2 (int32),
   DEFKWD2 (uint32),
+  DEFKWD2 (int64),
+  DEFKWD2 (uint64),
   DEFKWD2 (float),
   DEFKWD2 (double),
   DEFKWD2 (void),
+  DEFKWD2 (convention),
+  DEFKWD2 (stdcall),
+#undef cdecl
+  DEFKWD2 (cdecl),
   DEFKWD2 (encoding),
   DEFKWD2 (text),
   DEFKWD2 (canonical),
@@ -1422,6 +1450,8 @@ static symbols kwd[] =
   DEFKWD2 (georgian),
   DEFKWD2 (face),
   DEFKWD2 (size-pixel-p),
+  DEFKWD2 (code),
+  DEFKWD2 (address),
 };
 
 static symbols unint[] =
@@ -1456,6 +1486,8 @@ static symbols unint[] =
   MAKE_SYMBOL2 (*system-package),
   MAKE_SYMBOL2 (*keyword-package),
   MAKE_SYMBOL2 (*editor-package),
+  MAKE_SYMBOL2 (*common-lisp-package),
+  MAKE_SYMBOL2 (*common-lisp-user-package),
   MAKE_SYMBOL2 (default-random-state),
   MAKE_SYMBOL2 (default-syntax-table),
 
@@ -1571,6 +1603,7 @@ static symbols unint[] =
   MAKE_SYMBOL2QC (*dde-terminated-transaction),
   MAKE_SYMBOL2QC (*storage-condition),
   MAKE_SYMBOL2QC (*stack-overflow),
+  MAKE_SYMBOL2QC (*win32-exception),
   MAKE_SYMBOL2QC (*invalid-byte-code),
   MAKE_SYMBOL2QC (*quit),
   MAKE_SYMBOL2QC (*silent-quit),
@@ -1585,6 +1618,7 @@ static symbols unint[] =
   MAKE_SYMBOL2 (ierror-read-only-buffer),
 
   MAKE_SYMBOL2 (dll_module_list),
+  MAKE_SYMBOL2 (last-win32-error),
   MAKE_SYMBOL2 (function_bar_labels),
 
   MAKE_SYMBOL2 (default-readtable),
@@ -1661,6 +1695,7 @@ static symbols ed[] =
   MAKE_SYMBOL2 (windows-7),
   MAKE_SYMBOL2 (windows-8),
   DEFUN3 (user-config-path, 0, 0, 0),
+  DEFUN3 (xyzzy-ini-path, 0, 0, 0),
   DEFVAR2 (*convert-registry-to-file-p*),
 
   /* Buffer.cc */
@@ -1718,7 +1753,7 @@ static symbols ed[] =
   DEFUN3 (need-buffer-save-p, 1, 0, 0),
   DEFUN3 (count-modified-buffers, 0, 0, 0),
   DEFUN3 (count-buffers, 0, 1, 0),
-  DEFCMD3 (kill-xyzzy, 0, 0, 0, ""),
+  DEFCMD3 (kill-xyzzy, 0, 1, 0, ""),
   DEFUN3 (lock-file, 0, 1, 0),
   DEFUN3 (unlock-file, 0, 1, 0),
   DEFUN3 (file-locked-p, 0, 1, 0),
@@ -2509,6 +2544,8 @@ static symbols ed[] =
   DEFVAR2 (*filer-click-toggle-marks-always*),
   DEFUN3 (filer-read-char, 0, 0, 0),
   DEFVAR2 (*filer-mark-file-size-unit*),
+  DEFUN3 (get-filer-font, 0, 0, 0),
+  DEFUN3 (set-filer-font, 0, 0, FFneed_rest),
 
   /* edict.cc */
   DEFUN3 (lookup-dictionary, 4, 0, 0),
@@ -2814,6 +2851,7 @@ static void
 do_all (void (*fn)(symbols *, int, const char *))
 {
   fn (lsp, numberof (lsp), "lsp");
+  fn (cl, numberof (cl), "cl");
   fn (sys, numberof (sys), "sys");
   fn (kwd, numberof (kwd), "kwd");
   fn (ed, numberof (ed), "ed");

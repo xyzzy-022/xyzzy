@@ -3,7 +3,7 @@
 
 #define xwin32_menu_items xwin32_menu_command
 
-static u_long used_id[(MENU_ID_RANGE_MAX - MENU_ID_RANGE_MIN) / sizeof (u_long)];
+static u_long used_id[(MENU_ID_RANGE_MAX - MENU_ID_RANGE_MIN) / (sizeof (u_long) * 8)];
 
 #ifndef MIIM_STRING
 #define MIIM_STRING 0x00000040

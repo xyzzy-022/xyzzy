@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ed.h"
+#include "except.h"
 
 ldll_module *
 make_dll_module ()
@@ -96,11 +97,27 @@ check_c_type (lisp type)
     return CTYPE_INT32;
   if (type == Kuint32)
     return CTYPE_UINT32;
+  if (type == Kint64)
+    return CTYPE_INT64;
+  if (type == Kuint64)
+    return CTYPE_UINT64;
   if (type == Kfloat)
     return CTYPE_FLOAT;
   if (type == Kdouble)
     return CTYPE_DOUBLE;
   FEprogram_error (Eunknown_c_type, type);
+  return 0;
+}
+
+static u_char
+check_calling_convention (lisp keys)
+{
+  lisp convention = find_keyword (Kconvention, keys);
+  if (convention == Qnil || convention == Kstdcall)
+    return CALLING_CONVENTION_STDCALL;
+  if (convention == Kcdecl)
+    return CALLING_CONVENTION_CDECL;
+  FEprogram_error (Eunknown_calling_convention, convention);
   return 0;
 }
 
@@ -123,6 +140,11 @@ calc_argument_size (u_char *at, lisp largs)
         case CTYPE_INT32:
         case CTYPE_UINT32:
           size += sizeof (int);
+          break;
+
+        case CTYPE_INT64:
+        case CTYPE_UINT64:
+          size += sizeof (int64_t);
           break;
 
         case CTYPE_FLOAT:
@@ -171,6 +193,36 @@ Fsi_make_c_function (lisp lmodule, lisp lname, lisp largs, lisp lrettype)
 }
 
 lisp
+Fsi_last_win32_error ()
+{
+  return xsymbol_value (Vlast_win32_error);
+}
+
+lisp
+Fsi_set_last_win32_error (lisp lerror)
+{
+  DWORD error = fixnum_value (lerror);
+  SetLastError (error);
+  xsymbol_value (Vlast_win32_error) = lerror;
+  return lerror;
+}
+
+static __forceinline void
+save_last_error ()
+{
+  xsymbol_value (Vlast_win32_error) = make_fixnum (GetLastError ());
+}
+
+template<typename T>
+static __forceinline T
+call_proc (FARPROC proc)
+{
+  T r = (reinterpret_cast <T (__stdcall *)()> (proc))();
+  save_last_error ();
+  return r;
+}
+
+lisp
 funcall_dll (lisp fn, lisp arglist)
 {
   assert (dll_function_p (fn));
@@ -201,6 +253,12 @@ funcall_dll (lisp fn, lisp arglist)
           stack += sizeof (long);
           break;
 
+        case CTYPE_INT64:
+        case CTYPE_UINT64:
+          *(int64_t *)stack = cast_to_int64 (a);
+          stack += sizeof (int64_t);
+          break;
+
         case CTYPE_FLOAT:
           *(float *)stack = coerce_to_single_float (a);
           stack += sizeof (float);
@@ -217,38 +275,52 @@ funcall_dll (lisp fn, lisp arglist)
     FEtoo_many_arguments ();
 
   FARPROC proc = xdll_function_proc (fn);
-  switch (xdll_function_return_type (fn))
+  try
     {
-    default:
-      assert (0);
+      switch (xdll_function_return_type (fn))
+        {
+        default:
+          assert (0);
 
-    case CTYPE_VOID:
-      proc ();
-      return Qnil;
+        case CTYPE_VOID:
+          proc ();
+          return Qnil;
 
-    case CTYPE_INT8:
-      return make_fixnum (char (proc ()));
+        case CTYPE_INT8:
+          return make_fixnum (call_proc <char> (proc));
 
-    case CTYPE_UINT8:
-      return make_fixnum (u_char (proc ()));
+        case CTYPE_UINT8:
+          return make_fixnum (call_proc <u_char> (proc));
 
-    case CTYPE_INT16:
-      return make_fixnum (short (proc ()));
+        case CTYPE_INT16:
+          return make_fixnum (call_proc <short> (proc));
 
-    case CTYPE_UINT16:
-      return make_fixnum (u_short (proc ()));
+        case CTYPE_UINT16:
+          return make_fixnum (call_proc <u_short> (proc));
 
-    case CTYPE_INT32:
-      return make_fixnum (proc ());
+        case CTYPE_INT32:
+          return make_fixnum (call_proc <long> (proc));
 
-    case CTYPE_UINT32:
-      return make_integer (long_to_large_int (u_long (proc ())));
+        case CTYPE_UINT32:
+          return make_integer (long_to_large_int (call_proc <u_long> (proc)));
 
-    case CTYPE_FLOAT:
-      return make_single_float (((float (__stdcall *)())proc)());
+        case CTYPE_INT64:
+          return make_integer (call_proc <int64_t> (proc));
 
-    case CTYPE_DOUBLE:
-      return make_double_float (((double (__stdcall *)())proc)());
+        case CTYPE_UINT64:
+          return make_integer (call_proc <uint64_t> (proc));
+
+        case CTYPE_FLOAT:
+          return make_single_float (call_proc <float> (proc));
+
+        case CTYPE_DOUBLE:
+          return make_double_float (call_proc <double> (proc));
+        }
+    }
+  catch (Win32Exception &e)
+    {
+      e.throw_lisp_error ();
+      throw;
     }
 #else
 # error "yet"
@@ -319,6 +391,16 @@ c_callable_stub (lisp cc, char *stack)
           v = make_integer (long_to_large_int (*(u_long *)cargs));
           break;
 
+        case CTYPE_INT64:
+          cargs -= sizeof (int64_t);
+          v = make_integer (*(int64_t *)cargs);
+          break;
+
+        case CTYPE_UINT64:
+          cargs -= sizeof (int64_t);
+          v = make_integer (*(uint64_t *)cargs);
+          break;
+
         case CTYPE_FLOAT:
           cargs -= sizeof (float);
           v = make_single_float (*(float *)cargs);
@@ -387,10 +469,18 @@ c_callable_stub_double (lisp cc)
   return 0.0;
 }
 
-/* stub code:
+/* stub code (stdcall):
 0000: 68 XX XX XX XX : push SELF
 0005: e8 XX XX XX XX : call C-CALLABLE-STUB
 000a: c2 NN NN       : ret  N
+000d:
+
+   stub code (cdecl):
+0000: 68 XX XX XX XX : push SELF
+0005: e8 XX XX XX XX : call C-CALLABLE-STUB
+000a: c3             : ret
+000b: cc             : int 3
+000c: cc             : int 3
 000d:
  */
 
@@ -423,8 +513,17 @@ init_c_callable (lisp cc)
   *(lisp *)&insn[1] = cc;
   insn[5] = 0xe8;
   *(long *)&insn[6] = stub - ((char *)insn + 0xa);
-  insn[0xa] = 0xc2;
-  *(short *)&insn[0xb] = short (xc_callable_arg_size (cc));
+  if (xc_callable_convention (cc) == CALLING_CONVENTION_STDCALL)
+    {
+      insn[0xa] = 0xc2;
+      *(short *)&insn[0xb] = short (xc_callable_arg_size (cc));
+    }
+  else
+    {
+      insn[0xa] = 0xc3;
+      insn[0xb] = 0xcc;
+      insn[0xc] = 0xcc;
+    }
 }
 #endif
 
@@ -454,7 +553,7 @@ check_fn (lisp fn)
 }
 
 lisp
-Fsi_make_c_callable (lisp fn, lisp largs, lisp lrettype)
+Fsi_make_c_callable (lisp fn, lisp largs, lisp lrettype, lisp keys)
 {
   fn = check_fn (fn);
   int return_type = check_c_type (lrettype);
@@ -467,6 +566,7 @@ Fsi_make_c_callable (lisp fn, lisp largs, lisp lrettype)
   xc_callable_function (cc) = fn;
   xc_callable_return_type (cc) = return_type;
   xc_callable_nargs (cc) = nargs;
+  xc_callable_convention (cc) = check_calling_convention (keys);
   if (nargs)
     {
       u_char *at = (u_char *)xmalloc (nargs);

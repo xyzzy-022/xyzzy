@@ -19,14 +19,17 @@ public:
   int create (const LOGFONT &);
   int create (const char *, int, int);
   operator HFONT () const {return fo_hfont;}
+  const HFONT hfont () const {return fo_hfont;}
   int need_pad_p () const {return fo_need_pad;}
   void require_pad () {fo_need_pad = 1;}
+  void get_metrics ();
   void get_metrics (HDC, SIZE &, SIZE &);
   void calc_offset (const SIZE &);
   const SIZE &size () const {return fo_size;}
   const POINT &offset () const {return fo_offset;}
   int ascent () const {return fo_ascent;}
   const LOGFONT &logfont () const {return fo_logfont;}
+  static const bool update (LOGFONT &lf, const lisp keys, const bool recommend_size_p);
   static const int dpi ()
     {
       HDC hdc = GetDC (0);
@@ -153,5 +156,7 @@ public:
       return -1;
     }
 };
+
+int get_font_height (HWND hwnd);
 
 #endif /* _font_h_ */

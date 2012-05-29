@@ -121,7 +121,9 @@
     (ed:menu . ed:menup)
     (ed:dde-handle . ed:dde-handle-p)
     (ed:window . ed:windowp)
-    (ed:oledata . ed:oledatap)))
+    (ed:oledata . ed:oledatap)
+    (si:chunk . si:*chunkp)
+    ))
 
 (dolist (x typespec-alist)
   (setf (get (car x) 'type-predicate) (cdr x)))

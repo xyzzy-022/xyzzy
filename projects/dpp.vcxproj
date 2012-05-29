@@ -93,7 +93,7 @@
   <PropertyGroup>
     <GenerateTargetPath>$(GenerateDir)num-arith.h</GenerateTargetPath>
   </PropertyGroup>
-  <Target Name="GenerateSource" Inputs="$(GenerateInputFiles)" Outputs="$(GenerateTargetPath)" DependsOnTargets="PrepareGenerate">
+  <Target Name="GenerateSource" Inputs="$(GenerateInputFiles);..\src\num-arith.d" Outputs="$(GenerateTargetPath)" DependsOnTargets="PrepareGenerate">
     <Exec Command="&quot;$(TargetPath)&quot; num-arith.d &quot;$(GenerateTargetPath)&quot;" WorkingDirectory="$(SolutionDir)src" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="GenerateSource" />
