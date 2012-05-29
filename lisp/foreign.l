@@ -361,8 +361,9 @@
      (defmacro ,name ,lambda-list ,@body)
      (export ',name)))
 
-(defun last-win32-error ()
-  (si:*last-win32-error))
+(setf (symbol-function 'last-win32-error) #'si:*last-win32-error)
+(setf (symbol-function 'set-last-win32-error) #'si:*set-last-win32-error)
+(defsetf last-win32-error set-last-win32-error)
 
 #|
 struct foo

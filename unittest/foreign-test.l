@@ -223,22 +223,26 @@
     (si:clear-chunk u)
     (values
      (progn
+       (setf (c:last-win32-error) 0)
        (MultiByteToWideChar 932 0
                             a (si:chunk-size a)
                             u (si:chunk-size u))
        (c:last-win32-error))
      (progn
+       (setf (c:last-win32-error) 0)
        (MultiByteToWideChar 932932 0
                             a (si:chunk-size a)
                             u (si:chunk-size u))
        (c:last-win32-error))
      (progn
+       (setf (c:last-win32-error) 0)
        (MultiByteToWideChar 932 0
                             a (si:chunk-size a)
                             u (si:chunk-size u))
        (c:last-win32-error))
      (progn
        (setf u (si:make-chunk nil 1))
+       (setf (c:last-win32-error) 0)
        (MultiByteToWideChar 932 0
                             a (si:chunk-size a)
                             u (si:chunk-size u))
@@ -248,6 +252,25 @@
   => 87   ; ERROR_INVALID_PARAMETER
   => 0
   => 122) ; ERROR_INSUFFICIENT_BUFFER
+
+(c:define-dll-entry
+  c:int
+  GetLastError ()
+  "kernel32")
+
+(deftest last-win32-error-GetLastError ()
+  (let ((a (si:make-string-chunk "abc"))
+        (u (si:make-chunk nil 9)))
+    (si:clear-chunk u)
+    (setf (c:last-win32-error) 0)
+    (MultiByteToWideChar 932932 0
+                         a (si:chunk-size a)
+                         u (si:chunk-size u))
+    (values
+     (c:last-win32-error)
+     (GetLastError)))
+  => 87   ; ERROR_INVALID_PARAMETER
+  => 87)  ; ERROR_INVALID_PARAMETER
 
 
 (c:define-dll-entry

@@ -975,6 +975,7 @@ static symbols sys[] =
   SI_DEFUN3 (make-c-function, 4, 0, 0),
   SI_DEFUN3 (make-c-callable, 3, 0, FFneed_rest),
   SI_DEFUN3 (*last-win32-error, 0, 0, 0),
+  SI_DEFUN3 (*set-last-win32-error, 1, 0, 0),
 
   MAKE_SYMBOL (dll-module, Qsi_dll_module),
   MAKE_SYMBOL (c-function, Qsi_c_function),
