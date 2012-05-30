@@ -9346,6 +9346,7 @@ BODYをインチキなBNFで書くと以下の様になります。
 <seealso>find-package</seealso>
 <seealso>use-package</seealso>
 <seealso>delete-package</seealso>
+<seealso>rename-package</seealso>
 <seealso>in-package</seealso>
 <seealso>package-name</seealso>
 <seealso>package-nicknames</seealso>
@@ -9880,6 +9881,7 @@ IME 変換直後であれば、直前に変換した文字列を削除します�
 </description>
 <seealso>make-package</seealso>
 <seealso>defpackage</seealso>
+<seealso>rename-package</seealso>
 <seealso>パッケージ</seealso>
 <link></link>
 <section>パッケージ</section>
@@ -17406,6 +17408,42 @@ make-variable-buffer-localとは異なり、現在のバッファだけです。
 
 使用例：
   (make-package name :external-size 0)
+</description>
+<seealso>defpackage</seealso>
+<seealso>delete-package</seealso>
+<seealso>rename-package</seealso>
+<seealso>in-package</seealso>
+<seealso>パッケージ</seealso>
+<section>パッケージ</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>rename-package</title>
+<type>Function</type>
+<arguments>rename-package PACKAGE NEW-NAME &amp;optional NEW-NICKNAMES</arguments>
+<package>lisp</package>
+<description>
+パッケージの名前と別名を変更します。
+
+  PACKAGE       : パッケージを指定します。
+  NEW-NAME      : 変更後の名前を指定します。
+  NEW-NICKNAMES : 変更後の別名をリストで指定します。
+
+使用例：
+
+ (make-package 'temporary :nicknames '("temp"))
+ =&gt; #&lt;package: temporary&gt;
+ (rename-package 'temp 'ephemeral)
+ =&gt; #&lt;package: ephemeral&gt;
+ (package-nicknames (find-package 'ephemeral))
+ =&gt; nil
+ (find-package 'temporary)
+ =&gt; nil
+ (rename-package 'ephemeral 'temporary '(temp fleeting))
+ =&gt; #&lt;package: temporary&gt;
+ (package-nicknames (find-package 'temp))
+ =&gt; ("fleeting" "temp")
 </description>
 <seealso>defpackage</seealso>
 <seealso>delete-package</seealso>
