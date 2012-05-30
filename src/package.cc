@@ -397,16 +397,23 @@ Fpackage_nicknames (lisp package)
   return xpackage_nicknames (coerce_to_package (package));
 }
 
+static lisp
+find_other_package (lisp package, lisp name)
+{
+  lisp p = Ffind_package (name);
+  return (p == package) ? Qnil : p;
+}
+
 lisp
 Frename_package (lisp package, lisp new_name, lisp new_nicknames)
 {
   package = coerce_to_package (package);
   new_name = coerce_to_package_name (new_name);
   new_nicknames = new_nicknames ? coerce_to_package_nicknames (new_nicknames) : Qnil;
-  if (Ffind_package (new_name) != Qnil)
+  if (find_other_package (package, new_name) != Qnil)
     FEsimple_package_error (Qnil, Epackage_already_exists, new_name);
   for (lisp p = new_nicknames; consp (p); p = xcdr (p))
-    if (Ffind_package (xcar (p)) != Qnil)
+    if (find_other_package (package, xcar (p)) != Qnil)
       FEsimple_package_error (Qnil, Epackage_already_exists, xcar (p));
   xpackage_name (package) = new_name;
   xpackage_nicknames (package) = new_nicknames;

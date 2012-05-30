@@ -1238,3 +1238,96 @@ lisp-indent-hook property"
 (deftest nth-value-type-error ()
   (nth-value -1 (values 1 2 3))
   !! type-error)
+
+
+(deftest rename-package--rename-all ()
+  (let ((name1 (gensym))
+        (name2 (gensym))
+        (nick1 (gensym))
+        (nick2 (gensym))
+        (nick3 (gensym)))
+    (let ((pkg (make-package name1 :nicknames (list nick1 nick2))))
+      (rename-package name1 name2 (list nick3))
+      (values
+       (find-package name1)
+       (find-package nick1)
+       (find-package nick2)
+       (equal (string name2) (package-name (find-package name2)))
+       (equal (list (string nick3))
+              (package-nicknames (find-package name2))))))
+  => nil
+  => nil
+  => nil
+  => t
+  => t)
+
+(deftest rename-package--add-nicknames ()
+  (let ((name1 (gensym))
+        (nick1 (gensym))
+        (nick2 (gensym))
+        (nick3 (gensym)))
+    (let ((pkg (make-package name1 :nicknames (list nick1 nick2))))
+      (rename-package name1 name1 (list nick1 nick2 nick3))
+      (values
+       (equal (string name1) (package-name (find-package name1)))
+       (equal (mapcar #'string (list nick3 nick2 nick1))
+              (package-nicknames (find-package name1))))))
+  => t
+  => t)
+
+(deftest rename-package--remove-nicknames ()
+  (let ((name1 (gensym))
+        (nick1 (gensym))
+        (nick2 (gensym)))
+    (let ((pkg (make-package name1 :nicknames (list nick1 nick2))))
+      (rename-package name1 name1 (list nick1))
+      (values
+       (find-package nick2)
+       (equal (string name1) (package-name (find-package name1)))
+       (equal (mapcar #'string (list nick1))
+              (package-nicknames (find-package name1))))))
+  => nil
+  => t
+  => t)
+
+(deftest rename-package--swap-package-name-and-nickname ()
+  (let ((name1 (gensym))
+        (nick1 (gensym))
+        (nick2 (gensym))
+        (nick3 (gensym)))
+    (let ((pkg (make-package name1 :nicknames (list nick1 nick2))))
+      (rename-package name1 nick1 (list name1 nick2))
+      (values
+       (equal (string nick1) (package-name (find-package nick1)))
+       (equal (mapcar #'string (list nick2 name1))
+              (package-nicknames (find-package nick1))))))
+  => t
+  => t)
+
+(deftest rename-package--package-name-conflict ()
+  (let ((name1 (gensym))
+        (name2 (gensym))
+        (name3 (gensym))
+        (nick1 (gensym))
+        (nick2 (gensym))
+        (nick3 (gensym)))
+    (let ((pkg (make-package name1 :nicknames (list nick1))))
+      (make-package name2)
+      (make-package nick2)
+      (flet ((test (conflict package new-name &optional new-nicknames)
+               (handler-case
+                   (rename-package package new-name new-nicknames)
+                 (simple-package-error (c)
+                   (equal (string conflict)
+                          (simple-package-error-datum2 c))))))
+        (values
+         (test name2 name1 name2)
+         (test nick2 name1 nick2)
+         (test nick2 name1 name3 (list nick2))
+         (test name2 name1 name3 (list nick1 name2))
+         (test nick2 name1 name3 (list nick1 nick2 nick3))))))
+  => t
+  => t
+  => t
+  => t
+  => t)

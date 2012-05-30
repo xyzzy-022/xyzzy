@@ -1036,6 +1036,7 @@ remprop
 rename
 rename-buffer
 rename-file
+rename-package
 rename-pseudo-frame
 repeat-backward-search
 repeat-complex-command
@@ -3064,7 +3065,6 @@ refresh-title-bar
 reload-keyword-file
 remf
 rename-dialog
-rename-package
 replace-dialog
 replace-regexp
 require-mouse-move
