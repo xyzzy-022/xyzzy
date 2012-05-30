@@ -445,6 +445,21 @@ Flist_all_packages ()
 }
 
 lisp
+Fsi_list_builtin_packages ()
+{
+  return Fcopy_list (xsymbol_value (Vbuiltin_package_list));
+}
+
+lisp
+Fsi_builtin_package_p (lisp package)
+{
+  if (!(stringp (package) || symbolp (package) || packagep (package)))
+    return Qnil;
+  package = Ffind_package (package);
+  return boole (memq (package, xsymbol_value (Vbuiltin_package_list)));
+}
+
+lisp
 Fdelete_package (lisp package)
 {
   package = coerce_to_package (package);
@@ -460,6 +475,7 @@ Fdelete_package (lisp package)
       assert (0);
       return Qnil;
     }
+  delq (package, &xsymbol_value (Vbuiltin_package_list));
   xpackage_name (package) = Qnil;
   xpackage_nicknames (package) = Qnil;
   xpackage_documentation (package) = Qnil;
