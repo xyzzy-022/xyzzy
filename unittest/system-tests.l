@@ -681,3 +681,10 @@ of SHA-384 and SHA-512)."
   => t
   => t
   => t)
+
+(defvar *data/hello.txt.gz* (merge-pathnames "data/hello.txt.gz" (directory-namestring *load-pathname*)))
+(deftest inflate-stream ()
+  (with-open-file (f *data/hello.txt.gz*
+                     :encoding :binary)
+    (si:inflate-stream f))
+  => "xyzzy\r\n")
