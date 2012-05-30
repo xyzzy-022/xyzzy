@@ -850,6 +850,8 @@ static symbols sys[] =
   SI_DEFUN3 (*package-summary, 1, 0, 0),
   SI_DEFUN3 (*package-documentation, 1, 0, 0),
   SI_DEFUN3 (*set-package-documentation, 2, 0, 0),
+  SI_DEFUN3 (*builtin-package-p, 1, 0, 0),
+  SI_DEFUN3 (list-builtin-packages, 0, 0, 0),
 
   /* lprint.cc */
   SI_DEFUN3 (*print-condition, 1, 0, 0),
@@ -1481,6 +1483,7 @@ static symbols unint[] =
   MAKE_SYMBOL2Q (bq-quote),
   MAKE_SYMBOL2Q (bq-clobberable),
   MAKE_SYMBOL2 (*package-list),
+  MAKE_SYMBOL2 (*builtin-package-list),
   MAKE_SYMBOL2 (*user-package),
   MAKE_SYMBOL2 (*lisp-package),
   MAKE_SYMBOL2 (*system-package),

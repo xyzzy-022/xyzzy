@@ -1110,6 +1110,7 @@ init_syms ()
   xsymbol_value (Vcommon_lisp_user_package) = cl_usr;
   xsymbol_value (Veditor_package) = ed;
   xsymbol_value (Vpackage_list) = make_list (lsp, sys, kwd, usr, ed, cl, cl_usr, 0);
+  xsymbol_value (Vbuiltin_package_list) = Fcopy_list (xsymbol_value (Vpackage_list));
   xsymbol_value (Vpackage) = usr;
 
   multiple_value::value (0) = Qnil;
