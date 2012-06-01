@@ -127,6 +127,8 @@ xdll_function_arg_size (lisp x)
   return ((ldll_function *)x)->arg_size;
 }
 
+# define INSN_SIZE 16
+
 class lc_callable: public lisp_object
 {
 public:
@@ -136,7 +138,7 @@ public:
   u_char nargs;       // 引数の数
   u_char return_type; // 戻り値の型
   u_char convention;  // 呼び出し規約
-  u_char insn[16];    // stubコード
+  u_char insn[INSN_SIZE]; // stubコード
 
   ~lc_callable () {xfree (arg_types);}
 };

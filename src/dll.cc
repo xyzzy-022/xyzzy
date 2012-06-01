@@ -509,6 +509,10 @@ init_c_callable (lisp cc)
 
   u_char *insn = xc_callable_insn (cc);
 
+  DWORD o = 0;
+  if (!VirtualProtect (insn, INSN_SIZE, PAGE_EXECUTE_READWRITE, &o))
+    FEsimple_win32_error (GetLastError (), make_fixnum (o));
+
   insn[0] = 0x68;
   *(lisp *)&insn[1] = cc;
   insn[5] = 0xe8;
