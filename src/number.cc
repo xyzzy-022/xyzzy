@@ -119,7 +119,7 @@ make_integer (large_int li)
 lisp
 make_integer (int64_t x)
 {
-  if (x < LONG_MAX)
+  if (LONG_MIN <= x && x <= LONG_MAX)
     return make_fixnum (static_cast <long> (x));
   lbignum *lb = make_bignum ();
   lb->rep = br_copy (0, x);
@@ -129,7 +129,7 @@ make_integer (int64_t x)
 lisp
 make_integer (uint64_t x)
 {
-  if (x < LONG_MAX)
+  if (x <= LONG_MAX)
     return make_fixnum (static_cast <long> (x));
   lbignum *lb = make_bignum ();
   lb->rep = br_copy (0, x);

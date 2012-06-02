@@ -424,6 +424,17 @@ of SHA-384 and SHA-512)."
   => #xFF
   => -1)
 
+(deftest pack-unpack-int8-overflow ()
+  (values
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int8 c 0 #xFF)
+     (si:unpack-int8 c 0))
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int8 c 0 #x80)
+     (si:unpack-int8 c 0)))
+  => -1
+  => #x-80)
+
 (deftest pack-unpack-int16 ()
   (let ((c (si:make-chunk nil 8)))
     (si:pack-int16 c 0 #x1234)
@@ -439,6 +450,17 @@ of SHA-384 and SHA-512)."
   => #xFFFF
   => -1)
 
+(deftest pack-unpack-int16-overflow ()
+  (values
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int16 c 0 #xFFFF)
+     (si:unpack-int16 c 0))
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int16 c 0 #x8000)
+     (si:unpack-int16 c 0)))
+  => -1
+  => #x-8000)
+
 (deftest pack-unpack-int32 ()
   (let ((c (si:make-chunk nil 8)))
     (si:pack-int32 c 0 #x12345678)
@@ -453,6 +475,17 @@ of SHA-384 and SHA-512)."
      (si:unpack-int32 c 0)))
   => #xFFFFFFFF
   => -1)
+
+(deftest pack-unpack-int32-overflow ()
+  (values
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int32 c 0 #xFFFFFFFF)
+     (si:unpack-int32 c 0))
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int32 c 0 #x80000000)
+     (si:unpack-int32 c 0)))
+  => -1
+  => #x-80000000)
 
 (deftest pack-unpack-float ()
   (let ((c (si:make-chunk nil 8)))
@@ -488,6 +521,17 @@ of SHA-384 and SHA-512)."
      (si:unpack-int64 c 0)))
   => #xFFFFFFFFFFFFFFFF
   => -1)
+
+(deftest pack-unpack-int64-overflow ()
+  (values
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int64 c 0 #xFFFFFFFFFFFFFFFF)
+     (si:unpack-int64 c 0))
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int64 c 0 #x8000000000000000)
+     (si:unpack-int64 c 0)))
+  => -1
+  => #x-8000000000000000)
 
 (deftest pack-unpack-int64-offset ()
   (let ((c (si:make-chunk nil 16)))
