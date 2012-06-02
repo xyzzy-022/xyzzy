@@ -73,13 +73,11 @@
      (atoi "0")
      (atoi "1")
      (atoi "-1")
-     (atoi "2147483647")
-     (atoi "4294967295")))
+     (atoi "2147483647")))
   => 0
   => 1
   => -1
-  => #x7FFFFFFF
-  => -1)
+  => #x7FFFFFFF)
 
 
 (c:define-dll-entry
@@ -96,16 +94,34 @@
      (itoa 0)
      (itoa 1)
      (itoa -1)
-     (itoa #x7FFFFFFF)
-     (itoa #xFFFFFFFF)))
+     (itoa #x7FFFFFFF)))
   => "0"
   => "1"
   => "-1"
-  => "2147483647"
-  => "-1")
+  => "2147483647")
 
 
 ;; uint32
+
+(c:define-dll-entry
+  c:u_int
+  (strtoul :convention :cdecl) ((c:void *) (c:void *) c:int)
+  "msvcrt")
+
+(deftest define-dll-entry-return-uint32 ()
+  (flet ((atoi (str)
+           (strtoul (si:make-string-chunk str) 0 10)))
+    (values
+     (atoi "0")
+     (atoi "1")
+     (atoi "-1")
+     (atoi "2147483647")
+     (atoi "4294967295")))
+  => 0
+  => 1
+  => #xFFFFFFFF
+  => #x7FFFFFFF
+  => #xFFFFFFFF)
 
 (c:define-dll-entry
   (c:void *)
@@ -144,14 +160,14 @@
      (atoi "0")
      (atoi "1")
      (atoi "-1")
+     (atoi "2147483647")
      (atoi "4294967295")
-     (atoi "9223372036854775807")
-     (atoi "18446744073709551615")))
+     (atoi "9223372036854775807")))
   => 0
   => 1
   => -1
+  => #x7FFFFFFF
   => #xFFFFFFFF
-  => #x7FFFFFFFFFFFFFFF
   => #x7FFFFFFFFFFFFFFF)
 
 
@@ -169,18 +185,43 @@
      (itoa 0)
      (itoa 1)
      (itoa -1)
+     (itoa #x7FFFFFFF)
      (itoa #xFFFFFFFF)
-     (itoa #x7FFFFFFFFFFFFFFF)
-     (itoa #xFFFFFFFFFFFFFFFF)))
+     (itoa #x7FFFFFFFFFFFFFFF)))
   => "0"
   => "1"
   => "-1"
+  => "2147483647"
   => "4294967295"
-  => "9223372036854775807"
-  => "-1")
+  => "9223372036854775807")
 
 
 ;; u_int64
+
+(c:define-dll-entry
+  c:u_int64
+  (_strtoui64 :convention :cdecl) ((c:void *) (c:void *) c:int)
+  "msvcrt")
+
+(deftest define-dll-entry-return-uint64 ()
+  (flet ((atoi (str)
+           (_strtoui64 (si:make-string-chunk str) 0 10)))
+    (values
+     (atoi "0")
+     (atoi "1")
+     (atoi "-1")
+     (atoi "2147483647")
+     (atoi "4294967295")
+     (atoi "9223372036854775807")
+     (atoi "18446744073709551615")))
+  => 0
+  => 1
+  => #xFFFFFFFFFFFFFFFF
+  => #x7FFFFFFF
+  => #xFFFFFFFF
+  => #x7FFFFFFFFFFFFFFF
+  => #xFFFFFFFFFFFFFFFF)
+
 
 (c:define-dll-entry
   (c:void *)
@@ -196,16 +237,20 @@
      (itoa 0)
      (itoa 1)
      (itoa -1)
+     (itoa #x7FFFFFFF)
      (itoa #xFFFFFFFF)
      (itoa #x7FFFFFFFFFFFFFFF)
      (itoa #xFFFFFFFFFFFFFFFF)))
   => "0"
   => "1"
   => "18446744073709551615"
+  => "2147483647"
   => "4294967295"
   => "9223372036854775807"
   => "18446744073709551615")
 
+
+;; c:last-win32-error
 
 (c:define-dll-entry
   c:int
