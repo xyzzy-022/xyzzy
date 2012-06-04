@@ -49,7 +49,7 @@
 		 (push (merge-pathnames opt dir) *load-path*))
 		((setq opt (parse-command-line arg "-l" "-load" 'file))
 		 (load opt))
-		((setq opt (parse-command-line arg "-r" "-require" 'module))
+		((setq opt (parse-command-line arg "-R" "-require" 'module))
 		 (require opt))
 		((setq opt (parse-command-line arg nil "-work-dir" 'dir))
 		 (chdir opt))

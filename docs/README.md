@@ -90,7 +90,7 @@ xyzzy は Windows XP 以降で動作する日本語テキストエディタの�
 
     `dir` を <b>*load-path*</b> の先頭に追加します。
 
-  * <b>-r</b> `module`
+  * <b>-R</b> `module`
   * <b>-require</b> `module`
 
     `module` を <b>require</b> します。
