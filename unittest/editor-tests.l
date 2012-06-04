@@ -1060,6 +1060,51 @@
   => t)
 
 
+(deftest user-config-path-startup-option ()
+  (with-temp-dirs (config-path)
+    (values
+     (path-equal config-path
+                 (eval-in-another-xyzzy
+                  '(user-config-path)
+                  :options (format nil "-config \"~A\" -q" config-path)))
+     (delete-file (merge-pathnames "xyzzy.ini" config-path))))
+  => t
+  => t)
+
+(deftest user-config-path-XYZZYCONFIGPATH ()
+  (with-temp-dirs (config-path)
+    (values
+     (path-equal config-path
+                 (eval-in-another-xyzzy
+                  '(user-config-path)
+                  :options "-q"
+                  :environ `(("XYZZYCONFIGPATH" . ,config-path))))
+     (delete-file (merge-pathnames "xyzzy.ini" config-path))))
+  => t
+  => t)
+
+(deftest user-config-path-startup-option-and-XYZZYCONFIGPATH ()
+  (with-temp-dirs (config-path1 config-path2)
+    (values
+     (path-equal config-path1
+                 (eval-in-another-xyzzy
+                  '(user-config-path)
+                  :options (format nil "-config \"~A\" -q" config-path1)
+                  :environ `(("XYZZYCONFIGPATH" . ,config-path2))))
+     (delete-file (merge-pathnames "xyzzy.ini" config-path1))))
+  => t
+  => t)
+
+
+(deftest image-startup-option ()
+  (with-temp-files (image-path)
+    (path-equal image-path
+                (eval-in-another-xyzzy
+                 '(si:dump-image-path)
+                 :options (format nil "-image \"~A\" -q" image-path))))
+  => t)
+
+
 (deftest lisp-mode-indent-region-first-line ()
   (with-temp-buffer
     (insert "  (defvar foo 1)" #\LFD)
@@ -1126,4 +1171,175 @@
     (text-mode)
     (lisp-mode)
     *buffer-package*)
+  => nil)
+
+(deftest process-command-line--l ()
+  (eval-in-another-xyzzy
+   `(modulep "foreign")
+   :options "-llisp/foreign.l")
+  => non-nil)
+
+(deftest process-command-line--load ()
+  (eval-in-another-xyzzy
+   `(modulep "foreign")
+   :options "-load lisp/foreign.l")
+  => non-nil)
+
+(deftest process-command-line--I ()
+  (eval-in-another-xyzzy
+   `(member (merge-pathnames "unittest" (si:system-root)) *load-path*
+            :test #'path-equal)
+   :options "-Iunittest")
+  => non-nil)
+
+
+(deftest process-command-line--load-path ()
+  (eval-in-another-xyzzy
+   `(member (merge-pathnames "unittest" (si:system-root)) *load-path*
+            :test #'path-equal)
+   :options "-load-path unittest")
+  => non-nil)
+
+(deftest process-command-line--R ()
+  (eval-in-another-xyzzy
+   `(modulep "foreign")
+   :options "-Rforeign")
+  => non-nil)
+
+(deftest process-command-line--require ()
+  (eval-in-another-xyzzy
+   `(modulep "foreign")
+   :options "-require foreign")
+  => non-nil)
+
+(deftest process-command-line--work-dir ()
+  (eval-in-another-xyzzy
+   `(path-equal (cwd) (merge-pathnames "unittest" (si:system-root)))
+   :options "-work-dir unittest")
+  => t)
+
+(deftest process-command-line--f ()
+  (eval-in-another-xyzzy
+   `(equal buffer-mode 'view-mode)
+   :options "-fview-mode")
+  => t)
+
+(deftest process-command-line--funcall ()
+  (eval-in-another-xyzzy
+   `(equal buffer-mode 'view-mode)
+   :options "-fview-mode")
+  => t)
+
+(deftest process-command-line--e ()
+  (eval-in-another-xyzzy
+   `(equal buffer-mode 'view-mode)
+   :options "-e(view-mode)")
+  => t)
+
+(deftest process-command-line--eval ()
+  (eval-in-another-xyzzy
+   `(equal buffer-mode 'view-mode)
+   :options "-eval (view-mode)")
+  => t)
+
+(deftest process-command-line--g ()
+  (eval-in-another-xyzzy
+   `(current-line-number)
+   :options "unittest/editor-tests.l -g10")
+  => 10)
+
+(deftest process-command-line--go ()
+  (eval-in-another-xyzzy
+   `(current-line-number)
+   :options "unittest/editor-tests.l -go 20")
+  => 20)
+
+(deftest process-command-line--c ()
+  (eval-in-another-xyzzy
+   `(current-column)
+   :options "unittest/editor-tests.l -c10")
+  => 10)
+
+(deftest process-command-line--go ()
+  (eval-in-another-xyzzy
+   `(current-column)
+   :options "unittest/editor-tests.l -column 20")
+  => 20)
+
+(deftest process-command-line--go ()
+  (eval-in-another-xyzzy
+   `(not (null (find-buffer "*Trace Output*")))
+   :options "-trace")
+  => t)
+
+(deftest process-command-line--kill ()
+  (call-process (format nil "~A -kill -e \"(kill-xyzzy nil)\""
+                        (merge-pathnames "xyzzy.exe" (si:system-root)))
+                :show :minimize
+                :wait t)
+  => 0)
+
+(deftest process-command-line--mailto ()
+  (eval-in-another-xyzzy
+   `(progn *test-result*)
+   :options (format nil "-e \"~S\" -mailto mail@example.com"
+                    '(setq *command-line-mailto-hook*
+                      (lambda (arg)
+                        (setq *test-result* arg)))))
+  => "mail@example.com")
+
+(deftest process-command-line--m ()
+  (eval-in-another-xyzzy
+   `(equal buffer-mode 'view-mode)
+   :options "-mview-mode unittest/editor-tests.l")
+  => t)
+
+(deftest process-command-line--mode ()
+  (eval-in-another-xyzzy
+   `(equal buffer-mode 'view-mode)
+   :options "-mode view-mode unittest/editor-tests.l")
+  => t)
+
+(deftest process-command-line--p ()
+  (eval-in-another-xyzzy
+   `(progn *test-result*)
+   :options (format nil "-e \"~S\" -punittest/editor-tests.l"
+                    '(progn
+                      (setq *print-option-show-dialog* t)
+                      (defun print-selected-buffer-dialog ()
+                        (setq *test-result* t)))))
+  => t)
+
+(deftest process-command-line--s ()
+  (eval-in-another-xyzzy
+   `(values
+     (string= *test-result* (merge-pathnames "hoge.ssn" (si:system-root)))
+     ed::*auto-save-session-file*)
+   :options (format nil "-e \"~S\" -shoge.ssn"
+                    '(defun load-session (file)
+                      (setq *test-result* file))))
+  => t
+  => t)
+
+(deftest process-command-line--S ()
+  (eval-in-another-xyzzy
+   `(values
+     (string= *test-result* (merge-pathnames "hoge.ssn" (si:system-root)))
+     ed::*auto-save-session-file*)
+   :options (format nil "-e \"~S\" -Shoge.ssn"
+                    '(defun load-session (file)
+                      (setq *test-result* file))))
+  => t
+  => nil)
+
+(deftest process-command-line--ro ()
+  (eval-in-another-xyzzy
+   `(progn buffer-read-only)
+   :options "-ro unittest/editor-tests.l")
+  => t)
+
+(deftest process-command-line--rw ()
+  (eval-in-another-xyzzy
+   `(progn buffer-read-only)
+   :options "-rw unittest/editor-tests.l")
   => nil)
