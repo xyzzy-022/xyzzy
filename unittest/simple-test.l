@@ -860,6 +860,18 @@ Returns list of failures."
 
 ;;;; utilities
 
+(defmacro with-temp-dirs ((&rest temp-dir-vars) &body body)
+  `(let (,@(mapcar (lambda (var)
+                     `(,var (make-temp-file-name nil nil nil t)))
+                   temp-dir-vars))
+     (unwind-protect
+         (progn ,@body)
+       ,@(mapcar (lambda (var)
+                   `(when (file-exist-p ,var)
+                      (delete-directory ,var)))
+                 temp-dir-vars))))
+(setf (get 'with-temp-dirs 'ed:lisp-indent-hook) 1)
+
 (defmacro with-temp-files ((&rest temp-file-vars) &body body)
   `(let (,@(mapcar (lambda (var)
                      `(,var (make-temp-file-name)))
