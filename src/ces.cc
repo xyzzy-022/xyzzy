@@ -1,6 +1,23 @@
 #include "stdafx.h"
 #include "ed.h"
 
+static const lisp *const encoding_type_key[] =
+{
+  &Kauto_detect,
+  &Ksjis,
+  &Kbig5,
+  &Kiso2022,
+  &Kiso2022, // iso2022_noesc ÇÃèÍçáÇÕ :iso2022 Çï‘Ç∑
+  &Kiso8859,
+  &Kwindows_codepage,
+  &Kutf7,
+  &Kutf8,
+  &Kutf16,
+  &Kbinary,
+  &Kutf5,
+};
+
+
 static lisp
 make_char_encoding (encoding_type type, lisp name, lisp display_name)
 {
@@ -440,6 +457,29 @@ Fchar_encoding_display_name (lisp encoding)
 {
   check_char_encoding (encoding);
   return xchar_encoding_display_name (encoding);
+}
+
+lisp
+Fchar_encoding_type (lisp encoding)
+{
+  check_char_encoding (encoding);
+  return *encoding_type_key[xchar_encoding_type (encoding)];
+}
+
+lisp
+Fchar_encoding_signature (lisp encoding)
+{
+  check_char_encoding (encoding);
+  switch (xchar_encoding_type (encoding))
+    {
+    case encoding_utf5:
+    case encoding_utf7:
+    case encoding_utf8:
+    case encoding_utf16:
+      return boole (xchar_encoding_utf_flags (encoding) & ENCODING_UTF_SIGNATURE);
+    default:
+      return Qnil;
+    }
 }
 
 lisp

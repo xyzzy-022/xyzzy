@@ -1343,3 +1343,206 @@
    `(progn buffer-read-only)
    :options "-rw unittest/editor-tests.l")
   => nil)
+
+
+(deftest char-encoding-type ()
+  (values-list
+   (mapcar #'(lambda (e)
+               (list (char-encoding-name e)
+                     (char-encoding-type e)))
+           (list *encoding-auto*
+                 *encoding-sjis*
+                 *encoding-euc-jp*
+                 *encoding-iso-2022-jp-2*
+                 *encoding-big5*
+                 *encoding-binary*
+                 *encoding-utf5*
+                 *encoding-utf7*
+                 *encoding-utf8*
+                 *encoding-utf8n*
+                 *encoding-utf16*
+                 *encoding-utf16le-bom*
+                 *encoding-utf16be-bom*
+                 *encoding-utf16be-big5*
+                 *encoding-std-utf5*
+                 *encoding-std-utf7*
+                 *encoding-std-utf8*
+                 *encoding-std-utf8n*
+                 *encoding-std-utf16be*
+                 *encoding-std-utf16le*
+                 *encoding-std-utf16be-bom*
+                 *encoding-std-utf16le-bom*
+                 *encoding-windows-latin1*
+                 *encoding-windows-turkish*
+                 )))
+  => ("auto" :auto-detect)
+  => ("sjis" :sjis)
+  => ("euc-jp" :iso2022)
+  => ("iso2022jp2" :iso2022)
+  => ("big5" :big5)
+  => ("bin" :binary)
+  => ("utf5" :utf5)
+  => ("utf7" :utf7)
+  => ("utf8" :utf8)
+  => ("utf8n" :utf8)
+  => ("utf16" :utf16)
+  => ("utf16le-bom" :utf16)
+  => ("utf16be-bom" :utf16)
+  => ("utf16be-big5" :utf16)
+  => ("std-utf5" :utf5)
+  => ("std-utf7" :utf7)
+  => ("std-utf8" :utf8)
+  => ("std-utf8n" :utf8)
+  => ("std-utf16be" :utf16)
+  => ("std-utf16le" :utf16)
+  => ("std-utf16be-bom" :utf16)
+  => ("std-utf16le-bom" :utf16)
+  => ("win-latin1" :windows-codepage)
+  => ("win-turkish" :windows-codepage))
+
+(deftest char-encoding-type-all ()
+  (mapcar #'char-encoding-type *char-encoding-list*)
+  => non-nil)
+
+(deftest char-encoding-type-error-1 ()
+  (char-encoding-type nil)
+  !! type-error)
+
+(deftest char-encoding-type-error-2 ()
+  (char-encoding-type "utf-8")
+  !! type-error)
+
+(deftest char-encoding-type-error-3 ()
+  (char-encoding-type 123)
+  !! type-error)
+
+(deftest char-encoding-signature ()
+  (values-list
+   (mapcar #'(lambda (e)
+               (list (char-encoding-name e)
+                     (char-encoding-signature e)))
+           (list *encoding-auto*
+                 *encoding-sjis*
+                 *encoding-euc-jp*
+                 *encoding-iso-2022-jp-2*
+                 *encoding-big5*
+                 *encoding-binary*
+                 *encoding-utf5*
+                 *encoding-utf7*
+                 *encoding-utf8*
+                 *encoding-utf8n*
+                 *encoding-utf16*
+                 *encoding-utf16le-bom*
+                 *encoding-utf16be-bom*
+                 *encoding-utf16be-big5*
+                 *encoding-std-utf5*
+                 *encoding-std-utf7*
+                 *encoding-std-utf8*
+                 *encoding-std-utf8n*
+                 *encoding-std-utf16be*
+                 *encoding-std-utf16le*
+                 *encoding-std-utf16be-bom*
+                 *encoding-std-utf16le-bom*
+                 *encoding-windows-latin1*
+                 *encoding-windows-turkish*
+                 )))
+  => ("auto" nil)
+  => ("sjis" nil)
+  => ("euc-jp" nil)
+  => ("iso2022jp2" nil)
+  => ("big5" nil)
+  => ("bin" nil)
+  => ("utf5" nil)
+  => ("utf7" nil)
+  => ("utf8" t)
+  => ("utf8n" nil)
+  => ("utf16" t)
+  => ("utf16le-bom" t)
+  => ("utf16be-bom" t)
+  => ("utf16be-big5" nil)
+  => ("std-utf5" nil)
+  => ("std-utf7" nil)
+  => ("std-utf8" t)
+  => ("std-utf8n" nil)
+  => ("std-utf16be" nil)
+  => ("std-utf16le" nil)
+  => ("std-utf16be-bom" t)
+  => ("std-utf16le-bom" t)
+  => ("win-latin1" nil)
+  => ("win-turkish" nil))
+
+(deftest char-encoding-signature-all ()
+  (mapcar #'char-encoding-signature *char-encoding-list*)
+  => non-nil)
+
+(deftest char-encoding-signature-error-1 ()
+  (char-encoding-signature nil)
+  !! type-error)
+
+(deftest char-encoding-signature-error-2 ()
+  (char-encoding-signature "utf-8")
+  !! type-error)
+
+(deftest char-encoding-signature-error-3 ()
+  (char-encoding-signature 123)
+  !! type-error)
+
+
+(defun find-file-auto-encoding-test (param encoding)
+  (with-temp-files (file)
+    (with-temp-buffer
+      (insert (format nil "; -*- encoding: ~A -*-" param) #\LFD)
+      (insert "abc ‚ ‚¢‚¤" #\LFD)
+      (write-file file t nil encoding))
+    (let ((b (ed::find-file-internal file)))
+      (char-encoding-name (buffer-fileio-encoding b)))))
+
+(deftest find-file-auto-encoding-use-utf8n ()
+  (let ((*find-file-auto-encoding-use-utf8n* t))
+    (values
+     (find-file-auto-encoding-test "utf-8" *encoding-utf8*)
+     (find-file-auto-encoding-test "utf-8" *encoding-utf8n*)))
+  => "utf8"
+  => "utf8n")
+
+(deftest find-file-auto-encoding-use-utf8n-wrong-encoding ()
+  (let ((*find-file-auto-encoding-use-utf8n* t))
+    (values
+     (find-file-auto-encoding-test "utf-8" *encoding-sjis*)
+     (find-file-auto-encoding-test "utf-8" *encoding-euc-jp*)))
+  => "utf8n"
+  => "utf8n")
+
+(deftest find-file-auto-encoding-use-utf8n-disable ()
+  (let ((*find-file-auto-encoding-use-utf8n* nil))
+    (values
+     (find-file-auto-encoding-test "utf-8" *encoding-utf8*)
+     (find-file-auto-encoding-test "utf-8" *encoding-utf8n*)))
+  => "utf8"
+  => "utf8")
+
+(deftest find-file-auto-encoding-use-utf8n-changed ()
+  (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+        *encoding-utf8n*)
+  (unwind-protect
+      (let ((*find-file-auto-encoding-use-utf8n* t))
+        (values
+         (find-file-auto-encoding-test "utf-8" *encoding-utf8*)
+         (find-file-auto-encoding-test "utf-8" *encoding-utf8n*)))
+    (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+          *encoding-utf8*))
+  => "utf8n"
+  => "utf8n")
+
+(deftest find-file-auto-encoding-use-utf8n-disable-changed ()
+  (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+        *encoding-utf8n*)
+  (unwind-protect
+      (let ((*find-file-auto-encoding-use-utf8n* nil))
+        (values
+         (find-file-auto-encoding-test "utf-8" *encoding-utf8*)
+         (find-file-auto-encoding-test "utf-8" *encoding-utf8n*)))
+    (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+          *encoding-utf8*))
+  => "utf8n"
+  => "utf8n")
