@@ -1486,3 +1486,63 @@
 (deftest char-encoding-signature-error-3 ()
   (char-encoding-signature 123)
   !! type-error)
+
+
+(defun find-file-auto-encoding-test (param encoding)
+  (with-temp-files (file)
+    (with-temp-buffer
+      (insert (format nil "; -*- encoding: ~A -*-" param) #\LFD)
+      (insert "abc ‚ ‚¢‚¤" #\LFD)
+      (write-file file t nil encoding))
+    (let ((b (ed::find-file-internal file)))
+      (char-encoding-name (buffer-fileio-encoding b)))))
+
+(deftest find-file-auto-encoding-use-utf8n ()
+  (let ((*find-file-auto-encoding-use-utf8n* t))
+    (values
+     (find-file-auto-encoding-test "utf-8" *encoding-utf8*)
+     (find-file-auto-encoding-test "utf-8" *encoding-utf8n*)))
+  => "utf8"
+  => "utf8n")
+
+(deftest find-file-auto-encoding-use-utf8n-wrong-encoding ()
+  (let ((*find-file-auto-encoding-use-utf8n* t))
+    (values
+     (find-file-auto-encoding-test "utf-8" *encoding-sjis*)
+     (find-file-auto-encoding-test "utf-8" *encoding-euc-jp*)))
+  => "utf8n"
+  => "utf8n")
+
+(deftest find-file-auto-encoding-use-utf8n-disable ()
+  (let ((*find-file-auto-encoding-use-utf8n* nil))
+    (values
+     (find-file-auto-encoding-test "utf-8" *encoding-utf8*)
+     (find-file-auto-encoding-test "utf-8" *encoding-utf8n*)))
+  => "utf8"
+  => "utf8")
+
+(deftest find-file-auto-encoding-use-utf8n-changed ()
+  (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+        *encoding-utf8n*)
+  (unwind-protect
+      (let ((*find-file-auto-encoding-use-utf8n* t))
+        (values
+         (find-file-auto-encoding-test "utf-8" *encoding-utf8*)
+         (find-file-auto-encoding-test "utf-8" *encoding-utf8n*)))
+    (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+          *encoding-utf8*))
+  => "utf8n"
+  => "utf8n")
+
+(deftest find-file-auto-encoding-use-utf8n-disable-changed ()
+  (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+        *encoding-utf8n*)
+  (unwind-protect
+      (let ((*find-file-auto-encoding-use-utf8n* nil))
+        (values
+         (find-file-auto-encoding-test "utf-8" *encoding-utf8*)
+         (find-file-auto-encoding-test "utf-8" *encoding-utf8n*)))
+    (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+          *encoding-utf8*))
+  => "utf8n"
+  => "utf8n")
