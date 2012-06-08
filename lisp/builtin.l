@@ -1271,6 +1271,8 @@
 (si::defun-builtin make-utf5-encoding (name display-name &key :windows :imap4 :white :set-o :cjk))
 (si::defun-builtin char-encoding-name (char-encoding))
 (si::defun-builtin char-encoding-display-name (char-encoding))
+(si::defun-builtin char-encoding-type (char-encoding))
+(si::defun-builtin char-encoding-signature (char-encoding))
 (si::defun-builtin parse-char-encoding-region (accept-char-encoding from to))
 (si::defun-builtin parse-char-encoding-string (accept-char-encoding string &key :start :end))
 (si::defun-builtin run-hooks (&rest hooks))
