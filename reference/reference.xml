@@ -32641,6 +32641,144 @@ beginning-of-bufferと違いマーク自体は変化しません。
 </chapter>
 
 <chapter>
+<title>char-encoding-p</title>
+<type>Function</type>
+<arguments>char-encoding-p OBJECT</arguments>
+<package>editor</package>
+<description>
+OBJECTがchar-encoding objectならt、それ以外ならnilを返します。
+</description>
+<seealso>char-encoding-name</seealso>
+<seealso>char-encoding-display-name</seealso>
+<seealso>char-encoding-type</seealso>
+<seealso>char-encoding-signature</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>char-encoding-name</title>
+<type>Function</type>
+<arguments>char-encoding-name ENCODING</arguments>
+<package>editor</package>
+<description>
+エンコーディング名を返します。
+
+実行例：
+  (char-encoding-name *encoding-utf8*)
+  =&gt; "utf8"
+  (char-encoding-name *encoding-utf8n*)
+  =&gt; "utf8n"
+  (char-encoding-name *encoding-sjis*)
+  =&gt; "sjis"
+
+</description>
+<seealso>char-encoding-p</seealso>
+<seealso>char-encoding-display-name</seealso>
+<seealso>char-encoding-type</seealso>
+<seealso>char-encoding-signature</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>char-encoding-display-name</title>
+<type>Function</type>
+<arguments>char-encoding-display-name ENCODING</arguments>
+<package>editor</package>
+<description>
+エンコーディングの表示名を返します。
+
+実行例：
+  (char-encoding-display-name *encoding-utf8*)
+  =&gt; "Unicode (UTF-8)"
+  (char-encoding-display-name *encoding-utf8n*)
+  =&gt; "Unicode (UTF-8N)"
+  (char-encoding-display-name *encoding-sjis*)
+  =&gt; "日本語(Shift_JIS)"
+</description>
+<seealso>char-encoding-p</seealso>
+<seealso>char-encoding-name</seealso>
+<seealso>char-encoding-type</seealso>
+<seealso>char-encoding-signature</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>char-encoding-type</title>
+<type>Function</type>
+<arguments>char-encoding-type ENCODING</arguments>
+<package>editor</package>
+<description>
+エンコーディングのタイプを返します。
+戻り値は以下の通りです。
+
+  :auto-detect
+  :binary
+  :sjis
+  :big5
+  :iso2022
+  :iso8859
+  :windows-codepage
+  :utf5
+  :utf7
+  :utf8
+  :utf16
+
+実行例：
+  (char-encoding-type *encoding-utf8*)
+  =&gt; :utf8
+  (char-encoding-type *encoding-utf8n*)
+  =&gt; :utf8
+  (char-encoding-type *encoding-sjis*)
+  =&gt; :sjis
+
+補足：
+  xyzzy 0.2.2.241 から利用可能です。
+</description>
+<seealso>char-encoding-p</seealso>
+<seealso>char-encoding-name</seealso>
+<seealso>char-encoding-display-name</seealso>
+<seealso>char-encoding-signature</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>char-encoding-signature</title>
+<type>Function</type>
+<arguments>char-encoding-signature ENCODING</arguments>
+<package>editor</package>
+<description>
+エンコーディングがBOM付きのUTFの場合tを返します。
+UTF以外のエンコーディング指定した場合はnilを返します。
+
+実行例：
+  (char-encoding-signature *encoding-utf8*)
+  =&gt; t
+  (char-encoding-signature *encoding-utf8n*)
+  =&gt; nil
+  (char-encoding-signature *encoding-sjis*)
+  =&gt; nil
+
+補足：
+  xyzzy 0.2.2.241 から利用可能です。
+</description>
+<seealso>char-encoding-p</seealso>
+<seealso>char-encoding-name</seealso>
+<seealso>char-encoding-display-name</seealso>
+<seealso>char-encoding-type</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>*keyboard*</title>
 <type>Variable</type>
 <arguments></arguments>
