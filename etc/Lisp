@@ -1608,6 +1608,7 @@ zerop
 *filer-secondary-file-mask*
 *filer-use-recycle-bin*
 *find-buffer-package-hook*
+*find-file-auto-encoding-use-utf8n*
 *find-file-auto-mode-function*
 *find-file-file-not-found-hook*
 *find-file-hooks*
