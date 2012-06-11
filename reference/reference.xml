@@ -37490,6 +37490,7 @@ non-nil なら、*auto-encoding-alist* によるエンコーディングの判�
 ていても無視されます。
 </description>
 <seealso>*auto-encoding-alist*</seealso>
+<seealso>*find-file-auto-encoding-use-utf8n</seealso>
 <seealso>find-file</seealso>
 <link></link>
 <section>ファイルシステム</section>
@@ -37509,9 +37510,30 @@ find-file または find-file-read-only の際に ENCODING が指定されず、
 datum にはエンコーディングもしくはエンコーディングを表す文字列を返す関数を指定します。
 </description>
 <seealso>*find-file-no-auto-encoding*</seealso>
+<seealso>*find-file-auto-encoding-use-utf8n</seealso>
 <seealso>find-file</seealso>
 <link></link>
 <section>ファイルシステム</section>
+<file>files.l</file>
+</chapter>
+
+<chapter>
+<title>*find-file-auto-encoding-use-utf8n*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+non-nilなら、ファイルの先頭のエンコーディング情報にUTF-8が記述(-*- Encoding: UTF-8 -*-)
+されている場合にBOMなしのUTF-8(utf8n)としてファイルを開きます。
+
+備考：
+  xyzzy 0.2.2.241 から利用可能です。
+</description>
+<seealso>*auto-encoding-alist*</seealso>
+<seealso>*find-file-no-auto-encoding*</seealso>
+<seealso>find-file</seealso>
+<link></link>
+<section>モード</section>
 <file>files.l</file>
 </chapter>
 
