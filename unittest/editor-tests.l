@@ -1488,14 +1488,18 @@
   !! type-error)
 
 
-(defun find-file-auto-encoding-test (param encoding)
+(defun find-file-auto-encoding-test0 (magic-comment encoding)
   (with-temp-files (file)
     (with-temp-buffer
-      (insert (format nil "; -*- encoding: ~A -*-" param) #\LFD)
-      (insert "abc ‚ ‚¢‚¤" #\LFD)
+      (insert magic-comment #\LFD)
+      (insert "abc" #\LFD)
       (write-file file t nil encoding))
     (let ((b (ed::find-file-internal file)))
       (char-encoding-name (buffer-fileio-encoding b)))))
+
+(defun find-file-auto-encoding-test (param encoding)
+  (find-file-auto-encoding-test0 (format nil "; -*- encoding: ~A -*-" param)
+                                 encoding))
 
 (deftest find-file-auto-encoding-use-utf8n ()
   (let ((*find-file-auto-encoding-use-utf8n* t))
@@ -1546,3 +1550,35 @@
           *encoding-utf8*))
   => "utf8n"
   => "utf8n")
+
+(deftest find-file-auto-encoding-use-utf8n ()
+  (let ((*find-file-auto-encoding-use-utf8n* t))
+    (values
+     (find-file-auto-encoding-test "utf-8" *encoding-utf8*)
+     (find-file-auto-encoding-test "utf-8" *encoding-utf8n*)))
+  => "utf8"
+  => "utf8n")
+
+(deftest find-file-auto-encoding-params ()
+  (let ((*find-file-auto-encoding-use-utf8n* t))
+    (values
+     (find-file-auto-encoding-test0 ";; -*- Encoding: UTF-8 -*-" *encoding-utf8n*)
+     (find-file-auto-encoding-test0 "#-*-Encoding:UTF-8-*-" *encoding-utf8n*)
+     (find-file-auto-encoding-test0 ";; -*- coding: utf-8 -*-" *encoding-utf8n*)
+     (find-file-auto-encoding-test0 "#-*-coding:utf-8-*-" *encoding-utf8n*)
+     ))
+  => "utf8n"
+  => "utf8n"
+  => "utf8n"
+  => "utf8n")
+
+(deftest find-file-auto-encoding-params-not-supported ()
+  (let ((*find-file-auto-encoding-use-utf8n* t))
+    (values
+     (find-file-auto-encoding-test0 "# vim:fileencoding=utf-8" *encoding-utf8n*)
+     (find-file-auto-encoding-test0 "# vim:set fileencoding=utf-8 :" *encoding-utf8n*)
+     (find-file-auto-encoding-test0 "#coding:utf-8" *encoding-utf8n*)
+     ))
+  => "sjis"
+  => "sjis"
+  => "sjis")
