@@ -183,8 +183,9 @@
 	(if (char-encoding-p encoding)
 	    encoding
 	  (progn
-	    (setq encoding (gethash (cdr (assoc "encoding" (find-file-scan-params)
-						:test #'string-equal))
+	    (setq encoding (gethash (cdr (assoc "\\`\\(en\\)?coding\\'"
+						(find-file-scan-params)
+						:test #'string-matchp))
 				    *mime-charset-name-hash-table*))
 	    (when (and encoding *find-file-auto-encoding-use-utf8n*)
 	      (flet ((utf8-encoding-p (x)
