@@ -32756,7 +32756,7 @@ OBJECTがchar-encoding objectならt、それ以外ならnilを返します。
 <package>editor</package>
 <description>
 エンコーディングがBOM付きのUTFの場合tを返します。
-UTF以外のエンコーディング指定した場合はnilを返します。
+UTF以外のエンコーディングを指定した場合はnilを返します。
 
 実行例：
   (char-encoding-signature *encoding-utf8*)
