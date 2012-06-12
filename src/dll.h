@@ -65,6 +65,7 @@ public:
   u_char *arg_types;  // ˆø”‚ÌŒ^
   u_short arg_size;   // ˆø”‘S‘Ì‚ÌƒTƒCƒY
   u_char nargs;       // ˆø”‚Ì”
+  u_char vaarg_p;     // ‰Â•Ï’·ˆø”‚ğæ‚é‚©‚Ç‚¤‚©
   u_char return_type; // –ß‚è’l‚ÌŒ^
 
   ~ldll_function () {xfree (arg_types);}
@@ -111,6 +112,13 @@ xdll_function_nargs (lisp x)
 {
   assert (dll_function_p (x));
   return ((ldll_function *)x)->nargs;
+}
+
+inline u_char &
+xdll_function_vaarg_p (lisp x)
+{
+  assert (dll_function_p (x));
+  return ((ldll_function *)x)->vaarg_p;
 }
 
 inline u_char &

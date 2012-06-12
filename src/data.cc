@@ -2535,6 +2535,7 @@ dump_object (FILE *fp, const ldll_function *d, int n,
         writef (fp, d->arg_types, d->nargs);
         writef (fp, &d->arg_size, sizeof d->arg_size);
         writef (fp, &d->return_type, sizeof d->return_type);
+        writef (fp, &d->vaarg_p, sizeof d->vaarg_p);
       }
 }
 
@@ -2562,6 +2563,7 @@ rdump_object (FILE *fp, ldll_function *d, int n,
         readf (fp, d->arg_types, d->nargs);
         readf (fp, &d->arg_size, sizeof d->arg_size);
         readf (fp, &d->return_type, sizeof d->return_type);
+        readf (fp, &d->vaarg_p, sizeof d->vaarg_p);
         d->proc = load_dyn_function (d);
       }
 }
