@@ -372,3 +372,237 @@
       (list (win32-exception-description e)
             (win32-exception-code e))))
   => ("Access violation" #xc0000005))
+
+
+(c:define-dll-entry
+  c:int
+  (sprintf :convention :cdecl)
+  ((c:char *) (c:char *) &rest)
+  "msvcrt")
+
+
+(deftest expand-c-vaargs ()
+  (c:expand-c-vaargs '((c:int 123)
+                       (c:double 1.23)
+                       (c:string 0)))
+  => ((:int32 123) (:double 1.23) (:int32 0)))
+
+(deftest vaargs-macro ()
+  (c:vaargs (c:int 123)
+            (c:double 1.23)
+            (c:string 0))
+  => ((:int32 123) (:double 1.23) (:int32 0)))
+
+(c:define-c-struct INVALID_VAARGS
+  (c:int a))
+
+(deftest expand-c-vaargs-struct ()
+  (handler-case
+      (c:expand-c-vaargs `((INVALID_VAARGS 123)))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: ((INVALID_VAARGS 123))")
+
+(deftest funcall-expand-vaargs ()
+  (let ((b (si:make-chunk nil 200)))
+    (values
+     (sprintf b (si:make-string-chunk "foo: %d, %.3f, %s")
+              (c:expand-c-vaargs `((c:int 123)
+                                   (c:double 1.23)
+                                   (c:string ,(si:make-string-chunk "bar")))))
+     (si:unpack-string b 0)))
+  => 20
+  => "foo: 123, 1.230, bar")
+
+(deftest funcall-vaargs ()
+  (let ((b (si:make-chunk nil 200)))
+    (values
+     (sprintf b (si:make-string-chunk "foo: %d, %.3f, %s")
+              (c:vaargs (c:int 123)
+                        (c:double 1.23)
+                        (c:string (si:make-string-chunk "bar"))))
+     (si:unpack-string b 0)))
+  => 20
+  => "foo: 123, 1.230, bar")
+
+(deftest funcall-vaargs-2 ()
+  (let ((b (si:make-chunk nil 200)))
+    (values
+     (sprintf b (si:make-string-chunk "foo: %d, %.3f, %s")
+              (append
+               (c:vaargs (c:int 123))
+               (c:vaargs (c:double 1.23)
+                         (c:string (si:make-string-chunk "bar")))))
+     (si:unpack-string b 0)))
+  => 20
+  => "foo: 123, 1.230, bar")
+
+(deftest funcall-vaargs-default-argument-promotions ()
+  (let ((b (si:make-chunk nil 200)))
+    (values
+     (sprintf b (si:make-string-chunk "foo: %d, %d, %.3f")
+              (c:vaargs (c:char 123)
+                        (c:short 123)
+                        (c:float 1.23)))
+     (si:unpack-string b 0)))
+  => 20
+  => "foo: 123, 123, 1.230")
+
+(deftest funcall-vaargs-noarg ()
+  (let ((b (si:make-chunk nil 200)))
+    (values
+     (sprintf b (si:make-string-chunk "foo"))
+     (si:unpack-string b 0)
+     (sprintf b (si:make-string-chunk "foobar") nil)
+     (si:unpack-string b 0)))
+  => 3
+  => "foo"
+  => 6
+  => "foobar")
+
+(deftest c-vaargs-invalid-vaargs-0 ()
+  (handler-case
+      (let ((b (si:make-chunk nil 200)))
+        (sprintf b (si:make-string-chunk "foo: %d, %.3f, %d")
+                 (append
+                  (c:vaargs (c:int 123))
+                  (c:vaargs (c:double 1.23))
+                  (list 123))))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: (123)")
+
+(deftest c-vaargs-invalid-vaargs-1 ()
+  (handler-case
+      (c:vaargs 123)
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: (123)")
+
+(deftest c-vaargs-invalid-vaargs-2 ()
+  (handler-case
+      (c:vaargs (123))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: ((123))")
+
+(deftest c-vaargs-invalid-vaargs-3 ()
+  (handler-case
+      (c:vaargs :int32 123)
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: (:int32 123)")
+
+(deftest c-vaargs-invalid-vaargs-4 ()
+  (handler-case
+      (c:vaargs (:int32))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: ((:int32))")
+
+(deftest c-vaargs-invalid-vaargs-5 ()
+  (handler-case
+      (c:vaargs (:int32 123 234))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: ((:int32 123 234))")
+
+(deftest c-vaargs-invalid-vaargs-6 ()
+  (handler-case
+      (c:vaargs nil (:int32 123))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: (nil (:int32 123))")
+
+(deftest c-vaargs-invalid-vaargs-7 ()
+  (handler-case
+      (c:vaargs (:void 123))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: ((:void 123))")
+
+
+(deftest funcall-invalid-vaargs-1 ()
+  (handler-case
+      (sprintf 0 0 123)
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: 123")
+
+(deftest funcall-invalid-vaargs-2 ()
+  (handler-case
+      (sprintf 0 0 '(123))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: (123)")
+
+(deftest funcall-invalid-vaargs-3 ()
+  (handler-case
+      (sprintf 0 0 '(:int32 123))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: (:int32 123)")
+
+(deftest funcall-invalid-vaargs-4 ()
+  (handler-case
+      (sprintf 0 0 '((:int32)))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: ((:int32))")
+
+(deftest funcall-invalid-vaargs-5 ()
+  (handler-case
+      (sprintf 0 0 '((:int32 123 234)))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: ((:int32 123 234))")
+
+(deftest funcall-invalid-vaargs-6 ()
+  (handler-case
+      (sprintf 0 0 '(nil (:int32 123)))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: (nil (:int32 123))")
+
+(deftest funcall-invalid-vaargs-7 ()
+  (handler-case
+      (sprintf 0 0 '((:void 123)))
+    (error (c)
+      (si:*condition-string c)))
+  => "不正な可変長引数です: ((:void 123))")
+
+
+(deftest make-c-function-stdcall-rest ()
+  (handler-case
+      (si:make-c-function (si:load-dll-module "msvcrt")
+                          "sprintf"
+                          '(:int32 :int32 :int32)
+                          :int32
+                          :vaarg t :convention :stdcall)
+    (error (c)
+      (si:*condition-string c)))
+  => "stdcall呼び出し規約の場合、可変長引数は利用できません")
+
+(deftest define-dll-entry-stdcall-rest ()
+  (handler-case
+      (c:define-dll-entry
+        c:int
+        sprintf_stdcall ((c:char *) (c:char *) &rest)
+        "msvcrt" "sprintf")
+    (error (c)
+      (si:*condition-string c)))
+  => "stdcall呼び出し規約の場合、可変長引数は利用できません")
+
+
+(c:define-dll-entry
+  c:int
+  (sprintf_no_vaarg :convention :cdecl)
+  ((c:char *) (c:char *))
+  "msvcrt" "sprintf")
+
+(deftest funcall-invalid-c-args ()
+  (handler-case
+      (sprintf_no_vaarg 0 0 '((:int32 123)))
+    (error (c)
+      (si:*condition-string c)))
+  => "引数が多すぎます: (#<c-function: sprintf> 0 0 ((:int32 123)))")

@@ -974,7 +974,7 @@ static symbols sys[] =
 
   /* dll.cc */
   SI_DEFUN3 (load-dll-module, 1, 0, 0),
-  SI_DEFUN3 (make-c-function, 4, 0, 0),
+  SI_DEFUN3 (make-c-function, 4, 0, FFneed_rest),
   SI_DEFUN3 (make-c-callable, 3, 0, FFneed_rest),
   SI_DEFUN3 (*last-win32-error, 0, 0, 0),
   SI_DEFUN3 (*set-last-win32-error, 1, 0, 0),
@@ -1309,6 +1309,7 @@ static symbols kwd[] =
   DEFKWD2 (float),
   DEFKWD2 (double),
   DEFKWD2 (void),
+  DEFKWD2 (vaarg),
   DEFKWD2 (convention),
   DEFKWD2 (stdcall),
 #undef cdecl

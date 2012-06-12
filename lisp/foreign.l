@@ -13,6 +13,7 @@
 
 (export '(expand-c-type define-c-type *define-c-type))
 (export '(define-dll-entry *define-dll-entry
+	  expand-c-vaargs vaargs
 	  defun-c-callable *defun-c-callable
 	  define-c-struct *define-c-struct
 	  c-struct-size-of c-struct-offset-of
@@ -140,6 +141,33 @@
     (error "構造体の値渡しはサポートしていません: ~A" (ctypedef-type type)))
   (ctypedef-type type))
 
+(defun c-vaarg-p (types)
+  (let ((rests (member '&rest types)))
+    (when (and rests (cdr rests))
+      (error "&restが最後の句ではありません"))
+    (not (null rests))))
+
+(defun c-argument-types (types)
+  (mapcar #'c-argument-type (if (c-vaarg-p types) (butlast types) types)))
+
+(defun expand-c-vaargs (vaargs)
+  (mapcar #'(lambda (vaarg)
+	      (unless (and (listp vaarg)
+			   (= (length vaarg) 2))
+		(error "不正な可変長引数です: ~S" vaargs))
+	      (handler-case
+		  (list (c-argument-type (car vaarg))
+			(cadr vaarg))
+		(error (c)
+		  (error "不正な可変長引数です: ~S" vaargs))))
+	  vaargs))
+
+(defmacro vaargs (&rest vaargs)
+  `(list
+    ,@(mapcar #'(lambda (vaarg)
+		  `(list ,@vaarg))
+	      (expand-c-vaargs vaargs))))
+
 (defun c-return-type (type)
   (setq type (expand-c-type type))
   (when (ctypedef-slots type)
@@ -150,14 +178,21 @@
 (setf (get '*define-dll-entry 'ed:lisp-indent-hook) 'defun)
 
 (defmacro define-dll-entry (return-type name-and-options (&rest args) dll-name &optional export-name)
-  (multiple-value-bind (name ignored)
+  (multiple-value-bind (name options)
       (parse-func-name-and-options name-and-options)
+    (let ((convention (or (getf options :convention)
+			  :stdcall)))
+      (when (and (c-vaarg-p args)
+		 (eq convention :stdcall))
+	(error "stdcall呼び出し規約の場合、可変長引数は利用できません")))
     `(defun ,name (&rest args)
        (setf (symbol-function ',name)
 	     (si:make-c-function (si:load-dll-module ,dll-name)
 				 ',(or export-name (symbol-name name))
-				 ',(mapcar #'c-argument-type args)
-				 ',(c-return-type return-type)))
+				 ',(c-argument-types args)
+				 ',(c-return-type return-type)
+				 :vaarg ,(c-vaarg-p args)
+				 ,@options))
        (apply #',name args))))
 
 (defmacro *define-dll-entry (return-type name (&rest args) dll-name &optional export-name)

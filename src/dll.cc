@@ -122,6 +122,103 @@ check_calling_convention (lisp keys)
 }
 
 static int
+calc_c_size (u_char type)
+{
+  switch (type)
+    {
+    case CTYPE_INT8:
+    case CTYPE_UINT8:
+    case CTYPE_INT16:
+    case CTYPE_UINT16:
+    case CTYPE_INT32:
+    case CTYPE_UINT32:
+      return sizeof (int);
+
+    case CTYPE_INT64:
+    case CTYPE_UINT64:
+      return sizeof (int64_t);
+
+    case CTYPE_FLOAT:
+      return sizeof (float);
+
+    case CTYPE_DOUBLE:
+      return sizeof (double);
+
+    default:
+      assert (0);
+    }
+  return 0;
+}
+
+static u_char
+check_vaarg_type (lisp type)
+{
+  u_char t = check_c_type (type);
+
+  // default argument promotions
+  switch (t)
+    {
+    case CTYPE_INT8:
+    case CTYPE_INT16:
+      t = CTYPE_INT32;
+      break;
+
+    case CTYPE_UINT8:
+    case CTYPE_UINT16:
+      t = CTYPE_UINT32;
+      break;
+
+    case CTYPE_FLOAT:
+      t = CTYPE_DOUBLE;
+      break;
+    }
+
+  return t;
+}
+
+static void
+check_vaargs (lisp vaargs)
+{
+  if (vaargs == Qnil)
+    return;
+
+  if (!consp (vaargs))
+    FEprogram_error (Einvalid_c_vaarg_type, vaargs);
+
+  for (; consp (vaargs); vaargs = xcdr (vaargs))
+    {
+      lisp vaarg = xcar (vaargs);
+      if (!consp (vaarg) || xlist_length (vaarg) != 2)
+        FEprogram_error (Einvalid_c_vaarg_type, vaargs);
+
+      u_char t = check_c_type (xcar (vaarg));
+      if (t == CTYPE_VOID)
+        FEprogram_error (Einvalid_c_vaarg_type, vaargs);
+    }
+}
+
+static int
+calc_vaarg_size (lisp fn, lisp arglist)
+{
+  if (!xdll_function_vaarg_p (fn))
+    return 0;
+
+  int nargs = xdll_function_nargs (fn);
+  lisp vaargs = Fnth (make_fixnum (nargs), arglist);
+  if (vaargs == Qnil)
+    return 0;
+
+  check_vaargs (vaargs);
+  int size = 0;
+  for (; consp (vaargs); vaargs = xcdr (vaargs))
+    {
+      u_char t = check_vaarg_type (Fcaar (vaargs));
+      size += calc_c_size (t);
+    }
+  return size;
+}
+
+static int
 calc_argument_size (u_char *at, lisp largs)
 {
   int size = 0;
@@ -129,38 +226,13 @@ calc_argument_size (u_char *at, lisp largs)
     {
       u_char t = check_c_type (xcar (a));
       *at++ = t;
-      switch (t)
-        {
-        default:
-          assert (0);
-        case CTYPE_INT8:
-        case CTYPE_UINT8:
-        case CTYPE_INT16:
-        case CTYPE_UINT16:
-        case CTYPE_INT32:
-        case CTYPE_UINT32:
-          size += sizeof (int);
-          break;
-
-        case CTYPE_INT64:
-        case CTYPE_UINT64:
-          size += sizeof (int64_t);
-          break;
-
-        case CTYPE_FLOAT:
-          size += sizeof (float);
-          break;
-
-        case CTYPE_DOUBLE:
-          size += sizeof (double);
-          break;
-        }
+      size += calc_c_size (t);
     }
   return size;
 }
 
 lisp
-Fsi_make_c_function (lisp lmodule, lisp lname, lisp largs, lisp lrettype)
+Fsi_make_c_function (lisp lmodule, lisp lname, lisp largs, lisp lrettype, lisp keys)
 {
   check_dll_module (lmodule);
   check_string (lname);
@@ -177,11 +249,17 @@ Fsi_make_c_function (lisp lmodule, lisp lname, lisp largs, lisp lrettype)
     if (check_c_type (xcar (a)) == CTYPE_VOID)
       FEprogram_error (Einvalid_c_argument_type, Kvoid);
 
+  u_char vaarg_p = find_keyword_bool (Kvaarg, keys);
+  if (vaarg_p && check_calling_convention (keys) == CALLING_CONVENTION_STDCALL)
+    FEprogram_error (Ecannot_call_vaarg_function_by_stdcall);
+
   lisp fn = make_dll_function ();
   xdll_function_module (fn) = lmodule;
   xdll_function_name (fn) = lname;
   xdll_function_proc (fn) = proc;
   xdll_function_return_type (fn) = return_type;
+  xdll_function_vaarg_p (fn) = vaarg_p;
+
   xdll_function_nargs (fn) = nargs;
   if (nargs)
     {
@@ -222,6 +300,49 @@ call_proc (FARPROC proc)
   return r;
 }
 
+static char *
+push_arg (char *stack, u_char at, lisp a)
+{
+  switch (at)
+    {
+    default:
+      assert (0);
+    case CTYPE_INT8:
+    case CTYPE_UINT8:
+    case CTYPE_INT16:
+    case CTYPE_UINT16:
+    case CTYPE_INT32:
+    case CTYPE_UINT32:
+      *(long *)stack = cast_to_long (a);
+      stack += sizeof (long);
+      break;
+
+    case CTYPE_INT64:
+    case CTYPE_UINT64:
+      *(int64_t *)stack = cast_to_int64 (a);
+      stack += sizeof (int64_t);
+      break;
+
+    case CTYPE_FLOAT:
+      *(float *)stack = coerce_to_single_float (a);
+      stack += sizeof (float);
+      break;
+
+    case CTYPE_DOUBLE:
+      *(double *)stack = coerce_to_double_float (a);
+      stack += sizeof (double);
+      break;
+    }
+  return stack;
+}
+
+static char *
+push_vaarg (char *stack, lisp vaarg)
+{
+  u_char t = check_vaarg_type (xcar (vaarg));
+  return push_arg (stack, t, Fcadr (vaarg));
+}
+
 lisp
 funcall_dll (lisp fn, lisp arglist)
 {
@@ -231,44 +352,24 @@ funcall_dll (lisp fn, lisp arglist)
     FEprogram_error (Edll_not_initialized, fn);
 
 #ifdef _M_IX86
-  char *stack = (char *)alloca (xdll_function_arg_size (fn));
+  int arg_size = xdll_function_arg_size (fn) + calc_vaarg_size (fn, arglist);
+  char *stack = (char *)alloca (arg_size);
   for (const u_char *at = xdll_function_arg_types (fn),
        *ae = at + xdll_function_nargs (fn);
        at < ae; at++, arglist = xcdr (arglist))
     {
       if (!consp (arglist))
         FEtoo_few_arguments ();
-      lisp a = xcar (arglist);
-      switch (*at)
-        {
-        default:
-          assert (0);
-        case CTYPE_INT8:
-        case CTYPE_UINT8:
-        case CTYPE_INT16:
-        case CTYPE_UINT16:
-        case CTYPE_INT32:
-        case CTYPE_UINT32:
-          *(long *)stack = cast_to_long (a);
-          stack += sizeof (long);
-          break;
+      stack = push_arg (stack, *at, xcar (arglist));
+    }
 
-        case CTYPE_INT64:
-        case CTYPE_UINT64:
-          *(int64_t *)stack = cast_to_int64 (a);
-          stack += sizeof (int64_t);
-          break;
-
-        case CTYPE_FLOAT:
-          *(float *)stack = coerce_to_single_float (a);
-          stack += sizeof (float);
-          break;
-
-        case CTYPE_DOUBLE:
-          *(double *)stack = coerce_to_double_float (a);
-          stack += sizeof (double);
-          break;
-        }
+  if (consp (arglist) && xdll_function_vaarg_p (fn))
+    {
+      lisp vaargs = xcar (arglist);
+      check_vaargs (vaargs);
+      for (; consp (vaargs); vaargs = xcdr (vaargs))
+        stack = push_vaarg (stack, xcar (vaargs));
+      arglist = xcdr (arglist);
     }
 
   if (consp (arglist))
