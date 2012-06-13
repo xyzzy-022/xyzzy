@@ -1331,3 +1331,133 @@ lisp-indent-hook property"
   => t
   => t
   => t)
+
+
+(deftest locally-0 ()
+  (values
+   (locally)
+   (locally t)
+   (locally nil))
+  => nil
+  => t
+  => nil)
+
+(deftest locally-unbound-variable ()
+  (values
+   (handler-case
+       (locally
+        locally-a)
+     (unbound-variable (e)
+       t))
+
+   (handler-case
+       (locally
+        (declare (special locally-a))
+        locally-a)
+     (unbound-variable (e)
+       t))
+
+   (let ((locally-a 123))
+     (locally
+      locally-a))
+
+   (handler-case
+       (let ((locally-a 123))
+         (locally
+          (declare (special locally-a))
+          locally-a))
+     (unbound-variable (e)
+       t)))
+  => t
+  => t
+  => 123
+  => t)
+
+(setq locally-b 0)
+(deftest locally-toplev-setq ()
+  (values
+   (locally
+    locally-b)
+
+   (locally
+    (declare (special locally-b))
+    locally-b)
+
+   (let ((locally-b 123))
+     (locally
+      locally-b))
+
+   (let ((locally-b 123))
+     (locally
+      (declare (special locally-b))
+      locally-b)))
+  => 0
+  => 0
+  => 123
+  => 0)
+
+(defvar locally-c 0)
+(deftest locally-defvar ()
+  (values
+   (locally
+    locally-c)
+
+   (locally
+    (declare (special locally-c))
+    locally-c)
+
+   (let ((locally-c 123))
+     (locally
+      locally-c))
+
+   (let ((locally-c 123))
+     (locally
+      (declare (special locally-c))
+      locally-c)))
+  => 0
+  => 0
+  => 123
+  => 123)
+
+(deftest locally-declare-special ()
+  (values
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (locally
+      locally-d))
+
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (locally
+      (declare (special locally-d))
+      locally-d))
+
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (let ((locally-d 123))
+       (locally
+        locally-d)))
+
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (let ((locally-d 123))
+       (locally
+        (declare (special locally-d))
+        locally-d))))
+  => 0
+  => 0
+  => 123
+  => 0)
+
+
+(defun locally-sample-function (y)  ;this y is regarded as special
+  (declare (special y))
+  (let ((y t))              ;this y is regarded as lexical
+    (list y
+          (locally (declare (special y))
+            ;; this next y is regarded as special
+            y))))
+
+(deftest locally-clhs-1 ()
+  (locally-sample-function nil)
+  => (t nil))
