@@ -15,6 +15,7 @@
 (in-package "lisp")
 
 (si::defun-builtin progn ("{FORM}*"))
+(si::defun-builtin locally ("{declaration}* {FORM}*"))
 (si::defun-builtin let ("({VAR|(VAR [VALUE])}*) {declaration}* {FORM}*"))
 (si::defun-builtin let* ("({VAR|(VAR [VALUE])}*) {declaration}* {FORM}*"))
 (si::defun-builtin if ("TEST THEN [ELSE]"))

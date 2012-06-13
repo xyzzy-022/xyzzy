@@ -93,6 +93,7 @@ static symbols lsp[] =
   DEFSF3Q (quote),
   DEFSF3Q (function),
   DEFSF3 (progn),
+  DEFSF3 (locally),
   DEFSF3 (let),
   DEFSF2 (let*, let_star),
   DEFSF3 (if),

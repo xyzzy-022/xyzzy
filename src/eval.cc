@@ -1019,6 +1019,34 @@ Fprogn (lisp arg, lex_env &lex)
 }
 
 lisp
+Flocally (lisp arg, lex_env &olex)
+{
+  lex_env nlex (olex);
+  for (lisp body = arg; consp (body); body = xcdr (body))
+    {
+      lisp x = xcar (body);
+      if (!consp (x) || xcar (x) != Qdeclare)
+        break;
+      for (x = xcdr (x); consp (x); x = xcdr (x))
+        {
+          lisp t = xcar (x);
+          if (consp (t) && xcar (t) == Qspecial)
+            for (t = xcdr (t); consp (t); t = xcdr (t))
+              {
+                lisp sym = xcar (t);
+                if (symbolp (sym))
+                  nlex.bind (sym, xsymbol_value (sym));
+                QUIT;
+              }
+          QUIT;
+        }
+      QUIT;
+    }
+
+  return declare_progn (arg, nlex, 0);
+}
+
+lisp
 Flet (lisp arg, lex_env &olex)
 {
   if (!consp (arg))
