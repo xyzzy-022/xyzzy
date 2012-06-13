@@ -564,7 +564,7 @@
 (si::defun-builtin unpack-uint64 (chunk offset))
 (si::defun-builtin unpack-float (chunk offset))
 (si::defun-builtin unpack-double (chunk offset))
-(si::defun-builtin unpack-string (chunk offset size &optional zero-terminating-p))
+(si::defun-builtin unpack-string (chunk offset &optional size zero-terminating-p))
 (si::defun-builtin pack-int8 (chunk offset value))
 (si::defun-builtin pack-uint8 (chunk offset value))
 (si::defun-builtin pack-int16 (chunk offset value))
