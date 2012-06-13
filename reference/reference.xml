@@ -26938,15 +26938,27 @@ xyzzyがインストールされているパスを返します。
 <chapter>
 <title>si:unpack-string</title>
 <type>Function</type>
-<arguments>unpack-string CHUNK OFFSET SIZE &amp;optional ZERO-TERMINATING-P</arguments>
+<arguments>unpack-string CHUNK OFFSET &amp;optional SIZE ZERO-TERMINATING-P</arguments>
 <package>system</package>
 <description>
 チャンクをlispの文字列に変換します。
 
-  CHUNK              : make-chunkで作られたチャンク
+  CHUNK              : make-chunkで作られたチャンクまたはnilを指定します。
   OFFSET             : 文字列化する位置を指定します。
+                       CHUNKがnon-nilの場合はCHUNK + OFFSETのアドレスを参照します。
+                       CHUNKがnilの場合はOFFSETをアドレスとみなして参照します。
   SIZE               : OFFSETの位置から文字列化する長さを指定します。
-  ZERO-TERMINATING-P : （詳細不明）
+  ZERO-TERMINATING-P : 文字列がNULL文字('\0')で終端しているかどうかを指定します。
+                       non-nilを指定した場合は、NULL文字までを文字列化します。
+                       SIZEで指定した長さより短い文字列を返却する可能性があります。
+                       nilを指定した場合は、SIZEまたはCHUNKのサイズで指定した長さを
+                       すべて文字列化します。
+
+CHUNKにnilを指定する場合、SIZEまたはZERO-TERMINATING-Pのどちらかを
+必ず指定する必要があります。
+
+補足：
+  xyzzy 0.2.2.241 からCHUNKにnilを指定可能です。
 </description>
 <seealso>si:make-chunk</seealso>
 <seealso>チャンクの概要</seealso>
