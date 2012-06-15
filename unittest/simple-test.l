@@ -799,6 +799,7 @@ Returns list of failures."
                (push (cons (test) finished) (ssn-finished-tests))
                (setf (ssn-current-test) nil)
                (refresh-screen)
+               (do-events)
                :continue-run-tests))
             (t
              (let ((failures (run-one-example example)))
