@@ -601,8 +601,5 @@
   "msvcrt" "sprintf")
 
 (deftest funcall-invalid-c-args ()
-  (handler-case
-      (sprintf_no_vaarg 0 0 '((:int32 123)))
-    (error (c)
-      (si:*condition-string c)))
-  => "ˆø”‚ª‘½‚·‚¬‚Ü‚·: (#<c-function: sprintf> 0 0 ((:int32 123)))")
+  (sprintf_no_vaarg 0 0 '((:int32 123)))
+  !! too-many-arguments)
