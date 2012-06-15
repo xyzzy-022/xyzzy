@@ -750,6 +750,12 @@ Returns list of failures."
   "*If non-nil, continue run of tests automatically after :break via timer.")
 
 (defun run-current-test ()
+  (loop
+    (let ((r (run-current-test-1)))
+      (unless (eq r :run-current-test)
+        (return r)))))
+
+(defun run-current-test-1 ()
   (assert-in-session)
   (macrolet ((test      () `(first (ssn-current-test)))
              (finished  () `(second (ssn-current-test)))
@@ -759,7 +765,8 @@ Returns list of failures."
              (setf (remaining) (rest (remaining)))
              (when *auto-continue-after-break*
                (start-timer 1 'continue-run-tests))
-             (message "running test: ~S...break" (test-name (test))))
+             (message "running test: ~S...break" (test-name (test)))
+             :break)
             ((null (remaining))
              (let* ((finished (nreverse (finished)))
                     (passed-p (every #'null (mapcar #'cdr finished))))
@@ -774,15 +781,21 @@ Returns list of failures."
                (push (cons (test) finished) (ssn-finished-tests))
                (setf (ssn-current-test) nil)
                (refresh-screen)
-               (continue-run-tests)))
+               :continue-run-tests))
             (t
              (let ((failures (run-one-example example)))
                (setf (remaining) (rest (remaining)))
                (push (cons example failures) (finished))
-               (run-current-test)))))))
+               :run-current-test))))))
 
 (defun continue-run-tests ()
   (interactive)
+  (loop
+    (let ((r (continue-run-tests-1)))
+      (unless (eq r :continue-run-tests)
+        (return r)))))
+
+(defun continue-run-tests-1 ()
   (assert-in-session)
   (cond ((ssn-current-test)
          (run-current-test))
@@ -792,7 +805,7 @@ Returns list of failures."
            (message "running test: ~S..." (test-name next))
            (setf (ssn-current-test) (list next nil (test-examples next))
                  (ssn-remaining-tests) (rest (ssn-remaining-tests))))
-         (continue-run-tests))
+         :continue-run-tests)
         (t ;; all tests finished. Report and die.
          (let* ((pass (ssn-pass-count))
                 (fail (ssn-fail-count))
@@ -808,7 +821,8 @@ Returns list of failures."
              (unless (interactive-p)
                (refresh-screen))))
          (while (stop-timer 'continue-run-tests))
-         (null (setf *current-session* nil)))))
+         (null (setf *current-session* nil))
+         :finish)))
 
 (defparameter *run-tests-continue/rerun/cancel-message*
   "前回のテスト実行が途中で中断されたまま終わっていません。どうする？
