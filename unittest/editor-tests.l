@@ -1260,13 +1260,13 @@
    :options "unittest/editor-tests.l -c10")
   => 10)
 
-(deftest process-command-line--go ()
+(deftest process-command-line--column ()
   (eval-in-another-xyzzy
    `(current-column)
    :options "unittest/editor-tests.l -column 20")
   => 20)
 
-(deftest process-command-line--go ()
+(deftest process-command-line--trace ()
   (eval-in-another-xyzzy
    `(not (null (find-buffer "*Trace Output*")))
    :options "-trace")
@@ -1549,14 +1549,6 @@
     (setf (gethash "utf-8" *mime-charset-name-hash-table*)
           *encoding-utf8*))
   => "utf8n"
-  => "utf8n")
-
-(deftest find-file-auto-encoding-use-utf8n ()
-  (let ((*find-file-auto-encoding-use-utf8n* t))
-    (values
-     (find-file-auto-encoding-test "utf-8" *encoding-utf8*)
-     (find-file-auto-encoding-test "utf-8" *encoding-utf8n*)))
-  => "utf8"
   => "utf8n")
 
 (deftest find-file-auto-encoding-params ()
