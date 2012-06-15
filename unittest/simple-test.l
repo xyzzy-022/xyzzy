@@ -852,9 +852,9 @@ Returns list of failures."
     (when (or (not loaded)
               (> (file-write-time testfile) (cdr loaded)))
       (load-test-file testfile)))
-  (run-tests (remove-if-not (lambda (test)
-                              (path-equal (test-source test) testfile))
-                            *tests*)))
+  (run-tests (reverse (remove-if-not (lambda (test)
+                                       (path-equal (test-source test) testfile))
+                                     *tests*))))
 
 
 
