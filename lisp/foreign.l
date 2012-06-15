@@ -19,7 +19,7 @@
 	  c-struct-size-of c-struct-offset-of
 	  define *define *define-c-macro
 	  *c-typedef-auto-export* *c-structure-packing-align*
-	  last-win32-error
+	  c-size-of last-win32-error
 	  ))
 
 (defsetf si:unpack-int8 si:pack-int8)
@@ -395,6 +395,9 @@
   `(progn
      (defmacro ,name ,lambda-list ,@body)
      (export ',name)))
+
+(defmacro c-size-of (type)
+  (ctypedef-size (expand-c-type type)))
 
 (setf (symbol-function 'last-win32-error) #'si:*last-win32-error)
 (setf (symbol-function 'set-last-win32-error) #'si:*set-last-win32-error)
