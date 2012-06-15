@@ -606,3 +606,91 @@
     (error (c)
       (si:*condition-string c)))
   => "ˆø”‚ª‘½‚·‚¬‚Ü‚·: (#<c-function: sprintf> 0 0 ((:int32 123)))")
+
+
+(deftest c-size-of-premitive ()
+  (values
+   (c:c-size-of :void)
+   (c:c-size-of :int8)
+   (c:c-size-of :uint8)
+   (c:c-size-of :int16)
+   (c:c-size-of :uint16)
+   (c:c-size-of :int32)
+   (c:c-size-of :uint32)
+   (c:c-size-of :int64)
+   (c:c-size-of :uint64)
+   (c:c-size-of :float)
+   (c:c-size-of :double))
+  => 0
+  => 1
+  => 1
+  => 2
+  => 2
+  => 4
+  => 4
+  => 8
+  => 8
+  => 4
+  => 8)
+
+(deftest c-size-of-define-c-type ()
+  (values
+   (c:c-size-of c:void)
+   (c:c-size-of c:char)
+   (c:c-size-of c:short)
+   (c:c-size-of c:int)
+   (c:c-size-of c:long)
+   (c:c-size-of c:int64)
+   (c:c-size-of c:u_char)
+   (c:c-size-of c:u_short)
+   (c:c-size-of c:u_int)
+   (c:c-size-of c:u_long)
+   (c:c-size-of c:u_int64)
+   (c:c-size-of c:float)
+   (c:c-size-of c:double)
+
+   (c:c-size-of c:wchar_t)
+   (c:c-size-of c:size_t)
+   (c:c-size-of c:time_t)
+   (c:c-size-of c:ptrdiff_t)
+   (c:c-size-of c:clock_t)
+   (c:c-size-of c:off_t)
+
+   (c:c-size-of c:void*)
+   (c:c-size-of c:char*)
+   (c:c-size-of c:string))
+  => 0
+  => 1
+  => 2
+  => 4
+  => 4
+  => 8
+  => 1
+  => 2
+  => 4
+  => 4
+  => 8
+  => 4
+  => 8
+  => 2
+  => 4
+  => 4
+  => 4
+  => 4
+  => 4
+  => 4
+  => 4
+  => 4)
+
+
+(c:define-c-struct c-size-of-test
+  (c:int a)
+  (c:double a)
+  (c:char a))
+
+(deftest c-size-of-struct ()
+  (values
+   (c:c-size-of c-size-of-test)
+   (c:c-struct-size-of c-size-of-test))
+  => 20
+  => 20)
