@@ -76,7 +76,7 @@
 
 (defun store-test (name description source examples)
   (when (member name *tests* :key #'car)
-    (warn "Overwriting a test: ~S" name))
+    (msgbox "Overwriting a test: ~S" name))
   (setf *tests*
         (cons (list* name description source examples)
               (remove name *tests* :key #'car)))
