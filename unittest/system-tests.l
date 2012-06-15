@@ -726,12 +726,14 @@ of SHA-384 and SHA-512)."
   (values
    (length (si:list-builtin-packages))
    (member (find-package :lisp) (si:list-builtin-packages))
+   (member (find-package :keyword) (si:list-builtin-packages))
    (member (find-package :editor) (si:list-builtin-packages))
    (member (find-package :system) (si:list-builtin-packages))
    (member (find-package :user) (si:list-builtin-packages))
    (member (find-package :common-lisp) (si:list-builtin-packages))
    (member (find-package :common-lisp-user) (si:list-builtin-packages)))
-  => 6
+  => 7
+  => non-nil
   => non-nil
   => non-nil
   => non-nil
@@ -739,7 +741,7 @@ of SHA-384 and SHA-512)."
   => non-nil
   => non-nil)
 
-(deftest list-builtin-packages-1 ()
+(deftest list-builtin-packages-2 ()
   (let ((pkgname (gensym))
         (all-pkg-len (length (list-all-packages)))
         (builtin-pkg-len (length (si:list-builtin-packages))))
