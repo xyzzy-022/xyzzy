@@ -577,7 +577,7 @@
 (si::defun-builtin pack-double (chunk offset value))
 (si::defun-builtin pack-string (chunk offset value &optional size))
 (si::defun-builtin load-dll-module (module-name))
-(si::defun-builtin make-c-function (module name args result-type))
+(si::defun-builtin make-c-function (module name args result-type &key convention vaarg))
 (si::defun-builtin make-c-callable (function args result-type &key convention))
 (si::defun-builtin *last-win32-error ())
 (si::defun-builtin *set-last-win32-error (error))
