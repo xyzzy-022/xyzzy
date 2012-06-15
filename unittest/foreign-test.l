@@ -388,7 +388,7 @@
   => ((:int32 123) (:double 1.23) (:int32 0)))
 
 (deftest vaargs-macro ()
-  (c:vaargs (c:int 123)
+  (c:c-vaargs (c:int 123)
             (c:double 1.23)
             (c:string 0))
   => ((:int32 123) (:double 1.23) (:int32 0)))
@@ -418,7 +418,7 @@
   (let ((b (si:make-chunk nil 200)))
     (values
      (sprintf b (si:make-string-chunk "foo: %d, %.3f, %s")
-              (c:vaargs (c:int 123)
+              (c:c-vaargs (c:int 123)
                         (c:double 1.23)
                         (c:string (si:make-string-chunk "bar"))))
      (si:unpack-string b 0)))
@@ -430,8 +430,8 @@
     (values
      (sprintf b (si:make-string-chunk "foo: %d, %.3f, %s")
               (append
-               (c:vaargs (c:int 123))
-               (c:vaargs (c:double 1.23)
+               (c:c-vaargs (c:int 123))
+               (c:c-vaargs (c:double 1.23)
                          (c:string (si:make-string-chunk "bar")))))
      (si:unpack-string b 0)))
   => 20
@@ -441,7 +441,7 @@
   (let ((b (si:make-chunk nil 200)))
     (values
      (sprintf b (si:make-string-chunk "foo: %d, %d, %.3f")
-              (c:vaargs (c:char 123)
+              (c:c-vaargs (c:char 123)
                         (c:short 123)
                         (c:float 1.23)))
      (si:unpack-string b 0)))
@@ -465,8 +465,8 @@
       (let ((b (si:make-chunk nil 200)))
         (sprintf b (si:make-string-chunk "foo: %d, %.3f, %d")
                  (append
-                  (c:vaargs (c:int 123))
-                  (c:vaargs (c:double 1.23))
+                  (c:c-vaargs (c:int 123))
+                  (c:c-vaargs (c:double 1.23))
                   (list 123))))
     (error (c)
       (si:*condition-string c)))
@@ -474,49 +474,49 @@
 
 (deftest c-vaargs-invalid-vaargs-1 ()
   (handler-case
-      (c:vaargs 123)
+      (c:c-vaargs 123)
     (error (c)
       (si:*condition-string c)))
   => "不正な可変長引数です: (123)")
 
 (deftest c-vaargs-invalid-vaargs-2 ()
   (handler-case
-      (c:vaargs (123))
+      (c:c-vaargs (123))
     (error (c)
       (si:*condition-string c)))
   => "不正な可変長引数です: ((123))")
 
 (deftest c-vaargs-invalid-vaargs-3 ()
   (handler-case
-      (c:vaargs :int32 123)
+      (c:c-vaargs :int32 123)
     (error (c)
       (si:*condition-string c)))
   => "不正な可変長引数です: (:int32 123)")
 
 (deftest c-vaargs-invalid-vaargs-4 ()
   (handler-case
-      (c:vaargs (:int32))
+      (c:c-vaargs (:int32))
     (error (c)
       (si:*condition-string c)))
   => "不正な可変長引数です: ((:int32))")
 
 (deftest c-vaargs-invalid-vaargs-5 ()
   (handler-case
-      (c:vaargs (:int32 123 234))
+      (c:c-vaargs (:int32 123 234))
     (error (c)
       (si:*condition-string c)))
   => "不正な可変長引数です: ((:int32 123 234))")
 
 (deftest c-vaargs-invalid-vaargs-6 ()
   (handler-case
-      (c:vaargs nil (:int32 123))
+      (c:c-vaargs nil (:int32 123))
     (error (c)
       (si:*condition-string c)))
   => "不正な可変長引数です: (nil (:int32 123))")
 
 (deftest c-vaargs-invalid-vaargs-7 ()
   (handler-case
-      (c:vaargs (:void 123))
+      (c:c-vaargs (:void 123))
     (error (c)
       (si:*condition-string c)))
   => "不正な可変長引数です: ((:void 123))")

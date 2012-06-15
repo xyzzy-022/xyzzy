@@ -13,7 +13,7 @@
 
 (export '(expand-c-type define-c-type *define-c-type))
 (export '(define-dll-entry *define-dll-entry
-	  expand-c-vaargs vaargs
+	  expand-c-vaargs c-vaargs
 	  defun-c-callable *defun-c-callable
 	  define-c-struct *define-c-struct
 	  c-struct-size-of c-struct-offset-of
@@ -162,7 +162,7 @@
 		  (error "•s³‚È‰Â•Ï’·ˆø”‚Å‚·: ~S" vaargs))))
 	  vaargs))
 
-(defmacro vaargs (&rest vaargs)
+(defmacro c-vaargs (&rest vaargs)
   `(list
     ,@(mapcar #'(lambda (vaarg)
 		  `(list ,@vaarg))
