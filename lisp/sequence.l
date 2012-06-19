@@ -137,18 +137,20 @@
 
 (defun reduce (function sequence
 			&key from-end (start 0) end
-			(initial-value nil sv))
+			(initial-value nil sv)
+			(key #'identity))
+  (unless key (setq key #'identity))
   (with-sequence-start-end start end sequence
     (cond ((null from-end)
 	   (unless sv
 	     (if (= start end)
 		 (return-from reduce (funcall function)))
-	     (setq initial-value (elt sequence start))
+	     (setq initial-value (funcall key (elt sequence start)))
 	     (incf start))
 	   (do ((x initial-value (funcall function
 					  x
 					  (prog1
-					      (elt sequence start)
+					      (funcall key (elt sequence start))
 					    (incf start)))))
 	       ((= start end) x)))
 	  (t
@@ -156,9 +158,9 @@
 	     (if (= start end)
 		 (return-from reduce (funcall function)))
 	     (decf end)
-	     (setq initial-value (elt sequence end)))
+	     (setq initial-value (funcall key (elt sequence end))))
 	   (do ((x initial-value (funcall function
-					  (elt sequence (decf end)) x)))
+					  (funcall key (elt sequence (decf end)) x))))
 	       ((= start end) x))))))
 
 (defun remove-duplicates (sequence &key from-end test test-not (start 0) end (key #'identity))
