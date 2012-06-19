@@ -335,7 +335,21 @@ copy_into_list (lisp list, lisp sequences)
 static void
 copy_into_vector (lisp vector, lisp sequences)
 {
-  int l = xvector_length (vector);
+  int l;
+  switch (object_typeof (vector))
+    {
+    default:
+      assert (0);
+
+    case Tsimple_vector:
+      l = xvector_length (vector);
+      break;
+
+    case Tcomplex_vector:
+      l = xvector_dimension (vector);
+      break;
+    }
+
   if (!l)
     return;
   lisp *v = xvector_contents (vector), *ve = v + l;
@@ -373,7 +387,21 @@ copy_into_vector (lisp vector, lisp sequences)
 static void
 copy_into_string (lisp string, lisp sequences)
 {
-  int l = xstring_length (string);
+  int l;
+  switch (object_typeof (string))
+    {
+    default:
+      assert (0);
+
+    case Tsimple_string:
+      l = xvector_length (string);
+      break;
+
+    case Tcomplex_string:
+      l = xvector_dimension (string);
+      break;
+    }
+
   if (!l)
     return;
   Char *s = xstring_contents (string), *se = s + l;
