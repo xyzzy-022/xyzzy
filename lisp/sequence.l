@@ -171,7 +171,8 @@
 		     :key key))
 
 (defun list-delete-duplicates (list &key from-end test test-not start end key)
-  (or test (setq test #'eql))
+  (unless test (setq test #'eql))
+  (unless key (setq key #'identity))
   (if (or (endp list)
 	  (zerop end)
 	  (= start end))
@@ -197,6 +198,7 @@
 	  (setq ylast (cdr ylast)))))))
 
 (defun vector-delete-duplicates (vector &key from-end test test-not start end key)
+  (unless key (setq key #'identity))
   (do ((i start (1+ i))
        (j start))
       ((= i end)
@@ -255,6 +257,7 @@
 		  :key key))
 
 (defun nsubstitute-if (newitem test sequence &key from-end (start 0) end count (key #'identity))
+  (unless key (setq key #'identity))
   (with-sequence-start-end start end sequence
     (if from-end
 	(do ((i (1- end) (1- i)))
@@ -297,14 +300,15 @@
 
 (defun mismatch (sequence1 sequence2 &key from-end test test-not (key #'identity)
 			   (start1 0) (start2 0) end1 end2)
+  (unless key (setq key #'identity))
   (with-sequence-start-end start1 end1 sequence1
     (with-sequence-start-end start2 end2 sequence2
       (and test test-not
 	   (error ":test‚Æ:test-not‚ª—¼•ûw’è‚³‚ê‚Ä‚¢‚Ü‚·"))
       (if test-not
 	  (setq test #'(lambda (x y) (not (funcall test-not x y))))
-	(or test
-	    (setq test #'eql)))
+	(unless test
+	  (setq test #'eql)))
       (do* ((l1 (- end1 start1))
 	    (l2 (- end2 start2))
 	    (end (+ start1 (min l1 l2)))
@@ -318,6 +322,7 @@
 	  (return i))))))
 
 (defun merge (result-type sequence1 sequence2 predicate &key (key #'identity))
+  (unless key (setq key #'identity))
   (do* ((l1 (length sequence1))
 	(l2 (length sequence2))
 	(l (+ l1 l2))
