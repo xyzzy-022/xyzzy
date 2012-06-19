@@ -9,15 +9,9 @@
            (if tests
                (dolist (test (reverse tests))
                  (load-test-file test))
-             (progn
-               (load-test-file (merge-pathnames "nanri-master-change-tests.l" dir))
-               (load-test-file (merge-pathnames "lisp-tests.l" dir))
-               (load-test-file (merge-pathnames "common-lisp-tests.l" dir))
-               (load-test-file (merge-pathnames "editor-tests.l" dir))
-               (load-test-file (merge-pathnames "system-tests.l" dir))
-               (load-test-file (merge-pathnames "foreign-test.l" dir))
-               (load-test-file (merge-pathnames "defun-builtin-tests.l" dir))
-               ))
+             (dolist (test (sort (directory dir :absolute t :recursive t :wild "*-tests.l")
+                                 #'string-lessp))
+               (load-test-file test)))
            ;(test-changes)
            (run-all-tests))
           (t
