@@ -22121,7 +22121,7 @@ buffer-can-redo-p が t の時のみ実行可能です。
 <chapter>
 <title>reduce</title>
 <type>Function</type>
-<arguments>reduce FUNCTION SEQUENCE &amp;key :from-end :start :end :initial-value</arguments>
+<arguments>reduce FUNCTION SEQUENCE &amp;key :from-end :start :end :initial-value (:key #'identity)</arguments>
 <package>lisp</package>
 <description>
 2項演算子であるFUNCTIONで、SEQUENCEに対して畳み込みを行います。
@@ -22130,9 +22130,10 @@ buffer-can-redo-p が t の時のみ実行可能です。
   :from-end : nil なら先頭から、non-nil なら最後の要素から畳み込みを行います。
   :start    : 畳み込みを行う SEQUENCE の開始インデックスです。デフォルトは 0 です。 
               :from-end が non-nil なら終了インデックスになります。
-  :END      : 畳み込みを行う SEQUENCE の終了インデックスです。デフォルトは nil です。
+  :end      : 畳み込みを行う SEQUENCE の終了インデックスです。デフォルトは nil です。
               :from-end が non-nil なら開始インデックスになります。
-  :INITIAL-VALUE : non-nil ならばこの値を初期値として使用します。
+  :initial-value : non-nil ならばこの値を初期値として使用します。
+  :key      : FUNCTION に渡す前に要素に適用する関数。デフォルトは #'identity です。
 
  (reduce #'- '(1 2 3)) = (- (- 1 2) 3)
  (reduce #'- '(1 2 3) :initial-value 10) = (- (- (- 10 1) 2) 3)
