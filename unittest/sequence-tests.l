@@ -139,3 +139,19 @@
   => (1 2 2 3 4 5 6 8)
   => "AabBCcdF"
   => "AabBCcdF")
+
+(deftest reduce-nil-key ()
+  (values
+   (reduce #'+ '(1 2 3))
+   (reduce #'+ '(1 2 3) :key nil))
+  => 6
+  => 6)
+
+(deftest reduce-with-key ()
+  (values
+   (reduce #'+ '((1) (1 2) (1 2 3)) :key #'length)
+   (reduce #'* #(0 1 2 3 4 0) :key #'1+ :start 1 :end 5)
+   (reduce #'+ "123456789" :key #'digit-char-p))
+  => 6
+  => 120
+  => 45)
