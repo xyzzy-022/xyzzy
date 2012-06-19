@@ -22138,6 +22138,10 @@ buffer-can-redo-p が t の時のみ実行可能です。
  (reduce #'- '(1 2 3)) = (- (- 1 2) 3)
  (reduce #'- '(1 2 3) :initial-value 10) = (- (- (- 10 1) 2) 3)
  (reduce #'- '(1 2 3) :from-end t :initial-value 10) = (- 1 (- 2 (- 3 10)))
+ (reduce #'- '((1) (2) (3)) :key #'car) = (- (- (car '(1)) (car '(2))) (car '(3)))
+
+補足：
+  xyzzy 0.2.2.241 から:keyパラメータを指定可能です。
 </description>
 <seealso></seealso>
 <link></link>
