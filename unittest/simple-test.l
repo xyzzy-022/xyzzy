@@ -73,10 +73,12 @@
 ;; :: test = (NAME DESCRIPTION . EXAMPLES)
 
 (defparameter *tests* nil)
+(defparameter *error-on-overwriting-test* nil)
 
 (defun store-test (name description source examples)
   (when (member name *tests* :key #'car)
-    (msgbox "Overwriting a test: ~S" name))
+    (funcall (if *error-on-overwriting-test* 'error 'warn)
+             "Overwriting a test: ~S" name))
   (setf *tests*
         (cons (list* name description source examples)
               (remove name *tests* :key #'car)))
@@ -153,7 +155,7 @@
 ;;;
 ;;; Each example form and corresponding expectations (expressed by
 ;;; things like `=> VALUE`) is called "example" here.
-;;; 
+;;;
 ;;; :: EXAMPLE = (FORM THUNK EXPECTED-EXPANSION EXPECTED-RESULTS EXPECTED-OUTPUT)
 
 (defun non-nil-p (#:ignore actual) actual)
