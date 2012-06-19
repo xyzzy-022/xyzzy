@@ -1331,3 +1331,39 @@ lisp-indent-hook property"
   => t
   => t
   => t)
+
+
+(defmacro macro-function-foo (a b)
+  `(* ,a ,b))
+
+(defmacro macro-function-bar (b c)
+  `(* ,b ,c))
+
+(deftest macro-function-environment ()
+  (let (env)
+    (macrolet ((macro-function-foo (a b)
+                 `(+ ,a ,b))
+               (macro-function-baz (a c)
+                 `(+ ,a ,c))
+               (env (&environment env)
+                 env))
+      (setf env (env)))
+    (values
+     (macro-function 'macro-function-foo)
+     (macro-function 'macro-function-foo nil)
+     (macro-function 'macro-function-foo env)
+     (macro-function 'macro-function-foo '((macro-function-foo
+                                            macro (a b) (block macro-function-foo (list '/ a b)))))
+     (macro-function 'macro-function-bar)
+     (macro-function 'macro-function-bar env)
+     (macro-function 'macro-function-baz)
+     (macro-function 'macro-function-baz env)
+     ))
+  => (macro (a b) (block macro-function-foo (list '* a b)))
+  => (macro (a b) (block macro-function-foo (list '* a b)))
+  => (macro (a b) (block macro-function-foo (list '+ a b)))
+  => (macro (a b) (block macro-function-foo (list '/ a b)))
+  => (macro (b c) (block macro-function-bar (list '* b c)))
+  => (macro (b c) (block macro-function-bar (list '* b c)))
+  => nil
+  => (macro (a c) (block macro-function-baz (list '+ a c))))
