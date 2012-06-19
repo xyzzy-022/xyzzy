@@ -185,10 +185,17 @@ Fspecial_form_p (lisp symbol)
 }
 
 lisp
-Fmacro_function (lisp symbol)
+Fmacro_function (lisp symbol, lisp env)
 {
   check_symbol (symbol);
   lisp fn = xsymbol_function (symbol);
+  if (env)
+    {
+      lisp x = assq (symbol, environmentp (env) ? xenvironment_fns (env) : env);
+      if (x && consp (x))
+        fn = xcdr (x);
+    }
+
   if ((functionp (fn) && expand_macro_function_p (fn))
       || (consp (fn) && xcar (fn) == Qmacro))
     return fn;

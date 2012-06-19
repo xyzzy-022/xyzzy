@@ -39,7 +39,7 @@
 (si::defun-builtin set (symbol value))
 (si::defun-builtin symbol-value (symbol))
 (si::defun-builtin special-form-p (symbol))
-(si::defun-builtin macro-function (symbol))
+(si::defun-builtin macro-function (symbol &optional env))
 (si::defun-builtin symbol-function (symbol))
 (si::defun-builtin set-default (symbol value))
 (si::defun-builtin default-value (symbol))

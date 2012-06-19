@@ -100,7 +100,7 @@ static symbols lsp[] =
   DEFUN3 (set, 2, 0, 0),
   DEFUN3 (symbol-value, 1, 0, 0),
   DEFUN3 (special-form-p, 1, 0, 0),
-  DEFUN3 (macro-function, 1, 0, 0),
+  DEFUN3 (macro-function, 1, 1, 0),
   DEFUN3 (symbol-function, 1, 0, 0),
   DEFUN3 (set-default, 2, 0, 0),
   DEFUN3 (default-value, 1, 0, 0),
