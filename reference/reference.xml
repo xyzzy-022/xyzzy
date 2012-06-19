@@ -16880,17 +16880,35 @@ CPU のバージョンを返します。
 <chapter>
 <title>macro-function</title>
 <type>Function</type>
-<arguments>macro-function SYMBOL</arguments>
+<arguments>macro-function SYMBOL &amp;optional ENV</arguments>
 <package>lisp</package>
 <description>
 SYMBOLがマクロか否かを返します。マクロの場合にはその内容を返します。
+ENVを指定した場合は指定した環境からマクロを探します。
+
 使用例：
   (macro-function 'car)
-  =&gt;nil
+  =&gt; nil
 
   (macro-function 'when)
-  =&gt;(macro (lisp::test &amp;body lisp::body)
-         (block when (list 'if lisp::test (cons 'progn lisp::body))))
+  =&gt; (macro (lisp::test &amp;body lisp::body)
+          (block when (list 'if lisp::test (cons 'progn lisp::body))))
+
+  (macrolet ((foo (a b)
+               `(+ ,a ,b))
+             (env (&environment env)
+               env))
+    (setf env (env)))
+  =&gt; #&lt;environment-object 134287448&gt;
+
+  (macro-function 'foo)
+  =&gt; nil
+
+  (macro-function 'foo env)
+  =&gt; (macro (a b) (block foo (list '+ a b)))
+
+補足：
+  xyzzy 0.2.2.241 からENVを指定可能です。
 </description>
 <seealso>fboundp</seealso>
 <seealso>boundp</seealso>
