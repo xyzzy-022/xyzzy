@@ -93,6 +93,7 @@ static symbols lsp[] =
   DEFSF3Q (quote),
   DEFSF3Q (function),
   DEFSF3 (progn),
+  DEFSF3 (locally),
   DEFSF3 (let),
   DEFSF2 (let*, let_star),
   DEFSF3 (if),
@@ -775,6 +776,7 @@ static symbols cl[] =
 static symbols sys[] =
 {
   /* eval.cc */
+  SI_DEFUN3 (*symbol-value, 1, 0, 0),
   SI_DEFUN3 (*specialp, 1, 0, 0),
   SI_DEFUN3 (*make-constant, 1, 0, 0),
   SI_DEFUN3 (*make-special, 1, 0, 0),

@@ -708,6 +708,7 @@ local-keymap
 local-set-key
 local-unset-key
 local-variable-p
+locally
 lock-file
 log
 logand
@@ -3197,6 +3198,7 @@ si:*structure-reader
 si:*structure-subtypep
 si:*structurep
 si:*svset
+si:*symbol-value
 si:*throw-error
 si:*tree-count
 si:*tree-find

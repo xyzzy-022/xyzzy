@@ -1367,3 +1367,283 @@ lisp-indent-hook property"
   => (macro (b c) (block macro-function-bar (list '* b c)))
   => nil
   => (macro (a c) (block macro-function-baz (list '+ a c))))
+
+
+(deftest locally-special-form-p ()
+  (special-form-p 'locally)
+  => non-nil)
+
+(deftest locally-0 ()
+  (values
+   (locally)
+   (locally t)
+   (locally nil))
+  => nil
+  => t
+  => nil)
+
+(deftest locally-unbound-variable ()
+  (values
+   (handler-case
+       (locally
+	 locally-a)
+     (unbound-variable (e)
+       t))
+
+   (handler-case
+       (locally
+	 (declare (special locally-a))
+	 locally-a)
+     (unbound-variable (e)
+       t))
+
+   (let ((locally-a 123))
+     (locally
+       (declare (special locally-a))
+       t))
+
+   (let ((locally-a 123))
+     (locally
+       locally-a))
+
+   (handler-case
+       (let ((locally-a 123))
+	 (locally
+	   (declare (special locally-a))
+	   locally-a))
+     (unbound-variable (e)
+       t)))
+  => t
+  => t
+  => t
+  => 123
+  => t)
+
+(setq locally-b 0)
+(deftest locally-toplev-setq ()
+  (values
+   (locally
+     locally-b)
+
+   (locally
+     (declare (special locally-b))
+     locally-b)
+
+   (let ((locally-b 123))
+     (locally
+       locally-b))
+
+   (let ((locally-b 123))
+     (locally
+       (declare (special locally-b))
+       locally-b)))
+  => 0
+  => 0
+  => 123
+  => 0)
+
+(defvar locally-c 0)
+(deftest locally-defvar ()
+  (values
+   (locally
+     locally-c)
+
+   (locally
+     (declare (special locally-c))
+     locally-c)
+
+   (let ((locally-c 123))
+     (locally
+       locally-c))
+
+   (let ((locally-c 123))
+     (locally
+       (declare (special locally-c))
+       locally-c)))
+  => 0
+  => 0
+  => 123
+  => 123)
+
+(deftest locally-declare-special ()
+  (values
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (locally
+       locally-d))
+
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (locally
+       (declare (special locally-d))
+       locally-d))
+
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (let ((locally-d 123))
+       (locally
+	 locally-d)))
+
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (let ((locally-d 123))
+       (locally
+	 (declare (special locally-d))
+	 locally-d))))
+  => 0
+  => 0
+  => 123
+  => 0)
+
+
+(defun locally-sample-function (y)  ;this y is regarded as special
+  (declare (special y))
+  (let ((y t))              ;this y is regarded as lexical
+    (list y
+	  (locally (declare (special y))
+	    ;; this next y is regarded as special
+	    y)
+	  y)))
+
+(deftest locally-clhs-1 ()
+  (locally-sample-function nil)
+  => (t nil t))
+
+
+(deftest locally-0-compile ()
+  (compile-and-eval
+    (values
+     (locally)
+     (locally t)
+     (locally nil)))
+  => nil
+  => t
+  => nil)
+
+(deftest locally-unbound-variable-compile ()
+  (compile-and-eval
+    (values
+     (handler-case
+	 (locally
+	   locally-a)
+       (unbound-variable (e)
+	 t))
+
+     (handler-case
+	 (locally
+	   (declare (special locally-a))
+	   locally-a)
+       (unbound-variable (e)
+	 t))
+
+     (let ((locally-a 123))
+       (locally
+	 (declare (special locally-a))
+	 t))
+
+     (let ((locally-a 123))
+       (locally
+	 locally-a))
+
+     (handler-case
+	 (let ((locally-a 123))
+	   (locally
+	     (declare (special locally-a))
+	     locally-a))
+       (unbound-variable (e)
+	 t))))
+  => t
+  => t
+  => t
+  => 123
+  => t)
+
+(setq locally-b 0)
+(deftest locally-toplev-setq-compile ()
+  (compile-and-eval
+    (values
+     (locally
+       locally-b)
+
+     (locally
+       (declare (special locally-b))
+       locally-b)
+
+     (let ((locally-b 123))
+       (locally
+	 locally-b))
+
+     (let ((locally-b 123))
+       (locally
+	 (declare (special locally-b))
+	 locally-b))))
+  => 0
+  => 0
+  => 123
+  => 0)
+
+(defvar locally-c 0)
+(deftest locally-defvar-compile ()
+  (compile-and-eval
+    (values
+     (locally
+       locally-c)
+
+     (locally
+       (declare (special locally-c))
+       locally-c)
+
+     (let ((locally-c 123))
+       (locally
+	 locally-c))
+
+     (let ((locally-c 123))
+       (locally
+	 (declare (special locally-c))
+	 locally-c))))
+  => 0
+  => 0
+  => 123
+  => 123)
+
+(deftest locally-declare-special-compile ()
+  (compile-and-eval
+    (values
+     (let ((locally-d 0))
+       (declare (special locally-d))
+       (locally
+	 locally-d))
+
+     (let ((locally-d 0))
+       (declare (special locally-d))
+       (locally
+	 (declare (special locally-d))
+	 locally-d))
+
+     (let ((locally-d 0))
+       (declare (special locally-d))
+       (let ((locally-d 123))
+	 (locally
+	   locally-d)))
+
+     (let ((locally-d 0))
+       (declare (special locally-d))
+       (let ((locally-d 123))
+	 (locally
+	   (declare (special locally-d))
+	   locally-d)))))
+  => 0
+  => 0
+  => 123
+  => 0)
+
+(deftest locally-clhs-1-compile ()
+  (compile-and-eval
+    (let ((y nil))
+      (declare (special y))
+      (let ((y t))
+	(list y
+	      (locally (declare (special y))
+		y)
+	      y))))
+  => (t nil t))

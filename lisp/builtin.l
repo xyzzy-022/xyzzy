@@ -15,6 +15,7 @@
 (in-package "lisp")
 
 (si::defun-builtin progn ("{FORM}*"))
+(si::defun-builtin locally ("{declaration}* {FORM}*"))
 (si::defun-builtin let ("({VAR|(VAR [VALUE])}*) {declaration}* {FORM}*"))
 (si::defun-builtin let* ("({VAR|(VAR [VALUE])}*) {declaration}* {FORM}*"))
 (si::defun-builtin if ("TEST THEN [ELSE]"))
@@ -448,6 +449,7 @@
 (in-package "system")
 
 (si::defun-builtin *byte-code ("BYTE-STRING [PARAMETERS]"))
+(si::defun-builtin *symbol-value (symbol))
 (si::defun-builtin *specialp (object))
 (si::defun-builtin *make-constant (symbol))
 (si::defun-builtin *make-special (symbol))
