@@ -449,6 +449,7 @@
 (in-package "system")
 
 (si::defun-builtin *byte-code ("BYTE-STRING [PARAMETERS]"))
+(si::defun-builtin *symbol-value (symbol))
 (si::defun-builtin *specialp (object))
 (si::defun-builtin *make-constant (symbol))
 (si::defun-builtin *make-special (symbol))

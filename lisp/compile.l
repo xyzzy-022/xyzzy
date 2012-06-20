@@ -125,6 +125,7 @@
   (setf (get 'quote 'special-form) 'compile-quote)
   (setf (get 'function 'special-form) 'compile-function)
   (setf (get 'progn 'special-form) 'compile-progn)
+  (setf (get 'locally 'special-form) 'compile-locally)
   (setf (get 'let 'special-form) 'compile-let)
   (setf (get 'let* 'special-form) 'compile-let*)
   (setf (get 'if 'special-form) 'compile-if)
@@ -713,6 +714,20 @@
     (decf *stack-depth*)
     (output-insn 'insn-discard)
     (compile-form x)))
+
+(defun compile-locally (form)
+  (multiple-value-bind (decl body)
+      (lisp::find-declaration form)
+    (let ((specials (process-declare decl)))
+      (compile-form
+       (if specials
+	   (let ((special-vars (mapcar #'(lambda (v) (bound-var-symbol v)) specials)))
+	     `(let (,@(mapcar #'(lambda (var)
+				  `(,var (si:*symbol-value ',var)))
+			      special-vars))
+		(declare (special ,@special-vars))
+		,@body))
+	 `(progn ,@body))))))
 
 (defun compile-let (form)
   (if (endp form)

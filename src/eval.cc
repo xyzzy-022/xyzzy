@@ -145,6 +145,13 @@ Fset (lisp var, lisp val)
 }
 
 lisp
+Fsi_symbol_value (lisp symbol)
+{
+  check_symbol (symbol);
+  return symbol_value (symbol, selected_buffer ());
+}
+
+lisp
 Fsymbol_value (lisp symbol)
 {
   check_symbol (symbol);

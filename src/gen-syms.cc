@@ -776,6 +776,7 @@ static symbols cl[] =
 static symbols sys[] =
 {
   /* eval.cc */
+  SI_DEFUN3 (*symbol-value, 1, 0, 0),
   SI_DEFUN3 (*specialp, 1, 0, 0),
   SI_DEFUN3 (*make-constant, 1, 0, 0),
   SI_DEFUN3 (*make-special, 1, 0, 0),
