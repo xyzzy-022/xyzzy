@@ -1049,7 +1049,7 @@ Flocally (lisp arg, lex_env &olex)
               {
                 lisp sym = xcar (t);
                 if (symbolp (sym))
-                  nlex.bind (sym, xsymbol_value (sym));
+                  nlex.bind (sym, symbol_value (sym, selected_buffer ()));
                 QUIT;
               }
           QUIT;
