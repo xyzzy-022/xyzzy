@@ -1495,6 +1495,37 @@ lisp-indent-hook property"
   => 123
   => 0)
 
+(defvar-local locally-e 0)
+(deftest locally-eefvar-local ()
+  (values
+   (locally
+     locally-e)
+
+   (locally
+     (declare (special locally-e))
+     locally-e)
+
+   (let ((locally-e 123))
+     (locally
+       locally-e))
+
+   (let ((locally-e 123))
+     (locally
+       (declare (special locally-e))
+       locally-e))
+
+   (with-temp-buffer
+    (setq locally-e 1)
+    (let ((locally-e 123))
+      (locally
+        (declare (special locally-e))
+        locally-e))))
+  => 0
+  => 0
+  => 123
+  => 0
+  => 1)
+
 
 (defun locally-sample-function (y)  ;this y is regarded as special
   (declare (special y))
@@ -1636,6 +1667,39 @@ lisp-indent-hook property"
   => 0
   => 123
   => 0)
+
+(defvar-local locally-e 0)
+(deftest locally-eefvar-local-compile ()
+  (compile-and-eval
+    (values
+     (locally
+       locally-e)
+
+     (locally
+       (declare (special locally-e))
+       locally-e)
+
+     (let ((locally-e 123))
+       (locally
+         locally-e))
+
+     (let ((locally-e 123))
+       (locally
+         (declare (special locally-e))
+         locally-e))
+
+     (with-temp-buffer
+       (setq locally-e 1)
+       (let ((locally-e 123))
+         (locally
+           (declare (special locally-e))
+           locally-e)))))
+  => 0
+  => 0
+  => 123
+  => 0
+  => 1)
+
 
 (deftest locally-clhs-1-compile ()
   (compile-and-eval
