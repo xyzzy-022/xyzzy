@@ -16896,7 +16896,7 @@ ENVを指定した場合は指定した環境からマクロを探します。
 
   (macrolet ((foo (a b)
                `(+ ,a ,b))
-             (env (&environment env)
+             (env (&amp;environment env)
                env))
     (setf env (env)))
   =&gt; #&lt;environment-object 134287448&gt;
