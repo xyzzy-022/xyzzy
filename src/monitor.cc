@@ -29,16 +29,29 @@ Monitor::get_workarea_from_window (const HWND hwnd, LPRECT lpworkarea)
 }
 
 bool
+Monitor::get_monitorinfo_from_window (const HWND hwnd, LPMONITORINFO lpmonitorinfo)
+{
+  HMONITOR monitor = MonitorFromWindow (hwnd, MONITOR_DEFAULTTOPRIMARY);
+  return get_monitorinfo_from_monitor (monitor, lpmonitorinfo);
+}
+
+bool
 Monitor::get_workarea_from_monitor (const HMONITOR& monitor, LPRECT lpworkarea)
 {
   MONITORINFO info;
-  memset (&info, 0, sizeof info);
-  info.cbSize = sizeof info;
-  if (!GetMonitorInfo(monitor, &info))
+  if (!get_monitorinfo_from_monitor (monitor, &info))
     return false;
 
   *lpworkarea = info.rcWork;
   return true;
+}
+
+bool
+Monitor::get_monitorinfo_from_monitor (const HMONITOR& monitor, LPMONITORINFO lpmonitorinfo)
+{
+  memset (lpmonitorinfo, 0, sizeof *lpmonitorinfo);
+  lpmonitorinfo->cbSize = sizeof *lpmonitorinfo;
+  return GetMonitorInfo(monitor, lpmonitorinfo) ? true : false;
 }
 
 Monitor monitor;
