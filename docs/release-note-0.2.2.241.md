@@ -274,7 +274,7 @@ xyzzy Lisp 開発者向けバグ修正
 既知の問題
 ----------
 
-  * special form の (?) 引数間違い時のエラーメッセージが意味不明 (#329)
+  * マクロ・特殊形式の引数間違い時のエラーメッセージが意味不明 (#329)
   * ミニバッファで補完時に落ちる場合がある (#321)
   * macro-function が CL と異なる (#320)
   * multiple-value-bind、multiple-value-setq の macro-function が nil (#319)
