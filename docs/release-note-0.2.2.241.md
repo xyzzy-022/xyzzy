@@ -147,7 +147,7 @@ xyzzy Lisp 開発者向け機能追加
     => (t nil)
     ```
 
-  * `reduce` に `:key` パラメータを追加 (x022235, youz, #322)
+  * `reduce` に `:key` パラメータを追加しました (x022235, youz, #322)
 
     ```lisp
     (reduce #'+ '((orange . 3) (apple . 5) (grape . 2))
