@@ -75,6 +75,25 @@ lisp/ 配下や etc/ 配下をカスタマイズしている場合は
 xyzzy Lisp 開発者向け機能追加
 -----------------------------
 
+  * 文字エンコードの情報を取得する関数を追加しました (x022235, #307)
+
+    * `char-encoding-type`
+    * `char-encoding-signature`
+
+    ```lisp
+    (char-encoding-type *encoding-utf8*)
+    => :utf8
+
+    (char-encoding-signature *encoding-utf8*)
+    => t
+
+    (char-encoding-type *encoding-utf8n*)
+    => :utf8
+
+    (char-encoding-signature *encoding-utf8n*)
+    => nil
+    ```
+
   * FFI: 可変長引数に対応しました (x022235, #294)
 
     `c:define-dll-entry` の引数宣言の最後に `&rest` を追加し、
@@ -126,8 +145,23 @@ xyzzy Lisp 開発者向け機能追加
 
   * `si:unpack-string` で C のポインタを指定可能としました (x022235, #311)
 
-    `si:make-chunk` と同じように `CHUNK` 引数が `nil` の場合は、`OFFSET`
-    をポインタとみなすようにしました。
+    `si:make-chunk` と同じように `CHUNK` 引数が `nil` の場合は、
+    `OFFSET` をポインタとみなすようにしました。
+
+    ```lisp
+    (require "foreign")
+
+    (c:define-dll-entry
+      c:string
+      strerror (c:int)
+      "msvcrt")
+
+    (strerror 2)
+    => 41155912
+
+    (si:unpack-string nil (strerror 2))
+    => "No such file or directory"
+    ```
 
   * `locally` 特殊形式を追加しました (x022235, #271)
 
@@ -209,6 +243,12 @@ xyzzy Lisp 開発者向けバグ修正
 
   * builtin パッケージを削除すると `si:list-builtin-packages` が `#<package anonymous>`
     を返す問題を修正しました (x022235, #303)
+
+
+その他
+------
+
+  * Windows SDK 7.1 がなくてもビルドできるようになりました (x022235, #314)
 
 
 注意事項
