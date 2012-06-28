@@ -175,7 +175,7 @@ xyzzy Lisp 開発者向け機能追加
 xyzzy Lisp 開発者向けバグ修正
 -----------------------------
 
-  * `package-rename` で自分自身のニックネームを変更できない問題を修正しました (x022235, snmsts, #302)
+  * `rename-package` で自分自身のニックネームを変更できない問題を修正しました (x022235, snmsts, #302)
 
     ```lisp
     (rename-package :system :system '(:si :sys))
