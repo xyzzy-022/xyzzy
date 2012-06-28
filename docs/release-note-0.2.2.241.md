@@ -78,7 +78,7 @@ xyzzy Lisp 開発者向け機能追加
   * FFI: 可変長引数に対応しました (x022235, #294)
 
     `c:define-dll-entry` の引数宣言の最後に `&rest` を追加し、
-    呼び出し時に `(c:vaargs (型1 引数1) (型2 引数2) ...)` という形式で
+    呼び出し時に `(c:c-vaargs (型1 引数1) (型2 引数2) ...)` という形式で
     可変長引数を指定してください。
 
     ```lisp
@@ -96,7 +96,7 @@ xyzzy Lisp 開発者向け機能追加
 
     (defun make-sql (text date)
       (let ((ptr (sqlite3_mprintf (si:make-string-chunk "INSERT INTO table VALUES ('%q', %d)")
-                                  (c:vaargs ; 可変長引数の指定
+                                  (c:c-vaargs ; 可変長引数の指定
                                    (c:string (si:make-string-chunk text))
                                    (c:int date)))))
         (when (not (zerop ptr))
@@ -178,11 +178,11 @@ xyzzy Lisp 開発者向けバグ修正
   * `rename-package` で自分自身のニックネームを変更できない問題を修正しました (x022235, snmsts, #302)
 
     ```lisp
-    (rename-package :system :system '(:si :sys))
-    => #<package: system>       ; 0.2.2.240 では => 同じ名前のパッケージが存在します: "system"
+    (rename-package :common-lisp :common-lisp '(:cl))
+    => #<package: common-lisp>  ; 0.2.2.240 では => 同じ名前のパッケージが存在します: "common-lisp"
 
-    (package-nicknames :system)
-    => ("sys" "si")
+    (package-nicknames :cl)
+    => ("cl")
     ```
 
   * `:key` に `nil` を指定するとエラーになる関数があったのを修正しました (x022235, #324)
@@ -207,7 +207,8 @@ xyzzy Lisp 開発者向けバグ修正
 
   * `int64` の範囲を超える場合、`si:unpack-int64` の結果がおかしい問題を修正しました (x022235, #305)
 
-  * パッケージを削除すると `si:list-builtin-packages` が `#<package anonymous>` を返す問題を修正しました (x022235, #303)
+  * builtin パッケージを削除すると `si:list-builtin-packages` が `#<package anonymous>`
+    を返す問題を修正しました (x022235, #303)
 
 
 注意事項
