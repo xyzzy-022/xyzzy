@@ -145,6 +145,13 @@ Fset (lisp var, lisp val)
 }
 
 lisp
+Fsi_symbol_value (lisp symbol)
+{
+  check_symbol (symbol);
+  return symbol_value (symbol, selected_buffer ());
+}
+
+lisp
 Fsymbol_value (lisp symbol)
 {
   check_symbol (symbol);
@@ -185,10 +192,17 @@ Fspecial_form_p (lisp symbol)
 }
 
 lisp
-Fmacro_function (lisp symbol)
+Fmacro_function (lisp symbol, lisp env)
 {
   check_symbol (symbol);
   lisp fn = xsymbol_function (symbol);
+  if (env)
+    {
+      lisp x = assq (symbol, environmentp (env) ? xenvironment_fns (env) : env);
+      if (x && consp (x))
+        fn = xcdr (x);
+    }
+
   if ((functionp (fn) && expand_macro_function_p (fn))
       || (consp (fn) && xcar (fn) == Qmacro))
     return fn;
@@ -1016,6 +1030,34 @@ Fprogn (lisp arg, lex_env &lex)
       QUIT;
     }
   return val;
+}
+
+lisp
+Flocally (lisp arg, lex_env &olex)
+{
+  lex_env nlex (olex);
+  for (lisp body = arg; consp (body); body = xcdr (body))
+    {
+      lisp x = xcar (body);
+      if (!consp (x) || xcar (x) != Qdeclare)
+        break;
+      for (x = xcdr (x); consp (x); x = xcdr (x))
+        {
+          lisp t = xcar (x);
+          if (consp (t) && xcar (t) == Qspecial)
+            for (t = xcdr (t); consp (t); t = xcdr (t))
+              {
+                lisp sym = xcar (t);
+                if (symbolp (sym))
+                  nlex.bind (sym, symbol_value (sym, selected_buffer ()));
+                QUIT;
+              }
+          QUIT;
+        }
+      QUIT;
+    }
+
+  return declare_progn (arg, nlex, 0);
 }
 
 lisp

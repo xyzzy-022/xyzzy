@@ -93,6 +93,7 @@ static symbols lsp[] =
   DEFSF3Q (quote),
   DEFSF3Q (function),
   DEFSF3 (progn),
+  DEFSF3 (locally),
   DEFSF3 (let),
   DEFSF2 (let*, let_star),
   DEFSF3 (if),
@@ -100,7 +101,7 @@ static symbols lsp[] =
   DEFUN3 (set, 2, 0, 0),
   DEFUN3 (symbol-value, 1, 0, 0),
   DEFUN3 (special-form-p, 1, 0, 0),
-  DEFUN3 (macro-function, 1, 0, 0),
+  DEFUN3 (macro-function, 1, 1, 0),
   DEFUN3 (symbol-function, 1, 0, 0),
   DEFUN3 (set-default, 2, 0, 0),
   DEFUN3 (default-value, 1, 0, 0),
@@ -775,6 +776,7 @@ static symbols cl[] =
 static symbols sys[] =
 {
   /* eval.cc */
+  SI_DEFUN3 (*symbol-value, 1, 0, 0),
   SI_DEFUN3 (*specialp, 1, 0, 0),
   SI_DEFUN3 (*make-constant, 1, 0, 0),
   SI_DEFUN3 (*make-special, 1, 0, 0),
@@ -850,6 +852,8 @@ static symbols sys[] =
   SI_DEFUN3 (*package-summary, 1, 0, 0),
   SI_DEFUN3 (*package-documentation, 1, 0, 0),
   SI_DEFUN3 (*set-package-documentation, 2, 0, 0),
+  SI_DEFUN3 (*builtin-package-p, 1, 0, 0),
+  SI_DEFUN3 (list-builtin-packages, 0, 0, 0),
 
   /* lprint.cc */
   SI_DEFUN3 (*print-condition, 1, 0, 0),
@@ -972,7 +976,7 @@ static symbols sys[] =
 
   /* dll.cc */
   SI_DEFUN3 (load-dll-module, 1, 0, 0),
-  SI_DEFUN3 (make-c-function, 4, 0, 0),
+  SI_DEFUN3 (make-c-function, 4, 0, FFneed_rest),
   SI_DEFUN3 (make-c-callable, 3, 0, FFneed_rest),
   SI_DEFUN3 (*last-win32-error, 0, 0, 0),
   SI_DEFUN3 (*set-last-win32-error, 1, 0, 0),
@@ -1307,6 +1311,7 @@ static symbols kwd[] =
   DEFKWD2 (float),
   DEFKWD2 (double),
   DEFKWD2 (void),
+  DEFKWD2 (vaarg),
   DEFKWD2 (convention),
   DEFKWD2 (stdcall),
 #undef cdecl
@@ -1352,6 +1357,15 @@ static symbols kwd[] =
   DEFKWD2 (prefix),
   DEFKWD2 (extend),
   DEFKWD2 (bold),
+  DEFKWD2 (auto-detect),
+  DEFKWD2 (sjis),
+  DEFKWD2 (iso2022),
+  DEFKWD2 (iso8859),
+  DEFKWD2 (windows-codepage),
+  DEFKWD2 (utf5),
+  DEFKWD2 (utf7),
+  DEFKWD2 (utf8),
+  DEFKWD2 (utf16),
   DEFKWD2 (us-ascii),
   DEFKWD2 (jisx0201-kana),
   DEFKWD2 (iso8859-1),
@@ -1481,6 +1495,7 @@ static symbols unint[] =
   MAKE_SYMBOL2Q (bq-quote),
   MAKE_SYMBOL2Q (bq-clobberable),
   MAKE_SYMBOL2 (*package-list),
+  MAKE_SYMBOL2 (*builtin-package-list),
   MAKE_SYMBOL2 (*user-package),
   MAKE_SYMBOL2 (*lisp-package),
   MAKE_SYMBOL2 (*system-package),
@@ -2613,6 +2628,8 @@ static symbols ed[] =
   DEFUN3 (make-utf16-encoding, 2, 0, FFneed_rest),
   DEFUN3 (char-encoding-name, 1, 0, 0),
   DEFUN3 (char-encoding-display-name, 1, 0, 0),
+  DEFUN3 (char-encoding-type, 1, 0, 0),
+  DEFUN3 (char-encoding-signature, 1, 0, 0),
   DEFVAR2 (*encoding-sjis*),
   MAKE_SYMBOL2 (*encoding-euc-jp*),
   MAKE_SYMBOL2 (*encoding-jis*),

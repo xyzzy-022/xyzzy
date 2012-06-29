@@ -424,6 +424,17 @@ of SHA-384 and SHA-512)."
   => #xFF
   => -1)
 
+(deftest pack-unpack-int8-overflow ()
+  (values
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int8 c 0 #xFF)
+     (si:unpack-int8 c 0))
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int8 c 0 #x80)
+     (si:unpack-int8 c 0)))
+  => -1
+  => #x-80)
+
 (deftest pack-unpack-int16 ()
   (let ((c (si:make-chunk nil 8)))
     (si:pack-int16 c 0 #x1234)
@@ -439,6 +450,17 @@ of SHA-384 and SHA-512)."
   => #xFFFF
   => -1)
 
+(deftest pack-unpack-int16-overflow ()
+  (values
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int16 c 0 #xFFFF)
+     (si:unpack-int16 c 0))
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int16 c 0 #x8000)
+     (si:unpack-int16 c 0)))
+  => -1
+  => #x-8000)
+
 (deftest pack-unpack-int32 ()
   (let ((c (si:make-chunk nil 8)))
     (si:pack-int32 c 0 #x12345678)
@@ -453,6 +475,17 @@ of SHA-384 and SHA-512)."
      (si:unpack-int32 c 0)))
   => #xFFFFFFFF
   => -1)
+
+(deftest pack-unpack-int32-overflow ()
+  (values
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int32 c 0 #xFFFFFFFF)
+     (si:unpack-int32 c 0))
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int32 c 0 #x80000000)
+     (si:unpack-int32 c 0)))
+  => -1
+  => #x-80000000)
 
 (deftest pack-unpack-float ()
   (let ((c (si:make-chunk nil 8)))
@@ -488,6 +521,17 @@ of SHA-384 and SHA-512)."
      (si:unpack-int64 c 0)))
   => #xFFFFFFFFFFFFFFFF
   => -1)
+
+(deftest pack-unpack-int64-overflow ()
+  (values
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int64 c 0 #xFFFFFFFFFFFFFFFF)
+     (si:unpack-int64 c 0))
+   (let ((c (si:make-chunk nil 8)))
+     (si:pack-int64 c 0 #x8000000000000000)
+     (si:unpack-int64 c 0)))
+  => -1
+  => #x-8000000000000000)
 
 (deftest pack-unpack-int64-offset ()
   (let ((c (si:make-chunk nil 16)))
@@ -605,6 +649,53 @@ of SHA-384 and SHA-512)."
   => t
   => t)
 
+(deftest unpack-string-chunk ()
+  (let* ((s (format nil "foo~Cbar" #\NUL))
+         (c (si:make-string-chunk s)))
+    (values
+     (si:unpack-string c 0)
+     (si:unpack-string c 0 7)
+     (substitute #\- #\NUL (si:unpack-string c 0 7 nil))
+     (substitute #\- #\NUL (si:unpack-string c 2 5 nil))
+     (substitute #\- #\NUL (si:unpack-string c 0 nil nil))
+     ))
+  => "foo"
+  => "foo"
+  => "foo-bar"
+  => "o-bar"
+  => "foo-bar-")
+
+(deftest unpack-string-pointer ()
+  (let* ((s (format nil "foo~Cbar" #\NUL))
+         (c (si:make-string-chunk s)))
+    (values
+     (si:unpack-string nil (si:chunk-data c))
+     (si:unpack-string nil (si:chunk-data c) 7)
+     (substitute #\- #\NUL (si:unpack-string nil (si:chunk-data c) 7 nil))
+     (substitute #\- #\NUL (si:unpack-string nil (+ 2 (si:chunk-data c)) 5 nil))
+     ))
+  => "foo"
+  => "foo"
+  => "foo-bar"
+  => "o-bar")
+
+(deftest unpack-string-error-1 ()
+  (let* ((s (format nil "foo~Cbar" #\NUL))
+         (c (si:make-string-chunk s)))
+    (si:unpack-string c -1))
+  !! range-error)
+
+(deftest unpack-string-error-2 ()
+  (let* ((s (format nil "foo~Cbar" #\NUL))
+         (c (si:make-string-chunk s)))
+    (si:unpack-string nil (si:chunk-data c) -1 nil))
+  !! range-error)
+
+(deftest unpack-string-error-3 ()
+  (let* ((s (format nil "foo~Cbar" #\NUL))
+         (c (si:make-string-chunk s)))
+    (si:unpack-string nil (si:chunk-data c) nil nil))
+  !! range-error)
 
 (deftest binhex-decode ()
   (si:binhex-decode ":#(4PFh3ZG(Kd!&4&@&3rN!3!N!8'!*!%&+PiHATkH3VEZ!!!:")
@@ -635,12 +726,14 @@ of SHA-384 and SHA-512)."
   (values
    (length (si:list-builtin-packages))
    (member (find-package :lisp) (si:list-builtin-packages))
+   (member (find-package :keyword) (si:list-builtin-packages))
    (member (find-package :editor) (si:list-builtin-packages))
    (member (find-package :system) (si:list-builtin-packages))
    (member (find-package :user) (si:list-builtin-packages))
    (member (find-package :common-lisp) (si:list-builtin-packages))
    (member (find-package :common-lisp-user) (si:list-builtin-packages)))
-  => 6
+  => 7
+  => non-nil
   => non-nil
   => non-nil
   => non-nil
@@ -648,7 +741,7 @@ of SHA-384 and SHA-512)."
   => non-nil
   => non-nil)
 
-(deftest list-builtin-packages-1 ()
+(deftest list-builtin-packages-2 ()
   (let ((pkgname (gensym))
         (all-pkg-len (length (list-all-packages)))
         (builtin-pkg-len (length (si:list-builtin-packages))))
@@ -681,3 +774,10 @@ of SHA-384 and SHA-512)."
   => t
   => t
   => t)
+
+(defvar *data/hello.txt.gz* (merge-pathnames "data/hello.txt.gz" (directory-namestring *load-pathname*)))
+(deftest inflate-stream ()
+  (with-open-file (f *data/hello.txt.gz*
+                     :encoding :binary)
+    (si:inflate-stream f))
+  => "xyzzy\r\n")

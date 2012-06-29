@@ -18,6 +18,7 @@
 	  create-shortcut find-file-in-archive
 	  *default-write-file-directory* emacs-write-file
 	  *auto-encoding-alist* *find-file-no-auto-encoding*
+	  *find-file-auto-encoding-use-utf8n*
 	  find-file-read-only *find-file-read-only-hook*
 	  *auto-mode-last-buffer* *find-file-auto-mode-function*))
 
@@ -37,6 +38,7 @@
 
 (defvar *auto-encoding-alist* nil)
 (defvar *find-file-no-auto-encoding* nil)
+(defvar *find-file-auto-encoding-use-utf8n* t)
 (defvar *auto-mode-last-buffer* nil)
 (defvar *find-file-auto-mode-function* nil)
 
@@ -180,9 +182,19 @@
 				  *mime-charset-name-hash-table*)))
 	(if (char-encoding-p encoding)
 	    encoding
-	  (gethash (cdr (assoc "encoding" (find-file-scan-params)
-			       :test #'string-equal))
-		   *mime-charset-name-hash-table*)))
+	  (progn
+	    (setq encoding (gethash (cdr (assoc "\\`\\(en\\)?coding\\'"
+						(find-file-scan-params)
+						:test #'string-matchp))
+				    *mime-charset-name-hash-table*))
+	    (when (and encoding *find-file-auto-encoding-use-utf8n*)
+	      (flet ((utf8-encoding-p (x)
+		       (and (eq (char-encoding-type x) :utf8)
+			    (char-encoding-signature x))))
+		(when (and (utf8-encoding-p encoding)
+			   (not (utf8-encoding-p (buffer-fileio-encoding))))
+		  (setq encoding (cdr (assoc encoding *char-encoding-bom-alist*))))))
+	    encoding)))
     (erase-buffer (selected-buffer))))
 
 (defun find-file-internal (filename &optional nowarn encoding eol-code nomsg read-only)

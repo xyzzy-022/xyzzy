@@ -1238,3 +1238,476 @@ lisp-indent-hook property"
 (deftest nth-value-type-error ()
   (nth-value -1 (values 1 2 3))
   !! type-error)
+
+
+(deftest rename-package--rename-all ()
+  (let ((name1 (gensym))
+        (name2 (gensym))
+        (nick1 (gensym))
+        (nick2 (gensym))
+        (nick3 (gensym)))
+    (let ((pkg (make-package name1 :nicknames (list nick1 nick2))))
+      (rename-package name1 name2 (list nick3))
+      (values
+       (find-package name1)
+       (find-package nick1)
+       (find-package nick2)
+       (equal (string name2) (package-name (find-package name2)))
+       (equal (list (string nick3))
+              (package-nicknames (find-package name2))))))
+  => nil
+  => nil
+  => nil
+  => t
+  => t)
+
+(deftest rename-package--add-nicknames ()
+  (let ((name1 (gensym))
+        (nick1 (gensym))
+        (nick2 (gensym))
+        (nick3 (gensym)))
+    (let ((pkg (make-package name1 :nicknames (list nick1 nick2))))
+      (rename-package name1 name1 (list nick1 nick2 nick3))
+      (values
+       (equal (string name1) (package-name (find-package name1)))
+       (equal (mapcar #'string (list nick3 nick2 nick1))
+              (package-nicknames (find-package name1))))))
+  => t
+  => t)
+
+(deftest rename-package--remove-nicknames ()
+  (let ((name1 (gensym))
+        (nick1 (gensym))
+        (nick2 (gensym)))
+    (let ((pkg (make-package name1 :nicknames (list nick1 nick2))))
+      (rename-package name1 name1 (list nick1))
+      (values
+       (find-package nick2)
+       (equal (string name1) (package-name (find-package name1)))
+       (equal (mapcar #'string (list nick1))
+              (package-nicknames (find-package name1))))))
+  => nil
+  => t
+  => t)
+
+(deftest rename-package--swap-package-name-and-nickname ()
+  (let ((name1 (gensym))
+        (nick1 (gensym))
+        (nick2 (gensym))
+        (nick3 (gensym)))
+    (let ((pkg (make-package name1 :nicknames (list nick1 nick2))))
+      (rename-package name1 nick1 (list name1 nick2))
+      (values
+       (equal (string nick1) (package-name (find-package nick1)))
+       (equal (mapcar #'string (list nick2 name1))
+              (package-nicknames (find-package nick1))))))
+  => t
+  => t)
+
+(deftest rename-package--package-name-conflict ()
+  (let ((name1 (gensym))
+        (name2 (gensym))
+        (name3 (gensym))
+        (nick1 (gensym))
+        (nick2 (gensym))
+        (nick3 (gensym)))
+    (let ((pkg (make-package name1 :nicknames (list nick1))))
+      (make-package name2)
+      (make-package nick2)
+      (flet ((test (conflict package new-name &optional new-nicknames)
+               (handler-case
+                   (rename-package package new-name new-nicknames)
+                 (simple-package-error (c)
+                   (equal (string conflict)
+                          (simple-package-error-datum2 c))))))
+        (values
+         (test name2 name1 name2)
+         (test nick2 name1 nick2)
+         (test nick2 name1 name3 (list nick2))
+         (test name2 name1 name3 (list nick1 name2))
+         (test nick2 name1 name3 (list nick1 nick2 nick3))))))
+  => t
+  => t
+  => t
+  => t
+  => t)
+
+
+(defmacro macro-function-foo (a b)
+  `(* ,a ,b))
+
+(defmacro macro-function-bar (b c)
+  `(* ,b ,c))
+
+(deftest macro-function-environment ()
+  (let (env)
+    (macrolet ((macro-function-foo (a b)
+                 `(+ ,a ,b))
+               (macro-function-baz (a c)
+                 `(+ ,a ,c))
+               (env (&environment env)
+                 env))
+      (setf env (env)))
+    (values
+     (macro-function 'macro-function-foo)
+     (macro-function 'macro-function-foo nil)
+     (macro-function 'macro-function-foo env)
+     (macro-function 'macro-function-foo '((macro-function-foo
+                                            macro (a b) (block macro-function-foo (list '/ a b)))))
+     (macro-function 'macro-function-bar)
+     (macro-function 'macro-function-bar env)
+     (macro-function 'macro-function-baz)
+     (macro-function 'macro-function-baz env)
+     ))
+  => (macro (a b) (block macro-function-foo (list '* a b)))
+  => (macro (a b) (block macro-function-foo (list '* a b)))
+  => (macro (a b) (block macro-function-foo (list '+ a b)))
+  => (macro (a b) (block macro-function-foo (list '/ a b)))
+  => (macro (b c) (block macro-function-bar (list '* b c)))
+  => (macro (b c) (block macro-function-bar (list '* b c)))
+  => nil
+  => (macro (a c) (block macro-function-baz (list '+ a c))))
+
+
+(deftest locally-special-form-p ()
+  (special-form-p 'locally)
+  => non-nil)
+
+(deftest locally-0 ()
+  (values
+   (locally)
+   (locally t)
+   (locally nil))
+  => nil
+  => t
+  => nil)
+
+(deftest locally-unbound-variable ()
+  (values
+   (handler-case
+       (locally
+	 locally-a)
+     (unbound-variable (e)
+       t))
+
+   (handler-case
+       (locally
+	 (declare (special locally-a))
+	 locally-a)
+     (unbound-variable (e)
+       t))
+
+   (let ((locally-a 123))
+     (locally
+       (declare (special locally-a))
+       t))
+
+   (let ((locally-a 123))
+     (locally
+       locally-a))
+
+   (handler-case
+       (let ((locally-a 123))
+	 (locally
+	   (declare (special locally-a))
+	   locally-a))
+     (unbound-variable (e)
+       t)))
+  => t
+  => t
+  => t
+  => 123
+  => t)
+
+(setq locally-b 0)
+(deftest locally-toplev-setq ()
+  (values
+   (locally
+     locally-b)
+
+   (locally
+     (declare (special locally-b))
+     locally-b)
+
+   (let ((locally-b 123))
+     (locally
+       locally-b))
+
+   (let ((locally-b 123))
+     (locally
+       (declare (special locally-b))
+       locally-b)))
+  => 0
+  => 0
+  => 123
+  => 0)
+
+(defvar locally-c 0)
+(deftest locally-defvar ()
+  (values
+   (locally
+     locally-c)
+
+   (locally
+     (declare (special locally-c))
+     locally-c)
+
+   (let ((locally-c 123))
+     (locally
+       locally-c))
+
+   (let ((locally-c 123))
+     (locally
+       (declare (special locally-c))
+       locally-c)))
+  => 0
+  => 0
+  => 123
+  => 123)
+
+(deftest locally-declare-special ()
+  (values
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (locally
+       locally-d))
+
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (locally
+       (declare (special locally-d))
+       locally-d))
+
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (let ((locally-d 123))
+       (locally
+	 locally-d)))
+
+   (let ((locally-d 0))
+     (declare (special locally-d))
+     (let ((locally-d 123))
+       (locally
+	 (declare (special locally-d))
+	 locally-d))))
+  => 0
+  => 0
+  => 123
+  => 0)
+
+(defvar-local locally-e 0)
+(deftest locally-eefvar-local ()
+  (values
+   (locally
+     locally-e)
+
+   (locally
+     (declare (special locally-e))
+     locally-e)
+
+   (let ((locally-e 123))
+     (locally
+       locally-e))
+
+   (let ((locally-e 123))
+     (locally
+       (declare (special locally-e))
+       locally-e))
+
+   (with-temp-buffer
+    (setq locally-e 1)
+    (let ((locally-e 123))
+      (locally
+        (declare (special locally-e))
+        locally-e))))
+  => 0
+  => 0
+  => 123
+  => 0
+  => 1)
+
+
+(defun locally-sample-function (y)  ;this y is regarded as special
+  (declare (special y))
+  (let ((y t))              ;this y is regarded as lexical
+    (list y
+	  (locally (declare (special y))
+	    ;; this next y is regarded as special
+	    y)
+	  y)))
+
+(deftest locally-clhs-1 ()
+  (locally-sample-function nil)
+  => (t nil t))
+
+
+(deftest locally-0-compile ()
+  (compile-and-eval
+    (values
+     (locally)
+     (locally t)
+     (locally nil)))
+  => nil
+  => t
+  => nil)
+
+(deftest locally-unbound-variable-compile ()
+  (compile-and-eval
+    (values
+     (handler-case
+	 (locally
+	   locally-a)
+       (unbound-variable (e)
+	 t))
+
+     (handler-case
+	 (locally
+	   (declare (special locally-a))
+	   locally-a)
+       (unbound-variable (e)
+	 t))
+
+     (let ((locally-a 123))
+       (locally
+	 (declare (special locally-a))
+	 t))
+
+     (let ((locally-a 123))
+       (locally
+	 locally-a))
+
+     (handler-case
+	 (let ((locally-a 123))
+	   (locally
+	     (declare (special locally-a))
+	     locally-a))
+       (unbound-variable (e)
+	 t))))
+  => t
+  => t
+  => t
+  => 123
+  => t)
+
+(setq locally-b 0)
+(deftest locally-toplev-setq-compile ()
+  (compile-and-eval
+    (values
+     (locally
+       locally-b)
+
+     (locally
+       (declare (special locally-b))
+       locally-b)
+
+     (let ((locally-b 123))
+       (locally
+	 locally-b))
+
+     (let ((locally-b 123))
+       (locally
+	 (declare (special locally-b))
+	 locally-b))))
+  => 0
+  => 0
+  => 123
+  => 0)
+
+(defvar locally-c 0)
+(deftest locally-defvar-compile ()
+  (compile-and-eval
+    (values
+     (locally
+       locally-c)
+
+     (locally
+       (declare (special locally-c))
+       locally-c)
+
+     (let ((locally-c 123))
+       (locally
+	 locally-c))
+
+     (let ((locally-c 123))
+       (locally
+	 (declare (special locally-c))
+	 locally-c))))
+  => 0
+  => 0
+  => 123
+  => 123)
+
+(deftest locally-declare-special-compile ()
+  (compile-and-eval
+    (values
+     (let ((locally-d 0))
+       (declare (special locally-d))
+       (locally
+	 locally-d))
+
+     (let ((locally-d 0))
+       (declare (special locally-d))
+       (locally
+	 (declare (special locally-d))
+	 locally-d))
+
+     (let ((locally-d 0))
+       (declare (special locally-d))
+       (let ((locally-d 123))
+	 (locally
+	   locally-d)))
+
+     (let ((locally-d 0))
+       (declare (special locally-d))
+       (let ((locally-d 123))
+	 (locally
+	   (declare (special locally-d))
+	   locally-d)))))
+  => 0
+  => 0
+  => 123
+  => 0)
+
+(defvar-local locally-e 0)
+(deftest locally-eefvar-local-compile ()
+  (compile-and-eval
+    (values
+     (locally
+       locally-e)
+
+     (locally
+       (declare (special locally-e))
+       locally-e)
+
+     (let ((locally-e 123))
+       (locally
+         locally-e))
+
+     (let ((locally-e 123))
+       (locally
+         (declare (special locally-e))
+         locally-e))
+
+     (with-temp-buffer
+       (setq locally-e 1)
+       (let ((locally-e 123))
+         (locally
+           (declare (special locally-e))
+           locally-e)))))
+  => 0
+  => 0
+  => 123
+  => 0
+  => 1)
+
+
+(deftest locally-clhs-1-compile ()
+  (compile-and-eval
+    (let ((y nil))
+      (declare (special y))
+      (let ((y t))
+	(list y
+	      (locally (declare (special y))
+		y)
+	      y))))
+  => (t nil t))

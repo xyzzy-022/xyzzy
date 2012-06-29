@@ -158,6 +158,11 @@ char-before
 char-code
 char-columns
 char-downcase
+char-encoding-display-name
+char-encoding-name
+char-encoding-p
+char-encoding-signature
+char-encoding-type
 char-equal
 char-greaterp
 char-lessp
@@ -703,6 +708,7 @@ local-keymap
 local-set-key
 local-unset-key
 local-variable-p
+locally
 lock-file
 log
 logand
@@ -1036,6 +1042,7 @@ remprop
 rename
 rename-buffer
 rename-file
+rename-package
 rename-pseudo-frame
 repeat-backward-search
 repeat-complex-command
@@ -1602,6 +1609,7 @@ zerop
 *filer-secondary-file-mask*
 *filer-use-recycle-bin*
 *find-buffer-package-hook*
+*find-file-auto-encoding-use-utf8n*
 *find-file-auto-mode-function*
 *find-file-file-not-found-hook*
 *find-file-hooks*
@@ -1928,9 +1936,6 @@ change-default-eol-code
 change-default-fileio-encoding
 change-eol-code
 change-fileio-encoding
-char-encoding-display-name
-char-encoding-name
-char-encoding-p
 clear-visited-file-modtime
 clipboard-empty-p
 close-and-open-file-dialog
@@ -3064,7 +3069,6 @@ refresh-title-bar
 reload-keyword-file
 remf
 rename-dialog
-rename-package
 replace-dialog
 replace-regexp
 require-mouse-move
@@ -3194,6 +3198,7 @@ si:*structure-reader
 si:*structure-subtypep
 si:*structurep
 si:*svset
+si:*symbol-value
 si:*throw-error
 si:*tree-count
 si:*tree-find

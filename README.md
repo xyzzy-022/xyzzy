@@ -123,8 +123,6 @@ https://github.com/xyzzy はすでにアカウントが取られていたので 
 
   * Visual C++ 2010 Express SP1
     * <http://www.microsoft.com/japan/msdn/vstudio/express/>
-  * Windows SDK
-    * <http://www.microsoft.com/download/en/details.aspx?id=8279>
   * msysGit
     * <http://code.google.com/p/msysgit/>
   * 7zip

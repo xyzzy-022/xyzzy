@@ -39,6 +39,7 @@
 (setf (get 'interactive 'lisp-indent-hook) 1)
 
 (setf (get 'progn 'lisp-indent-hook) 0)
+(setf (get 'locally 'lisp-indent-hook) 0)
 (setf (get 'if 'lisp-indent-hook) 2)
 (setf (get 'let 'lisp-indent-hook) 1)
 (setf (get 'let* 'lisp-indent-hook) 1)

@@ -73,10 +73,12 @@
 ;; :: test = (NAME DESCRIPTION . EXAMPLES)
 
 (defparameter *tests* nil)
+(defparameter *error-on-overwriting-test* nil)
 
 (defun store-test (name description source examples)
   (when (member name *tests* :key #'car)
-    (warn "Overwriting a test: ~S" name))
+    (funcall (if *error-on-overwriting-test* 'error 'warn)
+             "Overwriting a test: ~S" name))
   (setf *tests*
         (cons (list* name description source examples)
               (remove name *tests* :key #'car)))
@@ -153,7 +155,7 @@
 ;;;
 ;;; Each example form and corresponding expectations (expressed by
 ;;; things like `=> VALUE`) is called "example" here.
-;;; 
+;;;
 ;;; :: EXAMPLE = (FORM THUNK EXPECTED-EXPANSION EXPECTED-RESULTS EXPECTED-OUTPUT)
 
 (defun non-nil-p (#:ignore actual) actual)
@@ -666,6 +668,22 @@ Output (*trace-output*):
 ;;;; running tests
 
 (defvar *last-test-list* nil)
+(defvar *test-start-time* nil)
+
+(defun elapsed-seconds ()
+  (float (/ (- (get-internal-real-time) *test-start-time*)
+            internal-time-units-per-second)))
+
+(defun test-message (fmt &rest args)
+  (let* ((pass (ssn-pass-count))
+         (fail (ssn-fail-count))
+         (total (ssn-total-count))
+         (done (+ pass fail)))
+    (message "~D/~D (~D failed, ~D%, ~,1F sec): ~?"
+             done total fail
+             (if (zerop total) 0 (floor (* (/ done total) 100.0)))
+             (elapsed-seconds)
+             fmt args)))
 
 (defun get-report-buffer-stream ()
   (let ((buffer (get-buffer-create "*Test Results*")))
@@ -680,6 +698,7 @@ Output (*trace-output*):
   (report-output (get-report-buffer-stream))
   (pass-count 0)
   (fail-count 0)
+  (total-count 0)
   finished-tests
   current-test
   remaining-tests)
@@ -698,6 +717,7 @@ Output (*trace-output*):
   (def report-output)
   (def pass-count)
   (def fail-count)
+  (def total-count)
   (def finished-tests)
   (def current-test)
   (def remaining-tests))
@@ -750,6 +770,12 @@ Returns list of failures."
   "*If non-nil, continue run of tests automatically after :break via timer.")
 
 (defun run-current-test ()
+  (loop
+    (let ((r (run-current-test-1)))
+      (unless (eq r :run-current-test)
+        (return r)))))
+
+(defun run-current-test-1 ()
   (assert-in-session)
   (macrolet ((test      () `(first (ssn-current-test)))
              (finished  () `(second (ssn-current-test)))
@@ -759,40 +785,48 @@ Returns list of failures."
              (setf (remaining) (rest (remaining)))
              (when *auto-continue-after-break*
                (start-timer 1 'continue-run-tests))
-             (message "running test: ~S...break" (test-name (test))))
+             (test-message "running test: ~S...break" (test-name (test)))
+             :break)
             ((null (remaining))
              (let* ((finished (nreverse (finished)))
                     (passed-p (every #'null (mapcar #'cdr finished))))
                (format (ssn-report-output) "~:[Failed~;OK~]~%" passed-p)
-               (message "running test: ~S...~:[Failed~;OK~]" (test-name (test)) passed-p)
                (if passed-p
                  (incf (ssn-pass-count))
                  (progn
                    (incf (ssn-fail-count))
                    (ding)
                    (report-test-failures (test) finished)))
+               (test-message "running test: ~S...~:[Failed~;OK~]" (test-name (test)) passed-p)
                (push (cons (test) finished) (ssn-finished-tests))
                (setf (ssn-current-test) nil)
                (refresh-screen)
-               (continue-run-tests)))
+               (do-events)
+               :continue-run-tests))
             (t
              (let ((failures (run-one-example example)))
                (setf (remaining) (rest (remaining)))
                (push (cons example failures) (finished))
-               (run-current-test)))))))
+               :run-current-test))))))
 
 (defun continue-run-tests ()
   (interactive)
+  (loop
+    (let ((r (continue-run-tests-1)))
+      (unless (eq r :continue-run-tests)
+        (return r)))))
+
+(defun continue-run-tests-1 ()
   (assert-in-session)
   (cond ((ssn-current-test)
          (run-current-test))
         ((ssn-remaining-tests)
          (let ((next (first (ssn-remaining-tests))))
            (format (ssn-report-output) "~&~S..." (test-name next))
-           (message "running test: ~S..." (test-name next))
+           (test-message "running test: ~S..." (test-name next))
            (setf (ssn-current-test) (list next nil (test-examples next))
                  (ssn-remaining-tests) (rest (ssn-remaining-tests))))
-         (continue-run-tests))
+         :continue-run-tests)
         (t ;; all tests finished. Report and die.
          (let* ((pass (ssn-pass-count))
                 (fail (ssn-fail-count))
@@ -802,13 +836,15 @@ Returns list of failures."
            (format out "~&----------------------------------------------------------------------~%")
            (format out "Total ~D tests: ~:[~D~;~*All~] passed~@[~*, ~A failed~]~%"
                    total all-passed-p pass (not all-passed-p) fail)
+           (format out "Total ~,1F seconds~%" (elapsed-seconds))
            (let ((buffer (buffer-stream-buffer (ssn-report-output))))
              (pop-to-buffer buffer)
              (goto-char (point-max))
              (unless (interactive-p)
                (refresh-screen))))
          (while (stop-timer 'continue-run-tests))
-         (null (setf *current-session* nil)))))
+         (null (setf *current-session* nil))
+         :finish)))
 
 (defparameter *run-tests-continue/rerun/cancel-message*
   "前回のテスト実行が途中で中断されたまま終わっていません。どうする？
@@ -819,6 +855,7 @@ Returns list of failures."
 
 (defun run-tests (&optional (test-list (or *last-test-list* *tests*)))
   (interactive)
+  (setf *test-start-time* (get-internal-real-time))
   (unless (null *current-session*)
     (case (message-box *run-tests-continue/rerun/cancel-message*
                        "実行中のテストがあります"
@@ -830,7 +867,8 @@ Returns list of failures."
       (:button2 (setf *current-session* nil))
       (:button3 (quit))))
   (setf *last-test-list* test-list
-        *current-session* (make-session :remaining-tests test-list))
+        *current-session* (make-session :remaining-tests test-list
+                                        :total-count (length test-list)))
   (continue-run-tests))
 
 
@@ -852,13 +890,25 @@ Returns list of failures."
     (when (or (not loaded)
               (> (file-write-time testfile) (cdr loaded)))
       (load-test-file testfile)))
-  (run-tests (remove-if-not (lambda (test)
-                              (path-equal (test-source test) testfile))
-                            *tests*)))
+  (run-tests (reverse (remove-if-not (lambda (test)
+                                       (path-equal (test-source test) testfile))
+                                     *tests*))))
 
 
 
 ;;;; utilities
+
+(defmacro with-temp-dirs ((&rest temp-dir-vars) &body body)
+  `(let (,@(mapcar (lambda (var)
+                     `(,var (make-temp-file-name nil nil nil t)))
+                   temp-dir-vars))
+     (unwind-protect
+         (progn ,@body)
+       ,@(mapcar (lambda (var)
+                   `(when (file-exist-p ,var)
+                      (delete-directory ,var)))
+                 temp-dir-vars))))
+(setf (get 'with-temp-dirs 'ed:lisp-indent-hook) 1)
 
 (defmacro with-temp-files ((&rest temp-file-vars) &body body)
   `(let (,@(mapcar (lambda (var)

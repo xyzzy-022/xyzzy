@@ -9346,6 +9346,7 @@ BODYをインチキなBNFで書くと以下の様になります。
 <seealso>find-package</seealso>
 <seealso>use-package</seealso>
 <seealso>delete-package</seealso>
+<seealso>rename-package</seealso>
 <seealso>in-package</seealso>
 <seealso>package-name</seealso>
 <seealso>package-nicknames</seealso>
@@ -9880,6 +9881,7 @@ IME 変換直後であれば、直前に変換した文字列を削除します�
 </description>
 <seealso>make-package</seealso>
 <seealso>defpackage</seealso>
+<seealso>rename-package</seealso>
 <seealso>パッケージ</seealso>
 <link></link>
 <section>パッケージ</section>
@@ -16878,17 +16880,35 @@ CPU のバージョンを返します。
 <chapter>
 <title>macro-function</title>
 <type>Function</type>
-<arguments>macro-function SYMBOL</arguments>
+<arguments>macro-function SYMBOL &amp;optional ENV</arguments>
 <package>lisp</package>
 <description>
 SYMBOLがマクロか否かを返します。マクロの場合にはその内容を返します。
+ENVを指定した場合は指定した環境からマクロを探します。
+
 使用例：
   (macro-function 'car)
-  =&gt;nil
+  =&gt; nil
 
   (macro-function 'when)
-  =&gt;(macro (lisp::test &amp;body lisp::body)
-         (block when (list 'if lisp::test (cons 'progn lisp::body))))
+  =&gt; (macro (lisp::test &amp;body lisp::body)
+          (block when (list 'if lisp::test (cons 'progn lisp::body))))
+
+  (macrolet ((foo (a b)
+               `(+ ,a ,b))
+             (env (&amp;environment env)
+               env))
+    (setf env (env)))
+  =&gt; #&lt;environment-object 134287448&gt;
+
+  (macro-function 'foo)
+  =&gt; nil
+
+  (macro-function 'foo env)
+  =&gt; (macro (a b) (block foo (list '+ a b)))
+
+補足：
+  xyzzy 0.2.2.241 からENVを指定可能です。
 </description>
 <seealso>fboundp</seealso>
 <seealso>boundp</seealso>
@@ -17406,6 +17426,42 @@ make-variable-buffer-localとは異なり、現在のバッファだけです。
 
 使用例：
   (make-package name :external-size 0)
+</description>
+<seealso>defpackage</seealso>
+<seealso>delete-package</seealso>
+<seealso>rename-package</seealso>
+<seealso>in-package</seealso>
+<seealso>パッケージ</seealso>
+<section>パッケージ</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>rename-package</title>
+<type>Function</type>
+<arguments>rename-package PACKAGE NEW-NAME &amp;optional NEW-NICKNAMES</arguments>
+<package>lisp</package>
+<description>
+パッケージの名前と別名を変更します。
+
+  PACKAGE       : パッケージを指定します。
+  NEW-NAME      : 変更後の名前を指定します。
+  NEW-NICKNAMES : 変更後の別名をリストで指定します。
+
+使用例：
+
+ (make-package 'temporary :nicknames '("temp"))
+ =&gt; #&lt;package: temporary&gt;
+ (rename-package 'temp 'ephemeral)
+ =&gt; #&lt;package: ephemeral&gt;
+ (package-nicknames (find-package 'ephemeral))
+ =&gt; nil
+ (find-package 'temporary)
+ =&gt; nil
+ (rename-package 'ephemeral 'temporary '(temp fleeting))
+ =&gt; #&lt;package: temporary&gt;
+ (package-nicknames (find-package 'temp))
+ =&gt; ("fleeting" "temp")
 </description>
 <seealso>defpackage</seealso>
 <seealso>delete-package</seealso>
@@ -21346,6 +21402,38 @@ PROCESSに設定されたSENTINEL用の関数を返します。
 </chapter>
 
 <chapter>
+<title>locally</title>
+<type>Special Form</type>
+<arguments>locally {declaration}* {FORM}*</arguments>
+<package>lisp</package>
+<description>
+名前をローカルにスペシャル宣言し、フォームを順番に評価して
+最後のフォームの結果を返します。
+
+使用例：
+  (defun sample-function (y)
+    (declare (special y))       ; スペシャル変数
+    (let ((y t))
+      (list y                   ; レキシカル変数
+            (locally
+              (declare (special y))
+              y)                ; スペシャル変数
+            y                   ; レキシカル変数
+            (symbol-value 'y)   ; スペシャル変数
+            )))
+  =&gt; sample-function
+
+  (sample-function nil)
+  =&gt; (t nil t nil)
+
+補足：
+  xyzzy 0.2.2.241 から利用可能です。
+</description>
+<section>制御構造</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>provide</title>
 <type>Function</type>
 <arguments>provide MODULE-NAME</arguments>
@@ -22065,7 +22153,7 @@ buffer-can-redo-p が t の時のみ実行可能です。
 <chapter>
 <title>reduce</title>
 <type>Function</type>
-<arguments>reduce FUNCTION SEQUENCE &amp;key :from-end :start :end :initial-value</arguments>
+<arguments>reduce FUNCTION SEQUENCE &amp;key :from-end :start :end :initial-value (:key #'identity)</arguments>
 <package>lisp</package>
 <description>
 2項演算子であるFUNCTIONで、SEQUENCEに対して畳み込みを行います。
@@ -22074,13 +22162,18 @@ buffer-can-redo-p が t の時のみ実行可能です。
   :from-end : nil なら先頭から、non-nil なら最後の要素から畳み込みを行います。
   :start    : 畳み込みを行う SEQUENCE の開始インデックスです。デフォルトは 0 です。 
               :from-end が non-nil なら終了インデックスになります。
-  :END      : 畳み込みを行う SEQUENCE の終了インデックスです。デフォルトは nil です。
+  :end      : 畳み込みを行う SEQUENCE の終了インデックスです。デフォルトは nil です。
               :from-end が non-nil なら開始インデックスになります。
-  :INITIAL-VALUE : non-nil ならばこの値を初期値として使用します。
+  :initial-value : non-nil ならばこの値を初期値として使用します。
+  :key      : FUNCTION に渡す前に要素に適用する関数。デフォルトは #'identity です。
 
  (reduce #'- '(1 2 3)) = (- (- 1 2) 3)
  (reduce #'- '(1 2 3) :initial-value 10) = (- (- (- 10 1) 2) 3)
  (reduce #'- '(1 2 3) :from-end t :initial-value 10) = (- 1 (- 2 (- 3 10)))
+ (reduce #'- '((1) (2) (3)) :key #'car) = (- (- (car '(1)) (car '(2))) (car '(3)))
+
+補足：
+  xyzzy 0.2.2.241 から:keyパラメータを指定可能です。
 </description>
 <seealso></seealso>
 <link></link>
@@ -26900,15 +26993,27 @@ xyzzyがインストールされているパスを返します。
 <chapter>
 <title>si:unpack-string</title>
 <type>Function</type>
-<arguments>unpack-string CHUNK OFFSET SIZE &amp;optional ZERO-TERMINATING-P</arguments>
+<arguments>unpack-string CHUNK OFFSET &amp;optional SIZE ZERO-TERMINATING-P</arguments>
 <package>system</package>
 <description>
 チャンクをlispの文字列に変換します。
 
-  CHUNK              : make-chunkで作られたチャンク
+  CHUNK              : make-chunkで作られたチャンクまたはnilを指定します。
   OFFSET             : 文字列化する位置を指定します。
+                       CHUNKがnon-nilの場合はCHUNK + OFFSETのアドレスを参照します。
+                       CHUNKがnilの場合はOFFSETをアドレスとみなして参照します。
   SIZE               : OFFSETの位置から文字列化する長さを指定します。
-  ZERO-TERMINATING-P : （詳細不明）
+  ZERO-TERMINATING-P : 文字列がNULL文字('\0')で終端しているかどうかを指定します。
+                       non-nilを指定した場合は、NULL文字までを文字列化します。
+                       SIZEで指定した長さより短い文字列を返却する可能性があります。
+                       nilを指定した場合は、SIZEまたはCHUNKのサイズで指定した長さを
+                       すべて文字列化します。
+
+CHUNKにnilを指定する場合、SIZEまたはZERO-TERMINATING-Pのどちらかを
+必ず指定する必要があります。
+
+補足：
+  xyzzy 0.2.2.241 からCHUNKにnilを指定可能です。
 </description>
 <seealso>si:make-chunk</seealso>
 <seealso>チャンクの概要</seealso>
@@ -32603,6 +32708,144 @@ beginning-of-bufferと違いマーク自体は変化しません。
 </chapter>
 
 <chapter>
+<title>char-encoding-p</title>
+<type>Function</type>
+<arguments>char-encoding-p OBJECT</arguments>
+<package>editor</package>
+<description>
+OBJECTがchar-encoding objectならt、それ以外ならnilを返します。
+</description>
+<seealso>char-encoding-name</seealso>
+<seealso>char-encoding-display-name</seealso>
+<seealso>char-encoding-type</seealso>
+<seealso>char-encoding-signature</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>char-encoding-name</title>
+<type>Function</type>
+<arguments>char-encoding-name ENCODING</arguments>
+<package>editor</package>
+<description>
+エンコーディング名を返します。
+
+実行例：
+  (char-encoding-name *encoding-utf8*)
+  =&gt; "utf8"
+  (char-encoding-name *encoding-utf8n*)
+  =&gt; "utf8n"
+  (char-encoding-name *encoding-sjis*)
+  =&gt; "sjis"
+
+</description>
+<seealso>char-encoding-p</seealso>
+<seealso>char-encoding-display-name</seealso>
+<seealso>char-encoding-type</seealso>
+<seealso>char-encoding-signature</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>char-encoding-display-name</title>
+<type>Function</type>
+<arguments>char-encoding-display-name ENCODING</arguments>
+<package>editor</package>
+<description>
+エンコーディングの表示名を返します。
+
+実行例：
+  (char-encoding-display-name *encoding-utf8*)
+  =&gt; "Unicode (UTF-8)"
+  (char-encoding-display-name *encoding-utf8n*)
+  =&gt; "Unicode (UTF-8N)"
+  (char-encoding-display-name *encoding-sjis*)
+  =&gt; "日本語(Shift_JIS)"
+</description>
+<seealso>char-encoding-p</seealso>
+<seealso>char-encoding-name</seealso>
+<seealso>char-encoding-type</seealso>
+<seealso>char-encoding-signature</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>char-encoding-type</title>
+<type>Function</type>
+<arguments>char-encoding-type ENCODING</arguments>
+<package>editor</package>
+<description>
+エンコーディングのタイプを返します。
+戻り値は以下の通りです。
+
+  :auto-detect
+  :binary
+  :sjis
+  :big5
+  :iso2022
+  :iso8859
+  :windows-codepage
+  :utf5
+  :utf7
+  :utf8
+  :utf16
+
+実行例：
+  (char-encoding-type *encoding-utf8*)
+  =&gt; :utf8
+  (char-encoding-type *encoding-utf8n*)
+  =&gt; :utf8
+  (char-encoding-type *encoding-sjis*)
+  =&gt; :sjis
+
+補足：
+  xyzzy 0.2.2.241 から利用可能です。
+</description>
+<seealso>char-encoding-p</seealso>
+<seealso>char-encoding-name</seealso>
+<seealso>char-encoding-display-name</seealso>
+<seealso>char-encoding-signature</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>char-encoding-signature</title>
+<type>Function</type>
+<arguments>char-encoding-signature ENCODING</arguments>
+<package>editor</package>
+<description>
+エンコーディングがBOM付きのUTFの場合tを返します。
+UTF以外のエンコーディングを指定した場合はnilを返します。
+
+実行例：
+  (char-encoding-signature *encoding-utf8*)
+  =&gt; t
+  (char-encoding-signature *encoding-utf8n*)
+  =&gt; nil
+  (char-encoding-signature *encoding-sjis*)
+  =&gt; nil
+
+補足：
+  xyzzy 0.2.2.241 から利用可能です。
+</description>
+<seealso>char-encoding-p</seealso>
+<seealso>char-encoding-name</seealso>
+<seealso>char-encoding-display-name</seealso>
+<seealso>char-encoding-type</seealso>
+<link></link>
+<section>テキスト</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>*keyboard*</title>
 <type>Variable</type>
 <arguments></arguments>
@@ -37314,6 +37557,7 @@ non-nil なら、*auto-encoding-alist* によるエンコーディングの判�
 ていても無視されます。
 </description>
 <seealso>*auto-encoding-alist*</seealso>
+<seealso>*find-file-auto-encoding-use-utf8n</seealso>
 <seealso>find-file</seealso>
 <link></link>
 <section>ファイルシステム</section>
@@ -37333,9 +37577,30 @@ find-file または find-file-read-only の際に ENCODING が指定されず、
 datum にはエンコーディングもしくはエンコーディングを表す文字列を返す関数を指定します。
 </description>
 <seealso>*find-file-no-auto-encoding*</seealso>
+<seealso>*find-file-auto-encoding-use-utf8n</seealso>
 <seealso>find-file</seealso>
 <link></link>
 <section>ファイルシステム</section>
+<file>files.l</file>
+</chapter>
+
+<chapter>
+<title>*find-file-auto-encoding-use-utf8n*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+non-nilなら、ファイルの先頭のエンコーディング情報にUTF-8が記述(-*- Encoding: UTF-8 -*-)
+されている場合にBOMなしのUTF-8(utf8n)としてファイルを開きます。
+
+備考：
+  xyzzy 0.2.2.241 から利用可能です。
+</description>
+<seealso>*auto-encoding-alist*</seealso>
+<seealso>*find-file-no-auto-encoding*</seealso>
+<seealso>find-file</seealso>
+<link></link>
+<section>モード</section>
 <file>files.l</file>
 </chapter>
 

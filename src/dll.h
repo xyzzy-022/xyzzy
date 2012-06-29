@@ -65,6 +65,7 @@ public:
   u_char *arg_types;  // 引数の型
   u_short arg_size;   // 引数全体のサイズ
   u_char nargs;       // 引数の数
+  u_char vaarg_p;     // 可変長引数を取るかどうか
   u_char return_type; // 戻り値の型
 
   ~ldll_function () {xfree (arg_types);}
@@ -114,6 +115,13 @@ xdll_function_nargs (lisp x)
 }
 
 inline u_char &
+xdll_function_vaarg_p (lisp x)
+{
+  assert (dll_function_p (x));
+  return ((ldll_function *)x)->vaarg_p;
+}
+
+inline u_char &
 xdll_function_return_type (lisp x)
 {
   assert (dll_function_p (x));
@@ -127,6 +135,8 @@ xdll_function_arg_size (lisp x)
   return ((ldll_function *)x)->arg_size;
 }
 
+# define INSN_SIZE 16
+
 class lc_callable: public lisp_object
 {
 public:
@@ -136,7 +146,7 @@ public:
   u_char nargs;       // 引数の数
   u_char return_type; // 戻り値の型
   u_char convention;  // 呼び出し規約
-  u_char insn[16];    // stubコード
+  u_char insn[INSN_SIZE]; // stubコード
 
   ~lc_callable () {xfree (arg_types);}
 };
