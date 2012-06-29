@@ -388,7 +388,7 @@ xyzzy Lisp 開発者向け機能追加
     => (1 2 3 4 5 6 7 8 9 10)
     ```
 
-  * Win32 API 呼び出し時の `GetLastError` を取得する関数を追加 (x022235, #50)
+  * Win32 API 呼び出し時の `GetLastError` を取得する関数を追加しました (x022235, #50)
 
     FFI 呼び出し後に GetLastError の結果を自動的に保存するようにしました。
     次の FFI 呼び出しをするまで、保存されたエラーコードを `c:last-win32-error` で
@@ -537,13 +537,13 @@ Common Lisp との互換性向上
   * format ~n@A 書式のバグを修正しました (x022235, #246)
 
     このバグの修正は影響範囲が大きいので `lisp:format` の挙動は修正されません。
-    代わりに `cl:format` を利用してください。
+    代わりに `common-lisp:format` を利用してください。
 
     ```lisp
     (format nil "~30@A" "foo")
     => "foo                           "
 
-    (cl:format nil "~30@A" "foo")
+    (common-lisp:format nil "~30@A" "foo")
     => "                           foo"
     ```
 
