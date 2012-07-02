@@ -1343,7 +1343,7 @@ Fsi_set_function_name (lisp closure, lisp name)
 }
 
 static lisp
-flet (lisp arg, lex_env &olex, lex_env &nlex, int macrop)
+flet (lisp arg, lex_env &olex, lex_env &nlex, int macrop, lisp name_prefix)
 {
   if (!consp (arg) || !listp (xcar (arg)) || !listp (xcdr (arg)))
     FEtoo_few_arguments ();
@@ -1361,13 +1361,15 @@ flet (lisp arg, lex_env &olex, lex_env &nlex, int macrop)
       body = funcall_3 (Vsi_flet_helper, name, body, boole (macrop));
       if (!consp (body) || xcar (body) != (macrop ? Qmacro : Qlambda))
         FEinvalid_function (body);
-      nlex.lex_fns = xcons (xcons (name,
-                                   (macrop
-                                    ? body
-                                    : make_closure (body,
-                                                    olex.lex_var, olex.lex_fns,
-                                                    olex.lex_frame))),
-                            nlex.lex_fns);
+      lisp fn = body;
+      if (!macrop)
+        {
+          fn = make_closure (body,
+                             olex.lex_var, olex.lex_fns,
+                             olex.lex_frame);
+          xclosure_name (fn) = make_list (name_prefix, name, 0);
+        }
+      nlex.lex_fns = xcons (xcons (name, fn), nlex.lex_fns);
       QUIT;
     }
   if (&olex == &nlex)
@@ -1380,21 +1382,21 @@ lisp
 Fflet (lisp arg, lex_env &olex)
 {
   lex_env nlex (olex);
-  return flet (arg, olex, nlex, 0);
+  return flet (arg, olex, nlex, 0, Sflet);
 }
 
 lisp
 Flabels (lisp arg, lex_env &olex)
 {
   lex_env nlex (olex);
-  return flet (arg, nlex, nlex, 0);
+  return flet (arg, nlex, nlex, 0, Slabels);
 }
 
 lisp
 Fmacrolet (lisp arg, lex_env &olex)
 {
   lex_env nlex (olex);
-  return flet (arg, olex, nlex, 1);
+  return flet (arg, olex, nlex, 1, Qnil);
 }
 
 lisp
