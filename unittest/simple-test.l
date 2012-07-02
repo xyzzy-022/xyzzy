@@ -1042,7 +1042,9 @@ Returns list of failures."
          (tmpbuf (let ((buffer (create-new-buffer "*Temp*")))
                    (setup-temp-buffer buffer)
                    buffer))
-         (proc (make-process command-string :output tmpbuf :environ environ)))
+         (proc (let ((*xyzzyenv-show-flag* :hide))
+                 (make-process command-string :output tmpbuf :environ environ
+                               :show :minimize))))
     (unwind-protect
         (progn
           ;; wait for finish.
@@ -1052,9 +1054,6 @@ Returns list of failures."
               (signal-process proc)
               (error "eval-in-another-xyzzy timeout.")))
           (eval-in-another-xyzzy--read-results tmpfile))
-      ;; FIXME: when another xyzzy doesn't close properly, it stays
-      ;; in front so user can't see test progress.
-      (activate-xyzzy-window (si:*instance-number))
       (eval-in-another-xyzzy--delete-tmpbuf tmpbuf (+ create-time 180000))
       (delete-file tmpfile))))
 
