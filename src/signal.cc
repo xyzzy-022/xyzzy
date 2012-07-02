@@ -562,7 +562,9 @@ static void
 opearg (lisp &ope, lisp &arg)
 {
   stack_trace *p = stack_trace::stp;
-  if (p && p->type == stack_trace::apply)
+  if (p && (p->type == stack_trace::apply
+            || p->type == stack_trace::macro
+            || p->type == stack_trace::special_form))
     {
       ope = p->fn;
       arg = (p->args[0]
