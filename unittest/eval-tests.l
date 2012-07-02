@@ -60,3 +60,26 @@
      (with-too-many-arguments-datum (foo 1 2 3))))
   => (nth 1 2 3)
   => (foo 1 2 3))
+
+
+(deftest flet-function-name ()
+  (values
+   #1=(flet ((foo () 1))
+        (flet ((bar () 2)
+               (baz () 3))
+          (mapcar #'si:*function-name (list #'foo #'bar #'baz))))
+   (compile-and-eval
+     #1#))
+  => ((flet foo) (flet bar) (flet baz))
+  => ((flet foo) (flet bar) (flet baz)))
+
+(deftest labels-function-name ()
+  (values
+   #1=(labels ((foo () 1))
+        (labels ((bar () 2)
+                 (baz () 3))
+          (mapcar #'si:*function-name (list #'foo #'bar #'baz))))
+   (compile-and-eval
+     #1#))
+  => ((labels foo) (labels bar) (labels baz))
+  => ((labels foo) (labels bar) (labels baz)))
