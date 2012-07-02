@@ -175,6 +175,23 @@ open_for_write (dyn_handle &dh, const char *path, lisp lpath,
     file_error (GetLastError (), lpath);
 }
 
+static int
+show_window_parameter (lisp lshow, int defalt)
+{
+  if (lshow == Kshow)
+    return SW_SHOWNORMAL;
+  else if (lshow == Kno_active)
+    return SW_SHOWNA;
+  else if (lshow == Kmaximize)
+    return SW_SHOWMAXIMIZED;
+  else if (lshow == Khide)
+    return SW_HIDE;
+  else if (lshow == Kminimize)
+    return SW_SHOWMINNOACTIVE;
+  else
+    return defalt;
+}
+
 lisp
 Fcall_process (lisp cmd, lisp keys)
 {
@@ -205,20 +222,8 @@ Fcall_process (lisp cmd, lisp keys)
   pathname2cstr (exec_dir, dir);
   map_sl_to_backsl (dir);
 
-  int show;
   lisp lshow = find_keyword (Kshow, keys);
-  if (lshow == Kshow)
-    show = SW_SHOWNORMAL;
-  else if (lshow == Kno_active)
-    show = SW_SHOWNA;
-  else if (lshow == Kmaximize)
-    show = SW_SHOWMAXIMIZED;
-  else if (lshow == Khide)
-    show = SW_HIDE;
-  else if (lshow == Kminimize)
-    show = SW_SHOWMINNOACTIVE;
-  else
-    show = SW_SHOWNORMAL;
+  int show = show_window_parameter (lshow, SW_SHOWNORMAL);
 
   lisp wait = find_keyword (Kwait, keys);
   if (wait != Qnil && !realp (wait))
@@ -750,7 +755,7 @@ public:
       if (!WriteFile (p_out, s, l, &nwrite, 0))
         file_error (GetLastError ());
     }
-  void create (lisp, lisp, int, const char *);
+  void create (lisp, lisp, const char *, int);
   virtual int readin (u_char *, int);
 };
 
@@ -858,7 +863,7 @@ NormalProcess::signal_win95 ()
 }
 
 void
-NormalProcess::create (lisp command, lisp execdir, int show, const char *env)
+NormalProcess::create (lisp command, lisp execdir, const char *env, int show)
 {
   char dir[PATH_MAX + 1];
   pathname2cstr (execdir, dir);
@@ -888,7 +893,7 @@ NormalProcess::create (lisp command, lisp execdir, int show, const char *env)
     file_error (GetLastError ());
 
   char *cmdline = (char *)alloca (128 + xstring_length (command) * 2 + 1);
-  sprintf (cmdline, "xyzzyenv %u ", HANDLE (event));
+  sprintf (cmdline, "xyzzyenv %u %u ", HANDLE (event), show);
   w2s (cmdline + strlen (cmdline), command);
 
   u_int thread_id;
@@ -906,11 +911,14 @@ NormalProcess::create (lisp command, lisp execdir, int show, const char *env)
       FEsimple_error (Ecreate_thread_failed);
     }
 
+  lisp lxshow = symbol_value (Vxyzzyenv_show_flag, selected_buffer ());
+  int xshow = show_window_parameter (lxshow, SW_SHOWMINNOACTIVE);
+
   STARTUPINFO si;
   bzero (&si, sizeof si);
   si.cb = sizeof si;
   si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-  si.wShowWindow = show;
+  si.wShowWindow = xshow;
   si.hStdInput = ipipe_r;
   si.hStdOutput = opipe_w;
   si.hStdError = opipe_w;
@@ -973,21 +981,6 @@ Fmake_process (lisp command, lisp keys)
 {
   check_string (command);
 
-  int show;
-  lisp lshow = find_keyword (Kshow, keys);
-  if (lshow == Kshow)
-    show = SW_SHOWNORMAL;
-  else if (lshow == Kno_active)
-    show = SW_SHOWNA;
-  else if (lshow == Kmaximize)
-    show = SW_SHOWMAXIMIZED;
-  else if (lshow == Khide)
-    show = SW_HIDE;
-  else if (lshow == Kminimize)
-    show = SW_SHOWMINNOACTIVE;
-  else
-    show = SW_SHOWMINNOACTIVE;
-
   lisp execdir = find_keyword (Kexec_directory, keys);
   if (execdir == Qnil)
     execdir = selected_buffer ()->ldirectory;
@@ -1006,6 +999,9 @@ Fmake_process (lisp command, lisp keys)
   EnvStrings env;
   env.setup (find_keyword (Kenviron, keys));
 
+  lisp lshow = find_keyword (Kshow, keys);
+  int show = show_window_parameter (lshow, SW_SHOWNORMAL);
+
   lisp process = make_process ();
   lisp pl = xcons (process, xsymbol_value (Vprocess_list));
 
@@ -1018,7 +1014,7 @@ Fmake_process (lisp command, lisp keys)
   NormalProcess *pr = new NormalProcess (bp, process, Process::make_process_marker (bp));
   try
     {
-      pr->create (command, execdir, show, env.str ());
+      pr->create (command, execdir, env.str (), show);
     }
   catch (nonlocal_jump &)
     {

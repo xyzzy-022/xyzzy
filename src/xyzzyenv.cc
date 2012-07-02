@@ -155,7 +155,8 @@ main (void)
   char buf[256];
   char *myname = skip_white (GetCommandLine ());
   char *event = split (myname);
-  char *cmdline = split (event);
+  char *show = split (event);
+  char *cmdline = split (show);
   char *dir = 0;
   int no_events = !lstrcmp (event, "--");
 
@@ -170,7 +171,8 @@ main (void)
   PROCESS_INFORMATION pi;
   STARTUPINFO si = {sizeof si};
 
-  si.dwFlags = STARTF_USESTDHANDLES;
+  si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+  si.wShowWindow = static_cast <WORD> (parse_long (show));
   si.hStdInput = GetStdHandle (STD_INPUT_HANDLE);
   si.hStdOutput = GetStdHandle (STD_OUTPUT_HANDLE);
   si.hStdError = GetStdHandle (STD_ERROR_HANDLE);
