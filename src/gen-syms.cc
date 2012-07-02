@@ -2380,6 +2380,7 @@ static symbols ed[] =
   DEFUN3 (process-sentinel, 1, 0, 0),
   DEFUN3 (process-marker, 1, 0, 0),
   DEFUN3 (shell-execute, 1, 2, 0),
+  DEFVAR2 (*xyzzyenv-show-flag*),
   DEFVAR2 (*default-process-encoding*),
   DEFVAR2 (*use-shell-execute-ex*),
   DEFVAR2 (*shell-execute-disregards-shift-key*),
