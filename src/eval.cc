@@ -1334,6 +1334,14 @@ Fsi_fset (lisp name, lisp body)
 }
 
 lisp
+Fsi_function_name (lisp closure)
+{
+  if (!closurep (closure))
+    FEtype_error (closure, Qclosure);
+  return xclosure_name (closure);
+}
+
+lisp
 Fsi_set_function_name (lisp closure, lisp name)
 {
   if (!closurep (closure))

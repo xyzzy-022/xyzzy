@@ -783,6 +783,7 @@ static symbols sys[] =
   SI_DEFUN3 (*fset, 2, 0, 0),
   MAKE_SYMBOL (*flet-helper, Vsi_flet_helper),
   SI_DEFUN3 (*find-in-environment, 2, 0, 0),
+  SI_DEFUN3 (*function-name, 1, 0, 0),
   SI_DEFUN3 (*set-function-name, 2, 0, 0),
 
   /* bytecode.cc */
