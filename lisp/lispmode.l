@@ -201,10 +201,10 @@
   (ignore-errors
     (protect-match-data
       (save-excursion
-	(or (scan-buffer *lisp-search-in-package-regexp* :reverse t)
-	    (scan-buffer *lisp-search-in-package-regexp* :reverse nil))
-	(let (*read-eval*)
-	  (find-package (read-from-string (match-string 1))))))))
+	(when (or (scan-buffer *lisp-search-in-package-regexp* :reverse t)
+		  (scan-buffer *lisp-search-in-package-regexp* :reverse nil))
+	  (let (*read-eval*)
+	    (find-package (read-from-string (match-string 1)))))))))
 
 (defun find-buffer-package ()
   (or (and (stringp *buffer-package*)
