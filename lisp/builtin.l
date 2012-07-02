@@ -513,6 +513,7 @@
 (si::defun-builtin closure-function (closure))
 (si::defun-builtin closure-frame (closure))
 (si::defun-builtin closure-body (closure))
+(si::defun-builtin *function-name (closure))
 (si::defun-builtin *set-function-name (closure name))
 (si::defun-builtin *closurep (object))
 (si::defun-builtin *find-in-environment (form env))

@@ -3137,6 +3137,7 @@ si:*find-in-environment
 si:*fixnump
 si:*flet-helper
 si:*fset
+si:*function-name
 si:*get-string-input-stream-index
 si:*index-slot-value
 si:*instance-number
