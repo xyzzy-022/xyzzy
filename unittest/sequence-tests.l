@@ -151,7 +151,9 @@
   (values
    (reduce #'+ '((1) (1 2) (1 2 3)) :key #'length)
    (reduce #'* #(0 1 2 3 4 0) :key #'1+ :start 1 :end 5)
-   (reduce #'+ "123456789" :key #'digit-char-p))
+   (reduce #'+ "123456789" :key #'digit-char-p)
+   (reduce #'- '(1 2 3 4) :key #'1- :from-end t))
   => 6
   => 120
-  => 45)
+  => 45
+  => -2)
