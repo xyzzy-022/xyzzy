@@ -183,10 +183,9 @@
 	(if (char-encoding-p encoding)
 	    encoding
 	  (progn
-	    (setq encoding (gethash (cdr (assoc "\\`\\(en\\)?coding\\'"
-						(find-file-scan-params)
-						:test #'string-matchp))
-				    *mime-charset-name-hash-table*))
+	    (setq encoding (find-file-detect-auto-encoding))
+	    (when (stringp encoding)
+	      (setq encoding (gethash encoding *mime-charset-name-hash-table*)))
 	    (when (and encoding *find-file-auto-encoding-use-utf8n*)
 	      (flet ((utf8-encoding-p (x)
 		       (and (eq (char-encoding-type x) :utf8)
@@ -196,6 +195,47 @@
 		  (setq encoding (cdr (assoc encoding *char-encoding-bom-alist*))))))
 	    encoding)))
     (erase-buffer (selected-buffer))))
+
+(defun find-file-detect-auto-encoding ()
+  (or (cdr (assoc "\\`\\(en\\)?coding\\'"
+		  (find-file-scan-params)
+		  :test #'string-matchp))
+      (find-file-detect-xml-encoding)
+      ))
+
+(defun find-file-detect-xml-encoding ()
+  (flet ((scan-buffer-utf16 (string &key big-endian-p)
+	   (and (scan-buffer (format nil "~{~C~}"
+				     (let* ((chars (coerce string 'list))
+					    (nulls (make-list (length chars) :initial-element #\NUL)))
+				       (if big-endian-p
+					   (mapcan #'list nulls chars)
+					 (mapcan #'list chars nulls)))))
+		(evenp (point)))))
+    (save-excursion
+      (goto-char (point-min))
+      (let ((be (save-excursion (scan-buffer-utf16 "<?xml" :big-endian-p t)))
+	    (le (save-excursion (scan-buffer-utf16 "<?xml" :big-endian-p nil)))
+	    beg end)
+	(when (or be le)
+	  (save-excursion
+	    (replace-buffer (format nil "~C" #\NUL) "")))
+	(when (and (when (scan-buffer "<?xml" :limit (+ (point) 1000))
+		     (setq beg (point)))
+		   (when (scan-buffer "?>" :limit (+ (point) 1000))
+		     (setq end (point))))
+	  (goto-char beg)
+	  (when (scan-buffer "encoding[ \t\n]*=[ \t\n]*['\"]\\(.+?\\)['\"]"
+			     :regexp t :tail t :limit end)
+	    (let ((encoding (match-string 1)))
+	      (if (or (string-equal encoding "UTF-16")
+		      (string-equal encoding "ISO-10646-UCS-2"))
+		  (cond (be *encoding-utf16be*)
+			(le *encoding-utf16le*)
+			((eq (char-encoding-type (buffer-fileio-encoding)) :utf16)
+			 (buffer-fileio-encoding))
+			(t *encoding-utf16*))
+		encoding))))))))
 
 (defun find-file-internal (filename &optional nowarn encoding eol-code nomsg read-only)
   (let ((r (run-hook-with-args-until-success

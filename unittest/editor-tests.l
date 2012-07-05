@@ -1574,3 +1574,153 @@
   => "sjis"
   => "sjis"
   => "sjis")
+
+
+(defun find-file-auto-xml-encoding-test (param encoding)
+  (find-file-auto-encoding-test0 (format nil "<?xml version=\"1.0\" encoding=\"~A\"?>" param)
+                                 encoding))
+
+(deftest find-file-auto-xml-encoding-use-utf8n ()
+  (let ((*find-file-auto-encoding-use-utf8n* t))
+    (values
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-utf8*)
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-utf8n*)))
+  => "utf8"
+  => "utf8n")
+
+(deftest find-file-auto-xml-encoding-use-utf8n-wrong-encoding ()
+  (let ((*find-file-auto-encoding-use-utf8n* t))
+    (values
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-sjis*)
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-euc-jp*)
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-utf16*)
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-utf16be*)
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-utf16le*)
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-utf16be-bom*)
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-utf16le-bom*)
+     ))
+  => "utf8n"
+  => "utf8n"
+  => "utf8n"
+  => "utf8n"
+  => "utf8n"
+  => "utf8n"
+  => "utf8n")
+
+
+(deftest find-file-auto-xml-encoding-use-utf8n-disable ()
+  (let ((*find-file-auto-encoding-use-utf8n* nil))
+    (values
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-utf8*)
+     (find-file-auto-xml-encoding-test "utf-8" *encoding-utf8n*)))
+  => "utf8"
+  => "utf8")
+
+(deftest find-file-auto-xml-encoding-use-utf8n-changed ()
+  (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+        *encoding-utf8n*)
+  (unwind-protect
+      (let ((*find-file-auto-encoding-use-utf8n* t))
+        (values
+         (find-file-auto-xml-encoding-test "utf-8" *encoding-utf8*)
+         (find-file-auto-xml-encoding-test "utf-8" *encoding-utf8n*)))
+    (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+          *encoding-utf8*))
+  => "utf8n"
+  => "utf8n")
+
+(deftest find-file-auto-xml-encoding-use-utf8n-disable-changed ()
+  (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+        *encoding-utf8n*)
+  (unwind-protect
+      (let ((*find-file-auto-encoding-use-utf8n* nil))
+        (values
+         (find-file-auto-xml-encoding-test "utf-8" *encoding-utf8*)
+         (find-file-auto-xml-encoding-test "utf-8" *encoding-utf8n*)))
+    (setf (gethash "utf-8" *mime-charset-name-hash-table*)
+          *encoding-utf8*))
+  => "utf8n"
+  => "utf8n")
+
+(deftest find-file-auto-xml-encoding-use-UTF-16 ()
+  (values
+   (find-file-auto-xml-encoding-test "UTF-16" *encoding-sjis*)
+   (find-file-auto-xml-encoding-test "UTf-16" *encoding-euc-jp*)
+   (find-file-auto-xml-encoding-test "Utf-16" *encoding-utf8*)
+   (find-file-auto-xml-encoding-test "utf-16" *encoding-utf16*)
+   (find-file-auto-xml-encoding-test "utf-16" *encoding-utf16le*)
+   (find-file-auto-xml-encoding-test "utf-16" *encoding-utf16be*)
+   (find-file-auto-xml-encoding-test "utf-16" *encoding-utf16le-bom*)
+   (find-file-auto-xml-encoding-test "utf-16" *encoding-utf16be-bom*))
+  => "utf16le-bom"
+  => "utf16le-bom"
+  => "utf16le-bom"
+  => "utf16le-bom"
+  => "utf16le"
+  => "utf16be"
+  => "utf16le-bom"
+  => "utf16be-bom")
+
+(deftest find-file-auto-xml-encoding-use-ISO-10646-UCS-2 ()
+  (values
+   (find-file-auto-xml-encoding-test "ISO-10646-UCS-2" *encoding-sjis*)
+   (find-file-auto-xml-encoding-test "ISO-10646-ucs-2" *encoding-euc-jp*)
+   (find-file-auto-xml-encoding-test "iso-10646-UCS-2" *encoding-utf8*)
+   (find-file-auto-xml-encoding-test "iso-10646-ucs-2" *encoding-utf16*)
+   (find-file-auto-xml-encoding-test "iso-10646-ucs-2" *encoding-utf16le*)
+   (find-file-auto-xml-encoding-test "iso-10646-ucs-2" *encoding-utf16be*)
+   (find-file-auto-xml-encoding-test "iso-10646-ucs-2" *encoding-utf16le-bom*)
+   (find-file-auto-xml-encoding-test "iso-10646-ucs-2" *encoding-utf16be-bom*))
+  => "utf16le-bom"
+  => "utf16le-bom"
+  => "utf16le-bom"
+  => "utf16le-bom"
+  => "utf16le"
+  => "utf16be"
+  => "utf16le-bom"
+  => "utf16be-bom")
+
+
+(defun find-file-detect-xml-encoding-test (magic-comment)
+  (with-temp-files (file)
+    (with-temp-buffer
+      (insert magic-comment #\LFD)
+      (insert "abc" #\LFD)
+      (ed::find-file-detect-xml-encoding)
+      )))
+
+(deftest test-find-file-scan-xml-declarations ()
+  (values
+   (find-file-detect-xml-encoding-test "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+   (find-file-detect-xml-encoding-test "<?xml version = \"1.0\" encoding = \"UTF-8\" ?>")
+   (find-file-detect-xml-encoding-test "<?xml encoding=\"UTF-8\" version=\"1.0\"?>")
+   (find-file-detect-xml-encoding-test "<?xml encoding=\"UTF-8\"?>")
+   (find-file-detect-xml-encoding-test "<?xml encoding =\"UTF-8\"?>")
+   (find-file-detect-xml-encoding-test "<?xml encoding = \"UTF-8\" ?>")
+   (find-file-detect-xml-encoding-test "<?xml\tencoding\t=\t\"UTF-8\"\t?>")
+   (find-file-detect-xml-encoding-test "<?xml\nencoding\n=\n\"UTF-8\"\n?>")
+   )
+  => "UTF-8"
+  => "UTF-8"
+  => "UTF-8"
+  => "UTF-8"
+  => "UTF-8"
+  => "UTF-8"
+  => "UTF-8"
+  => "UTF-8")
+
+(deftest test-find-file-scan-xml-declarations--invalid-declaration ()
+  (values
+   (find-file-detect-xml-encoding-test "xml encoding=\"UTF-8\"")
+   (find-file-detect-xml-encoding-test "?xml encoding=\"UTF-8\"")
+   (find-file-detect-xml-encoding-test "< ?xml encoding=\"UTF-8\"")
+   (find-file-detect-xml-encoding-test "< ? xml encoding=\"UTF-8\"")
+   (find-file-detect-xml-encoding-test "<?xml encoding=\"UTF-8\" ?")
+   (find-file-detect-xml-encoding-test "<?xml encoding=\"UTF-8\" ? >")
+   )
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil
+  => nil)
