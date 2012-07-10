@@ -138,6 +138,73 @@ of SHA-384 and SHA-512)."
   => "e37b6a775dc87dbaa4dfa9f96e5e3ffddebd71f8867289865df5a32d20cdc944b6022cac3c4982b10d5eeb55c3e4de15134676fb6de0446065c97440fa8c6a58")
 
 
+(defun hex-string-to-bin-string (hex-string)
+  (let (r)
+    (dotimes (i (/ (length hex-string) 2))
+      (let ((s (* i 2)))
+        (push (parse-integer hex-string :start s :end (+ 2 s) :radix 16) r)))
+    (map 'string 'code-char (nreverse r))))
+
+(deftest digest-method--binary-result ()
+  (flet ((test (fn arg)
+           (string= (hex-string-to-bin-string (funcall fn arg))
+                    (funcall fn arg :binary t))))
+    (values
+     (test 'si:md5 "")
+     (test 'si:md5 "foo")
+     (test 'si:sha-1 "")
+     (test 'si:sha-1 "foo")
+     (test 'si:sha-224 "")
+     (test 'si:sha-224 "foo")
+     (test 'si:sha-256 "")
+     (test 'si:sha-256 "foo")
+     (test 'si:sha-384 "")
+     (test 'si:sha-384 "foo")
+     (test 'si:sha-512 "")
+     (test 'si:sha-512 "foo")))
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t)
+
+(deftest hmac-method--binary-result ()
+  (flet ((test (fn key arg)
+           (string= (hex-string-to-bin-string (funcall fn key arg))
+                    (funcall fn key arg :binary t))))
+    (values
+     (test 'si:hmac-md5 "key" "")
+     (test 'si:hmac-md5 "key" "foo")
+     (test 'si:hmac-sha-1 "key" "")
+     (test 'si:hmac-sha-1 "key" "foo")
+     (test 'si:hmac-sha-224 "key" "")
+     (test 'si:hmac-sha-224 "key" "foo")
+     (test 'si:hmac-sha-256 "key" "")
+     (test 'si:hmac-sha-256 "key" "foo")
+     (test 'si:hmac-sha-384 "key" "")
+     (test 'si:hmac-sha-384 "key" "foo")
+     (test 'si:hmac-sha-512 "key" "")
+     (test 'si:hmac-sha-512 "key" "foo")))
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t)
+
 ;;; package documentation
 
 (deftest set-package-documentation-type-error-1 ()

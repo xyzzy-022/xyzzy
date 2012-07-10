@@ -169,9 +169,9 @@ public:
   int block_size () const {return h_block_size;}
   int digest_size () const {return h_digest_size;}
   void update (lisp);
-  lisp make_string (const u_char *) const;
-  lisp apply (lisp);
-  lisp hmac (lisp, lisp);
+  lisp make_string (const u_char *, int) const;
+  lisp apply (lisp, lisp);
+  lisp hmac (lisp, lisp, lisp);
 };
 
 class md5: public hash_method
@@ -272,8 +272,11 @@ hash_method::update (lisp input)
 }
 
 lisp
-hash_method::make_string (const u_char *digest) const
+hash_method::make_string (const u_char *digest, int binary) const
 {
+  if (binary)
+    return ::make_string_simple (reinterpret_cast <const char *> (digest), digest_size ());
+
   char *buf = (char *)alloca (digest_size () * 2), *b = buf;
   for (const u_char *d = digest, *const de = d + digest_size (); d < de; d++)
     {
@@ -284,17 +287,17 @@ hash_method::make_string (const u_char *digest) const
 }
 
 lisp
-hash_method::apply (lisp input)
+hash_method::apply (lisp input, lisp keys)
 {
   init ();
   update (input);
   u_char *digest = (u_char *)alloca (digest_size ());
   final (digest);
-  return make_string (digest);
+  return make_string (digest, find_keyword_bool (Kbinary, keys));
 }
 
 lisp
-hash_method::hmac (lisp lkey, lisp input)
+hash_method::hmac (lisp lkey, lisp input, lisp keys)
 {
   char *key;
   check_string (lkey);
@@ -335,89 +338,89 @@ hash_method::hmac (lisp lkey, lisp input)
   update (digest, digest_size ());
   final (digest);
 
-  return make_string (digest);
+  return make_string (digest, find_keyword_bool (Kbinary, keys));
 }
 
 lisp
-Fsi_md5 (lisp input)
+Fsi_md5 (lisp input, lisp keys)
 {
   md5 x;
-  return x.apply (input);
+  return x.apply (input, keys);
 }
 
 lisp
-Fsi_sha_1 (lisp input)
+Fsi_sha_1 (lisp input, lisp keys)
 {
   sha1 x;
-  return x.apply (input);
+  return x.apply (input, keys);
 }
 
 lisp
-Fsi_sha_224 (lisp input)
+Fsi_sha_224 (lisp input, lisp keys)
 {
   sha224 x;
-  return x.apply (input);
+  return x.apply (input, keys);
 }
 
 lisp
-Fsi_sha_256 (lisp input)
+Fsi_sha_256 (lisp input, lisp keys)
 {
   sha256 x;
-  return x.apply (input);
+  return x.apply (input, keys);
 }
 
 lisp
-Fsi_sha_384 (lisp input)
+Fsi_sha_384 (lisp input, lisp keys)
 {
   sha384 x;
-  return x.apply (input);
+  return x.apply (input, keys);
 }
 
 lisp
-Fsi_sha_512 (lisp input)
+Fsi_sha_512 (lisp input, lisp keys)
 {
   sha512 x;
-  return x.apply (input);
+  return x.apply (input, keys);
 }
 
 lisp
-Fsi_hmac_md5 (lisp key, lisp input)
+Fsi_hmac_md5 (lisp key, lisp input, lisp keys)
 {
   md5 x;
-  return x.hmac (key, input);
+  return x.hmac (key, input, keys);
 }
 
 lisp
-Fsi_hmac_sha_1 (lisp key, lisp input)
+Fsi_hmac_sha_1 (lisp key, lisp input, lisp keys)
 {
   sha1 x;
-  return x.hmac (key, input);
+  return x.hmac (key, input, keys);
 }
 
 lisp
-Fsi_hmac_sha_224 (lisp key, lisp input)
+Fsi_hmac_sha_224 (lisp key, lisp input, lisp keys)
 {
   sha224 x;
-  return x.hmac (key, input);
+  return x.hmac (key, input, keys);
 }
 
 lisp
-Fsi_hmac_sha_256 (lisp key, lisp input)
+Fsi_hmac_sha_256 (lisp key, lisp input, lisp keys)
 {
   sha256 x;
-  return x.hmac (key, input);
+  return x.hmac (key, input, keys);
 }
 
 lisp
-Fsi_hmac_sha_384 (lisp key, lisp input)
+Fsi_hmac_sha_384 (lisp key, lisp input, lisp keys)
 {
   sha384 x;
-  return x.hmac (key, input);
+  return x.hmac (key, input, keys);
 }
 
 lisp
-Fsi_hmac_sha_512 (lisp key, lisp input)
+Fsi_hmac_sha_512 (lisp key, lisp input, lisp keys)
 {
   sha512 x;
-  return x.hmac (key, input);
+  return x.hmac (key, input, keys);
 }
