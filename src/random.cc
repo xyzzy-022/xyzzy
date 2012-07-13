@@ -115,6 +115,21 @@ Frandom (lisp number, lisp state)
     }
 }
 
+static long
+genseed ()
+{
+  HCRYPTPROV prov;
+  long seed = static_cast <long> (time (0));
+
+  if (CryptAcquireContext (&prov, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
+    {
+      CryptGenRandom (prov, sizeof seed, reinterpret_cast <BYTE *> (&seed));
+      CryptReleaseContext (prov, 0);
+    }
+
+  return seed;
+}
+
 lisp
 Fmake_random_state (lisp state)
 {
@@ -122,7 +137,7 @@ Fmake_random_state (lisp state)
     state = coerce_to_random_state (state);
   lisp p = make_random_state ();
   if (state == Qt)
-    xrandom_state_object (p).srandom (static_cast<long> (time (0)));
+    xrandom_state_object (p).srandom (genseed ());
   else
     xrandom_state_object (p).init_random_state (xrandom_state_object (state));
   return p;
