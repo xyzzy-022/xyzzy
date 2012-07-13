@@ -161,6 +161,7 @@
     <ClCompile Include="..\src\DnD.cc" />
     <ClCompile Include="..\src\doc.cc" />
     <ClCompile Include="..\src\dockbar.cc" />
+    <ClCompile Include="..\src\dsfmt\dSFMT.cc" />
     <ClCompile Include="..\src\edict.cc" />
     <ClCompile Include="..\src\encdec.cc" />
     <ClCompile Include="..\src\encoding.cc" />
@@ -343,6 +344,19 @@
     <ClInclude Include="..\src\dll.h" />
     <ClInclude Include="..\src\DnD.h" />
     <ClInclude Include="..\src\dockbar.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-common.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params11213.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params1279.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params132049.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params19937.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params216091.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params2203.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params4253.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params44497.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params521.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT-params86243.h" />
+    <ClInclude Include="..\src\dsfmt\dSFMT.h" />
     <ClInclude Include="..\src\dyn-handle.h" />
     <ClInclude Include="..\src\ed.h" />
     <ClInclude Include="..\src\encoding.h" />

@@ -1,68 +1,53 @@
 #include "stdafx.h"
 #include "ed.h"
 
-Random::Random (long seed)
+void
+Random::alloc_random_state ()
 {
-  srandom (seed);
+  dsfmt = reinterpret_cast <dsfmt_t *> (xmalloc (sizeof dsfmt_t));
 }
 
 void
-Random::store_initial (long seed)
+Random::free_random_state ()
 {
-  memset (X, 0, sizeof X);
-  X[INDEX_MAX - 1] = seed;
-  long *x = X;
-  long t = 1;
-  for (int i = 0, j = 20; i < INDEX_MAX - 2; i++, j += 21)
-    {
-      if (j >= INDEX_MAX - 1)
-        j -= INDEX_MAX;
-      x[j] = t;
-      t = seed - t;
-      if (t < 0)
-        t += RANDOM_MAX;
-      seed = x[j];
-    }
+  xfree (dsfmt);
+  dsfmt = 0;
 }
 
 void
-Random::store ()
+Random::init_random_state (const Random& random)
 {
-  int i;
-  long *x, *x24;
-#define x55 x
-  for (i = 0, x = X, x24 = x + INDEX_MAX - 24; i < 24; i++, x++, x24++)
-    {
-      *x = *x24 - *x55;
-      if (*x < 0)
-        *x += RANDOM_MAX;
-    }
-  for (i = 24, x = X + 24, x24 = X; i < INDEX_MAX; i++, x++, x24++)
-    {
-      *x = *x24 - *x55;
-      if (*x < 0)
-        *x += RANDOM_MAX;
-    }
+  memcpy (dsfmt, random.dsfmt, sizeof dsfmt_t);
+}
+
+int &
+Random::index () const
+{
+  return dsfmt->idx;
+}
+
+uint32_t *
+Random::state () const
+{
+  return &dsfmt->status[0].u32[0];
+}
+
+uint32_t &
+Random::state (int index) const
+{
+  return state ()[index];
 }
 
 void
 Random::srandom (long seed)
 {
-  store_initial (seed);
-  for (int i = 0; i < 5; i++)
-    store ();
-  index = 0;
+  dsfmt_init_gen_rand (dsfmt, seed);
 }
 
-long
+double
 Random::random ()
 {
-  if (index >= INDEX_MAX)
-    {
-      store ();
-      index = 0;
-    }
-  return X[index++];
+  return dsfmt_genrand_close_open (dsfmt);
 }
 
 lisp
@@ -73,16 +58,16 @@ make_random_state (lisp keys)
     FEprogram_error (Einvalid_random_state_initializer, v);
   lisp *x = xvector_contents (v);
   for (int i = 0; i < Random::INDEX_MAX + 1; i++, x++)
-    if (!fixnump (*x))
+    if (!integerp (*x))
       FEprogram_error (Einvalid_random_state_initializer, v);
   x = xvector_contents (v);
   int n = fixnum_value (*x++);
-  if (n < 0 || n >= Random::INDEX_MAX)
+  if (n < 0 || n > Random::INDEX_MAX)
     FEprogram_error (Einvalid_random_state_initializer, v);
   lrandom_state *p = make_random_state ();
-  p->object.index = n;
+  p->object.index () = n;
   for (int i = 0; i < Random::INDEX_MAX; i++, x++)
-    p->object.X[i] = fixnum_value (*x);
+    p->object.state (i) = unsigned_long_value (*x);
   return p;
 }
 
@@ -108,7 +93,7 @@ lisp
 Frandom (lisp number, lisp state)
 {
   state = coerce_to_random_state (state);
-  double d = double (xrandom_state_object (state).random ()) / Random::RANDOM_MAX;
+  double d = xrandom_state_object (state).random ();
   d = d * coerce_to_double_float (number);
   switch (number_typeof (number))
     {
@@ -130,6 +115,21 @@ Frandom (lisp number, lisp state)
     }
 }
 
+static long
+genseed ()
+{
+  HCRYPTPROV prov;
+  long seed = static_cast <long> (time (0));
+
+  if (CryptAcquireContext (&prov, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
+    {
+      CryptGenRandom (prov, sizeof seed, reinterpret_cast <BYTE *> (&seed));
+      CryptReleaseContext (prov, 0);
+    }
+
+  return seed;
+}
+
 lisp
 Fmake_random_state (lisp state)
 {
@@ -137,9 +137,9 @@ Fmake_random_state (lisp state)
     state = coerce_to_random_state (state);
   lisp p = make_random_state ();
   if (state == Qt)
-    xrandom_state_object (p).srandom (static_cast<long> (time (0)));
+    xrandom_state_object (p).srandom (genseed ());
   else
-    xrandom_state_object (p) = xrandom_state_object (state);
+    xrandom_state_object (p).init_random_state (xrandom_state_object (state));
   return p;
 }
 
