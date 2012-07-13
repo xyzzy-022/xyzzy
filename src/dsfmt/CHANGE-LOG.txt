@@ -1,0 +1,80 @@
+ver 2.2.0
+-------
+move do_recursion to dSFMT-common.h
+
+ver 2.1.1
+-------
+The initialization of the constants for sse2 is changed.
+Old version may cause trouble in parallel environment like OpenMP.
+
+ver 2.1
+-------
+This version supports the periods from 2^521-1 to 2^216091-1.
+We added new function dsfmt_genrand_uint32, which returns 32-bit
+unsigned integer. If you need many floating point pseudo random
+numbers and a few integers, you don't need to use another
+integer generator.
+
+ver 2.0
+-------
+The recursion formula of dSFMT is changed.
+The supported periods are changed.
+The output sequences are completely changed.
+The generation speed is improved.
+The variable for initialization check is removed, because it causes
+an execution error in cygwin.
+
+ver 1.3.1
+-------
+change dSFMT.h not to include dSFMT-params.h
+change Makefile to clean test files.
+
+ver 1.3
+-------
+add `dsfmt_' prefix to functions.
+changed to structure base code.
+put Intel Compiler into silence.
+bug fix checking BIG_ENDIAN and BYTE_ORDER
+change test.c not to include dSFMT.c
+dSFMT-alti.h and dSFMT-sse2.h are marged into dSFMT.c
+
+ver 1.2.1
+-------
+add #include <altivec.h> to dSFMT.c
+
+ver 1.2
+-------
+The precision specifier of printf was too large in test.c
+CAUTION! *.out.txt is changed.
+add dSFMT-params216091.h
+gcc compile option changed form -O9 to -O3.
+add AltiVec parameter format for systems which are not OSX.
+change Makefile for systems which are not OSX and support AltiVec.
+change sample2 of howto-compile for Free BSD.
+change period certification code more smart.
+change source files for BORLANDC and Visual Studio.
+
+ver 1.1.1
+-------
+BUG in dSFMT-sse2.h is fixed.
+This bug didn't change the result.
+Change test.c
+
+ver 1.1
+-------
+add dSFMT-params132049.h
+fix bug in period_certification. It's a bug but result is the same for
+all parameter files.
+change macro definition names and global variables. Thank you, Adam Piatyszek.
+remove L suffix from floating point constants. It's Saito's misunderstanding.
+fix bug of sfmt_idxof definition for BIG ENDIAN machine.
+
+ver 1.0.1
+-------
+change name dSFMT-alti.c to SFMT-alti.h
+change name dSFMT-sse2.c to SFMT-sse2.h
+This version is not released.
+
+ver 1.0
+-------
+The first version.
