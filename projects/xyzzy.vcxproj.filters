@@ -28,6 +28,12 @@
     <Filter Include="ソース ファイル\libguess">
       <UniqueIdentifier>{9e3e305c-4718-4f7a-9d56-7920d33fe45d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\dsfmt">
+      <UniqueIdentifier>{4cf87278-0208-4223-b9f1-96b3da03deed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\dsfmt">
+      <UniqueIdentifier>{15607d1e-2a0e-445d-896a-f5f723d56a76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\symtable.cc">
@@ -411,6 +417,9 @@
     <ClCompile Include="..\src\sha2.cc">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\dsfmt\dSFMT.cc">
+      <Filter>ソース ファイル\dsfmt</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\gen\xyzzy.rc">
@@ -786,6 +795,45 @@
     </ClInclude>
     <ClInclude Include="..\src\privctrl\privctrl.h">
       <Filter>ヘッダー ファイル\privctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-common.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params521.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params1279.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params2203.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params4253.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params11213.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params19937.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params44497.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params86243.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params132049.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dsfmt\dSFMT-params216091.h">
+      <Filter>ヘッダー ファイル\dsfmt</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -38,9 +38,6 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include <assert.h>
-
 #if !defined(DSFMT_MEXP)
 #ifdef __GNUC__
   #warning "DSFMT_MEXP is not defined. I assume DSFMT_MEXP is 19937."
@@ -94,9 +91,7 @@ extern "C" {
 #  include <inttypes.h>
 #elif defined(_MSC_VER) || defined(__BORLANDC__)
 #  if !defined(DSFMT_UINT32_DEFINED) && !defined(SFMT_UINT32_DEFINED)
-typedef unsigned int uint32_t;
-typedef unsigned __int64 uint64_t;
-#    define UINT64_C(v) (v ## ui64)
+#    include <stdint.h>
 #    define DSFMT_UINT32_DEFINED
 #    if !defined(inline)
 #      define inline __inline
