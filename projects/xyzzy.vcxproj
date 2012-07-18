@@ -271,48 +271,6 @@
     <ResourceCompile Include="..\src\gen\xyzzy.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="dpp.vcxproj">
-      <Project>{a2c59236-6e41-487f-ab4a-e988d1c627d8}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="gen-char-width.vcxproj">
-      <Project>{7558425f-6f8c-4bdc-9d85-40e18e7e3f95}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="gen-ctab.vcxproj">
-      <Project>{39aa1e32-6e74-4e03-8821-58534eee1996}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="gen-ibmext.vcxproj">
-      <Project>{aea9aa5e-4a48-490e-97db-8839b0bb21d0}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="gen-iso2022state.vcxproj">
-      <Project>{3cabbe7a-3e4d-4119-a864-6a885d5e414a}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="gen-jisx0212-hash.vcxproj">
-      <Project>{51e2c591-5983-4628-a681-9c78388fe5e6}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="gen-ktab.vcxproj">
-      <Project>{e6fd9f8d-cb71-4afb-a86b-7b8ec9d9ecdb}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="gen-msg.vcxproj">
-      <Project>{009d9799-3749-4f66-bbc4-83976e5ea7a7}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="gen-syms.vcxproj">
-      <Project>{ffbb3683-9116-4d7e-84a9-a51337a17d64}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="gen-utf2sjis.vcxproj">
-      <Project>{f3cc8760-6c73-4299-a3ad-3ab9683a62e7}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\src\alloc.h" />
     <ClInclude Include="..\src\appid.h" />
     <ClInclude Include="..\src\arc-if.h" />

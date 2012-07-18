@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include "gen-stdafx.h"
 #include <stdarg.h>
 #include <io.h>
 
@@ -546,8 +543,8 @@ process_proc ()
   return 1;
 }
 
-int
-main (int argc, char **argv)
+void
+dpp (int argc, char **argv)
 {
   if (argc != 3)
     {
@@ -572,5 +569,5 @@ main (int argc, char **argv)
     ;
   fclose (fo);
   fclose (fi);
-  return 0;
+  exit (0);
 }

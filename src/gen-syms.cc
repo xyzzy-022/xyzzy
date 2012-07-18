@@ -1,11 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include "gen-stdafx.h"
 #include <time.h>
 #include <mbctype.h>
 #define NOT_COMPILE_TIME
-#include "cdecl.h"
 #include "symbol.h"
 #include "function.h"
 
@@ -3010,7 +3006,7 @@ print_version ()
 }
 
 void
-main (int argc, char **argv)
+gen_syms (int argc, char **argv)
 {
   if (argc == 1)
     exit (2);

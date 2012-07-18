@@ -1,6 +1,4 @@
-#include "cdecl.h"
-#include "charset.h"
-#include "ucs2tab.h"
+#include "gen-stdafx.h"
 
 /* http://www.opengroup.or.jp/jvc/cde/ibmext-table.html */
 static const struct {int sjis, eucjp;} sjis2eucjp[] =
@@ -395,8 +393,8 @@ static const struct {int sjis, eucjp;} sjis2eucjp[] =
   {0xfc4b, 0x8ff4fe},
 };
 
-int
-main ()
+void
+gen_ibmext (int argc, char **argv)
 {
   printf ("#define IBMEXT_CHAR_MIN 0xfa40\n");
   printf ("#define IBMEXT_CHAR_MAX 0xfc4b\n");
@@ -458,5 +456,5 @@ main ()
     }
   printf ("\n};\n\n");
 
-  return 0;
+  exit (0);
 }

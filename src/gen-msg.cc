@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "cdecl.h"
+#include "gen-stdafx.h"
 #include "chtype.h"
 
 #include "chtab.cc"
@@ -55,7 +53,7 @@ print_quote_rc (const char *p)
 }
 
 void
-main (int argc, char **argv)
+gen_msg (int argc, char **argv)
 {
   if (argc == 1)
     exit (2);

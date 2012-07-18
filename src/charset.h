@@ -507,6 +507,8 @@ extern Char windows_baltic_to_internal[];
 extern Char koi8r_to_internal[];
 extern Char koi8u_to_internal[];
 
+extern ucs2_t internal2wc_table[];
+
 extern wc2int_hash wc2int_windows_latin1_hash;
 extern wc2int_hash wc2int_windows_latin2_hash;
 extern wc2int_hash wc2int_windows_cyrillic_hash;

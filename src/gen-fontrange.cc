@@ -1,5 +1,5 @@
+#include "gen-stdafx.h"
 #include <windows.h>
-#include <stdio.h>
 
 #define REQ_RANGE_MIN 0x0080
 #define REQ_RANGE_MAX 0x33ff
@@ -49,15 +49,15 @@ print (HDC hdc, const GLYPHSET *g, const char *name)
   printf ("\n};\n");
 }
 
-int
-main ()
+void
+gen_fontrange (int argc, char **argv)
 {
   GETFONTUNICODERANGES GetFontUnicodeRanges =
     (GETFONTUNICODERANGES)GetProcAddress (GetModuleHandle ("GDI32"), "GetFontUnicodeRanges");
   if (!GetFontUnicodeRanges)
     {
       fprintf (stderr, "Cannot get GetFontUnicodeRanges (w2k only).\n");
-      return 2;
+      exit (2);
     }
 
   char tem[sizeof (GLYPHSET) + sizeof (WCRANGE) * 65536];
@@ -84,5 +84,5 @@ main ()
   DeleteObject (SelectObject (hdc, of));
 
   ReleaseDC (0, hdc);
-  return 0;
+  exit (0);
 }
