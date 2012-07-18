@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A2C59236-6E41-487F-AB4A-E988D1C627D8}</ProjectGuid>
+    <RootNamespace>dpp</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>gen-src1</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;GEN_SRC1;WIN32;_DEBUG;DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;GEN_SRC1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\dpp.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-char-width.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-ctab.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-fontrange.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-ibmext.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-iso2022state.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-jisx0212-hash.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-jisx0212-width.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-ktab.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-lucida-width.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-main.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-stdafx.cc">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-syms.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-ucs2tab.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\src\gen-utf2sjis.cc">
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>gen-stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\cdecl.h" />
+    <ClInclude Include="..\src\charset.h" />
+    <ClInclude Include="..\src\chtype.h" />
+    <ClInclude Include="..\src\function.h" />
+    <ClInclude Include="..\src\gen-action1.h" />
+    <ClInclude Include="..\src\gen-stdafx.h" />
+    <ClInclude Include="..\src\symbol.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <Import Project="$(ProjectDir)gen.targets" />
+  <PropertyGroup>
+    <DppInputs>..\src\dpp.cc;..\src\num-arith.d</DppInputs>
+    <DppOutput>$(GenerateDir)num-arith.h</DppOutput>
+  </PropertyGroup>
+  <Target Name="Dpp" Inputs="$(DppInputs)" Outputs="$(DppOutput)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; dpp num-arith.d &quot;$(DppOutput)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+  </Target>
+  <PropertyGroup>
+    <GenCharWidthInputs>..\src\gen-char-width.cc;..\src\cdecl.h;..\src\charset.h</GenCharWidthInputs>
+    <GenCharWidthOutput>$(GenerateDir)char-width.h</GenCharWidthOutput>
+  </PropertyGroup>
+  <Target Name="GenCharWidth" Inputs="$(GenCharWidthInputs)" Outputs="$(GenCharWidthOutput)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; gen-char-width &gt; &quot;$(GenCharWidthOutput)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+  </Target>
+  <PropertyGroup>
+    <GenCtabInputs>..\src\gen-ctab.cc;..\src\cdecl.h;..\src\chtype.h</GenCtabInputs>
+    <GenCtabOutput>$(GenerateDir)chtab.cc</GenCtabOutput>
+  </PropertyGroup>
+  <Target Name="GenCtab" Inputs="$(GenCtabInputs)" Outputs="$(GenCtabOutput)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; gen-ctab &gt; &quot;$(GenCtabOutput)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+  </Target>
+  <PropertyGroup>
+    <GenIbmExtInputs>..\src\gen-ibmext.cc;..\src\cdecl.h;..\src\charset.h</GenIbmExtInputs>
+    <GenIbmExtOutput>$(GenerateDir)ibmext.h</GenIbmExtOutput>
+  </PropertyGroup>
+  <Target Name="GenIbmExt" Inputs="$(GenIbmExtInputs)" Outputs="$(GenIbmExtOutput)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; gen-ibmext &gt; &quot;$(GenIbmExtOutput)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+  </Target>
+  <PropertyGroup>
+    <GenIso2022StateInputs>..\src\gen-iso2022state.cc;..\src\cdecl.h;..\src\charset.h</GenIso2022StateInputs>
+    <GenIso2022StateOutput>$(GenerateDir)iso2022state.h</GenIso2022StateOutput>
+  </PropertyGroup>
+  <Target Name="GenIso2022State" Inputs="$(GenIso2022StateInputs)" Outputs="$(GenIso2022StateOutput)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; gen-iso2022state &gt; &quot;$(GenIso2022StateOutput)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+  </Target>
+  <PropertyGroup>
+    <GenJisX0212HashInputs>..\src\gen-jisx0212-hash.cc;..\src\cdecl.h;..\src\charset.h</GenJisX0212HashInputs>
+    <GenJisX0212HashOutput>$(GenerateDir)jisx0212-hash.h</GenJisX0212HashOutput>
+  </PropertyGroup>
+  <Target Name="GenJisX0212Hash" Inputs="$(GenJisX0212HashInputs)" Outputs="$(GenJisX0212HashOutput)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; gen-jisx0212-hash &gt; &quot;$(GenJisX0212HashOutput)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+  </Target>
+  <PropertyGroup>
+    <GenKtabInputs>..\src\gen-ktab.cc</GenKtabInputs>
+    <GenKtabOutput>$(GenerateDir)kanjitab.h</GenKtabOutput>
+  </PropertyGroup>
+  <Target Name="GenKtab" Inputs="$(GenKtabInputs)" Outputs="$(GenKtabOutput)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; gen-ktab &gt; &quot;$(GenKtabOutput)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+  </Target>
+  <PropertyGroup>
+    <GenSymsInputs>..\src\cdecl.h;..\src\function.h;..\src\symbol.h</GenSymsInputs>
+    <GenSymsOutputs>$(GenerateDir)vars-decl.h;$(GenerateDir)fns-decl.h;$(GenerateDir)symtable.cc;$(GenerateDir)dumpver.cc</GenSymsOutputs>
+  </PropertyGroup>
+  <Target Name="GenSyms" Inputs="$(GenSymsInputs)" Outputs="$(GenSymsOutputs)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; gen-syms -vars &gt; &quot;$(GenerateDir)vars-decl.h&quot;" />
+    <Exec Command="&quot;$(TargetPath)&quot; gen-syms -proto &gt; &quot;$(GenerateDir)fns-decl.h&quot;" />
+    <Exec Command="&quot;$(TargetPath)&quot; gen-syms -symtable &gt; &quot;$(GenerateDir)symtable.cc&quot;" />
+    <Exec Command="&quot;$(TargetPath)&quot; gen-syms -version &gt; &quot;$(GenerateDir)dumpver.cc&quot;" />
+  </Target>
+  <PropertyGroup>
+    <GenUtf2SjisInputs>..\src\gen-utf2sjis.cc;..\src\cdecl.h</GenUtf2SjisInputs>
+    <GenUtf2SjisOutput>$(GenerateDir)utf2sjis.h</GenUtf2SjisOutput>
+  </PropertyGroup>
+  <Target Name="GenUtf2Sjis" Inputs="$(GenUtf2SjisInputs)" Outputs="$(GenUtf2SjisOutput)" DependsOnTargets="PrepareGenerate">
+    <Exec Command="&quot;$(TargetPath)&quot; gen-utf2sjis &gt; &quot;$(GenUtf2SjisOutput)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+  </Target>
+  <Target Name="AfterBuild">
+    <CallTarget Targets="Dpp" />
+    <CallTarget Targets="GenCharWidth" />
+    <CallTarget Targets="GenCtab" />
+    <CallTarget Targets="GenIbmExt" />
+    <CallTarget Targets="GenIso2022State" />
+    <CallTarget Targets="GenJisX0212Hash" />
+    <CallTarget Targets="GenKtab" />
+    <CallTarget Targets="GenSyms" />
+    <CallTarget Targets="GenUtf2Sjis" />
+  </Target>
+  <Target Name="BeforeClean">
+    <Delete Files="$(DppOutput)" />
+    <Delete Files="$(GenCharWidthOutput)" />
+    <Delete Files="$(GenCtabOutput)" />
+    <Delete Files="$(GenIbmExtOutput)" />
+    <Delete Files="$(GenIso2022StateOutputs)" />
+    <Delete Files="$(GenJisX0212HashOutput)" />
+    <Delete Files="$(GenKtabOutput)" />
+    <Delete Files="$(GenSymsOutputs)" />
+    <Delete Files="$(GenUtf2SjisOutput)" />
+  </Target>
+</Project>

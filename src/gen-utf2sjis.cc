@@ -1,4 +1,4 @@
-#include "cdecl.h"
+#include "gen-stdafx.h"
 
 static const int internal[] =
   {0x005c, 0x007e, 0x815f, 0x8160, 0x8161, 0x817c, 0x8191, 0x8192, 0x81ca,};
@@ -40,12 +40,12 @@ buildhash (const int *from, const int *to, int len, const char *name)
     }
 }
 
-int
-main ()
+void
+gen_utf2sjis (int argc, char **argv)
 {
   buildhash (internal, shiftjis, numberof (internal),
              "static const struct {Char cc; ucs2_t wc;} utf_internal2shiftjis_hash");
   buildhash (shiftjis, internal, numberof (internal),
              "static const struct {ucs2_t wc; Char cc;} utf_shiftjis2internal_hash");
-  return 0;
+  exit (0);
 }

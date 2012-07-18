@@ -1,5 +1,4 @@
-#include "cdecl.h"
-#include "charset.h"
+#include "gen-stdafx.h"
 #include "ucs2tab.h"
 
 #define SZ 0x500
@@ -18,8 +17,8 @@ print (const u_char *width)
   printf ("};\n");
 }
 
-int
-main ()
+void
+gen_jisx0212_width (int argc, char **argv)
 {
   HDC hdc = GetDC (0);
   LOGFONT lf;
@@ -50,5 +49,5 @@ main ()
   DeleteObject (SelectObject (hdc, of));
   ReleaseDC (0, hdc);
 
-  return 0;
+  exit (0);
 }

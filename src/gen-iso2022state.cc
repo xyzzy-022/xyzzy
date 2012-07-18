@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include "cdecl.h"
-#include "charset.h"
+#include "gen-stdafx.h"
 
 static const struct {const char *s; int ccs;} escseq[] =
 {
@@ -42,8 +38,8 @@ static const char *const intermediate_chars[] =
 #define STATE_TERM 0x40
 #define MAX_STATE 64
 
-int
-main ()
+void
+gen_iso2022state (int argc, char **argv)
 {
   u_char chars_buf[257], *const chars = chars_buf + 1;
   u_char chars_rev[256];
@@ -127,5 +123,5 @@ main ()
       printf ("},\n");
     }
   printf ("};\n");
-  return 0;
+  exit (0);
 }

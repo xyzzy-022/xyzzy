@@ -1,3 +1,4 @@
+#include "gen-stdafx.h"
 #include "cdecl.h"
 #include "charset.h"
 #include "jisx0212-width.h"
@@ -16,8 +17,8 @@ print (const u_char *width)
   printf ("};\n");
 }
 
-int
-main ()
+void
+gen_char_width (int argc, char **argv)
 {
 #define ON8(X) (width[(X) / 8] = 255)
 #define ON(X) (width[(X) / 8] |= 1 << ((X) % 8))
@@ -63,5 +64,5 @@ main ()
 
   print (width);
 
-  return 0;
+  exit (0);
 }

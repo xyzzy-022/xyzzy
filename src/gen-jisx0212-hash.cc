@@ -1,9 +1,8 @@
-#include "cdecl.h"
-#include "charset.h"
+#include "gen-stdafx.h"
 #include "jisx0212-width.h"
 
-int
-main ()
+void
+gen_jisx0212_hash (int argc, char **argv)
 {
   Char ic[sizeof jisx0212_width_table * 8];
   int nic = 0;
@@ -15,7 +14,7 @@ main ()
   if (nic >= 255)
     {
       fprintf (stderr, "Too many chars: %d\n", nic);
-      return 2;
+      exit (2);
     }
 
   int buf[sizeof jisx0212_width_table * 8];
@@ -54,5 +53,5 @@ main ()
     }
   printf ("};\n\n");
 
-  return 0;
+  exit (0);
 }
