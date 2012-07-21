@@ -90,6 +90,8 @@ file_error (int e)
 static Char *
 skip_device_or_host (const Char *p, const Char *pe)
 {
+  if (pe - p < 2)
+    return (Char *)p;
   if (dir_separator_p (*p) && dir_separator_p (p[1]))
     {
       // skip hostname
