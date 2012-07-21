@@ -90,6 +90,8 @@ file_error (int e)
 static Char *
 skip_device_or_host (const Char *p, const Char *pe)
 {
+  if (pe - p < 2)
+    return (Char *)p;
   if (dir_separator_p (*p) && dir_separator_p (p[1]))
     {
       // skip hostname
@@ -278,14 +280,14 @@ parse_namestring (pathbuf_t buf, const Char *name, int nl, const Char *defalt, i
     {
       if (dir_separator_p (*p))
         {
-          if (p[1] == '.')
+          if (p + 1 < pe && p[1] == '.')
             {
-              if (!p[2] || dir_separator_p (p[2]))
+              if (p + 2 == pe || !p[2] || dir_separator_p (p[2]))
                 {
                   p += 2;
                   continue;
                 }
-              else if (p[2] == '.' && (!p[3] || dir_separator_p (p[3])))
+              else if (p[2] == '.' && (p + 3 == pe || !p[3] || dir_separator_p (p[3])))
                 {
                   for (; b > root && !dir_separator_p (b[-1]); b--)
                     ;
