@@ -893,7 +893,7 @@ NormalProcess::create (lisp command, lisp execdir, const char *env, int show)
     file_error (GetLastError ());
 
   char *cmdline = (char *)alloca (128 + xstring_length (command) * 2 + 1);
-  sprintf (cmdline, "xyzzyenv %u %u ", HANDLE (event), show);
+  sprintf (cmdline, "xyzzyenv -s%u %u ", show, HANDLE (event));
   w2s (cmdline + strlen (cmdline), command);
 
   u_int thread_id;
