@@ -2650,6 +2650,30 @@ count-matches が 0 だったら無いとか。
 </chapter>
 
 <chapter>
+<title>*xyzzyenv-show-flag*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+make-processで外部コマンドを実行するときのxyzzyenv.exeの
+表示を指定します。
+
+  :show      通常のウィンドウ
+  :no-active 非アクティブ
+  :minimize  最小化
+  :maximize  最大化
+  :hide      非表示
+  上記以外   通常のウィンドウ
+
+補足：
+  xyzzy 0.2.2.242 から利用可能です。
+</description>
+<section>変数と定数</section>
+<seealso>make-process</seealso>
+<file></file>
+</chapter>
+
+<chapter>
 <title>+</title>
 <type>Function</type>
 <arguments>+ &amp;rest NUMBERS</arguments>
@@ -17516,6 +17540,7 @@ make-variable-buffer-localとは異なり、現在のバッファだけです。
 補足：
   :show パラメータの指定は xyzzy 0.2.2.236 から利用可能です。
 </description>
+<seealso>*xyzzyenv-show-flag*</seealso>
 <seealso>call-process</seealso>
 <seealso>execute-subprocess</seealso>
 <seealso>filter-region</seealso>
