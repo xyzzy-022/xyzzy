@@ -210,7 +210,7 @@
     <Exec Command="&quot;$(TargetPath)&quot; gen-ktab &gt; &quot;$(GenKtabOutput)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
   </Target>
   <PropertyGroup>
-    <GenSymsInputs>..\src\cdecl.h;..\src\function.h;..\src\symbol.h</GenSymsInputs>
+    <GenSymsInputs>..\src\gen-syms.cc;..\src\cdecl.h;..\src\function.h;..\src\symbol.h</GenSymsInputs>
     <GenSymsOutputs>$(GenerateDir)vars-decl.h;$(GenerateDir)fns-decl.h;$(GenerateDir)symtable.cc;$(GenerateDir)dumpver.cc</GenSymsOutputs>
   </PropertyGroup>
   <Target Name="GenSyms" Inputs="$(GenSymsInputs)" Outputs="$(GenSymsOutputs)" DependsOnTargets="PrepareGenerate">
