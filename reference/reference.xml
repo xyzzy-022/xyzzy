@@ -10306,8 +10306,11 @@ PATHNAMEのディレクトリ部分を返します。
   :show-dots      : ディレクトリとして"./"と"../"を加えます。
   :count          : 表示されるファイルの個数を制限します。
   :directory-only : ディレクトリしか検索しません。
-  :callback       : 見つかったファイルを引数にして funcall します。
-                    funcall した結果をリストにして返します。
+  :callback       : 見つかったファイルを引数にしてfuncallします。
+                    :file-infoにnon-nilを指定した場合はファイルの属性も
+                    引数に指定します。
+                    :callbackを指定した場合、directory関数の戻り値は
+                    nilです。
   :file-info      : ファイルの属性を取得します。
                     get-file-info で取得できるものと同じです。
 
