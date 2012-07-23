@@ -6,6 +6,7 @@
 (provide "gresregd")
 
 (require "gresreg")
+(require "grepd")
 (require "glob")
 
 (in-package "editor")
@@ -45,6 +46,7 @@
 			   :recursive *gresreg-subdir*
 			   :file-only t :wild file
 			   :absolute t
+			   :test 'grep-not-ignored-directories-p
 			   :callback
 			   #'(lambda (f)
 			       (message "Processing ~a..." f)
