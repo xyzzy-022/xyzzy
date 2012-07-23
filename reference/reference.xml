@@ -1413,6 +1413,31 @@ gresreg-dialog で gresreg 対象のディレクトリを個々に設定した�
 </chapter>
 
 <chapter>
+<title>*grep-ignored-directories*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+grep-dialogおよびgresreg-dialogで無視するサブディレクトリを指定します。
+標準では以下のディレクトリが設定されています。
+
+  *grep-ignored-directories*
+  =&gt; ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}")
+
+たとえばtmpを無視したい場合は以下のようにします。
+
+  (require "grepd")
+  =&gt; t
+
+  (pushnew "tmp" *grep-ignored-directories* :test #'string-equal)
+  =&gt; ("tmp" "SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}")
+</description>
+<link></link>
+<section>変数と定数</section>
+<file>grepd.l</file>
+</chapter>
+
+<chapter>
 <title>*history-file-name*</title>
 <type>Variable</type>
 <arguments></arguments>
@@ -10290,7 +10315,7 @@ PATHNAMEのディレクトリ部分を返します。
 <chapter>
 <title>directory</title>
 <type>Function</type>
-<arguments>directory PATHNAME &amp;key :absolute :recursive :wild :depth :file-only :show-dots :count :directory-only :callback :file-info</arguments>
+<arguments>directory PATHNAME &amp;key :absolute :recursive :wild :depth :file-only :show-dots :count :directory-only :callback :file-info :test</arguments>
 <package>lisp</package>
 <description>
 対象ディレクトリ下のファイル名をリストで得ます。
@@ -10306,10 +10331,19 @@ PATHNAMEのディレクトリ部分を返します。
   :show-dots      : ディレクトリとして"./"と"../"を加えます。
   :count          : 表示されるファイルの個数を制限します。
   :directory-only : ディレクトリしか検索しません。
-  :callback       : 見つかったファイルを引数にして funcall します。
-                    funcall した結果をリストにして返します。
+  :callback       : 見つかったファイルを引数にしてfuncallします。
+                    :file-infoにnon-nilを指定した場合はファイルの属性も
+                    引数に指定します。
+                    :callbackを指定した場合、directory関数の戻り値は
+                    nilです。
   :file-info      : ファイルの属性を取得します。
                     get-file-info で取得できるものと同じです。
+  :test           : 見つかったファイルを引数にしてfuncallします。
+                    funcallした結果がnilのファイルは無視します。
+                    ディレクトリの場合はディレクトリ配下のファイルを
+                    すべて無視します。
+                    :file-infoにnon-nilを指定した場合はファイルの属性も
+                    引数に指定します。
 
 使用例：
   ;;;  "../"は出したいけど、"./"を出したくない場合
@@ -10323,6 +10357,23 @@ PATHNAMEのディレクトリ部分を返します。
 
   ;;; ファイル名のソート（大文字小文字区別有り）
   (sort (directory ...) #'string-lessp)
+
+  ;;; .git ディレクトリを無視したい場合
+  (directory "." :test #'(lambda (path)
+                           (not (and (file-directory-p path)
+                                     (string-equal ".git" (pathname-name path)))))
+             :absolute t :recursive t)
+
+  ;;; 隠しディレクトリを無視したい場合
+  (directory "." :test #'(lambda (path/file-info)
+                           (let ((path (car path/file-info))
+                                 (attr (cadr path/file-info)))
+                             (not (and (file-directory-p path)
+                                       (not (zerop (logand attr ed::*file-attribute-hidden*)))))))
+             :file-info t :recursive t)
+
+備考：
+  :test 引数は xyzzy 0.2.2.242 から利用可能です。
 </description>
 <section>ファイルシステム</section>
 <file>builtin.l</file>

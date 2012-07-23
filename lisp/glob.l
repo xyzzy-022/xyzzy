@@ -10,7 +10,7 @@
 (export '(glob glob-expand glob-expand-list glob-exec glob-common-length
 	  glob-common-path glob-enumerator))
 
-(defun glob-expand (path)
+(defun glob-expand (path &key test)
   (let ((prefix ""))
     (setq path (namestring path))
     (when (string-match "^\\(.:\\|//[^/]+/[^/]+\\)?/" path)
@@ -28,15 +28,16 @@
 					       (concat path file))
 					   (directory path
 						      :wild dir
+						      :test test
 						      :directory-only t)))))
 	      prefix)
 	(setq prefix r)))))
 
-(defun glob-expand-list (list)
+(defun glob-expand-list (list &key test)
   (apply #'append (mapcar #'(lambda (path)
 			      (if (file-exist-p path)
 				  (list (namestring path))
-				(glob-expand path)))
+				(glob-expand path :test test)))
 			  list)))
 
 (defun glob-subseq (d l)
@@ -50,7 +51,7 @@
       (setq slash (length d)))
     (subseq d (min l slash) slash)))
 
-(defun glob-exec (paths &rest rest &key absolute callback)
+(defun glob-exec (paths &rest rest &key absolute callback test)
   (cond ((null paths)
 	 nil)
 	(absolute
@@ -94,7 +95,7 @@
 (defun glob-common-path (dirs)
   (subseq (car dirs) 0 (glob-common-length dirs)))
 
-(defun glob-enumerator (dirlist wild recursive-p &optional empty-ok)
+(defun glob-enumerator (dirlist wild recursive-p &optional empty-ok test)
   (let ((files nil))
     #'(lambda ()
 	(loop
@@ -104,7 +105,7 @@
 		 (dot (equal dir ".")))
 	    (unless dir
 	      (return nil))
-	    (setq files (directory dir :wild wild :file-only t))
+	    (setq files (directory dir :wild wild :file-only t :test test))
 	    (let ((dirp (file-directory-p dir)))
 	      (if dirp
 		  (or (equal dir "")
@@ -114,7 +115,7 @@
 	      (unless dot
 		(setq files (mapcar #'(lambda (f) (concat dir f)) files)))
 	      (when (and dirp recursive-p)
-		(let ((dirs (directory dir :directory-only t)))
+		(let ((dirs (directory dir :directory-only t :test test)))
 		  (setq dirlist (nconc (if dot
 					   dirs
 					 (mapcar #'(lambda (f) (concat dir f)) dirs))
