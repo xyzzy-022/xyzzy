@@ -1413,6 +1413,31 @@ gresreg-dialog で gresreg 対象のディレクトリを個々に設定した�
 </chapter>
 
 <chapter>
+<title>*grep-ignored-directories*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+grep-dialogおよびgresreg-dialogで無視するサブディレクトリを指定します。
+標準では以下のディレクトリが設定されています。
+
+  *grep-ignored-directories*
+  =&gt; ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}")
+
+たとえばtmpを無視したい場合は以下のようにします。
+
+  (require "grepd")
+  =&gt; t
+
+  (pushnew "tmp" *grep-ignored-directories* :test #'string-equal)
+  =&gt; ("tmp" "SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}")
+</description>
+<link></link>
+<section>変数と定数</section>
+<file>grepd.l</file>
+</chapter>
+
+<chapter>
 <title>*history-file-name*</title>
 <type>Variable</type>
 <arguments></arguments>

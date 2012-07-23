@@ -1623,6 +1623,7 @@ zerop
 *gmark-keep-column*
 *grep-directory-name-hook*
 *grep-hook*
+*grep-ignored-directories*
 *grepd-hook*
 *gresreg-directory-name-hook*
 *history-file-name*
