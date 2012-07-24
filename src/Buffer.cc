@@ -1326,8 +1326,9 @@ Buffer::refresh_title_bar () const
 void
 Buffer::set_frame_title (int update)
 {
+  Window *wp = selected_window ();
   int order = xsymbol_value (Vtitle_bar_text_order) != Qnil;
-  if (!internal_buffer_p ()
+  if (!wp->minibuffer_window_p ()
       && (update
           || b_buffer_name_modified
           || b_last_title_bar_buffer != this
@@ -1343,8 +1344,9 @@ Buffer::set_frame_title (int update)
 lisp
 Frefresh_title_bar ()
 {
+  Window *wp = selected_window ();
   Buffer *bp = selected_buffer ();
-  if (!bp->internal_buffer_p ())
+  if (!wp->minibuffer_window_p ())
     bp->refresh_title_bar ();
   return Qt;
 }
