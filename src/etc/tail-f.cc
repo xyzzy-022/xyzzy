@@ -155,7 +155,8 @@ parse_cmdline (const char *p, char *b, int &ac, char **av)
       int dq = 0;
       while (1)
         {
-          for (int nbacksl = 0; *p == '\\'; nbacksl++, p++)
+          int nbacksl;
+          for (nbacksl = 0; *p == '\\'; nbacksl++, p++)
             ;
 
           int ignore = 0;
@@ -198,8 +199,8 @@ parse_cmdline (const char *p, char *b, int &ac, char **av)
 #undef COPYARGV
 }
 
-extern "C" void __cdecl
-process_startup ()
+int
+main (void)
 {
   const char *const cl = GetCommandLine ();
   int ac;

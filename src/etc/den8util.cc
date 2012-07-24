@@ -1,6 +1,8 @@
 #include <windows.h>
-#include <fstream.h>
+#include <fstream>
 #include <time.h>
+
+using namespace std;
 
 enum STATUS
 {
@@ -17,7 +19,7 @@ enum STATUS
 struct CACHE_RECORD
 {
   STATUS status;
-  time_t timeDate;
+  int timeDate;
   int nSize;
   char cHeader[500];
 };
@@ -40,7 +42,7 @@ struct CACHE_HEADER
 static int
 open_cache (ifstream &is, const char *cache, CACHE_HEADER &ch)
 {
-  is.open (cache, ios::in | ios::binary | ios::nocreate);
+  is.open (cache, ios::in | ios::binary);
   if (!is)
     return 0;
 

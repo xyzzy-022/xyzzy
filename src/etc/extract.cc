@@ -24,8 +24,8 @@ skip_argv0 (const char *p)
   return p;
 }
 
-extern "C" void
-WinMainCRTStartup ()
+int __stdcall
+WinMain (HINSTANCE, HINSTANCE, LPSTR, int)
 {
   const char *cl = skip_argv0 (GetCommandLine ());
   if (*cl && MessageBox (0, "‚æ‚ë‚µ?", cl, MB_ICONQUESTION | MB_YESNO) == IDYES)
