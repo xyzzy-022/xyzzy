@@ -133,3 +133,6 @@ Desktop.ini
 !src/zlib/Debug/
 !src/zlib/Release/zlib.pdb
 !src/zlib/Debug/zlib.pdb
+
+# unlha files
+src/etc/unlha/UNLHA32.LIB
