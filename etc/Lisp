@@ -1259,6 +1259,7 @@ si:base64-encode
 si:canonicalize-type
 si:closure-variable
 si:dump-image-path
+si:environ
 si:getenv
 si:getpid
 si:hmac-md5
