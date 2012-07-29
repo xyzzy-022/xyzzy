@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "gen-stdafx.h"
 #define NOT_COMPILE_TIME
 #include "chtype.h"
 
@@ -244,7 +242,7 @@ hqxtab ()
 }
 
 void
-main ()
+gen_ctab (int argc, char **argv)
 {
   ctype ();
   translate ();

@@ -151,7 +151,36 @@
   (values
    (reduce #'+ '((1) (1 2) (1 2 3)) :key #'length)
    (reduce #'* #(0 1 2 3 4 0) :key #'1+ :start 1 :end 5)
-   (reduce #'+ "123456789" :key #'digit-char-p))
+   (reduce #'+ "123456789" :key #'digit-char-p)
+   (reduce #'- '(1 2 3 4) :key #'1- :from-end t))
   => 6
   => 120
-  => 45)
+  => 45
+  => -2)
+
+(deftest reduce-clhs-examples ()
+  (values
+   (reduce #'* '(1 2 3 4 5))
+   (reduce #'append '((1) (2)) :initial-value '(i n i t))
+   (reduce #'append '((1) (2)) :from-end t :initial-value '(i n i t))
+   (reduce #'- '(1 2 3 4))
+   (reduce #'- '(1 2 3 4) :from-end t)    ;Alternating sum.
+   (reduce #'+ '())
+   (reduce #'+ '(3))
+   (reduce #'+ '(foo))
+   (reduce #'list '(1 2 3 4))
+   (reduce #'list '(1 2 3 4) :from-end t)
+   (reduce #'list '(1 2 3 4) :initial-value 'foo)
+   (reduce #'list '(1 2 3 4) :from-end t :initial-value 'foo))
+  => 120
+  => (i n i t 1 2)
+  => (1 2 i n i t)
+  => -8
+  => -2
+  => 0
+  => 3
+  => foo
+  => (((1 2) 3) 4)
+  => (1 (2 (3 4)))
+  => ((((foo 1) 2) 3) 4)
+  => (1 (2 (3 (4 foo)))))

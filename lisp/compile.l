@@ -1080,6 +1080,13 @@
 			bind-forms))))))))
     (values env-vars bind-forms)))
 
+(defun flet-function-names (prefix vars)
+  (mapcar #'(lambda (x)
+	      (let* ((name (car x))
+		     (var (cdr x)))
+		`(si:*set-function-name ,var '(,prefix ,name))))
+	  vars))
+
 ;;; DO NOT CALL THIS FUNCTION.
 (defun *compile-flet-bind (vars)
   (setq *macro-environment* (append (car vars) *macro-environment*))
@@ -1096,6 +1103,7 @@
 	(lisp::find-declaration (cdr form))
       (compile-form `(let ,bind-forms
 		       (*compile-flet-bind ,env-vars)
+		       ,@(flet-function-names 'flet env-vars)
 		       ,@body)))
     (compile-flet-unbind env-vars)))
 
@@ -1107,6 +1115,7 @@
       (compile-form `(let ,(mapcar #'car bind-forms)
 		       (*compile-flet-bind ,env-vars)
 		       ,@(mapcar #'(lambda (x) (cons 'setq x)) bind-forms)
+		       ,@(flet-function-names 'labels env-vars)
 		       ,@body)))
     (compile-flet-unbind env-vars)))
 

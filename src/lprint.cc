@@ -1393,11 +1393,11 @@ print_random_state (wStream &stream, const print_control &, lisp object)
 {
   char buf[32];
   stream.add ("#S(random-state data #(");
-  stream.add (store_uint (buf + sizeof buf, xrandom_state_object (object).index));
+  stream.add (store_uint (buf + sizeof buf, xrandom_state_object (object).index ()));
   for (int i = 0; i < Random::INDEX_MAX; i++)
     {
       stream.add (' ');
-      stream.add (store_uint (buf + sizeof buf, xrandom_state_object (object).X[i]));
+      stream.add (store_uint (buf + sizeof buf, xrandom_state_object (object).state (i)));
     }
   stream.add ("))");
 }

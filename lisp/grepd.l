@@ -9,7 +9,9 @@
 
 (in-package "editor")
 
-(export '(grep-dialog *grep-directory-name-hook* *grepd-hook* *before-grepd-hook*))
+(export '(grep-dialog *grep-directory-name-hook*
+	  *grep-ignored-directories*
+	  *grepd-hook* *before-grepd-hook*))
 
 (defvar *last-grepd-regexp* "")
 (defvar *regexp-search* nil)
@@ -28,6 +30,14 @@
 (define-history-variable *grep-async* nil)
 
 (defvar *grep-directory-name-hook* nil)
+
+(defvar *grep-ignored-directories*
+  '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}"))
+
+(defun grep-not-ignored-directories-p (path)
+  (not (and (file-directory-p path)
+	    (member (pathname-name path) *grep-ignored-directories*
+		    :test #'string-equal))))
 
 (defun scan-files-1 (file pattern buffer scanner)
   (let ((file-buffer (get-file-buffer file)))
@@ -79,6 +89,7 @@
 	    (glob-exec dirlist
 		       :recursive *grep-subdir*
 		       :file-only t :wild file
+		       :test 'grep-not-ignored-directories-p
 		       :callback
 		       #'(lambda (f)
 			   (when (scan-files-1 f pattern temp scanner)
@@ -188,7 +199,7 @@
 			      (glob-enumerator (mapcar #'(lambda (x)
 							   (subseq x commonl))
 						       dirlist)
-					       file *grep-subdir* t)))
+					       file *grep-subdir* t 'grep-not-ignored-directories-p)))
     (start-timer 0 async-grep-timer-callback t)
     (setq async-grep-mode t)
     (setq async-grep-status "running")))

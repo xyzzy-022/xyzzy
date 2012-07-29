@@ -1623,6 +1623,7 @@ zerop
 *gmark-keep-column*
 *grep-directory-name-hook*
 *grep-hook*
+*grep-ignored-directories*
 *grepd-hook*
 *gresreg-directory-name-hook*
 *history-file-name*
@@ -1703,6 +1704,7 @@ zerop
 *this-command*
 *unicode-to-half-width*
 *wrap-search*
+*xyzzyenv-show-flag*
 //
 ///
 :case-fold
@@ -3137,6 +3139,7 @@ si:*find-in-environment
 si:*fixnump
 si:*flet-helper
 si:*fset
+si:*function-name
 si:*get-string-input-stream-index
 si:*index-slot-value
 si:*instance-number

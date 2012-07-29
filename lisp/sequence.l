@@ -160,7 +160,7 @@
 	     (decf end)
 	     (setq initial-value (funcall key (elt sequence end))))
 	   (do ((x initial-value (funcall function
-					  (funcall key (elt sequence (decf end)) x))))
+					  (funcall key (elt sequence (decf end))) x)))
 	       ((= start end) x))))))
 
 (defun remove-duplicates (sequence &key from-end test test-not (start 0) end (key #'identity))

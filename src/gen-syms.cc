@@ -1,11 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include "gen-stdafx.h"
 #include <time.h>
 #include <mbctype.h>
 #define NOT_COMPILE_TIME
-#include "cdecl.h"
 #include "symbol.h"
 #include "function.h"
 
@@ -783,6 +779,7 @@ static symbols sys[] =
   SI_DEFUN3 (*fset, 2, 0, 0),
   MAKE_SYMBOL (*flet-helper, Vsi_flet_helper),
   SI_DEFUN3 (*find-in-environment, 2, 0, 0),
+  SI_DEFUN3 (*function-name, 1, 0, 0),
   SI_DEFUN3 (*set-function-name, 2, 0, 0),
 
   /* bytecode.cc */
@@ -996,18 +993,18 @@ static symbols sys[] =
   SI_DEFUN3 (www-url-decode, 1, 1, 0),
   SI_DEFUN3 (www-url-encode, 1, 2, 0),
   SI_DEFUN3 (binhex-decode, 1, 1, 0),
-  SI_DEFUN3 (md5, 1, 0, 0),
-  SI_DEFUN3 (sha-1, 1, 0, 0),
-  SI_DEFUN3 (sha-224, 1, 0, 0),
-  SI_DEFUN3 (sha-256, 1, 0, 0),
-  SI_DEFUN3 (sha-384, 1, 0, 0),
-  SI_DEFUN3 (sha-512, 1, 0, 0),
-  SI_DEFUN3 (hmac-md5, 2, 0, 0),
-  SI_DEFUN3 (hmac-sha-1, 2, 0, 0),
-  SI_DEFUN3 (hmac-sha-224, 2, 0, 0),
-  SI_DEFUN3 (hmac-sha-256, 2, 0, 0),
-  SI_DEFUN3 (hmac-sha-384, 2, 0, 0),
-  SI_DEFUN3 (hmac-sha-512, 2, 0, 0),
+  SI_DEFUN3 (md5, 1, 0, FFneed_rest),
+  SI_DEFUN3 (sha-1, 1, 0, FFneed_rest),
+  SI_DEFUN3 (sha-224, 1, 0, FFneed_rest),
+  SI_DEFUN3 (sha-256, 1, 0, FFneed_rest),
+  SI_DEFUN3 (sha-384, 1, 0, FFneed_rest),
+  SI_DEFUN3 (sha-512, 1, 0, FFneed_rest),
+  SI_DEFUN3 (hmac-md5, 2, 0, FFneed_rest),
+  SI_DEFUN3 (hmac-sha-1, 2, 0, FFneed_rest),
+  SI_DEFUN3 (hmac-sha-224, 2, 0, FFneed_rest),
+  SI_DEFUN3 (hmac-sha-256, 2, 0, FFneed_rest),
+  SI_DEFUN3 (hmac-sha-384, 2, 0, FFneed_rest),
+  SI_DEFUN3 (hmac-sha-512, 2, 0, FFneed_rest),
 
   /* lread.cc */
   SI_DEFUN3 (*load-library, 1, 0, FFneed_rest),
@@ -2379,6 +2376,7 @@ static symbols ed[] =
   DEFUN3 (process-sentinel, 1, 0, 0),
   DEFUN3 (process-marker, 1, 0, 0),
   DEFUN3 (shell-execute, 1, 2, 0),
+  DEFVAR2 (*xyzzyenv-show-flag*),
   DEFVAR2 (*default-process-encoding*),
   DEFVAR2 (*use-shell-execute-ex*),
   DEFVAR2 (*shell-execute-disregards-shift-key*),
@@ -3008,7 +3006,7 @@ print_version ()
 }
 
 void
-main (int argc, char **argv)
+gen_syms (int argc, char **argv)
 {
   if (argc == 1)
     exit (2);

@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "gen-stdafx.h"
 
 typedef unsigned char u_char;
 typedef unsigned short u_short;
@@ -154,8 +152,8 @@ output (u_short *buf, int n)
   printf ("};\n\n");
 }
 
-int
-main ()
+void
+gen_ktab (int argc, char **argv)
 {
   int i;
   u_short buf[256];
@@ -236,6 +234,6 @@ main ()
   printf ("#define FULL_WIDTH_KATAKANA_MIN 0x8340\n");
   printf ("#define FULL_WIDTH_KATAKANA_MAX 0x8396\n");
 
-  return 0;
+  exit (0);
 }
 

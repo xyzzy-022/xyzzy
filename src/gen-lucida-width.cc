@@ -1,5 +1,4 @@
-#include "cdecl.h"
-#include "charset.h"
+#include "gen-stdafx.h"
 
 #define HEIGHT 128
 #define FACE "Lucida Sans Unicode"
@@ -27,8 +26,8 @@ print (const ABC *abc, int n)
   printf ("#endif\n");
 }
 
-int
-main ()
+void
+gen_lucida_width (int argc, char **argv)
 {
   HDC hdc = GetDC (0);
   LOGFONT lf;
@@ -41,7 +40,7 @@ main ()
   if (!GetCharABCWidthsW (hdc, UNICODE_SMLCDM_MIN, UNICODE_SMLCDM_MAX, abc))
     {
       fprintf (stderr, "GetCharABCWidthsW: %d\n", GetLastError ());
-      return 2;
+      exit (2);
     }
 
   DeleteObject (SelectObject (hdc, of));
@@ -58,17 +57,17 @@ main ()
         {
           fprintf (stderr, "%04x: A overflow: %d\n",
                    i+ UNICODE_SMLCDM_MIN, abc[i].abcA);
-          return 2;
+          exit (2);
         }
       if (abc[i].abcB >= UCHAR_MAX)
         {
           fprintf (stderr, "%04x: B overflow: %d\n",
                    i+ UNICODE_SMLCDM_MIN, abc[i].abcB);
-          return 2;
+          exit (2);
         }
     }
 
   print (abc, numberof (abc));
 
-  return 0;
+  exit (0);
 }

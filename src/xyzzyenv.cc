@@ -154,7 +154,19 @@ main (void)
 {
   char buf[256];
   char *myname = skip_white (GetCommandLine ());
-  char *event = split (myname);
+  char *opt = split (myname);
+  WORD show = 0;
+  char *event;
+  if (!strncmp (opt, "-s", 2))
+    {
+      if (strlen (opt) > 2)
+        show = static_cast <WORD> (parse_long (opt + 2));
+      event = split (opt);
+    }
+  else
+    {
+      event = opt;
+    }
   char *cmdline = split (event);
   char *dir = 0;
   int no_events = !lstrcmp (event, "--");
@@ -171,6 +183,11 @@ main (void)
   STARTUPINFO si = {sizeof si};
 
   si.dwFlags = STARTF_USESTDHANDLES;
+  if (show)
+    {
+      si.dwFlags |= STARTF_USESHOWWINDOW;
+      si.wShowWindow = show;
+    }
   si.hStdInput = GetStdHandle (STD_INPUT_HANDLE);
   si.hStdOutput = GetStdHandle (STD_OUTPUT_HANDLE);
   si.hStdError = GetStdHandle (STD_ERROR_HANDLE);

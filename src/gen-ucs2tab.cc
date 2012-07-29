@@ -1,5 +1,4 @@
-#include "cdecl.h"
-#include "charset.h"
+#include "gen-stdafx.h"
 
 #define BIG5_TABSIZE (157 * 88)
 //#define RUNTIME_TEST_CNS_TABLE
@@ -1050,8 +1049,8 @@ output_simple (const ucs2_t *wbuf, const char *type, const char *name)
   printf ("};\n\n");
 }
 
-int
-main ()
+void
+gen_ucs2tab (int argc, char **argv)
 {
   static const struct {const char *file, *name; int charset;} cs[] =
     {
@@ -1161,5 +1160,5 @@ main ()
 
   output_simple (int2wc, "ucs2_t", "internal2wc_table");
 
-  return 0;
+  exit (0);
 }
