@@ -26563,8 +26563,7 @@ Base64エンコードします。
 補足：
   xyzzy 0.2.2.243 から利用可能です。
 </description>
-<seealso>user-name</seealso>
-<seealso>machine-name</seealso>
+<seealso>si:getenv</seealso>
 <seealso>si:putenv</seealso>
 <section>システム</section>
 <file>builtin.l</file>
@@ -26587,6 +26586,7 @@ Base64エンコードします。
 </description>
 <seealso>user-name</seealso>
 <seealso>machine-name</seealso>
+<seealso>si:environ</seealso>
 <seealso>si:putenv</seealso>
 <section>システム</section>
 <file>builtin.l</file>
@@ -26617,6 +26617,7 @@ VALUE を省略した場合や nil を指定した場合は環境変数を削除
 補足：
   xyzzy 0.2.2.236 から利用可能です。
 </description>
+<seealso>si:environ</seealso>
 <seealso>si:getenv</seealso>
 <section>システム</section>
 <file>builtin.l</file>
