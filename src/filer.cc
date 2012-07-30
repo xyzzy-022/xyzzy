@@ -583,18 +583,10 @@ compare_filename (const char *s1, const char *s2, int param)
       u_char c1 = *p1++, c2 = *p2++;
       if (digit_char_p (c1) && digit_char_p (c2))
         {
-          const u_char *const b1 = p1 - 1;
-          for (; digit_char_p (*p1); p1++)
-            ;
-          const u_char *const b2 = p2 - 1;
-          for (; digit_char_p (*p2); p2++)
-            ;
-          int l1 = p1 - b1, l2 = p2 - b2;
-          if (l1 != l2)
-            return l1 - l2;
-          int d = memcmp (b1, b2, l1);
-          if (d)
-            return d;
+          int n1 = atoi (reinterpret_cast <const char *> (p1 - 1));
+          int n2 = atoi (reinterpret_cast <const char *> (p2 - 1));
+          if (n1 != n2)
+            return n1 - n2;
         }
       else
         {
