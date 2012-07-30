@@ -543,6 +543,7 @@
 (si::defun-builtin *structure-subtypep (type1 type2))
 (si::defun-builtin dump-image-path ())
 (si::defun-builtin system-root ())
+(si::defun-builtin environ ())
 (si::defun-builtin getenv (variable))
 (si::defun-builtin putenv (variable &optional value))
 (si::defun-builtin getpid ())

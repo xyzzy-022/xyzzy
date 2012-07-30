@@ -928,6 +928,8 @@ static symbols sys[] =
 
   /* environ.cc */
   SI_DEFUN3 (system-root, 0, 0, 0),
+#undef environ
+  SI_DEFUN3 (environ, 0, 0, 0),
   SI_DEFUN3 (getenv, 1, 0, 0),
   SI_DEFUN3 (putenv, 1, 1, 0),
   SI_DEFUN3 (getpid, 0, 0, 0),

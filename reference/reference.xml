@@ -26546,6 +26546,31 @@ Base64エンコードします。
 </chapter>
 
 <chapter>
+<title>si:environ</title>
+<type>Function</type>
+<arguments>environ</arguments>
+<package>system</package>
+<description>
+全ての環境変数の名前と値の連想リストを返します。
+
+使用例：
+  (si:environ)
+  =&gt; (("ALLUSERSPROFILE" . "C:\\ProgramData")
+      ("APPDATA" . "C:\\Users\\xyzzy\\AppData\\Roaming")
+      ("CommonProgramFiles" . "C:\\Program Files\\Common Files")
+      ...)
+
+補足：
+  xyzzy 0.2.2.243 から利用可能です。
+</description>
+<seealso>user-name</seealso>
+<seealso>machine-name</seealso>
+<seealso>si:putenv</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>si:getenv</title>
 <type>Function</type>
 <arguments>getenv VARIABLE</arguments>

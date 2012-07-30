@@ -940,6 +940,22 @@ environ::save_geometry ()
 }
 
 lisp
+Fsi_environ ()
+{
+  lisp r = Qnil;
+  for (char **e = environ; *e; e++)
+    {
+      char *eq = strchr (*e, '=');
+      if (!eq) continue;
+      lisp env = xcons (make_string (*e, eq - *e),
+                        make_string (eq + 1));
+      r = xcons (env, r);
+    }
+
+  return Fnreverse (r);
+}
+
+lisp
 Fsi_getenv (lisp var)
 {
   check_string (var);
