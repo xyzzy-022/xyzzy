@@ -26583,6 +26583,14 @@ Base64エンコードします。
   ;;; 環境変数PATHを取り出して、個々のPATHに分割する。
   (split-string (si:getenv "PATH") #\;)
   =&gt; ("c:\\usr\\local\\bin" "C:\\WINNT\\system32" "C:\\WINNT" ...)
+
+  (setf (si:getenv "FOO") "BAR")
+  =&gt; "BAR"
+  (si:getenv "FOO")
+  =&gt; "BAR"
+
+補足：
+  xyzzy 0.2.2.243 からsetf可能です。
 </description>
 <seealso>user-name</seealso>
 <seealso>machine-name</seealso>
