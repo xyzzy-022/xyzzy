@@ -26,3 +26,14 @@
              (sort (si:environ) #'string< :key 'car))
     (si:putenv "test" nil))
   => t)
+
+(deftest test-setf-getenv ()
+  (unwind-protect
+      (values
+       (setf (si:getenv "test") "hoge1")
+       (setf (si:getenv "test") "hoge2")
+       (si:getenv "test"))
+    (si:putenv "test" nil))
+  => "hoge1"
+  => "hoge2"
+  => "hoge2")
