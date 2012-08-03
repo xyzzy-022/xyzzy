@@ -1819,7 +1819,7 @@ static symbols ed[] =
   DEFUN3 (insert-file-contents, 1, 3, 0),
   DEFUN3 (insert, 0, 0, FFneed_rest),
   DEFCMD3 (delete-region, 2, 0, 0, "*r"),
-  DEFUN3 (buffer-substring, 2, 0, 0),
+  DEFUN3 (buffer-substring, 2, 1, 0),
   MAKE_SYMBOL2 (overwrite-mode),
   DEFUN3 (copy-to-clipboard, 1, 0, 0),
   DEFUN3 (get-clipboard-data, 0, 0, 0),
