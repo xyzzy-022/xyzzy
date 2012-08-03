@@ -186,7 +186,6 @@
     <ClCompile Include="..\src\kanji.cc" />
     <ClCompile Include="..\src\kbd.cc" />
     <ClCompile Include="..\src\keymap.cc" />
-    <ClCompile Include="..\src\largeint.cc" />
     <ClCompile Include="..\src\ldialog.cc" />
     <ClCompile Include="..\src\lex.cc" />
     <ClCompile Include="..\src\list.cc" />
@@ -335,7 +334,6 @@
     <ClInclude Include="..\src\ipc.h" />
     <ClInclude Include="..\src\kanji.h" />
     <ClInclude Include="..\src\kbd.h" />
-    <ClInclude Include="..\src\largeint.h" />
     <ClInclude Include="..\src\ldialog.h" />
     <ClInclude Include="..\src\lex.h" />
     <ClInclude Include="..\src\lisp.h" />

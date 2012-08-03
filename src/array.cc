@@ -300,10 +300,10 @@ check_dimensions (lisp dims)
       long n = fixnum_value (xcar (dims));
       if (n < 0)
         FErange_error (xcar (dims));
-      large_int li = mulsi (size, n);
-      if (not_long (li))
+      int64_t li = int64_t (size) * int64_t (n);
+      if (int64_t (LONG_MAX) < li)
         FEprogram_error (Earray_size_too_large, dims);
-      size = li.lo;
+      size = long (li);
     }
   return size;
 }

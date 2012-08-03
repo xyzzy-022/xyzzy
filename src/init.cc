@@ -536,7 +536,7 @@ init_symbol_value ()
   xsymbol_value (Vkbd_encoding) = xsymbol_value (Qencoding_sjis);
   xsymbol_value (Qperformance_counter_frequency) =
     (sysdep.perf_counter_present_p
-     ? make_integer (*(large_int *)&sysdep.perf_freq)
+     ? make_integer (sysdep.perf_freq)
      : make_fixnum (1000));
 
   xsymbol_value (Vsi_accept_kill_xyzzy) = Qt;

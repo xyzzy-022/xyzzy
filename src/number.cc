@@ -85,7 +85,7 @@ lisp make_integer (u_short x) { return make_fixnum (x); }
 lisp make_integer (int x) { return make_fixnum (x); }
 lisp make_integer (u_int x) { return make_fixnum (x); }
 lisp make_integer (long x) { return make_fixnum (x); }
-lisp make_integer (u_long x) { return make_integer (long_to_large_int (x)); }
+lisp make_integer (u_long x) { return make_integer (int64_t (x)); }
 
 lisp
 make_integer (bignum_rep *rep)
@@ -104,16 +104,6 @@ make_integer (bignum_rep *rep)
       lb->rep = rep;
       return lb;
     }
-}
-
-lisp
-make_integer (large_int li)
-{
-  if (!not_long (li))
-    return make_fixnum (li.lo);
-  lbignum *lb = make_bignum ();
-  lb->rep = br_copy (0, li);
-  return lb;
 }
 
 lisp

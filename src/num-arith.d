@@ -211,7 +211,7 @@ lisp
 number_negate (x)
 {
 s: {return make_fixnum (-x);}
-l: {return make_integer (negsi (long_to_large_int (x)));}
+l: {return make_integer (-int64_t (x));}
 b: {return make_integer (negate (0, x));}
 r: {return make_ratio (number_negate (x->num), x->den);}
 F: {return make_single_float (-x);}
@@ -223,7 +223,7 @@ lisp
 number_add (x, y)
 {
 ss: {return make_fixnum (x + y);}
-sl: {return make_integer (addsi (x, y));}
+sl: {return make_integer (int64_t (x) + int64_t (y));}
 sb: {
       bignum_rep_long xx (x);
       return make_integer (add (0, &xx, y, 0));
@@ -282,7 +282,7 @@ lisp
 number_subtract (x, y)
 {
 ss: {return make_fixnum (x - y);}
-sl: {return make_integer (subsi (x, y));}
+sl: {return make_integer (int64_t (x) - int64_t (y));}
 sb: {
       bignum_rep_long xx (x);
       return make_integer (add (0, &xx, y, 1));
@@ -343,7 +343,7 @@ cD: {return complex_subtract (x->real, x->imag, ly, make_fixnum (0));}
 lisp
 number_multiply (x, y)
 {
-ss: {return make_integer (mulsi (x, y));}
+ss: {return make_integer (int64_t (x) * int64_t (y));}
 sl: ss
 sb: {
       if (x == 1)
@@ -539,8 +539,8 @@ ls: {
       if (!y)
         FEdivision_by_zero ();
       if (y == -1)
-        return make_integer (negsi (long_to_large_int (x)));
-      return make_integer (long_to_large_int (x / y));
+        return make_integer (-int64_t (x));
+      return make_integer (int64_t (x / y));
     }
 ll: ss
 lb: sb
@@ -599,7 +599,7 @@ ss: {
           j = i % j;
           i = k;
         }
-      return make_integer (long_to_large_int (i));
+      return make_integer (int64_t (i));
     }
 sl: ss
 sb: {
@@ -814,7 +814,7 @@ ls: {
       if (y == -1)
         {
           multiple_value::value (1) = make_fixnum (0);
-	  return make_integer (negsi (long_to_large_int (x)));
+          return make_integer (-int64_t (x));
         }
       return fix_number_2ss (x, lx, y, ly, dfn, bfn, ffn);
     }

@@ -266,29 +266,6 @@ br_copy (bignum_rep *old, int64_t x)
 }
 
 bignum_rep *
-br_copy (bignum_rep *old, large_int li)
-{
-  int sign;
-  if (li.hi >= 0)
-    sign = BR_POSITIVE;
-  else
-    {
-      li = negsi (li);
-      sign = BR_NEGATIVE;
-    }
-
-  bignum_rep *r = br_alloc (old, 0, SHORT_PER_LONG * 2, sign);
-  u_short *d = r->br_data;
-  for (u_long x = li.lo; x; x = down (x))
-    *d++ = lowpart (x);
-  d = r->br_data + SHORT_PER_LONG;
-  for (u_long x = li.hi; x; x = down (x))
-    *d++ += lowpart (x);
-  r->br_len = d - r->br_data;
-  return r;
-}
-
-bignum_rep *
 br_copy_zero (bignum_rep *r)
 {
   if (!r || r->constp ())

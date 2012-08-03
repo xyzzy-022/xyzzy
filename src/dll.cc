@@ -403,7 +403,7 @@ funcall_dll (lisp fn, lisp arglist)
           return make_fixnum (call_proc <long> (proc));
 
         case CTYPE_UINT32:
-          return make_integer (long_to_large_int (call_proc <u_long> (proc)));
+          return make_integer (call_proc <u_long> (proc));
 
         case CTYPE_INT64:
           return make_integer (call_proc <int64_t> (proc));
@@ -489,7 +489,7 @@ c_callable_stub (lisp cc, char *stack)
 
         case CTYPE_UINT32:
           cargs -= sizeof (int);
-          v = make_integer (long_to_large_int (*(u_long *)cargs));
+          v = make_integer (int64_t (*(u_long *)cargs));
           break;
 
         case CTYPE_INT64:
