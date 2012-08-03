@@ -1819,7 +1819,7 @@ static symbols ed[] =
   DEFUN3 (insert-file-contents, 1, 3, 0),
   DEFUN3 (insert, 0, 0, FFneed_rest),
   DEFCMD3 (delete-region, 2, 0, 0, "*r"),
-  DEFUN3 (buffer-substring, 2, 0, 0),
+  DEFUN3 (buffer-substring, 2, 1, 0),
   MAKE_SYMBOL2 (overwrite-mode),
   DEFUN3 (copy-to-clipboard, 1, 0, 0),
   DEFUN3 (get-clipboard-data, 0, 0, 0),
@@ -2720,18 +2720,23 @@ print_cname (const char *p)
 }
 
 static void
-print_arg (int nargs, int f)
+print_arg (int nreq, int nopt, int f, bool prototype_p)
 {
   if (f & FFspecial_form)
     printf ("lisp, lex_env &");
   else
     {
+      int nargs = nreq + nopt;
       if (f & FFneed_rest)
         nargs++;
-      for (int i = 1; i < nargs; i++)
-        printf ("lisp, ");
-      if (nargs)
-        printf ("lisp");
+      for (int i = 0; i < nargs; i++)
+        {
+          printf ("lisp");
+          if (nreq <= i && prototype_p)
+            printf (" = 0");
+          if (i + 1 < nargs)
+            printf (", ");
+        }
     }
 }
 
@@ -2759,7 +2764,7 @@ print_defuns (symbols *p, int n, const char *pkg)
         printf ("  {");
         print_name (p);
         printf ("(lisp (__stdcall *)())(lisp (__stdcall *)(");
-        print_arg (p->req + p->opt, p->flags);
+        print_arg (p->req, p->opt, p->flags, false);
         printf ("))");
         print_cname (p->fn);
         printf (", &");
@@ -2803,7 +2808,7 @@ print_proto (symbols *p, int n, const char *)
         printf ("lisp ");
         print_cname (p->fn);
         printf (" (");
-        print_arg (p->req + p->opt, p->flags);
+        print_arg (p->req, p->opt, p->flags, true);
         printf (");\n");
       }
 }
