@@ -104,7 +104,6 @@ buffer-stream-buffer
 buffer-stream-p
 buffer-stream-point
 buffer-stream-set-point
-buffer-string
 buffer-substring
 bufferp
 bury-buffer

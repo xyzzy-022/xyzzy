@@ -754,7 +754,6 @@
 (si::defun-builtin insert-file-contents (filename &optional visit-p offset size))
 (si::defun-builtin insert (&rest string-or-char))
 (si::defun-builtin delete-region (from to))
-(si::defun-builtin buffer-string (&optional buffer))
 (si::defun-builtin buffer-substring (from to &optional buffer))
 (si::defun-builtin copy-to-clipboard (string))
 (si::defun-builtin get-clipboard-data ())

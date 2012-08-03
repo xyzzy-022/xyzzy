@@ -5690,32 +5690,6 @@ buffer-streamであるストリームの入出力のポイントを指定しま�
 </chapter>
 
 <chapter>
-<title>buffer-string</title>
-<type>Function</type>
-<arguments>buffer-string &amp;optional BUFFER</arguments>
-<package>editor</package>
-<description>
-バッファの内容をすべて文字列として返します。
-
-narrow-to-region等でclipping制限がされている場合はclippingされた
-領域を返します。
-
-  BUFFER : バッファを指定します。
-           指定がなければカレントバッファになります。
-
-この関数は以下の式と等価です。
-
-  (buffer-substring (point-min) (point-max))
-
-補足：
-  xyzzy 0.2.2.243 から利用可能です。
-</description>
-<seealso>buffer-substring</seealso>
-<section>文字列</section>
-<file>builtin.l</file>
-</chapter>
-
-<chapter>
 <title>buffer-substring</title>
 <type>Function</type>
 <arguments>buffer-substring FROM TO &amp;optional BUFFER</arguments>
@@ -5731,7 +5705,6 @@ narrow-to-region等でclipping制限がされている場合はclippingされた
 補足：
   BUFFER 引数は xyzzy 0.2.2.243 から指定可能です。
 </description>
-<seealso>buffer-string</seealso>
 <seealso>substring</seealso>
 <section>文字列</section>
 <file>builtin.l</file>
