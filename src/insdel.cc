@@ -1017,6 +1017,13 @@ Buffer::substring (point_t p1, point_t p2) const
 }
 
 lisp
+Fbuffer_string (lisp buffer)
+{
+  Buffer *bp = Buffer::coerce_to_buffer (buffer);
+  return bp->substring (bp->b_contents.p1, bp->b_contents.p2);
+}
+
+lisp
 Fbuffer_substring (lisp p1, lisp p2, lisp buffer)
 {
   Buffer *bp = Buffer::coerce_to_buffer (buffer);

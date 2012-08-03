@@ -18,3 +18,20 @@
      #1#))
   => #2=("fuga" "ug" "hoge" "og" "g")
   => #2#)
+
+(deftest test-buffer-string ()
+  (with-temp-buffer
+    (insert "hoge")
+    (let ((b (selected-buffer)))
+      (with-temp-buffer
+        (insert "fuga")
+        (list
+         (buffer-string)
+         (buffer-string nil)
+         (buffer-string b)
+         (buffer-string (buffer-name b))
+         (save-restriction
+           (narrow-to-region 1 3)
+           (buffer-string))
+         ))))
+  => ("fuga" "fuga" "hoge" "hoge" "ug"))
