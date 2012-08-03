@@ -5692,10 +5692,18 @@ buffer-streamであるストリームの入出力のポイントを指定しま�
 <chapter>
 <title>buffer-substring</title>
 <type>Function</type>
-<arguments>buffer-substring FROM TO</arguments>
+<arguments>buffer-substring FROM TO &amp;optional BUFFER</arguments>
 <package>editor</package>
 <description>
 バッファの指定された範囲の文字列を返します。
+
+  FROM   : 開始位置のポイント
+  TO     : 終了位置のポイント
+  BUFFER : バッファを指定します。
+           指定がなければカレントバッファになります。
+
+補足：
+  BUFFER 引数は xyzzy 0.2.2.243 から指定可能です。
 </description>
 <seealso>substring</seealso>
 <section>文字列</section>
