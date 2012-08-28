@@ -3134,6 +3134,7 @@ si:*copy-into-seq
 si:*copy-structure-data
 si:*create-wait-object
 si:*dll-function-p
+si:*dll-module-p
 si:*enum-hash-table
 si:*environmentp
 si:*find-in-environment
