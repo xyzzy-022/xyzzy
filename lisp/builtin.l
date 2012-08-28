@@ -505,6 +505,7 @@
 (si::defun-builtin *ratiop (object))
 (si::defun-builtin *builtin-function-p (object))
 (si::defun-builtin *c-callable-p (object))
+(si::defun-builtin *dll-module-p (object))
 (si::defun-builtin *dll-function-p (object))
 (si::defun-builtin *bignump (object))
 (si::defun-builtin *fixnump (object))

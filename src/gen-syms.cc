@@ -883,6 +883,7 @@ static symbols sys[] =
   /* pred.cc */
   SI_DEFUN3 (*ratiop, 1, 0, 0),
   SI_DEFUN3 (*builtin-function-p, 1, 0, 0),
+  SI_DEFUN3 (*dll-module-p, 1, 0, 0),
   SI_DEFUN3 (*dll-function-p, 1, 0, 0),
   SI_DEFUN3 (*c-callable-p, 1, 0, 0),
   SI_DEFUN3 (*bignump, 1, 0, 0),
