@@ -1259,6 +1259,7 @@ si:base64-encode
 si:canonicalize-type
 si:closure-variable
 si:dump-image-path
+si:environ
 si:getenv
 si:getpid
 si:hmac-md5
@@ -3133,6 +3134,7 @@ si:*copy-into-seq
 si:*copy-structure-data
 si:*create-wait-object
 si:*dll-function-p
+si:*dll-module-p
 si:*enum-hash-table
 si:*environmentp
 si:*find-in-environment

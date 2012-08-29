@@ -339,6 +339,12 @@ Fsi_builtin_function_p (lisp object)
 }
 
 lisp
+Fsi_dll_module_p (lisp object)
+{
+  return boole (dll_module_p (object));
+}
+
+lisp
 Fsi_dll_function_p (lisp object)
 {
   return boole (dll_function_p (object));

@@ -413,6 +413,7 @@
      ,new-sequence))
 
 (defsetf default-value set-default)
+(defsetf si:getenv si:putenv)
 
 (define-setf-method ldb (bytespec int &environment env)
   (multiple-value-bind (temps vals stores store-form access-form)

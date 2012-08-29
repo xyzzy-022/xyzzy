@@ -5692,10 +5692,18 @@ buffer-streamであるストリームの入出力のポイントを指定しま�
 <chapter>
 <title>buffer-substring</title>
 <type>Function</type>
-<arguments>buffer-substring FROM TO</arguments>
+<arguments>buffer-substring FROM TO &amp;optional BUFFER</arguments>
 <package>editor</package>
 <description>
 バッファの指定された範囲の文字列を返します。
+
+  FROM   : 開始位置のポイント
+  TO     : 終了位置のポイント
+  BUFFER : バッファを指定します。
+           指定がなければカレントバッファになります。
+
+補足：
+  BUFFER 引数は xyzzy 0.2.2.243 から指定可能です。
 </description>
 <seealso>substring</seealso>
 <section>文字列</section>
@@ -26546,6 +26554,30 @@ Base64エンコードします。
 </chapter>
 
 <chapter>
+<title>si:environ</title>
+<type>Function</type>
+<arguments>environ</arguments>
+<package>system</package>
+<description>
+全ての環境変数の名前と値の連想リストを返します。
+
+使用例：
+  (si:environ)
+  =&gt; (("ALLUSERSPROFILE" . "C:\\ProgramData")
+      ("APPDATA" . "C:\\Users\\xyzzy\\AppData\\Roaming")
+      ("CommonProgramFiles" . "C:\\Program Files\\Common Files")
+      ...)
+
+補足：
+  xyzzy 0.2.2.243 から利用可能です。
+</description>
+<seealso>si:getenv</seealso>
+<seealso>si:putenv</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
 <title>si:getenv</title>
 <type>Function</type>
 <arguments>getenv VARIABLE</arguments>
@@ -26559,9 +26591,18 @@ Base64エンコードします。
   ;;; 環境変数PATHを取り出して、個々のPATHに分割する。
   (split-string (si:getenv "PATH") #\;)
   =&gt; ("c:\\usr\\local\\bin" "C:\\WINNT\\system32" "C:\\WINNT" ...)
+
+  (setf (si:getenv "FOO") "BAR")
+  =&gt; "BAR"
+  (si:getenv "FOO")
+  =&gt; "BAR"
+
+補足：
+  xyzzy 0.2.2.243 からsetf可能です。
 </description>
 <seealso>user-name</seealso>
 <seealso>machine-name</seealso>
+<seealso>si:environ</seealso>
 <seealso>si:putenv</seealso>
 <section>システム</section>
 <file>builtin.l</file>
@@ -26592,6 +26633,7 @@ VALUE を省略した場合や nil を指定した場合は環境変数を削除
 補足：
   xyzzy 0.2.2.236 から利用可能です。
 </description>
+<seealso>si:environ</seealso>
 <seealso>si:getenv</seealso>
 <section>システム</section>
 <file>builtin.l</file>
