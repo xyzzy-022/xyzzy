@@ -444,7 +444,7 @@
     <CallTarget Targets="CopyLispFiles;CopyEtcFiles" Condition="'$(BuildingInsideVisualStudio)'=='true'" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="DeleteXyzzyDumpFile">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)" SkipUnchangedFiles="true" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
   </Target>
   <Target Name="BeforeClean" DependsOnTargets="DeleteXyzzyDumpFile">
     <Delete Files="$(SolutionDir)$(TargetName)$(TargetExt)" Condition="Exists('$(SolutionDir)$(TargetName)$(TargetExt)')" />
