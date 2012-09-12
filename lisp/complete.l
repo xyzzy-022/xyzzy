@@ -10,6 +10,7 @@
 (export '(*completion-auto-help* do-completion do-completion-internal
 	  completion-message print-completion-list
 	  *print-completion-list-hook*
+	  *print-completion-sort-function*
 	  *popup-completion-list-default*
 	  *executable-file-suffixes*))
 
@@ -31,6 +32,7 @@
   (define-key *completion-list-keymap* #\RET 'completion-list-copy))
 
 (defvar *print-completion-list-hook* nil)
+(defvar *print-completion-sort-function* #'string<)
 
 (defun completion-list-copy ()
   (interactive)
@@ -97,7 +99,8 @@
   (unless *executing-macro*
     (let ((last-string *completion-last-string*))
       (setq *completion-last-string* string)
-      (setq list (sort list #'string<))
+      (when *print-completion-sort-function*
+	(setq list (sort list *print-completion-sort-function*)))
       (cond (*print-completion-list-hook*
 	     (funcall *print-completion-list-hook* list prefix))
 	    ((and (cond ((eq popup-p ':always) t)
