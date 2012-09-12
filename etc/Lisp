@@ -1672,6 +1672,7 @@ zerop
 *prefix-value*
 *print-circle*
 *print-completion-list-hook*
+*print-completion-sort-function*
 *print-length*
 *print-option-show-dialog*
 *print-pretty*

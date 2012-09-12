@@ -689,6 +689,9 @@ diff起動時に実行されます。
   prefix は、例えばファイル名の補完のときのディレクトリ名とか、
   シンボルの補完のときのパッケージ修飾部分とか。
 </description>
+<seealso>*print-completion-list-hook*</seealso>
+<seealso>*print-completion-sort-function*</seealso>
+<seealso>*popup-completion-list-default*</seealso>
 <section>テキスト</section>
 <file>builtin.l</file>
 </chapter>
@@ -2175,6 +2178,25 @@ do-completion実行時に、補完リストを表示するために使用され�
                      (length list) list) (point))))
 </description>
 <seealso>*popup-completion-list-default*</seealso>
+<seealso>*print-completion-sort-function*</seealso>
+<link></link>
+<section>変数と定数</section>
+<file>complete.l</file>
+</chapter>
+
+<chapter>
+<title>*print-completion-sort-function*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+do-completion実行時に、補完リストをソートする比較関数を指定します。
+デフォルトはstring&lt;です。nilを指定するとソートは行いません。
+
+使用例：
+  (setq *print-completion-sort-function* #'string-lessp)
+</description>
+<seealso>*print-completion-list-hook*</seealso>
 <link></link>
 <section>変数と定数</section>
 <file>complete.l</file>
@@ -10512,7 +10534,10 @@ do*式の一般形は、
                  (progn (skip-syntax-spec-backward "^ ") (point))
                  :file-name)
 </description>
-<seealso></seealso>
+<seealso>*do-completion</seealso>
+<seealso>*print-completion-list-hook*</seealso>
+<seealso>*print-completion-sort-function*</seealso>
+<seealso>*popup-completion-list-default*</seealso>
 <link></link>
 <section>テキスト</section>
 <file>complete.l</file>
