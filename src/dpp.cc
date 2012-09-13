@@ -73,7 +73,7 @@ error (const char *fmt, ...)
 static void
 output_line (long ln)
 {
-  fprintf (fo, "#line %d \"%s\"\n", ln, input_file);
+  fprintf (fo, "//#line %d \"%s\"\n", ln, input_file);
 }
 
 static void
