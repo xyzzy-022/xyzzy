@@ -92,7 +92,10 @@ output_literal ()
     {
       putc (c, fo);
       if (c == '\n')
-        break;
+        {
+          linenum++;
+          break;
+        }
       if (c == '\\')
         {
           c = getc (fi);
