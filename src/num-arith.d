@@ -804,9 +804,9 @@ sb: {
       return fix_number_2bb (&xx, lx, y, ly, dfn, bfn, ffn);
     }
 sr: {
-       lisp q = fix_number_2 (number_multiply (lx, y->den), y->num, dfn, bfn, ffn);
-       multiple_value::value (1) = make_ratio (multiple_value::value (1), y->den);
-       return q;
+      lisp q = fix_number_2 (number_multiply (lx, y->den), y->num, dfn, bfn, ffn);
+      multiple_value::value (1) = make_ratio (multiple_value::value (1), y->den);
+      return q;
     }
 sF: {return fix_number_2FF (float (x), lx, y, ly, dfn, bfn, ffn);}
 sD: DD
@@ -849,7 +849,7 @@ rb: {
       return q;
     }
 rr: {
-      lisp q = fix_number_2 (number_multiply (x->num, y->den), 
+      lisp q = fix_number_2 (number_multiply (x->num, y->den),
                              number_multiply (x->den, y->num),
                              dfn, bfn, ffn);
       multiple_value::value (1) = make_ratio (multiple_value::value (1),
@@ -901,15 +901,15 @@ lF: sF
 lD: DD
 bs: {return fix_flonum_2FF (float (x->to_double ()), lx, float (y), ly, dfn);}
 bl: bs
-bb: {return fix_flonum_2FF (float (x->to_double ()), lx, 
+bb: {return fix_flonum_2FF (float (x->to_double ()), lx,
                             float (y->to_double ()), ly, dfn);}
-br: {return fix_flonum_2FF (float (x->to_double ()), lx, 
+br: {return fix_flonum_2FF (float (x->to_double ()), lx,
                             fract_to_single_float (y), ly, dfn);}
 bF: {return fix_flonum_2FF (float (x->to_double ()), lx, y, ly, dfn);}
 bD: {return fix_flonum_2DD (x->to_double (), lx, y, ly, dfn);}
 rs: {return fix_flonum_2FF (fract_to_single_float (x), lx, float (y), ly, dfn);}
 rl: rs
-rb: {return fix_flonum_2FF (fract_to_single_float (x), lx, 
+rb: {return fix_flonum_2FF (fract_to_single_float (x), lx,
                             float (y->to_double ()), ly, dfn);}
 rr: {return fix_flonum_2FF (fract_to_single_float (x), lx,
                             fract_to_single_float (y), ly, dfn);}

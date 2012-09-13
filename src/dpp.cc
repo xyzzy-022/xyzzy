@@ -326,14 +326,22 @@ output_body (int type, const char *rettype, const char *name,
   output_head (type, rettype, name, args);
   fprintf (fo, "{");
   int paren = 1;
+  int skip_indent = 0;
   while (1)
     {
       int c = readc ();
       if (c == EOF)
         error ("unexpected EOF");
+      if (skip_indent-- > 0)
+        {
+          if (c == ' ') continue;
+          skip_indent = 0;
+        }
       putc (c, fo);
       if (c == '{')
         paren++;
+      if (c == '\n')
+        skip_indent = 2 + args.nargs;
       else if (c == '}' && !--paren)
         break;
     }
@@ -395,23 +403,23 @@ output_call (const int *body, const char *rettype, const char *name,
   fprintf (fo, "%s", args.optargs);
   fprintf (fo, ")\n");
   fprintf (fo, "{\n");
-  fprintf (fo, "switch (number_typeof (%s))\n", args.name[0]);
-  fprintf (fo, "{\n");
+  fprintf (fo, "  switch (number_typeof (%s))\n", args.name[0]);
+  fprintf (fo, "    {\n");
   if (args.argtype == AT_INTEGER)
-    fprintf (fo, "default: FEtype_error (%s, Qinteger);\n", args.name[0]);
+    fprintf (fo, "    default: FEtype_error (%s, Qinteger);\n", args.name[0]);
   else if (args.argtype == AT_RATIONAL)
-    fprintf (fo, "default: FEtype_error (%s, Qrational);\n", args.name[0]);
+    fprintf (fo, "    default: FEtype_error (%s, Qrational);\n", args.name[0]);
   else if (args.argtype == AT_REAL)
-    fprintf (fo, "default: FEtype_error (%s, Qreal);\n",
+    fprintf (fo, "    default: FEtype_error (%s, Qreal);\n",
              args.name[0]);
   else
-    fprintf (fo, "default: FEtype_error (%s, Qnumber);\n", args.name[0]);
+    fprintf (fo, "    default: FEtype_error (%s, Qnumber);\n", args.name[0]);
   fprintf (fo, "      /*NOTREACHED*/\n");
   if (args.nargs == 1)
     {
       for (int i = 0; i < LMAX; i++)
         if (i <= args.argtype)
-          fprintf (fo, "case %s: return %s%s (%s (%s), %s%s);\n",
+          fprintf (fo, "    case %s: return %s%s (%s (%s), %s%s);\n",
                    typespec[i].ltype, name, typestring (body[i], 1),
                    typespec[i].fmt, args.name[0], args.name[0], args.optvars);
     }
@@ -420,30 +428,30 @@ output_call (const int *body, const char *rettype, const char *name,
       for (int i = 0; i < LMAX; i++)
         if (i <= args.argtype)
           {
-            fprintf (fo, "case %s:\n", typespec[i].ltype);
-            fprintf (fo, "switch (number_typeof (%s))\n", args.name[1]);
-            fprintf (fo, "{\n");
+            fprintf (fo, "    case %s:\n", typespec[i].ltype);
+            fprintf (fo, "      switch (number_typeof (%s))\n", args.name[1]);
+            fprintf (fo, "        {\n");
             if (args.argtype == AT_INTEGER)
-              fprintf (fo, "default: FEtype_error (%s, Qinteger);\n", args.name[1]);
+              fprintf (fo, "        default: FEtype_error (%s, Qinteger);\n", args.name[1]);
             else if (args.argtype == AT_RATIONAL)
-              fprintf (fo, "default: FEtype_error (%s, Qrational);\n", args.name[1]);
+              fprintf (fo, "        default: FEtype_error (%s, Qrational);\n", args.name[1]);
             else if (args.argtype == AT_REAL)
-              fprintf (fo, "default: FEtype_error (%s, Qreal);\n",
+              fprintf (fo, "        default: FEtype_error (%s, Qreal);\n",
                        args.name[1]);
             else
-              fprintf (fo, "default: FEtype_error (%s, Qnumber);\n", args.name[1]);
-            fprintf (fo, "      /*NOTREACHED*/\n");
+              fprintf (fo, "        default: FEtype_error (%s, Qnumber);\n", args.name[1]);
+            fprintf (fo, "          /*NOTREACHED*/\n");
             for (int j = 0; j < LMAX; j++)
               if (j <= args.argtype)
-                fprintf (fo, "case %s: return %s%s (%s (%s), %s, %s (%s), %s%s);\n",
+                fprintf (fo, "        case %s: return %s%s (%s (%s), %s, %s (%s), %s%s);\n",
                          typespec[j].ltype, name, typestring (body[i * LMAX + j], 2),
                          typespec[i].fmt, args.name[0], args.name[0],
                          typespec[j].fmt, args.name[1], args.name[1],
                          args.optvars);
-            fprintf (fo, "}\n");
+            fprintf (fo, "        }\n");
           }
     }
-  fprintf (fo, "}\n");
+  fprintf (fo, "    }\n");
   fprintf (fo, "}\n\n");
 }
 
