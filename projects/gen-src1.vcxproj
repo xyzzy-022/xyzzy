@@ -165,7 +165,7 @@
     <DppOutput>$(GenerateDir)num-arith.h</DppOutput>
   </PropertyGroup>
   <Target Name="Dpp" Inputs="$(DppInputs)" Outputs="$(DppOutput)" DependsOnTargets="PrepareGenerate">
-    <Exec Command="&quot;$(TargetPath)&quot; dpp num-arith.d &quot;$(DppOutput)&quot;" WorkingDirectory="$(GenerateWorkingDirectory)" />
+    <Exec Command="&quot;$(TargetPath)&quot; dpp ../src/num-arith.d &quot;$(DppOutput)&quot;" />
   </Target>
   <PropertyGroup>
     <GenCharWidthInputs>..\src\gen-char-width.cc;..\src\cdecl.h;..\src\charset.h</GenCharWidthInputs>
