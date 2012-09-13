@@ -405,9 +405,9 @@ decoded_time_to_universal_time (int year, int mon, int day,
 lisp
 file_time_to_universal_time (const FILETIME &ft)
 {
-  __int64 i = *(__int64 *)&ft;
+  int64_t i = *(int64_t *)&ft;
   i = i / FILETIME_UNIT_PER_SECOND - FILETIME_UTC_BASE;
-  return make_integer (*(large_int *)&i);
+  return make_integer (i);
 }
 
 lisp
@@ -578,10 +578,10 @@ Fget_internal_real_time ()
 lisp
 Fsi_performance_counter ()
 {
-  __int64 x;
+  int64_t x;
   if (sysdep.perf_counter_present_p
       && QueryPerformanceCounter ((LARGE_INTEGER *)&x))
-    return make_integer (*(large_int *)&x);
+    return make_integer (x);
   return Fget_internal_real_time ();
 }
 

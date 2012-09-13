@@ -9,7 +9,7 @@ private:
   class timer_entry: public xlist_node <timer_entry>
     {
     public:
-      typedef __int64 utime_t;
+      typedef int64_t utime_t;
       enum {TE_NEW = 1, TE_ONE_SHOT = 2};
       enum {UNITS_PER_SEC = 10000000};
       utime_t te_time;

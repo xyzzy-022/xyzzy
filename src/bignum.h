@@ -181,8 +181,6 @@ bignum_rep *br_copy (bignum_rep *, u_long);
 bignum_rep *br_copy (bignum_rep *, long);
 bignum_rep *br_copy (bignum_rep *, uint64_t);
 bignum_rep *br_copy (bignum_rep *, int64_t);
-struct large_int;
-bignum_rep *br_copy (bignum_rep *, large_int);
 
 inline bignum_rep *
 br_copy (bignum_rep *old, const bignum_rep *src)
