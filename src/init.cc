@@ -448,6 +448,7 @@ init_symbol_value_once ()
   xsymbol_value (Vauto_save_interval) = make_fixnum (256);
   xsymbol_value (Vauto_save_interval_timer) = make_fixnum (30);
   xsymbol_value (Vbackup_by_copying) = Qnil;
+  xsymbol_value (Vfile_precious_flag) = Qt;
 
   xsymbol_value (Vinverse_mode_line) = Qt;
   xsymbol_value (Vbuffer_list_sort_ignore_case) = Qt;

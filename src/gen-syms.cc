@@ -2248,6 +2248,7 @@ static symbols ed[] =
   MAKE_SYMBOL2 (make-backup-file-always),
   MAKE_SYMBOL2 (pack-backup-file-name),
   MAKE_SYMBOL2 (backup-by-copying),
+  MAKE_SYMBOL2 (file-precious-flag),
   MAKE_SYMBOL2Q (never),
   DEFCMD3 (save-buffer, 0, 2, 0, ""),
   DEFUN3 (delete-auto-save-file, 1, 0, 0),
