@@ -1174,8 +1174,9 @@ Buffer::save_buffer (lisp encoding, lisp eol)
   int backup_result = 0;
   int nlines = 0;
 
+  lisp precious_flag = symbol_value (Vfile_precious_flag, this);
   lisp by_copying = symbol_value (Vbackup_by_copying, this);
-  if (by_copying == Kremote)
+  if (precious_flag != Qnil && by_copying == Kremote)
     {
       switch (GetDriveType (root_path_name (tmpname, filename)))
         {
@@ -1188,7 +1189,19 @@ Buffer::save_buffer (lisp encoding, lisp eol)
         }
     }
 
-  if (by_copying != Qnil)
+  if (precious_flag == Qnil)
+    {
+      format_message (Mwriting);
+
+      nlines = write_region (filename, 0, b_nchars, 0, wr_param);
+      if (nlines < 0)
+        {
+          if (wr_param.error)
+            file_error (wr_param.error, lfile_name);
+          file_error (Ewrite_error, lfile_name);
+        }
+    }
+  else if (by_copying != Qnil)
     {
       keep_lock lock (this);
       int real_backup = 0;
