@@ -17175,6 +17175,61 @@ DIMENSIONS で示される大きさ・次元の配列をつくり、それを値
 </chapter>
 
 <chapter>
+<title>backup-by-copying</title>
+<type>BufferLocal</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+ファイル保存時のバックアップファイルの作成方法を指定する変数です。
+
+  nil     : 元のファイルをリネームしてバックアップファイルを作成してから、
+            バッファを新しいファイルとして保存します。
+            元のファイルのハードリンクはバックアップファイルを指すため
+            ハードリンクは切れます。
+            デフォルトは nil です。
+  t       : 元のファイルをコピーしてバックアップファイルを作成してから、
+            バッファをファイルに保存します。元のファイルのハードリンクは
+            切れません。
+  :remote : ファイルがリモートにある場合のみ元のファイルをコピーして
+            バックアップファイルを作成します。
+
+使用例：
+  ;;; ファイル保存時にハードリンクが切れないように
+  ;;; 常にコピーしてバックアップファイルを作成
+  (setq backup-by-copying t)
+  =&gt; t
+</description>
+<seealso>file-precious-flag</seealso>
+<link>[xyzzy:05968]</link>
+<section>バッファ</section>
+<file></file>
+</chapter>
+
+<chapter>
+<title>file-precious-flag</title>
+<type>BufferLocal</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+ファイル保存時にバックアップファイルを作成するかどうかを指定する変数です。
+
+  nil : ファイル保存時にバックアップファイルを作成しません。
+  t   : ファイルを保存するときにバックアップファイルを作成してから
+        バッファをファイルに保存します。ディスク容量の不足等でファイルの
+        保存に失敗した場合でも元のファイルを壊すことはありません。
+        デフォルトは t です。
+
+使用例：
+  ;;; ファイル保存時にバックアップファイルを作成しない
+  (setq file-precious-flag nil)
+  =&gt; nil
+</description>
+<seealso>backup-by-copying</seealso>
+<section>バッファ</section>
+<file></file>
+</chapter>
+
+<chapter>
 <title>make-broadcast-stream</title>
 <type>Function</type>
 <arguments>make-broadcast-stream &amp;rest STREAMS</arguments>
@@ -37677,6 +37732,8 @@ write-file で APPEND を non-nil にした場合と同じです。
 <seealso>*after-save-buffer-hook*</seealso>
 <seealso>*save-buffer-no-filenames-hook*</seealso>
 <seealso>make-backup-files</seealso>
+<seealso>backup-by-copying</seealso>
+<seealso>file-precious-flag</seealso>
 <seealso>buffer-truncated-p</seealso>
 <seealso>buffer-modified-p</seealso>
 <seealso>save-all-buffers</seealso>

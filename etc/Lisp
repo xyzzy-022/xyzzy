@@ -1722,6 +1722,7 @@ zerop
 +++
 auto-fill-hook
 auto-save
+backup-by-copying
 buffer-mode
 buffer-read-only
 call-arguments-limit
@@ -1738,6 +1739,7 @@ ed::*last-search-string*
 ed::*register-alist*
 ed::build-summary-function
 esc-map
+file-precious-flag
 fill-column
 fill-region-hook
 hide-restricted-region
