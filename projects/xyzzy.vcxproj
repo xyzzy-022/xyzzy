@@ -437,8 +437,7 @@
     <Delete Files="$(TargetDir)xyzzy.wxp" Condition="Exists('$(TargetDir)xyzzy.wxp')" />
     <Delete Files="$(SolutionDir)xyzzy.wxp" Condition="Exists('$(SolutionDir)xyzzy.wxp')" />
   </Target>
-  <Target Name="BeforeClCompile" DependsOnTargets="UpdateVersionDescribe" />
-  <Target Name="AfterClCompile">
+  <Target Name="BeforeClCompile" DependsOnTargets="UpdateVersionDescribe">
     <CallTarget Targets="CopyLispFiles;CopyEtcFiles" Condition="'$(BuildingInsideVisualStudio)'=='true'" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="DeleteXyzzyDumpFile">
