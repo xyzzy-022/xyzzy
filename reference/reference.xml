@@ -2195,6 +2195,9 @@ do-completion実行時に、補完リストをソートする比較関数を指�
 
 使用例：
   (setq *print-completion-sort-function* #'string-lessp)
+
+補足：
+  xyzzy 0.2.2.244 から利用可能です。
 </description>
 <seealso>*print-completion-list-hook*</seealso>
 <link></link>
