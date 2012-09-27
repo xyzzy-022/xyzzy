@@ -1149,7 +1149,7 @@
 (si::defun-builtin signal-process (process))
 (si::defun-builtin kill-process (process))
 (si::defun-builtin process-send-string (process string))
-(si::defun-builtin shell-execute (filename &optional directory params))
+(si::defun-builtin shell-execute (filename &optional directory params &key :verb))
 (si::defun-builtin create-menu (&optional tag))
 (si::defun-builtin create-popup-menu (&optional tag))
 (si::defun-builtin add-popup-menu (menu popup-menu name))
