@@ -17223,6 +17223,9 @@ DIMENSIONS で示される大きさ・次元の配列をつくり、それを値
   ;;; ファイル保存時にバックアップファイルを作成しない
   (setq file-precious-flag nil)
   =&gt; nil
+
+補足：
+  xyzzy 0.2.2.244 から利用可能です。
 </description>
 <seealso>backup-by-copying</seealso>
 <section>バッファ</section>
