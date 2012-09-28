@@ -352,9 +352,9 @@ WINFS::GetDiskFreeSpace (LPCSTR lpRootPathName, LPDWORD lpSectorsPerCluster,
                                     lpTotalNumberOfClusters))
         return 1;
 
-      unsigned __int64 FreeBytesAvailableToCaller;
-      unsigned __int64 TotalNumberOfBytes;
-      unsigned __int64 TotalNumberOfFreeBytes;
+      uint64_t FreeBytesAvailableToCaller;
+      uint64_t TotalNumberOfBytes;
+      uint64_t TotalNumberOfFreeBytes;
       if (GetDiskFreeSpaceEx (lpRootPathName,
                               (PULARGE_INTEGER)&FreeBytesAvailableToCaller,
                               (PULARGE_INTEGER)&TotalNumberOfBytes,

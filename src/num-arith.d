@@ -211,7 +211,7 @@ lisp
 number_negate (x)
 {
 s: {return make_fixnum (-x);}
-l: {return make_integer (negsi (long_to_large_int (x)));}
+l: {return make_integer (-int64_t (x));}
 b: {return make_integer (negate (0, x));}
 r: {return make_ratio (number_negate (x->num), x->den);}
 F: {return make_single_float (-x);}
@@ -223,7 +223,7 @@ lisp
 number_add (x, y)
 {
 ss: {return make_fixnum (x + y);}
-sl: {return make_integer (addsi (x, y));}
+sl: {return make_integer (int64_t (x) + int64_t (y));}
 sb: {
       bignum_rep_long xx (x);
       return make_integer (add (0, &xx, y, 0));
@@ -282,7 +282,7 @@ lisp
 number_subtract (x, y)
 {
 ss: {return make_fixnum (x - y);}
-sl: {return make_integer (subsi (x, y));}
+sl: {return make_integer (int64_t (x) - int64_t (y));}
 sb: {
       bignum_rep_long xx (x);
       return make_integer (add (0, &xx, y, 1));
@@ -343,7 +343,7 @@ cD: {return complex_subtract (x->real, x->imag, ly, make_fixnum (0));}
 lisp
 number_multiply (x, y)
 {
-ss: {return make_integer (mulsi (x, y));}
+ss: {return make_integer (int64_t (x) * int64_t (y));}
 sl: ss
 sb: {
       if (x == 1)
@@ -539,8 +539,8 @@ ls: {
       if (!y)
         FEdivision_by_zero ();
       if (y == -1)
-        return make_integer (negsi (long_to_large_int (x)));
-      return make_integer (long_to_large_int (x / y));
+        return make_integer (-int64_t (x));
+      return make_integer (int64_t (x / y));
     }
 ll: ss
 lb: sb
@@ -599,7 +599,7 @@ ss: {
           j = i % j;
           i = k;
         }
-      return make_integer (long_to_large_int (i));
+      return make_integer (int64_t (i));
     }
 sl: ss
 sb: {
@@ -804,9 +804,9 @@ sb: {
       return fix_number_2bb (&xx, lx, y, ly, dfn, bfn, ffn);
     }
 sr: {
-       lisp q = fix_number_2 (number_multiply (lx, y->den), y->num, dfn, bfn, ffn);
-       multiple_value::value (1) = make_ratio (multiple_value::value (1), y->den);
-       return q;
+      lisp q = fix_number_2 (number_multiply (lx, y->den), y->num, dfn, bfn, ffn);
+      multiple_value::value (1) = make_ratio (multiple_value::value (1), y->den);
+      return q;
     }
 sF: {return fix_number_2FF (float (x), lx, y, ly, dfn, bfn, ffn);}
 sD: DD
@@ -814,7 +814,7 @@ ls: {
       if (y == -1)
         {
           multiple_value::value (1) = make_fixnum (0);
-	  return make_integer (negsi (long_to_large_int (x)));
+          return make_integer (-int64_t (x));
         }
       return fix_number_2ss (x, lx, y, ly, dfn, bfn, ffn);
     }
@@ -849,7 +849,7 @@ rb: {
       return q;
     }
 rr: {
-      lisp q = fix_number_2 (number_multiply (x->num, y->den), 
+      lisp q = fix_number_2 (number_multiply (x->num, y->den),
                              number_multiply (x->den, y->num),
                              dfn, bfn, ffn);
       multiple_value::value (1) = make_ratio (multiple_value::value (1),
@@ -901,15 +901,15 @@ lF: sF
 lD: DD
 bs: {return fix_flonum_2FF (float (x->to_double ()), lx, float (y), ly, dfn);}
 bl: bs
-bb: {return fix_flonum_2FF (float (x->to_double ()), lx, 
+bb: {return fix_flonum_2FF (float (x->to_double ()), lx,
                             float (y->to_double ()), ly, dfn);}
-br: {return fix_flonum_2FF (float (x->to_double ()), lx, 
+br: {return fix_flonum_2FF (float (x->to_double ()), lx,
                             fract_to_single_float (y), ly, dfn);}
 bF: {return fix_flonum_2FF (float (x->to_double ()), lx, y, ly, dfn);}
 bD: {return fix_flonum_2DD (x->to_double (), lx, y, ly, dfn);}
 rs: {return fix_flonum_2FF (fract_to_single_float (x), lx, float (y), ly, dfn);}
 rl: rs
-rb: {return fix_flonum_2FF (fract_to_single_float (x), lx, 
+rb: {return fix_flonum_2FF (fract_to_single_float (x), lx,
                             float (y->to_double ()), ly, dfn);}
 rr: {return fix_flonum_2FF (fract_to_single_float (x), lx,
                             fract_to_single_float (y), ly, dfn);}

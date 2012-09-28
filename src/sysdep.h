@@ -93,7 +93,7 @@ public:
   char host_name[MAX_COMPUTERNAME_LENGTH + 1];
   DWORD process_id;
 
-  __int64 perf_freq;
+  int64_t perf_freq;
   int perf_counter_present_p;
 
   DWORD comctl32_version;

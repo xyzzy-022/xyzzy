@@ -16,7 +16,7 @@ Fsi_uuid_create (lisp keys)
 
   multiple_value::count () = 2;
   multiple_value::value (1) = make_list (
-    make_integer (long_to_large_int (uuid.Data1)), // time-low
+    make_integer (int64_t (uuid.Data1)),           // time-low
     make_fixnum (uuid.Data2),                      // time-mid
     make_fixnum (uuid.Data3),                      // time-high-and-version
     make_fixnum (uuid.Data4[0]),                   // clock-seq-and-reserved

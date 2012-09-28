@@ -448,6 +448,7 @@ init_symbol_value_once ()
   xsymbol_value (Vauto_save_interval) = make_fixnum (256);
   xsymbol_value (Vauto_save_interval_timer) = make_fixnum (30);
   xsymbol_value (Vbackup_by_copying) = Qnil;
+  xsymbol_value (Vfile_precious_flag) = Qt;
 
   xsymbol_value (Vinverse_mode_line) = Qt;
   xsymbol_value (Vbuffer_list_sort_ignore_case) = Qt;
@@ -536,7 +537,7 @@ init_symbol_value ()
   xsymbol_value (Vkbd_encoding) = xsymbol_value (Qencoding_sjis);
   xsymbol_value (Qperformance_counter_frequency) =
     (sysdep.perf_counter_present_p
-     ? make_integer (*(large_int *)&sysdep.perf_freq)
+     ? make_integer (sysdep.perf_freq)
      : make_fixnum (1000));
 
   xsymbol_value (Vsi_accept_kill_xyzzy) = Qt;

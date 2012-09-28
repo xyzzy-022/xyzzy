@@ -146,8 +146,8 @@ Fsi_binhex_decode (lisp input, lisp output)
   lisp r = o.result ();
   if (!s.corrupted_p ())
     {
-      multiple_value::value (1) = make_integer (long_to_large_int (s.type ()));
-      multiple_value::value (2) = make_integer (long_to_large_int (s.creator ()));
+      multiple_value::value (1) = make_integer (int64_t (s.type ()));
+      multiple_value::value (2) = make_integer (int64_t (s.creator ()));
       multiple_value::value (3) = make_string (s.name ());
       multiple_value::count () = 4;
     }

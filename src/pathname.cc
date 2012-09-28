@@ -1788,9 +1788,8 @@ Ffile_length (lisp lpath)
   WIN32_FIND_DATA fd;
   if (!strict_get_file_data (path, fd))
     return Qnil;
-  large_int i;
-  i.hi = fd.nFileSizeHigh;
-  i.lo = fd.nFileSizeLow;
+  int64_t i = (int64_t (fd.nFileSizeHigh) << 32 |
+               int64_t (fd.nFileSizeLow));
   return make_integer (i);
 }
 
@@ -1883,9 +1882,9 @@ Fget_disk_usage (lisp dirname, lisp recursive)
 
   lisp block = make_fixnum (du.blocksize);
   multiple_value::value (1) =
-    number_multiply (make_integer (long_to_large_int (Clusters)), block);
+    number_multiply (make_integer (int64_t (Clusters)), block);
   multiple_value::value (2) =
-    number_multiply (make_integer (long_to_large_int (FreeClusters)), block);
+    number_multiply (make_integer (int64_t (FreeClusters)), block);
   multiple_value::value (3) =
     number_multiply (make_integer (double_to_bignum_rep (du.blocks)), block);
   multiple_value::value (4) = make_integer (double_to_bignum_rep (du.nbytes));
@@ -2425,9 +2424,8 @@ Fget_short_path_name (lisp lpath)
 lisp
 make_file_info (const WIN32_FIND_DATA &fd)
 {
-  large_int sz;
-  sz.hi = fd.nFileSizeHigh;
-  sz.lo = fd.nFileSizeLow;
+  int64_t sz = (int64_t (fd.nFileSizeHigh) << 32 |
+                int64_t (fd.nFileSizeLow));
   return make_list (make_fixnum (fd.dwFileAttributes),
                     //file_time_to_universal_time (fd.ftCreationTime),
                     //file_time_to_universal_time (fd.ftLastAccessTime),

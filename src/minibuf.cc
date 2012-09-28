@@ -799,7 +799,7 @@ completion::result () const
     return Kno_match;
 
   multiple_value::count () = 3;
-  multiple_value::value (1) = c_matches_list;
+  multiple_value::value (1) = Fnreverse (c_matches_list);
   multiple_value::value (2) = c_prefix;
   if (c_target_len && c_match_len == c_target_len && c_strict_match)
     {

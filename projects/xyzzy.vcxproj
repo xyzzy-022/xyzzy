@@ -186,7 +186,6 @@
     <ClCompile Include="..\src\kanji.cc" />
     <ClCompile Include="..\src\kbd.cc" />
     <ClCompile Include="..\src\keymap.cc" />
-    <ClCompile Include="..\src\largeint.cc" />
     <ClCompile Include="..\src\ldialog.cc" />
     <ClCompile Include="..\src\lex.cc" />
     <ClCompile Include="..\src\list.cc" />
@@ -335,7 +334,6 @@
     <ClInclude Include="..\src\ipc.h" />
     <ClInclude Include="..\src\kanji.h" />
     <ClInclude Include="..\src\kbd.h" />
-    <ClInclude Include="..\src\largeint.h" />
     <ClInclude Include="..\src\ldialog.h" />
     <ClInclude Include="..\src\lex.h" />
     <ClInclude Include="..\src\lisp.h" />
@@ -439,12 +437,11 @@
     <Delete Files="$(TargetDir)xyzzy.wxp" Condition="Exists('$(TargetDir)xyzzy.wxp')" />
     <Delete Files="$(SolutionDir)xyzzy.wxp" Condition="Exists('$(SolutionDir)xyzzy.wxp')" />
   </Target>
-  <Target Name="BeforeClCompile" DependsOnTargets="UpdateVersionDescribe" />
-  <Target Name="AfterClCompile">
+  <Target Name="BeforeClCompile" DependsOnTargets="UpdateVersionDescribe">
     <CallTarget Targets="CopyLispFiles;CopyEtcFiles" Condition="'$(BuildingInsideVisualStudio)'=='true'" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="DeleteXyzzyDumpFile">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)" SkipUnchangedFiles="true" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
   </Target>
   <Target Name="BeforeClean" DependsOnTargets="DeleteXyzzyDumpFile">
     <Delete Files="$(SolutionDir)$(TargetName)$(TargetExt)" Condition="Exists('$(SolutionDir)$(TargetName)$(TargetExt)')" />
