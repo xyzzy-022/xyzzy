@@ -1238,6 +1238,7 @@ static symbols kwd[] =
   DEFKWD2 (hiragana),
   DEFKWD2 (katakana),
   DEFKWD2 (password-char),
+  DEFKWD2 (null),
   DEFKWD2 (non-null),
   DEFKWD2 (must-match),
   DEFKWD2 (enable),
