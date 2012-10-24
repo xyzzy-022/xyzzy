@@ -32,18 +32,16 @@ obj2bstr (lisp obj)
 class safe_array_locker
 {
 public:
-	safe_array_locker(SAFEARRAY *in_sa) : sa(in_sa)
-	{
-		hr = SafeArrayLock(sa);
-	}
-	~safe_array_locker()
-	{
-		SafeArrayUnlock(sa);
-	}
-	HRESULT success_p() { return hr; }
-	HRESULT hr;
-	SAFEARRAY *sa;
-
+  safe_array_locker(SAFEARRAY *sa_) : sa(sa_)
+    {
+      ole_error (SafeArrayLock (sa));
+    }
+  ~safe_array_locker()
+    {
+      ole_error (SafeArrayUnlock (sa));
+    }
+private:
+  SAFEARRAY *sa;
 };
 
 static lisp
@@ -61,20 +59,19 @@ variant2obj (VARIANT *v)
           ole_error (SafeArrayGetLBound (sa, 1, &l));
           ole_error (SafeArrayGetUBound (sa, 1, &u));
           lisp object = make_vector (u - l + 1, Qnil);
-		  {
-			  safe_array_locker locker(sa);
-			  ole_error (locker.success_p());
-			  VARIANT variant;
-			  VariantInit(&variant);
+          {
+            safe_array_locker locker (sa);
+            VARIANT variant;
+            VariantInit (&variant);
 
-			  for (lisp *vec = xvector_contents (object); l <= u; l++, vec++)
-				{
-				  safe_variant sv (variant);
-				  V_VT(&variant) = (V_VT(v) & ~VT_ARRAY) | VT_BYREF;
-				  ole_error (SafeArrayPtrOfIndex(sa, &l, &V_BYREF(&variant)));
-				  *vec = variant2obj (&variant);
-				}
-		  }
+            for (lisp *vec = xvector_contents (object); l <= u; l++, vec++)
+              {
+                safe_variant sv (variant);
+                V_VT (&variant) = (V_VT (v) & ~VT_ARRAY) | VT_BYREF;
+                ole_error (SafeArrayPtrOfIndex (sa, &l, &V_BYREF (&variant)));
+                *vec = variant2obj (&variant);
+              }
+          }
           return object;
         }
       return FEprogram_error (Ecannot_convert_from_variant);

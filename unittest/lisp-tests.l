@@ -707,13 +707,6 @@
   => (nil nil nil 40))
 
 
-(deftest fix-ole-getmethod-immediate-array ()
-  (let ((xhr (ole-create-object "MSXML2.XMLHTTP")))
-    (ole-method xhr 'open "GET" "https://github.com/mumurik/xyzzy/" nil) ;; blocking!
-    (ole-method xhr 'send nil)
-    (ole-method xhr 'responseBody))
-  => non-nil)
-
 (defmacro with-lispmode-bed (&body body)
   `(with-temp-buffer
      (lisp-mode)
