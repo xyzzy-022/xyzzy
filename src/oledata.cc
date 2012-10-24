@@ -256,6 +256,11 @@ obj2variant (lisp object, VARIANT &variant)
               V_VT (&variant) = VT_EMPTY;
               return;
             }
+          if (object == Knull)
+            {
+              V_VT (&variant) = VT_NULL;
+              return;
+            }
           break;
 
         case Tlong_int:
