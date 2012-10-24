@@ -1345,8 +1345,9 @@ PropSheetFont::load ()
 HGLOBAL
 PropSheetFont::change_font (const DLGTEMPLATE *rtmpl, DWORD size)
 {
+  size_t face_padding = (PropSheetFont::face_len % sizeof (WORD));
   HGLOBAL h = GlobalAlloc (GMEM_MOVEABLE,
-                           size + sizeof (WCHAR) * (PropSheetFont::face_len + 1));
+                           size + sizeof (WCHAR) * (PropSheetFont::face_len + 1 + face_padding));
   if (!h)
     return 0;
   DLGTEMPLATE *tmpl = (DLGTEMPLATE *)GlobalLock (h);
@@ -1372,6 +1373,9 @@ PropSheetFont::change_font (const DLGTEMPLATE *rtmpl, DWORD size)
   *w++ = PropSheetFont::point;
   memcpy (w, PropSheetFont::face, sizeof (WCHAR) * (PropSheetFont::face_len + 1));
   w += PropSheetFont::face_len + 1;
+  // The menu, class, title, and font arrays must be aligned on WORD boundaries.
+  while (face_padding--)
+    *w++ = 0;
   memcpy (w, r, (const char *)rtmpl + size - (const char *)r);
   GlobalUnlock (h);
   return h;
