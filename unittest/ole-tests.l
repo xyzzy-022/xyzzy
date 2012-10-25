@@ -10,3 +10,10 @@
     (gc))
   => "null"
   => "undefined")
+
+(deftest fix-ole-getmethod-immediate-array ()
+  (let ((xhr (ole-create-object "MSXML2.XMLHTTP")))
+    (ole-method xhr 'open "GET" "https://github.com/xyzzy-022/xyzzy/" nil) ;; blocking!
+    (ole-method xhr 'send nil)
+    (ole-method xhr 'responseBody))
+  => non-nil)
