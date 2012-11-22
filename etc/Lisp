@@ -3017,6 +3017,7 @@ not-same-device-pathname
 ole-create-event-sink
 ole-create-object
 ole-drop-files
+ole-enumerator-create
 ole-enumerator-next
 ole-enumerator-reset
 ole-enumerator-skip

@@ -842,6 +842,50 @@ Fset_ole_event_handler (lisp lobj, lisp levent, lisp lfn)
 }
 
 lisp
+Fole_enumerator_create (lisp lobj)
+{
+  check_oledata (lobj);
+  if (!xoledata_disp (lobj))
+    FEprogram_error (Einvalid_idispatch);
+
+  DISPPARAMS params;
+  bzero (&params, sizeof params);
+
+  VARIANT result;
+  VariantInit (&result);
+
+  EXCEPINFO excep;
+  bzero (&excep, sizeof excep);
+
+  UINT argerr = UINT (-1);
+
+  HRESULT hr = xoledata_disp (lobj)->Invoke (DISPID_NEWENUM, IID_NULL, LOCALE_USER_DEFAULT,
+                                             DISPATCH_METHOD | DISPATCH_PROPERTYGET,
+                                             &params, &result, &excep, &argerr);
+  if (FAILED (hr))
+    {
+      VariantClear (&result);
+      FEprogram_error (Ecreate_ienum_failed);
+    }
+
+  IEnumVARIANT *p = 0;
+  if (V_VT (&result) == VT_UNKNOWN)
+    hr = V_UNKNOWN (&result)->QueryInterface (IID_IEnumVARIANT, (void **)&p);
+  else if (V_VT (&result) == VT_DISPATCH)
+    hr = V_DISPATCH (&result)->QueryInterface (IID_IEnumVARIANT, (void **)&p);
+
+  VariantClear (&result);
+  if (FAILED (hr) || !p)
+    FEprogram_error (Ecreate_ienum_failed);
+
+  p->Reset ();
+  lisp obj = make_oledata ();
+  xoledata_enumerator (obj) = p;
+
+  return obj;
+}
+
+lisp
 Fole_enumerator_next (lisp lobj)
 {
   check_oledata (lobj);

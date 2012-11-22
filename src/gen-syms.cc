@@ -2608,6 +2608,7 @@ static symbols ed[] =
   DEFUN3 (ole-getprop, 2, 0, FFneed_rest),
   DEFUN3 (ole-create-event-sink, 1, 2, 0),
   DEFUN3 (set-ole-event-handler, 3, 0, 0),
+  DEFUN3 (ole-enumerator-create, 1, 0, 0),
   DEFUN3 (ole-enumerator-next, 1, 0, 0),
   DEFUN3 (ole-enumerator-reset, 1, 0, 0),
   DEFUN3 (ole-enumerator-skip, 1, 1, 0),

@@ -72,7 +72,7 @@
      ,x))
 
 (defmacro ole-for-each ((var obj &optional (resultform nil)) &body body)
-  `(let ((#1=#:e #{,obj._NewEnum}))
+  `(let ((#1=#:e (ole-enumerator-create ,obj)))
      (ole-enumerator-reset #1#)
      (loop
        (let ((,var (ole-enumerator-next #1#)))
