@@ -430,6 +430,19 @@ ole_invoke (lisp lobj, lisp lprop, lisp args, int flags)
   return variant2obj (&result);
 }
 
+class safe_tlib_attr
+{
+protected:
+  ITypeLib *ti;
+  TLIBATTR *attr;
+public:
+  safe_tlib_attr (ITypeLib *ti_) : ti (ti_), attr (0) {}
+  ~safe_tlib_attr () {if (attr) ti->ReleaseTLibAttr (attr);}
+  TLIBATTR **operator & () {return &attr;}
+  operator TLIBATTR * () {return attr;}
+  TLIBATTR *operator -> () const {return attr;}
+};
+
 class safe_type_attr
 {
 protected:
@@ -519,6 +532,19 @@ get_default_source (IDispatch *disp, safe_com <ITypeInfo> &typeinfo, IID &iid)
 }
 
 static void
+get_typelib_fullpath (safe_com <ITypeLib> &tlib, BSTR &path)
+{
+  safe_tlib_attr attr (tlib);
+
+  ole_error (tlib->GetLibAttr (&attr));
+  ole_error (QueryPathOfRegTypeLib (attr->guid,
+                                    attr->wMajorVerNum,
+                                    attr->wMinorVerNum,
+                                    LOCALE_SYSTEM_DEFAULT,
+                                    &path));
+}
+
+static void
 get_interface_id (IDispatch *disp, const wchar_t *path, const wchar_t *name,
                   safe_com <ITypeInfo> &typeinfo, IID &iid)
 {
@@ -526,7 +552,16 @@ get_interface_id (IDispatch *disp, const wchar_t *path, const wchar_t *name,
   if (path)
     ole_error (LoadTypeLib (path, &tlib));
   else
-    get_typelib (disp, tlib);
+    {
+      BSTR bstr;
+      get_typelib (disp, tlib);
+      get_typelib_fullpath (tlib, bstr);
+      if (bstr)
+        {
+          ole_error (LoadTypeLib (bstr, &tlib));
+          SysFreeString (bstr);
+        }
+    }
 
   int n = tlib->GetTypeInfoCount ();
   for (int i = 0; i < n; i++)
