@@ -1312,6 +1312,7 @@
 (si::defun-builtin stop-timer (fn))
 (si::defun-builtin set-per-device-directory (directory))
 (si::defun-builtin refresh-tool-bars ())
+(si::defun-builtin ole-enumerator-create (oleobj))
 (si::defun-builtin ole-enumerator-next (oleobj))
 (si::defun-builtin ole-enumerator-reset (oleobj))
 (si::defun-builtin ole-enumerator-skip (oleobj &optional count))
