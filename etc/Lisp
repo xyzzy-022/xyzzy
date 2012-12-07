@@ -3025,6 +3025,7 @@ ole-for-each
 ole-get-object
 ole-getprop
 ole-method
+ole-method*
 ole-putprop
 oledatap
 open-file-dialog

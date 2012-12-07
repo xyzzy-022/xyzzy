@@ -2605,6 +2605,7 @@ static symbols ed[] =
   DEFUN3 (ole-get-object, 1, 0, 0),
   DEFUN3 (ole-putprop, 3, 0, FFneed_rest),
   DEFUN3 (ole-method, 2, 0, FFneed_rest),
+  DEFUN2 (ole-method*, ole_method_star, 4, 0, 0),
   DEFUN3 (ole-getprop, 2, 0, FFneed_rest),
   DEFUN3 (ole-create-event-sink, 1, 2, 0),
   DEFUN3 (set-ole-event-handler, 3, 0, 0),
