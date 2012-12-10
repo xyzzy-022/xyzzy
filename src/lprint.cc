@@ -1345,6 +1345,10 @@ print_stream (wStream &stream, const print_control &, lisp object)
       print_unreadable_object (stream, object, "general-output-stream");
       break;
 
+    case st_debug_output:
+      print_unreadable_object (stream, object, "debug-output-stream");
+      break;
+
     default:
       assert (0);
       break;
