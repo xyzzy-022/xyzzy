@@ -812,6 +812,7 @@
 (si::defun-builtin general-input-stream-p (stream))
 (si::defun-builtin general-output-stream-p (stream))
 (si::defun-builtin keyboard-stream-p (stream))
+(si::defun-builtin debug-output-stream-p (stream))
 (si::defun-builtin set-end-of-file (file-stream))
 (si::defun-builtin forward-char (&optional (arg 1)))
 (si::defun-builtin forward-line (&optional (arg 1)))

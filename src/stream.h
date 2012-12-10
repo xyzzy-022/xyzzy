@@ -21,7 +21,8 @@ enum stream_type_internal
   sti_keyboard_stream  = 0x2000,
   sti_wstream_stream   = 0x4000,
   sti_socket_stream    = 0x8000,
-  sti_general_stream   = 0x10000
+  sti_general_stream   = 0x10000,
+  sti_debug_stream     = 0x20000,
 };
 
 enum stream_type
@@ -42,7 +43,8 @@ enum stream_type
   st_wstream = sti_wstream_stream | sti_output_stream,
   st_socket = sti_socket_stream | sti_input_stream | sti_output_stream,
   st_general_input = sti_general_stream | sti_input_stream,
-  st_general_output = sti_general_stream | sti_output_stream
+  st_general_output = sti_general_stream | sti_output_stream,
+  st_debug_output = sti_debug_stream | sti_output_stream,
 };
 
 class lstream: public lisp_object

@@ -542,6 +542,7 @@ gc_mark_object (lisp object)
             case st_keyboard:
             case st_wstream:
             case st_socket:
+            case st_debug_output:
               return;
 
             case st_buffer:
@@ -1872,6 +1873,7 @@ dump_object (FILE *fp, const lstream *d, int n,
           case st_keyboard:
           case st_wstream:
           case st_socket:
+          case st_debug_output:
             break;
 
           case st_buffer:
@@ -1940,6 +1942,7 @@ rdump_object (FILE *fp, lstream *d, int n,
           case st_keyboard:
           case st_wstream:
           case st_socket:
+          case st_debug_output:
             d->pathname = Qnil;
             d->input = 0;
             d->output = 0;

@@ -1911,6 +1911,8 @@ static symbols ed[] =
   DEFUN3 (general-output-stream-p, 1, 0, 0),
   MAKE_SYMBOL2Q (buffer-stream),
   MAKE_SYMBOL2Q (socket-stream),
+  DEFUN3 (debug-output-stream-p, 1, 0, 0),
+  DEFVAR2 (*debug-output*),
 
   /* move.cc */
   DEFCMD3 (forward-char, 0, 1, 0, "p"),

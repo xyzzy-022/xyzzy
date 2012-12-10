@@ -3,6 +3,7 @@
 #include "sequence.h"
 #include "wstream.h"
 #include "sockinet.h"
+#include "debug.h"
 
 static void
 close_file_stream (lisp stream, int abort)
@@ -125,6 +126,12 @@ make_socket_stream ()
   return stream;
 }
 
+static inline lisp
+make_debug_output_stream ()
+{
+  return make_stream (st_debug_output);
+}
+
 lisp
 Fstreamp (lisp object)
 {
@@ -213,6 +220,12 @@ lisp
 Fgeneral_output_stream_p (lisp stream)
 {
   return boole (streamp (stream) && xstream_type (stream) == st_general_output);
+}
+
+lisp
+Fdebug_output_stream_p (lisp stream)
+{
+  return boole (streamp (stream) && xstream_type (stream) == st_debug_output);
 }
 
 lisp
@@ -1125,6 +1138,7 @@ Fclose (lisp stream, lisp keys)
 
     case st_status:
     case st_keyboard:
+    case st_debug_output:
       return Qt;
 
     case st_wstream:
@@ -1362,6 +1376,7 @@ readc_stream (lisp stream)
         case st_status:
         case st_wstream:
         case st_general_output:
+        case st_debug_output:
           FEtype_error (stream, Qinput_stream);
           return 0;
 
@@ -1534,6 +1549,7 @@ listen_stream (lisp stream)
         case st_status:
         case st_wstream:
         case st_general_output:
+        case st_debug_output:
           FEtype_error (stream, Qinput_stream);
           return 0;
 
@@ -1792,6 +1808,10 @@ writec_stream (lisp stream, Char cc)
           xstream_column (stream) = update_column (xstream_column (stream), cc);
           return;
 
+        case st_debug_output:
+          Debug (&cc, 1);
+          return;
+
         default:
           assert (0);
           return;
@@ -1899,6 +1919,10 @@ write_stream (lisp stream, const Char *b, size_t size)
           xstream_column (stream) = update_column (xstream_column (stream), b, size);
           return;
 
+        case st_debug_output:
+          Debug (b, size);
+          return;
+
         default:
           assert (0);
           return;
@@ -1959,6 +1983,9 @@ get_stream_column (lisp stream)
             Buffer *bp = buffer_stream_point (stream, point);
             return bp->point_column (point);
           }
+
+        case st_debug_output:
+          return 0;
 
         default:
           assert (0);
@@ -2043,6 +2070,9 @@ flush_stream (lisp stream)
             }
           return;
 
+        case st_debug_output:
+          return;
+
         default:
           assert (0);
           return;
@@ -2071,6 +2101,7 @@ create_std_streams ()
   xsymbol_value (Vstandard_input) = xsymbol_value (Qkeyboard);
   xsymbol_value (Vstatus_window) = make_status_stream ();
   xsymbol_value (Vstandard_output) = xsymbol_value (Vstatus_window);
+  xsymbol_value (Vdebug_output) = make_debug_output_stream ();
 #endif
   xsymbol_value (Verror_output) = create_std_stream (st_file_output, 0, stderr);
   xsymbol_value (Vquery_io) = xsymbol_value (Vterminal_io);
