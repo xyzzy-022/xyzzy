@@ -286,6 +286,7 @@ dde-initiate
 dde-poke
 dde-request
 dde-terminate
+debug-output-stream-p
 decf
 declaim
 decode-escape-sequence
@@ -1258,6 +1259,7 @@ si:base64-decode
 si:base64-encode
 si:canonicalize-type
 si:closure-variable
+si:output-debug-string
 si:dump-image-path
 si:environ
 si:getenv
@@ -1570,6 +1572,7 @@ zerop
 *dabbrev-search-this-buffer-only*
 *dabbrevs-no-undo*
 *deactivate-hook*
+*debug-output*
 *default-buffer-mode*
 *default-eol-code*
 *default-fileio-encoding*
