@@ -40149,4 +40149,44 @@ VisualStudioの出力ウィンドウで確認可能です。
 <file>builtin.l</file>
 </chapter>
 
+<chapter>
+<title>*filer-show-hidden-files*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+ファイラで隠しファイルを表示するかどうかを設定します。
+  non-nil  隠しファイルを表示する
+  nil      隠しファイルを表示しない
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>filer</seealso>
+<seealso>*filer-show-system-files*</seealso>
+<link></link>
+<section>ファイラ</section>
+<file>filer.l</file>
+</chapter>
+
+<chapter>
+<title>*filer-show-system-files*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+ファイラで保護されたオペレーティング システム ファイルを表示するかどうかを設定します。
+  non-nil  保護されたオペレーティング システム ファイルを表示する
+  nil      保護されたオペレーティング システム ファイルを表示しない
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>filer</seealso>
+<seealso>*filer-show-hidden-files*</seealso>
+<link></link>
+<section>ファイラ</section>
+<file>filer.l</file>
+</chapter>
+
 </book>

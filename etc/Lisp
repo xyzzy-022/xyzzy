@@ -1611,6 +1611,8 @@ zerop
 *filer-retrieve-icon*
 *filer-secondary-directory*
 *filer-secondary-file-mask*
+*filer-show-hidden-files*
+*filer-show-system-files*
 *filer-use-recycle-bin*
 *find-buffer-package-hook*
 *find-file-auto-encoding-use-utf8n*
