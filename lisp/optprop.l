@@ -716,16 +716,18 @@
     (:button precious "ファイルを削除するときにもっと丁寧に確認して(&P)" #x50010003 7 43 159 10)
     (:button rdonly "書込み禁止ファイルを何も言わずに消す(&R)" #x50010003 7 55 142 10)
     (:button dosname "MS-DOSファイル名が重複したとき勝手にリネームする(&U)" #x50010003 7 67 182 10)
-    (:button nil "同名ファイルの確認のデフォルト" #x50000007 7 83 176 49)
-    (:button yes "する(&Y)" #x50030009 13 95 37 10)
-    (:button no "しない(&S)" #x50000009 54 95 42 10)
-    (:button newer "日付が新しければ(&N)" #x50000009 100 95 78 10)
-    (:button all "いちいち聞くな(&A)" #x50030003 13 107 66 10)
-    (:button makedefault "新しく選択されたものをデフォルトにする(&D)" #x50010003 13 119 140 10)
-    (:button nil "中にファイルがあるディレクトリを削除するとき" #x50000007 7 137 176 51)
-    (:button force "有無を言わさずに消す(&O)" #x50030009 13 149 90 10)
-    (:button firsttime "最初の一回だけ確認する(&F)" #x50000009 13 161 98 10)
-    (:button everytime "毎回確認する(&E)" #x50000009 13 173 65 10)))
+    (:button hidden "隠しファイル、隠しフォルダ、または隠しドライブを表示しない(&H)" #x50010003 7 79 182 10)
+    (:button system "保護されたオペレーティング システム ファイルを表示しない(&J)" #x50010003 7 91 182 10)
+    (:button nil "同名ファイルの確認のデフォルト" #x50000007 7 105 176 49)
+    (:button yes "する(&Y)" #x50030009 13 119 37 10)
+    (:button no "しない(&S)" #x50000009 54 119 42 10)
+    (:button newer "日付が新しければ(&N)" #x50000009 100 119 78 10)
+    (:button all "いちいち聞くな(&A)" #x50030003 13 131 66 10)
+    (:button makedefault "新しく選択されたものをデフォルトにする(&D)" #x50010003 13 143 140 10)
+    (:button nil "中にファイルがあるディレクトリを削除するとき" #x50000007 7 161 176 51)
+    (:button force "有無を言わさずに消す(&O)" #x50030009 13 173 90 10)
+    (:button firsttime "最初の一回だけ確認する(&F)" #x50000009 13 185 98 10)
+    (:button everytime "毎回確認する(&E)" #x50000009 13 197 65 10)))
  #'(lambda ()
      (list (cons 'icon *filer-retrieve-icon*)
 	   (cons 'query *filer-query-before-process*)
@@ -735,6 +737,8 @@
 	   (cons 'comma *filer-format-comma*)
 	   (cons 'savemask *filer-save-file-mask*)
 	   (cons 'dosname *rename-alternate-file-name*)
+	   (cons 'hidden (not *filer-show-hidden-files*))
+	   (cons 'system (not *filer-show-system-files*))
 	   (cons 'yes (eq *filer-ask-same-name-default* :overwrite))
 	   (cons 'no (eq *filer-ask-same-name-default* :skip))
 	   (cons 'newer (eq *filer-ask-same-name-default* :newer))
@@ -751,6 +755,8 @@
      (setq *filer-delete-read-only-files* (cdr (assoc 'rdonly data)))
      (setq *filer-save-file-mask* (cdr (assoc 'savemask data)))
      (setq *rename-alternate-file-name* (cdr (assoc 'dosname data)))
+     (setq *filer-show-hidden-files* (not (cdr (assoc 'hidden data))))
+     (setq *filer-show-system-files* (not (cdr (assoc 'system data))))
      (setq *filer-modal* (not (cdr (assoc 'modeless data))))
      (setq *filer-format-comma* (cdr (assoc 'comma data)))
      (setq *filer-ask-same-name-default*
@@ -784,5 +790,7 @@
    *filer-ask-same-name-all-default* *filer-ask-same-name-make-default*
    *filer-delete-read-only-files* *filer-delete-non-empty-directory*
    *filer-save-file-mask* *filer-modal* *filer-format-comma*
-   *rename-alternate-file-name*))
+   *rename-alternate-file-name*
+   *filer-show-hidden-files* *filer-show-system-files*
+   ))
 

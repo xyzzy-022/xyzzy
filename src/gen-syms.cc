@@ -2566,6 +2566,8 @@ static symbols ed[] =
   DEFVAR2 (*filer-mark-file-size-unit*),
   DEFUN3 (get-filer-font, 0, 0, 0),
   DEFUN3 (set-filer-font, 0, 0, FFneed_rest),
+  DEFVAR2 (*filer-show-hidden-files*),
+  DEFVAR2 (*filer-show-system-files*),
 
   /* edict.cc */
   DEFUN3 (lookup-dictionary, 4, 0, 0),
