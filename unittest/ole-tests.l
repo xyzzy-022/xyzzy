@@ -75,3 +75,15 @@
   => (ole-method* worksheets :Add (list worksheet) (list :Count 2))
   => (ole-method* (ole-method* xls :Worksheets nil nil) :Add nil (list :After worksheet :Count 2))
   => (ole-method* (ole-method* xls :Worksheets nil nil) :Add nil (list :After worksheet :Count 2)))
+
+(deftest fix-ole-event-sink-load-typelib ()
+  (with-ie (ie)
+    (let (download-complete)
+      (ole-create-event-sink ie "DWebBrowserEvents2")
+      (set-ole-event-handler ie "DownloadComplete"
+                             #'(lambda () (setf download-complete t)))
+      #{ie.Navigate["http://www.google.co.jp/"]}
+      (while (/= #{ie.ReadyState} 4)
+        (sit-for 0.1))
+      download-complete))
+  => t)
