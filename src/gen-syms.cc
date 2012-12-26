@@ -1911,6 +1911,8 @@ static symbols ed[] =
   DEFUN3 (general-output-stream-p, 1, 0, 0),
   MAKE_SYMBOL2Q (buffer-stream),
   MAKE_SYMBOL2Q (socket-stream),
+  DEFUN3 (debug-output-stream-p, 1, 0, 0),
+  DEFVAR2 (*debug-output*),
 
   /* move.cc */
   DEFCMD3 (forward-char, 0, 1, 0, "p"),
@@ -2564,6 +2566,8 @@ static symbols ed[] =
   DEFVAR2 (*filer-mark-file-size-unit*),
   DEFUN3 (get-filer-font, 0, 0, 0),
   DEFUN3 (set-filer-font, 0, 0, FFneed_rest),
+  DEFVAR2 (*filer-show-hidden-files*),
+  DEFVAR2 (*filer-show-system-files*),
 
   /* edict.cc */
   DEFUN3 (lookup-dictionary, 4, 0, 0),
@@ -2605,6 +2609,7 @@ static symbols ed[] =
   DEFUN3 (ole-get-object, 1, 0, 0),
   DEFUN3 (ole-putprop, 3, 0, FFneed_rest),
   DEFUN3 (ole-method, 2, 0, FFneed_rest),
+  DEFUN2 (ole-method*, ole_method_star, 2, 2, 0),
   DEFUN3 (ole-getprop, 2, 0, FFneed_rest),
   DEFUN3 (ole-create-event-sink, 1, 2, 0),
   DEFUN3 (set-ole-event-handler, 3, 0, 0),
