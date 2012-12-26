@@ -27,6 +27,11 @@
          (progn ,@body)
        (ole-method ,var :Quit))))
 
+(defmacro with-wbem ((var) &body body)
+  `(let* ((#1=#:wbem (ole-create-object "WbemScripting.SWbemLocator"))
+          (,var #{#1#.ConnectServer["."]}))
+     (progn ,@body)))
+
 (deftest test-ole-method*-args ()
   (with-ie (ie)
     (ole-method* ie :Navigate (list "http://www.google.co.jp/"
@@ -86,4 +91,23 @@
       (while (/= #{ie.ReadyState} 4)
         (sit-for 0.1))
       download-complete))
+  => t)
+
+(deftest fix-ole-for-each ()
+  (with-ie (ie)
+    #{ie.Navigate["http://www.google.co.jp/"]}
+    (while (/= #{ie.ReadyState} 4)
+      (sit-for 0.1))
+    (let ((c 0))
+      (ole-for-each (e #{ie.Document.all})
+        (incf c))
+      (< 0 c)))
+  => t)
+
+(deftest fix-ole-for-each-2 ()
+  (with-wbem (wbem)
+    (let ((c 0))
+      (ole-for-each (e #{wbem.ExecQuery["SELECT * FROM Win32_Process WHERE Name='xyzzy.exe'"]})
+        (incf c))
+      (< 0 c)))
   => t)
