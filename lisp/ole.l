@@ -11,6 +11,8 @@
 
 (defconstant *ole-reader-.* '#:|.|)
 (defconstant *ole-reader-[* '#:[)
+(defconstant *ole-reader-]* '#:])
+(defconstant *ole-reader-{* '#:{)
 (defconstant *ole-reader-}* '#:})
 
 (defvar .keyword-package. (find-package "keyword"))
@@ -47,16 +49,42 @@
       (loop
 	(let ((sep (read stream t nil t)))
 	  (cond ((eq sep *ole-reader-.*)
-		 (setq obj `(ole-method ,obj ',(let ((*package* .keyword-package.))
-						 (ole-reader-read-obj stream)))))
+		 (setq obj (list 'ole-method* obj (let ((*package* .keyword-package.))
+						    (ole-reader-read-obj stream))
+				 nil nil)))
 		((eq sep *ole-reader-[*)
 		 (when (eq obj first)
 		   (ole-reader-unexpected stream #\[))
 		 (unwind-protect
 		     (progn
 		       (set-syntax-from-char #\. #\.)
-		       (setq obj (nconc obj (read-delimited-list #\] stream t))))
-		   (set-macro-character #\. #'(lambda (stream c) *ole-reader-.*))))
+		       (set-macro-character #\{ #'(lambda (stream c) *ole-reader-{*))
+		       (set-macro-character #\] #'(lambda (stream c) *ole-reader-]*))
+		       (let (in-named-args-p)
+			 (loop
+			   (let ((sep (read stream t nil t)))
+			     (cond ((eq sep *ole-reader-{*)
+				    (when in-named-args-p
+				      (ole-reader-unexpected stream #\{))
+				    (setq in-named-args-p t))
+				   ((eq sep *ole-reader-}*)
+				    (when (not in-named-args-p)
+				      (ole-reader-unexpected stream #\}))
+				    (setq in-named-args-p nil))
+				   ((eq sep *ole-reader-]*)
+				    (when in-named-args-p
+				      (ole-reader-unexpected stream #\]))
+				    (return))
+				   (t
+				    (let ((n (if in-named-args-p 4 3)))
+				      (if (nth n obj)
+					  (setf (nth n obj) (append (nth n obj) (list sep)))
+					(setf (nth n obj) (list 'list sep))))))))))
+		   (progn
+		     (set-macro-character #\. #'(lambda (stream c) *ole-reader-.*))
+		     (set-syntax-from-char #\{ #\{)
+		     (set-syntax-from-char #\] #\))
+		     )))
 		((eq sep *ole-reader-}*)
 		 (when (eq obj first)
 		   (ole-reader-unexpected stream #\}))
@@ -68,6 +96,13 @@
 
 (defsetf ole-method (obj prop &rest args) (x)
   `(progn
+     (ole-putprop ,obj ,prop ,x ,@args)
+     ,x))
+
+(defsetf ole-method* (obj prop args named-args) (x)
+  `(progn
+     (when ,named-args
+       (error "名前付き引数のsetfはサポートしていません"))
      (ole-putprop ,obj ,prop ,x ,@args)
      ,x))
 

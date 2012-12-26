@@ -31859,6 +31859,7 @@ synonym-stream以降は使ったことないんで(^^;、動くかどうか分�
   status-window-stream    なし
   keyboard-stream         なし
   wstreams-stream         なし
+  debug-output-stream     なし
   ---------------------------------------------
 
 独自ストリームの概要：
@@ -31872,6 +31873,12 @@ synonym-stream以降は使ったことないんで(^^;、動くかどうか分�
     グローバル変数*keyboard*の値です。
   wstreams-stream
     formatからコールバックが呼ばれたときのstreamの実体。
+  debug-output-stream
+    現在のデバッガをストリームとみなして出力ができます。
+    グローバル変数*debug-output*の値です。
+
+補足：
+  debug-output-stream は xyzzy 0.2.2.246 から利用可能です。
 </description>
 <seealso>open</seealso>
 <seealso>make-string-input-stream</seealso>
@@ -40078,6 +40085,108 @@ xyzzy では special 以外の指定をしても効果はありません。
 <link></link>
 <section>ウィンドウ</section>
 <file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>*debug-output*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+現在のデバッガに文字列を送信する出力ストリームです。
+出力したメッセージはDebugViewやVisualStudioの出力ウィンドウで確認可能です。
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>si:output-debug-string</seealso>
+<seealso>debug-output-stream-p</seealso>
+<link></link>
+<section>変数と定数</section>
+<file></file>
+</chapter>
+
+<chapter>
+<title>debug-output-stream-p</title>
+<type>Function</type>
+<arguments>debug-output-stream-p STREAM</arguments>
+<package>editor</package>
+<description>
+ストリームがdebug-output-streamかどうかを返します。
+
+  STREAM : 判定するストリーム
+
+  t   ストリームはdebug-output-streamである。
+  nil ストリームはdebug-output-streamではない。
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>*debug-output*</seealso>
+<seealso>xyzzyで提供されているストリームの種類</seealso>
+<section>入出力</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:output-debug-string</title>
+<type>Function</type>
+<arguments>output-debug-string FMT &amp;rest ARGS</arguments>
+<package>system</package>
+<description>
+現在のデバッガに文字列を送信します。出力したメッセージはDebugViewや
+VisualStudioの出力ウィンドウで確認可能です。
+
+  FMT  : format同様の書式が指定できます。
+  ARGS : 出力書式へのパラメタとなります。
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>*debug-output*</seealso>
+<link></link>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>*filer-show-hidden-files*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+ファイラで隠しファイルを表示するかどうかを設定します。
+  non-nil  隠しファイルを表示する
+  nil      隠しファイルを表示しない
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>filer</seealso>
+<seealso>*filer-show-system-files*</seealso>
+<link></link>
+<section>ファイラ</section>
+<file>filer.l</file>
+</chapter>
+
+<chapter>
+<title>*filer-show-system-files*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+ファイラで保護されたオペレーティング システム ファイルを表示するかどうかを設定します。
+  non-nil  保護されたオペレーティング システム ファイルを表示する
+  nil      保護されたオペレーティング システム ファイルを表示しない
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>filer</seealso>
+<seealso>*filer-show-hidden-files*</seealso>
+<link></link>
+<section>ファイラ</section>
+<file>filer.l</file>
 </chapter>
 
 </book>
