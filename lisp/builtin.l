@@ -1258,7 +1258,7 @@
 (si::defun-builtin ole-get-object (program-id))
 (si::defun-builtin ole-putprop (object property value &rest args))
 (si::defun-builtin ole-method (object property &rest args))
-(si::defun-builtin ole-method* (object property args named-args))
+(si::defun-builtin ole-method* (object property &optional args named-args))
 (si::defun-builtin ole-getprop (object property &rest args))
 (si::defun-builtin read-as-string (stream &optional eof-error-p eof-value))
 (si::defun-builtin read-line-into (string &optional input-stream eof-error-p eof-value))
