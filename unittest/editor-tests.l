@@ -985,7 +985,7 @@
          (reader-error (c)
            (list (format nil "~A" (reader-error-datum c)) (reader-error-arguments c))))
        (progn
-         (insert-and-eval "(require \"ole\")")
+         (insert-and-eval "(load-library \"ole\")")
          (insert-and-eval "(setf fso (ole-create-object \"Scripting.FileSystemObject\"))")
          (insert-and-eval "#{fso.BuildPath[\"foo\" \"bar\"]}"))
        )))
