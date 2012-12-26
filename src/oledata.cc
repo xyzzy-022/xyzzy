@@ -435,7 +435,7 @@ cleanup (HRESULT hr, EXCEPINFO &excep)
 static int
 count_named_args (lisp named_args)
 {
-  if (!named_args || named_args == Qnil)
+  if (named_args == Qnil)
     return 0;
 
   if (!consp (named_args))
@@ -464,6 +464,8 @@ ole_invoke (lisp lobj, lisp lprop, lisp args, lisp named_args, int flags)
   check_oledata (lobj);
   if (!xoledata_disp (lobj))
     FEprogram_error (Einvalid_idispatch);
+  if (!args) args = Qnil;
+  if (!named_args) named_args = Qnil;
 
   DISPID dispid = get_dispid (xoledata_disp (lobj), lprop);
   int c_named_args = count_named_args (named_args);
