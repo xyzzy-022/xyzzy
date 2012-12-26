@@ -40189,4 +40189,276 @@ VisualStudioの出力ウィンドウで確認可能です。
 <file>filer.l</file>
 </chapter>
 
+<chapter>
+<title>oledatap</title>
+<type>Function</type>
+<arguments>oledatap OBJECT</arguments>
+<package>lisp</package>
+<description>
+OBJECTがOLEオブジェクトならばt、それ以外ならnilを返します。
+
+  (oledatap x) == (typep x 'oledata)
+</description>
+<seealso>OLEオートメーションの使用例</seealso>
+<section>データ型</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>ole-create-object</title>
+<type>Function</type>
+<arguments>ole-create-object PROGRAM-ID</arguments>
+<package>editor</package>
+<description>
+OLEオートメーション・サーバを作成します。
+
+  PROGRAM-ID : 作成するOLEオートメーション・サーバのPROGIDを指定します。
+
+使用例 :
+  (ole-create-object "InternetExplorer.Application")
+  =&gt; #&lt;oledata 56823884&gt;
+</description>
+<seealso>oledatap</seealso>
+<seealso>ole-get-object</seealso>
+<seealso>OLEオートメーションの使用例</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>ole-get-object</title>
+<type>Function</type>
+<arguments>ole-get-object PROGRAM-ID</arguments>
+<package>editor</package>
+<description>
+起動しているOLEオートメーション・サーバに接続します。
+
+  PROGRAM-ID : 接続対象のOLEオートメーション・サーバのPROGIDを指定します。
+
+使用例 :
+  (ole-get-object "Excel.Application")
+  =&gt; #&lt;oledata 56823956&gt;
+</description>
+<seealso>oledatap</seealso>
+<seealso>ole-create-object</seealso>
+<seealso>OLEオートメーションの使用例</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>ole-for-each</title>
+<type>Macro</type>
+<arguments>ole-for-each (VAR OBJ &amp;optional RESULTFORM) &amp;body BODY</arguments>
+<package>editor</package>
+<description>
+OLEオブジェクトのコレクションを列挙します。
+
+  VAR           : BODY実行中に各シンボルに束縛される変数
+  OBJ           : OLEオブジェクトのコレクション
+  RESULTFORM    : ole-for-eachの戻り値
+  BODY          : 繰り返しの本体
+
+使用例 :
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    (setf #{ie.Visible} t)
+    #{ie.Navigate["http://www.google.co.jp/"]}
+    (while (/= #{ie.ReadyState} 4)
+      (sit-for 0.1))
+    (ole-for-each (div #{ie.document.GetElementsByTagName["div"]})
+      (princ #{div.InnerText}))
+    #{ie.Quit})
+</description>
+<seealso></seealso>
+<seealso>OLEオートメーションの使用例</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>ole-getprop</title>
+<type>Function</type>
+<arguments>ole-getprop OBJECT PROPERTY &amp;rest ARGS</arguments>
+<package>editor</package>
+<description>
+OLEオブジェクトのプロパティを取得します。
+
+  OBJECT     : OLEオブジェクトを指定します。
+  PROPERTY   : プロパティ名を指定します。
+  ARGS       : プロパティの引数をリストで指定します。
+
+使用例 :
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    (ole-getprop ie :Path))
+  =&gt; "C:\\Program Files\\Internet Explorer\\"
+
+リーダーマクロを利用して以下のように記述することもできます。
+
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    #{ie.Path})
+  =&gt; "C:\\Program Files\\Internet Explorer\\"
+</description>
+<seealso>ole-method</seealso>
+<seealso>ole-method*</seealso>
+<seealso>ole-putprop</seealso>
+<seealso>OLEオートメーションの使用例</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>ole-putprop</title>
+<type>Function</type>
+<arguments>ole-putprop OBJECT PROPERTY VALUE &amp;rest ARGS</arguments>
+<package>editor</package>
+<description>
+OLEオブジェクトのプロパティを設定します。
+
+  OBJECT     : OLEオブジェクトを指定します。
+  PROPERTY   : プロパティ名を指定します。
+  VALUE      : プロパティに設定する値を指定します。
+  ARGS       : プロパティの引数をリストで指定します。
+
+使用例 :
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    (ole-putprop ie :Visible t))
+  =&gt; t
+
+リーダーマクロを利用して以下のように記述することもできます。
+
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    (setf #{ie.Visible} t))
+  =&gt; t
+</description>
+<seealso>ole-method</seealso>
+<seealso>ole-method*</seealso>
+<seealso>ole-getprop</seealso>
+<seealso>OLEオートメーションの使用例</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>ole-method</title>
+<type>Function</type>
+<arguments>ole-method OBJECT PROPERTY &amp;rest ARGS</arguments>
+<package>editor</package>
+<description>
+OLEオブジェクトのメソッドを起動します。
+引数を名前で指定したい場合はole-method*を利用します。
+
+  OBJECT     : OLEオブジェクトを指定します。
+  PROPERTY   : メソッド名を指定します。
+  ARGS       : 引数をリストで指定します。
+
+使用例 :
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    (ole-putprop ie :Visible t)
+    (ole-method ie :Navigate "http://www.google.co.jp/"))
+
+リーダーマクロを利用して以下のように記述することもできます。
+
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    (setf #{ie.Visible} t)
+    #{ie.Navigate["http://www.google.co.jp/"]})
+</description>
+<seealso>ole-method*</seealso>
+<seealso>ole-getprop</seealso>
+<seealso>ole-putprop</seealso>
+<seealso>OLEオートメーションの使用例</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>ole-method*</title>
+<type>Function</type>
+<arguments>ole-method* OBJECT PROPERTY &amp;optional ARGS NAMED-ARGS</arguments>
+<package>editor</package>
+<description>
+OLEオブジェクトのメソッドを起動します。
+
+  OBJECT     : OLEオブジェクトを指定します。
+  PROPERTY   : メソッド名を指定します。
+  ARGS       : 引数をリストで指定します。
+  NAMED-ARGS : 名前付き引数を属性リストで指定します。
+
+使用例 :
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    (ole-putprop ie :Visible t)
+    (ole-method* ie :Navigate
+                 (list "http://www.google.co.jp/")
+                 (list :Headers "Referer: http://www.google.co.jp/")))
+
+リーダーマクロを利用して以下のように記述することもできます。
+
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    (setf #{ie.Visible} t)
+    #{ie.Navigate["http://www.google.co.jp/" {:Headers "Referer: http://www.google.co.jp/"}]})
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>ole-method</seealso>
+<seealso>ole-getprop</seealso>
+<seealso>ole-putprop</seealso>
+<seealso>OLEオートメーションの使用例</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>ole-create-event-sink</title>
+<type>Function</type>
+<arguments>ole-create-event-sink OBJECT &amp;optional INTERFACE TYPELIB-FILE</arguments>
+<package>editor</package>
+<description>
+OLEオブジェクトのイベントを受け取るイベント・シンクを作成します。
+イベント・シンク作成後にset-ole-event-handlerでイベントハンドラを設定します。
+
+  OBJECT       : イベント発生元のOLEオブジェクトを指定します。
+  INTERFACE    : イベント・シンクのインターフェイス名を指定します。
+  TYPELIB-FILE : タイプライブラリのファイル名を指定します。
+                 通常は省略可能です。
+
+使用例 :
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    (ole-create-event-sink ie "DWebBrowserEvents2")
+    (set-ole-event-handler ie "DownloadComplete"
+                           #'(lambda ()
+                               (msgbox "Download complete!")))
+    #{ie.Navigate["http://www.google.co.jp/"]})
+</description>
+<seealso>set-ole-event-handler</seealso>
+<seealso>OLEオートメーションの使用例</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>set-ole-event-handler</title>
+<type>Function</type>
+<arguments>set-ole-event-handler OBJECT EVENT-NAME HANDLER</arguments>
+<package>editor</package>
+<description>
+OLEオブジェクトのイベントハンドラを設定します。
+
+  OBJECT     : イベント発生元のOLEオブジェクトを指定します。
+  EVENT-NAME : イベント名を指定します。
+  HANDLER    : イベントハンドラを指定します。
+
+使用例 :
+  (let ((ie (ole-create-object "InternetExplorer.Application")))
+    (ole-create-event-sink ie "DWebBrowserEvents2")
+    (set-ole-event-handler ie "DownloadComplete"
+                           #'(lambda ()
+                               (msgbox "Download complete!")))
+    #{ie.Navigate["http://www.google.co.jp/"]})
+</description>
+<seealso>ole-create-event-sink</seealso>
+<seealso>OLEオートメーションの使用例</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
 </book>
