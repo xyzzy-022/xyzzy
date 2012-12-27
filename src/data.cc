@@ -592,6 +592,8 @@ gc_mark_object (lisp object)
           return;
 
         case Toledata:
+          if (xoledata_name (object))
+            gc_mark_object (xoledata_name (object));
           if (!xoledata_event (object))
             return;
           object = xoledata_event (object)->handlers ();
@@ -2627,7 +2629,9 @@ rdump_object (FILE *fp, loledata *d, int n, const u_long used[LDATA_MAX_OBJECTS_
   for (loledata *de = d + n; d < de; d++)
     if (bitisset (used, bit_index (d)))
       {
+        d->name = 0;
         d->disp = 0;
+        d->enumerator = 0;
         d->event = 0;
       }
 }

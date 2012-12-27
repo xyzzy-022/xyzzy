@@ -111,3 +111,10 @@
         (incf c))
       (< 0 c)))
   => t)
+
+(deftest print-oledata ()
+  (values
+   (string-matchp "IFileSystem" (format nil "~S" (ole-create-object "Scripting.FileSystemObject")))
+   (string-matchp "IXMLHttpRequest" (format nil "~S" (ole-create-object "MSXML2.XMLHTTP"))))
+  => non-nil
+  => non-nil)

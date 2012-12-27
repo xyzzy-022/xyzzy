@@ -628,6 +628,49 @@ get_typelib_fullpath (safe_com <ITypeLib> &tlib, BSTR &path)
                                     &path));
 }
 
+static lisp
+get_type_name (IDispatch *disp)
+{
+  safe_com <ITypeInfo> info;
+  ole_error (disp->GetTypeInfo (0, LOCALE_SYSTEM_DEFAULT, &info));
+
+  BSTR bstr = 0;
+  if (SUCCEEDED (info->GetDocumentation (MEMBERID_NIL, &bstr, 0, 0, 0))
+      && bstr)
+    {
+      lisp r = bstr2obj (bstr);
+      SysFreeString (bstr);
+      return r;
+    }
+
+  return Qnil;
+}
+
+static lisp
+get_oledata_name (lisp x)
+{
+  try
+    {
+      if (xoledata_disp (x))
+        return get_type_name (xoledata_disp (x));
+      else if (xoledata_enumerator (x))
+        return get_type_name ((IDispatch *)xoledata_enumerator (x));
+      else
+        return Qnil;
+    }
+  catch (nonlocal_jump &)
+    {
+      return Qnil;
+    }
+}
+
+void
+set_oledata_name (lisp x)
+{
+  if (!xoledata_name (x))
+    xoledata_name (x) = get_oledata_name (x);
+}
+
 static void
 get_interface_id (IDispatch *disp, const wchar_t *path, const wchar_t *name,
                   safe_com <ITypeInfo> &typeinfo, IID &iid)
