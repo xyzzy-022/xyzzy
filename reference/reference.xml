@@ -40216,7 +40216,7 @@ OLEオートメーション・サーバを作成します。
 
 使用例 :
   (ole-create-object "InternetExplorer.Application")
-  =&gt; #&lt;oledata 56823884&gt;
+  =&gt; #&lt;oledata: IWebBrowser2 56234972&gt;
 </description>
 <seealso>oledatap</seealso>
 <seealso>ole-get-object</seealso>
@@ -40237,7 +40237,7 @@ OLEオートメーション・サーバを作成します。
 
 使用例 :
   (ole-get-object "Excel.Application")
-  =&gt; #&lt;oledata 56823956&gt;
+  =&gt; #&lt;oledata: _Application 56234956&gt;
 </description>
 <seealso>oledatap</seealso>
 <seealso>ole-create-object</seealso>
