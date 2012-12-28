@@ -645,6 +645,7 @@
 (si::defun-builtin uuid-create (&key :sequential))
 (si::defun-builtin octet-length (string &key :encoding :start :end))
 (si::defun-builtin get-key-state (vkey))
+(si::defun-builtin search-path (file &optional path ext))
 
 (gc)
 

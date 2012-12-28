@@ -44,3 +44,37 @@ Fsi_get_key_state (lisp lvkey)
   multiple_value::value (1) = boole (flag & 0x01);
   return boole (flag < 0);
 }
+
+lisp
+Fsi_search_path (lisp lfile, lisp lpath, lisp lext)
+{
+  char *path = 0;
+  char *file = 0;
+  char *ext = 0;
+
+  check_string (lfile);
+  file = (char *)alloca (xstring_length (lfile) * 2 + 1);
+  w2s (file, lfile);
+
+  if (lpath && lpath != Qnil)
+    {
+      path = (char *)alloca (xstring_length (lpath) * 2 + 1);
+      w2s (path, lpath);
+    }
+  if (lext && lext != Qnil)
+    {
+      ext = (char *)alloca (xstring_length (lext) * 2 + 1);
+      w2s (ext, lext);
+    }
+
+  DWORD len = SearchPath (path, file, ext, 0, 0, 0);
+  if (!len)
+    return Qnil;
+
+  char *file_part = 0;
+  char *buffer = (char *)alloca (len);
+  if (!SearchPath (path, file, ext, len, buffer, &file_part))
+    return Qnil;
+
+  return buffer ? make_path (buffer, 0) : Qnil;
+}
