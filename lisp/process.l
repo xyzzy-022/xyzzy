@@ -9,7 +9,7 @@
 
 (export '(*shell* *eshell* *shell-command-option*
 	  execute-shell-command
-	  launch-application run-console pipe-command
+	  launch-application run-console run-admin-console pipe-command
 	  filter-buffer filter-region execute-subprocess kill-subprocess
 	  command-output-mode *command-output-mode-hook*
 	  command-output-send-input command-output-alternate-send-input
@@ -31,6 +31,11 @@
 (defun run-console ()
   (interactive)
   (launch-application (or *eshell* *shell*)))
+
+(defun run-admin-console ()
+  (interactive)
+  (shell-execute (si:search-path (or *eshell* *shell*)) nil nil
+		 :verb :runas))
 
 (defun shell-command-line (cmd dir)
   (when (and (not (featurep :windows-nt))
