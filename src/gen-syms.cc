@@ -1043,6 +1043,8 @@ static symbols sys[] =
 
   /* system.cc */
   SI_DEFUN3 (uuid-create, 0, 0, FFneed_rest),
+  SI_DEFUN3 (get-key-state, 1, 0, 0),
+  SI_DEFUN3 (search-path, 1, 2, 0),
 
   /* Window.cc */
   SI_DEFUN3 (*instance-number, 0, 0, 0),
@@ -1467,6 +1469,7 @@ static symbols kwd[] =
   DEFKWD2 (size-pixel-p),
   DEFKWD2 (code),
   DEFKWD2 (address),
+  DEFKWD2 (verb),
 };
 
 static symbols unint[] =
@@ -2382,7 +2385,7 @@ static symbols ed[] =
   DEFUN3 (set-process-sentinel, 2, 0, 0),
   DEFUN3 (process-sentinel, 1, 0, 0),
   DEFUN3 (process-marker, 1, 0, 0),
-  DEFUN3 (shell-execute, 1, 2, 0),
+  DEFUN3 (shell-execute, 1, 2, FFneed_rest),
   DEFVAR2 (*xyzzyenv-show-flag*),
   DEFVAR2 (*default-process-encoding*),
   DEFVAR2 (*use-shell-execute-ex*),
