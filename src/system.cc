@@ -33,3 +33,14 @@ Fsi_uuid_create (lisp keys)
 
   return uuidstr.make_string ();
 }
+
+lisp
+Fsi_get_key_state (lisp lvkey)
+{
+  int vkey = fixnum_value (lvkey);
+  int flag = GetKeyState (vkey);
+
+  multiple_value::count () = 2;
+  multiple_value::value (1) = boole (flag & 0x01);
+  return boole (flag < 0);
+}

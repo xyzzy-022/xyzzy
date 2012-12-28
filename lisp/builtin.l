@@ -644,6 +644,7 @@
 (si::defun-builtin *app-user-model-id ())
 (si::defun-builtin uuid-create (&key :sequential))
 (si::defun-builtin octet-length (string &key :encoding :start :end))
+(si::defun-builtin get-key-state (vkey))
 
 (gc)
 

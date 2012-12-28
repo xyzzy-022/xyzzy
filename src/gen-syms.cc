@@ -1043,6 +1043,7 @@ static symbols sys[] =
 
   /* system.cc */
   SI_DEFUN3 (uuid-create, 0, 0, FFneed_rest),
+  SI_DEFUN3 (get-key-state, 1, 0, 0),
 
   /* Window.cc */
   SI_DEFUN3 (*instance-number, 0, 0, 0),
