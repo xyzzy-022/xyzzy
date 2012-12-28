@@ -26250,7 +26250,7 @@ list の 7 番目の要素を返します。
 <chapter>
 <title>shell-execute</title>
 <type>Function</type>
-<arguments>shell-execute FILENAME &amp;optional DIRECTORY PARAMS</arguments>
+<arguments>shell-execute FILENAME &amp;optional DIRECTORY PARAMS &amp;key :verb</arguments>
 <package>editor</package>
 <description>
 何かを行います。URLであればそれを開き、実行ファイルであれば実行したり、
@@ -26260,6 +26260,21 @@ list の 7 番目の要素を返します。
   DIRECTORY : どこでそれを実行するかを指定します。
         t       (cwd)の返されるディレクトリで実行されるみたいです。
         nil     特に指定がないのでFILENAMEのディレクトリで実行されます。
+  :verb     : 実行するべき操作を指定します。
+              利用可能な操作の種類は、ファイルまたはファイルによって異なります。
+              通常は次の操作が有効です。
+                :open       : FILENAME で指定したファイルを開きます。
+                              文書ファイルまたは実行可能ファイルを指定できます。
+                              1 つのフォルダを指定することもできます。
+                :edit       : エディタを開きます。
+                              文書以外のファイルを指定すると失敗します。
+                :explore    : FILENAME で指定したフォルダを選択して、エクスプローラを起動します。
+                :print      : FILENAME で指定したファイルを印刷します。
+                              文書以外のファイルを指定すると失敗します。
+                :runas      : 管理者権限で FILENAME で指定したファイルを開きます。
+                              文書ファイルまたは実行可能ファイルを指定できます。
+                              1 つのフォルダを指定することもできます。
+              nil を指定すると :open が規定で利用されます。
 
 質問：
 
@@ -39015,6 +39030,21 @@ OBJECT がリードテーブルなら t 、それ以外なら nil を返しま�
 </chapter>
 
 <chapter>
+<title>run-admin-console</title>
+<type>Function</type>
+<arguments>run-admin-console</arguments>
+<package>editor</package>
+<description>
+xyzzy の外部でコンソールを管理者権限で起動します。
+変数 *eshell* または *shell* の値が実行されるコマンドとして使われます。
+</description>
+<seealso>run-console</seealso>
+<link></link>
+<section>プロセス</section>
+<file>process.l</file>
+</chapter>
+
+<chapter>
 <title>run-console</title>
 <type>Function</type>
 <arguments>run-console</arguments>
@@ -39023,7 +39053,7 @@ OBJECT がリードテーブルなら t 、それ以外なら nil を返しま�
 xyzzy の外部でコンソールを起動します。
 変数 *eshell* または *shell* の値が実行されるコマンドとして使われます。
 </description>
-<seealso></seealso>
+<seealso>run-admin-console</seealso>
 <link></link>
 <section>プロセス</section>
 <file>process.l</file>
@@ -40457,6 +40487,323 @@ OLEオブジェクトのイベントハンドラを設定します。
 </description>
 <seealso>ole-create-event-sink</seealso>
 <seealso>OLEオートメーションの使用例</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:get-key-state</title>
+<type>Function</type>
+<arguments>get-key-state VKEY</arguments>
+<package>system</package>
+<description>
+指定された仮想キーの状態を多値で返します。
+
+ VKEY : 仮想キーコードを指定します。
+        si:*vk- で始まる定数を指定します。
+
+戻り値
+   一つ目はキーが押されているか、押されていないか
+   二つ目はトグルになっているかどうか
+
+使用例 :
+  (multiple-value-bind (press toggle)
+      (si:get-key-state si:*vk-shift*)
+    (when press
+      (msgbox "Shift pressed"))
+    (when toggle
+      (msgbox "Shift toggled")))
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+
+仮想キー定数一覧：
+  si:*vk-lbutton*
+  si:*vk-rbutton*
+  si:*vk-cancel*
+  si:*vk-mbutton*
+  si:*vk-xbutton1*
+  si:*vk-xbutton2*
+  si:*vk-back*
+  si:*vk-tab*
+  si:*vk-clear*
+  si:*vk-return*
+  si:*vk-shift*
+  si:*vk-control*
+  si:*vk-menu*
+  si:*vk-pause*
+  si:*vk-capital*
+  si:*vk-kana*
+  si:*vk-hangul*
+  si:*vk-junja*
+  si:*vk-final*
+  si:*vk-hanja*
+  si:*vk-kanji*
+  si:*vk-escape*
+  si:*vk-convert*
+  si:*vk-nonconvert*
+  si:*vk-accept*
+  si:*vk-modechange*
+  si:*vk-space*
+  si:*vk-prior*
+  si:*vk-next*
+  si:*vk-end*
+  si:*vk-home*
+  si:*vk-left*
+  si:*vk-up*
+  si:*vk-right*
+  si:*vk-down*
+  si:*vk-select*
+  si:*vk-print*
+  si:*vk-execute*
+  si:*vk-snapshot*
+  si:*vk-insert*
+  si:*vk-delete*
+  si:*vk-help*
+  si:*vk-0*
+  si:*vk-1*
+  si:*vk-2*
+  si:*vk-3*
+  si:*vk-4*
+  si:*vk-5*
+  si:*vk-6*
+  si:*vk-7*
+  si:*vk-8*
+  si:*vk-9*
+  si:*vk-a*
+  si:*vk-b*
+  si:*vk-c*
+  si:*vk-d*
+  si:*vk-e*
+  si:*vk-f*
+  si:*vk-g*
+  si:*vk-h*
+  si:*vk-i*
+  si:*vk-j*
+  si:*vk-k*
+  si:*vk-l*
+  si:*vk-m*
+  si:*vk-n*
+  si:*vk-o*
+  si:*vk-p*
+  si:*vk-q*
+  si:*vk-r*
+  si:*vk-s*
+  si:*vk-t*
+  si:*vk-u*
+  si:*vk-v*
+  si:*vk-w*
+  si:*vk-x*
+  si:*vk-y*
+  si:*vk-z*
+  si:*vk-lwin*
+  si:*vk-rwin*
+  si:*vk-apps*
+  si:*vk-sleep*
+  si:*vk-numpad0*
+  si:*vk-numpad1*
+  si:*vk-numpad2*
+  si:*vk-numpad3*
+  si:*vk-numpad4*
+  si:*vk-numpad5*
+  si:*vk-numpad6*
+  si:*vk-numpad7*
+  si:*vk-numpad8*
+  si:*vk-numpad9*
+  si:*vk-multiply*
+  si:*vk-add*
+  si:*vk-separator*
+  si:*vk-subtract*
+  si:*vk-decimal*
+  si:*vk-divide*
+  si:*vk-f1*
+  si:*vk-f2*
+  si:*vk-f3*
+  si:*vk-f4*
+  si:*vk-f5*
+  si:*vk-f6*
+  si:*vk-f7*
+  si:*vk-f8*
+  si:*vk-f9*
+  si:*vk-f10*
+  si:*vk-f11*
+  si:*vk-f12*
+  si:*vk-f13*
+  si:*vk-f14*
+  si:*vk-f15*
+  si:*vk-f16*
+  si:*vk-f17*
+  si:*vk-f18*
+  si:*vk-f19*
+  si:*vk-f20*
+  si:*vk-f21*
+  si:*vk-f22*
+  si:*vk-f23*
+  si:*vk-f24*
+  si:*vk-numlock*
+  si:*vk-scroll*
+  si:*vk-oem-nec-equal*
+  si:*vk-oem-fj-jisho*
+  si:*vk-oem-fj-masshou*
+  si:*vk-oem-fj-touroku*
+  si:*vk-oem-fj-loya*
+  si:*vk-oem-fj-roya*
+  si:*vk-lshift*
+  si:*vk-rshift*
+  si:*vk-lcontrol*
+  si:*vk-rcontrol*
+  si:*vk-lmenu*
+  si:*vk-rmenu*
+  si:*vk-browser-back*
+  si:*vk-browser-forward*
+  si:*vk-browser-refresh*
+  si:*vk-browser-stop*
+  si:*vk-browser-search*
+  si:*vk-browser-favorites*
+  si:*vk-browser-home*
+  si:*vk-volume-mute*
+  si:*vk-volume-down*
+  si:*vk-volume-up*
+  si:*vk-media-next-track*
+  si:*vk-media-prev-track*
+  si:*vk-media-stop*
+  si:*vk-media-play-pause*
+  si:*vk-launch-mail*
+  si:*vk-launch-media-select*
+  si:*vk-launch-app1*
+  si:*vk-launch-app2*
+  si:*vk-oem-1*
+  si:*vk-oem-plus*
+  si:*vk-oem-comma*
+  si:*vk-oem-minus*
+  si:*vk-oem-period*
+  si:*vk-oem-2*
+  si:*vk-oem-3*
+  si:*vk-oem-4*
+  si:*vk-oem-5*
+  si:*vk-oem-6*
+  si:*vk-oem-7*
+  si:*vk-oem-8*
+  si:*vk-oem-ax*
+  si:*vk-oem-102*
+  si:*vk-ico-help*
+  si:*vk-ico-00*
+  si:*vk-processkey*
+  si:*vk-ico-clear*
+  si:*vk-packet*
+  si:*vk-oem-reset*
+  si:*vk-oem-jump*
+  si:*vk-oem-pa1*
+  si:*vk-oem-pa2*
+  si:*vk-oem-pa3*
+  si:*vk-oem-wsctrl*
+  si:*vk-oem-cusel*
+  si:*vk-oem-attn*
+  si:*vk-oem-finish*
+  si:*vk-oem-copy*
+  si:*vk-oem-auto*
+  si:*vk-oem-enlw*
+  si:*vk-oem-backtab*
+  si:*vk-attn*
+  si:*vk-crsel*
+  si:*vk-exsel*
+  si:*vk-ereof*
+  si:*vk-play*
+  si:*vk-zoom*
+  si:*vk-noname*
+  si:*vk-pa1*
+  si:*vk-oem-clear*
+</description>
+<seealso></seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:search-path</title>
+<type>Function</type>
+<arguments>search-path FILE &amp;optional PATH EXT</arguments>
+<package>system</package>
+<description>
+指定されたファイルを検索します。
+
+  FILE : 検索対象のファイル名を指定します。
+  PATH : ファイル検索対象のパス名を指定します。
+         nil を指定すると次の順序でファイルを検索します。
+           1. xyzzy.exe と同じディレクトリ
+           2. カレントディレクトリ
+           3. 32 ビットの Windows システムディレクトリ (SYSTEM32)
+           4. 16 ビットの Windows システムディレクトリ (SYSTEM)
+           5. Windows ディレクトリ
+           6. 環境変数 PATH に記述されている各ディレクトリ
+  EXT  : 検索対象のファイルの拡張子を指定します。
+         拡張子の先頭には、ピリオドを指定してください。
+         FILE パラメータで拡張子が指定されていなかった場合にのみ追加されます。
+         拡張子が不要な場合、または、FILE で拡張子を指定した場合は、EXT には
+         nil を指定してください。
+
+使用例 :
+  (si:search-path "cmd.exe")
+  =&gt; "C:/Windows/system32/cmd.exe"
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso></seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:control-pressed</title>
+<type>Function</type>
+<arguments>control-pressed</arguments>
+<package>system</package>
+<description>
+左右どちらかの Control キーが押されている場合 t を返します。
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>si:get-key-state</seealso>
+<seealso>si:meta-pressed</seealso>
+<seealso>si:shift-pressed</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:meta-pressed</title>
+<type>Function</type>
+<arguments>meta-pressed</arguments>
+<package>system</package>
+<description>
+左右どちらかの Alt キーが押されている場合 t を返します。
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>si:get-key-state</seealso>
+<seealso>si:control-pressed</seealso>
+<seealso>si:shift-pressed</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>si:shift-pressed</title>
+<type>Function</type>
+<arguments>shift-pressed</arguments>
+<package>system</package>
+<description>
+左右どちらかの Shift キーが押されている場合 t を返します。
+
+補足：
+  xyzzy 0.2.2.246 から利用可能です。
+</description>
+<seealso>si:get-key-state</seealso>
+<seealso>si:control-pressed</seealso>
+<seealso>si:meta-pressed</seealso>
 <section>システム</section>
 <file>builtin.l</file>
 </chapter>

@@ -1076,6 +1076,7 @@ round
 row-major-aref
 rplaca
 rplacd
+run-admin-console
 run-console
 run-hook-with-args
 run-hook-with-args-until-success
@@ -1269,8 +1270,10 @@ si:base64-decode
 si:base64-encode
 si:canonicalize-type
 si:closure-variable
+si:control-pressed
 si:dump-image-path
 si:environ
+si:get-key-state
 si:getenv
 si:getpid
 si:hmac-md5
@@ -1283,15 +1286,18 @@ si:list-builtin-packages
 si:make-chunk
 si:make-string-chunk
 si:md5
+si:meta-pressed
 si:octet-length
 si:output-debug-string
 si:putenv
 si:quoted-printable-decode
+si:search-path
 si:sha-1
 si:sha-224
 si:sha-256
 si:sha-384
 si:sha-512
+si:shift-pressed
 si:system-root
 si:unpack-string
 si:uudecode
