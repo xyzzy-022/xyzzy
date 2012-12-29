@@ -295,16 +295,18 @@ static int
 check_dimensions (lisp dims)
 {
   long size = 1;
-  for (; consp (dims); dims = xcdr (dims))
+  for (lisp x = dims; consp (x); x = xcdr (x))
     {
-      long n = fixnum_value (xcar (dims));
+      long n = fixnum_value (xcar (x));
       if (n < 0)
-        FErange_error (xcar (dims));
+        FErange_error (xcar (x));
       int64_t li = int64_t (size) * int64_t (n);
       if (int64_t (LONG_MAX) < li)
         FEprogram_error (Earray_size_too_large, dims);
       size = long (li);
     }
+  if (int64_t (LONG_MAX) < int64_t (size) * sizeof (lisp))
+    FEprogram_error (Earray_size_too_large, dims);
   return size;
 }
 

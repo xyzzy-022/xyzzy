@@ -29,6 +29,15 @@ obj2bstr (lisp obj)
   return bstr;
 }
 
+static inline lisp
+stringy (lisp x)
+{
+  if (symbolp (x))
+    x = xsymbol_name (x);
+  check_string (x);
+  return x;
+}
+
 class safe_array_locker
 {
 public:
@@ -344,6 +353,47 @@ obj2variant (lisp object, VARIANT &variant)
 }
 
 static void
+objs2variant (IDispatch *disp, lisp lprop, lisp args, lisp named_args, DISPPARAMS &params)
+{
+  OLECHAR** arg_names = (OLECHAR **)alloca (sizeof (OLECHAR *) * (params.cNamedArgs + 1));
+  DISPID* rgdispids = (DISPID*)alloca (sizeof (DISPID) * (params.cNamedArgs + 1));
+  try
+    {
+      // set method name
+      arg_names[0] = I2W (stringy (lprop));
+
+      // set named args
+      lisp x = named_args;
+      for (int i = 0; consp (x); i++, x = Fcddr (x))
+        {
+          lisp lkey = stringy (xcar (x));
+          lisp lval = Fcadr (x);
+
+          arg_names[i + 1] = I2W (lkey);
+          obj2variant (lval, params.rgvarg[i]);
+        }
+
+      HRESULT hr = disp->GetIDsOfNames (IID_NULL, arg_names, params.cNamedArgs + 1,
+                                        LOCALE_USER_DEFAULT, rgdispids);
+      if (FAILED (hr))
+        FEprogram_error (Eget_named_args_info_failed, xcons (lprop, named_args));
+
+      for (int i = params.cNamedArgs - 1; i >= 0; i--)
+        params.rgdispidNamedArgs[i] = rgdispids[i + 1];
+
+      // set normal args
+      for (int i = params.cArgs - 1; consp (args); i--, args = xcdr (args))
+        obj2variant (xcar (args), params.rgvarg[i]);
+    }
+  catch (nonlocal_jump &)
+    {
+      for (int i = params.cArgs - 1; i >= 0; i--)
+        VariantClear (&params.rgvarg[i]);
+      throw;
+    }
+}
+
+static void
 objs2variant (lisp args, DISPPARAMS &params)
 {
   try
@@ -362,10 +412,7 @@ objs2variant (lisp args, DISPPARAMS &params)
 static DISPID
 get_dispid (IDispatch *disp, lisp lprop)
 {
-  if (symbolp (lprop))
-    lprop = xsymbol_name (lprop);
-  check_string (lprop);
-  wchar_t *wprop = I2W (lprop);
+  wchar_t *wprop = I2W (stringy (lprop));
   DISPID dispid;
   ole_error (disp->GetIDsOfNames (IID_NULL, &wprop, 1, LOCALE_USER_DEFAULT, &dispid));
   return dispid;
@@ -385,22 +432,59 @@ cleanup (HRESULT hr, EXCEPINFO &excep)
     }
 }
 
+static int
+count_named_args (lisp named_args)
+{
+  if (named_args == Qnil)
+    return 0;
+
+  if (!consp (named_args))
+    FEprogram_error (Einvalid_named_args_list, named_args);
+
+  int c = 0;
+  for (; consp (named_args); named_args = xcdr (named_args))
+    {
+      lisp key = xcar (named_args);
+      if (!(stringp (key) || symbolp (key)))
+        FEprogram_error (Einvalid_named_args_list, named_args);
+
+      named_args = xcdr (named_args);
+      if (!consp (named_args))
+        FEprogram_error (Einvalid_named_args_list, named_args);
+
+      c++;
+    }
+
+  return c;
+}
+
 static lisp
-ole_invoke (lisp lobj, lisp lprop, lisp args, int flags)
+ole_invoke (lisp lobj, lisp lprop, lisp args, lisp named_args, int flags)
 {
   check_oledata (lobj);
   if (!xoledata_disp (lobj))
     FEprogram_error (Einvalid_idispatch);
+  if (!args) args = Qnil;
+  if (!named_args) named_args = Qnil;
 
   DISPID dispid = get_dispid (xoledata_disp (lobj), lprop);
+  int c_named_args = count_named_args (named_args);
 
   DISPPARAMS params;
   bzero (&params, sizeof params);
-  params.cArgs = xlist_length (args);
+  params.cArgs = xlist_length (args) + c_named_args;
   params.rgvarg = (VARIANT *)alloca (sizeof (VARIANT) * params.cArgs);
   bzero (params.rgvarg, sizeof (VARIANT) * params.cArgs);
 
-  objs2variant (args, params);
+  if (c_named_args == 0)
+    objs2variant (args, params);
+  else
+    {
+      params.cNamedArgs = c_named_args;
+      params.rgdispidNamedArgs = (DISPID *)alloca (sizeof (DISPID) * params.cNamedArgs);
+      bzero (params.rgdispidNamedArgs, sizeof (DISPID) * params.cNamedArgs);
+      objs2variant (xoledata_disp (lobj), lprop, args, named_args, params);
+    }
 
   EXCEPINFO excep;
   bzero (&excep, sizeof excep);
@@ -429,6 +513,19 @@ ole_invoke (lisp lobj, lisp lprop, lisp args, int flags)
 
   return variant2obj (&result);
 }
+
+class safe_tlib_attr
+{
+protected:
+  ITypeLib *ti;
+  TLIBATTR *attr;
+public:
+  safe_tlib_attr (ITypeLib *ti_) : ti (ti_), attr (0) {}
+  ~safe_tlib_attr () {if (attr) ti->ReleaseTLibAttr (attr);}
+  TLIBATTR **operator & () {return &attr;}
+  operator TLIBATTR * () {return attr;}
+  TLIBATTR *operator -> () const {return attr;}
+};
 
 class safe_type_attr
 {
@@ -519,6 +616,62 @@ get_default_source (IDispatch *disp, safe_com <ITypeInfo> &typeinfo, IID &iid)
 }
 
 static void
+get_typelib_fullpath (safe_com <ITypeLib> &tlib, BSTR &path)
+{
+  safe_tlib_attr attr (tlib);
+
+  ole_error (tlib->GetLibAttr (&attr));
+  ole_error (QueryPathOfRegTypeLib (attr->guid,
+                                    attr->wMajorVerNum,
+                                    attr->wMinorVerNum,
+                                    LOCALE_SYSTEM_DEFAULT,
+                                    &path));
+}
+
+static lisp
+get_type_name (IDispatch *disp)
+{
+  safe_com <ITypeInfo> info;
+  ole_error (disp->GetTypeInfo (0, LOCALE_SYSTEM_DEFAULT, &info));
+
+  BSTR bstr = 0;
+  if (SUCCEEDED (info->GetDocumentation (MEMBERID_NIL, &bstr, 0, 0, 0))
+      && bstr)
+    {
+      lisp r = bstr2obj (bstr);
+      SysFreeString (bstr);
+      return r;
+    }
+
+  return Qnil;
+}
+
+static lisp
+get_oledata_name (lisp x)
+{
+  try
+    {
+      if (xoledata_disp (x))
+        return get_type_name (xoledata_disp (x));
+      else if (xoledata_enumerator (x))
+        return get_type_name ((IDispatch *)xoledata_enumerator (x));
+      else
+        return Qnil;
+    }
+  catch (nonlocal_jump &)
+    {
+      return Qnil;
+    }
+}
+
+void
+set_oledata_name (lisp x)
+{
+  if (!xoledata_name (x))
+    xoledata_name (x) = get_oledata_name (x);
+}
+
+static void
 get_interface_id (IDispatch *disp, const wchar_t *path, const wchar_t *name,
                   safe_com <ITypeInfo> &typeinfo, IID &iid)
 {
@@ -526,7 +679,16 @@ get_interface_id (IDispatch *disp, const wchar_t *path, const wchar_t *name,
   if (path)
     ole_error (LoadTypeLib (path, &tlib));
   else
-    get_typelib (disp, tlib);
+    {
+      BSTR bstr;
+      get_typelib (disp, tlib);
+      get_typelib_fullpath (tlib, bstr);
+      if (bstr)
+        {
+          ole_error (LoadTypeLib (bstr, &tlib));
+          SysFreeString (bstr);
+        }
+    }
 
   int n = tlib->GetTypeInfoCount ();
   for (int i = 0; i < n; i++)
@@ -689,13 +851,19 @@ event_sink::Invoke (DISPID dispid, REFIID iid, LCID lcid, unsigned short flags,
 lisp
 Fole_method (lisp lobj, lisp lprop, lisp args)
 {
-  return ole_invoke (lobj, lprop, args, DISPATCH_METHOD | DISPATCH_PROPERTYGET);
+  return ole_invoke (lobj, lprop, args, Qnil, DISPATCH_METHOD | DISPATCH_PROPERTYGET);
+}
+
+lisp
+Fole_method_star (lisp lobj, lisp lprop, lisp args, lisp named_args)
+{
+  return ole_invoke (lobj, lprop, args, named_args, DISPATCH_METHOD | DISPATCH_PROPERTYGET);
 }
 
 lisp
 Fole_getprop (lisp lobj, lisp lprop, lisp args)
 {
-  return ole_invoke (lobj, lprop, args, DISPATCH_PROPERTYGET);
+  return ole_invoke (lobj, lprop, args, Qnil, DISPATCH_PROPERTYGET);
 }
 
 lisp
@@ -839,6 +1007,50 @@ Fset_ole_event_handler (lisp lobj, lisp levent, lisp lfn)
   ole_error (xoledata_event (lobj)->typeinfo ()->GetIDsOfNames (&name, 1, &memid));
   xoledata_event (lobj)->add_handler (make_fixnum (memid), lfn);
   return Qt;
+}
+
+lisp
+Fole_enumerator_create (lisp lobj)
+{
+  check_oledata (lobj);
+  if (!xoledata_disp (lobj))
+    FEprogram_error (Einvalid_idispatch);
+
+  DISPPARAMS params;
+  bzero (&params, sizeof params);
+
+  VARIANT result;
+  VariantInit (&result);
+
+  EXCEPINFO excep;
+  bzero (&excep, sizeof excep);
+
+  UINT argerr = UINT (-1);
+
+  HRESULT hr = xoledata_disp (lobj)->Invoke (DISPID_NEWENUM, IID_NULL, LOCALE_USER_DEFAULT,
+                                             DISPATCH_METHOD | DISPATCH_PROPERTYGET,
+                                             &params, &result, &excep, &argerr);
+  if (FAILED (hr))
+    {
+      VariantClear (&result);
+      FEprogram_error (Ecreate_ienum_failed);
+    }
+
+  IEnumVARIANT *p = 0;
+  if (V_VT (&result) == VT_UNKNOWN)
+    hr = V_UNKNOWN (&result)->QueryInterface (IID_IEnumVARIANT, (void **)&p);
+  else if (V_VT (&result) == VT_DISPATCH)
+    hr = V_DISPATCH (&result)->QueryInterface (IID_IEnumVARIANT, (void **)&p);
+
+  VariantClear (&result);
+  if (FAILED (hr) || !p)
+    FEprogram_error (Ecreate_ienum_failed);
+
+  p->Reset ();
+  lisp obj = make_oledata ();
+  xoledata_enumerator (obj) = p;
+
+  return obj;
 }
 
 lisp

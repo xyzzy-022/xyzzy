@@ -466,6 +466,8 @@ init_symbol_value_once ()
   xsymbol_value (Vfiler_left_window_p) = Qt;
   xsymbol_value (Vfiler_secondary_directory) = Qnil;
   xsymbol_value (Vfiler_click_toggle_marks_always) = Qt;
+  xsymbol_value (Vfiler_show_hidden_files) = Qt;
+  xsymbol_value (Vfiler_show_system_files) = Qt;
 
   xsymbol_value (Vdll_module_list) = Qnil;
   xsymbol_value (Vlast_win32_error) = make_fixnum (0);

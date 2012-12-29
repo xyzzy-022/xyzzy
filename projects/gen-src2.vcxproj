@@ -102,7 +102,7 @@
   </ImportGroup>
   <Import Project="$(ProjectDir)gen.targets" />
   <PropertyGroup>
-    <GenMsgInputs>..\src\gen-msg.cc;..\src\cdecl.h;..\src\chtype.h</GenMsgInputs>
+    <GenMsgInputs>..\src\msgdef.h;..\src\gen-msg.cc;..\src\cdecl.h;..\src\chtype.h</GenMsgInputs>
     <GenMsgOutput>$(GenerateDir)msgcode.h;$(GenerateDir)msgdef.cc</GenMsgOutput>
   </PropertyGroup>
   <Target Name="GenMsg" Inputs="$(GenMsgInputs)" Outputs="$(GenMsgOutput)" DependsOnTargets="PrepareGenerate">

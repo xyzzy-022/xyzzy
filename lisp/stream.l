@@ -80,3 +80,12 @@
 
 (defsetf readtable-case (readtable) (readtable-case)
   `(si:*set-readtable-case ,readtable ,readtable-case))
+
+
+(in-package "system")
+
+(export '(output-debug-string
+	  ))
+
+(defun output-debug-string (fmt &rest args)
+  (apply #'format ed:*debug-output* fmt args))

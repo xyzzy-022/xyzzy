@@ -199,6 +199,12 @@ FilerView::load_contents (const char *mask)
                   else if (match_suffixes (fd.cFileName, ignores))
                     continue;
                 }
+              if (fd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN
+                  && xsymbol_value (Vfiler_show_hidden_files) == Qnil)
+                continue;
+              if (fd.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM
+                  && xsymbol_value (Vfiler_show_system_files) == Qnil)
+                continue;
               new (this) filer_data (fd);
             }
           while (WINFS::FindNextFile (h, &fd));

@@ -1444,7 +1444,7 @@ se_error (lisp lpath, int e)
 }
 
 lisp
-Fshell_execute (lisp lpath, lisp ldir, lisp lparam)
+Fshell_execute (lisp lpath, lisp ldir, lisp lparam, lisp keys)
 {
   char *path, *dir, *param;
   if (ldir == Qt)
@@ -1495,6 +1495,16 @@ Fshell_execute (lisp lpath, lisp ldir, lisp lparam)
                        ? (SHELLEXECUTEEX)GetProcAddress (GetModuleHandle ("shell32.dll"),
                                                          "ShellExecuteExA")
                        : 0);
+
+  char *verb = 0;
+  lisp lverb = find_keyword (Kverb, keys);
+  if (lverb != Qnil)
+    {
+      lverb = Fstring (lverb);
+      verb = (char *)alloca (xstring_length (lverb) * 2 + 1);
+      w2s (verb, lverb);
+    }
+
   if (ex)
     {
       SHELLEXECUTEINFO sei = {sizeof sei};
@@ -1503,11 +1513,12 @@ Fshell_execute (lisp lpath, lisp ldir, lisp lparam)
       sei.lpFile = path;
       sei.lpParameters = param;
       sei.lpDirectory = dir;
+      sei.lpVerb = verb;
       sei.nShow = SW_SHOW;
       e = (*ex)(&sei) ? 33 : DWORD (sei.hInstApp);
     }
   else
-    e = DWORD (ShellExecute (get_active_window (), "open",
+    e = DWORD (ShellExecute (get_active_window (), verb ? verb : "open",
                              path, param, dir, SW_SHOWNORMAL));
   if (dir)
     WINFS::SetCurrentDirectory (sysdep.curdir);

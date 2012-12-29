@@ -385,7 +385,13 @@
 	   (:item :tag-command (if (featurep :windows-nt)
 				   "NTプロンプト(&D)"
 				 "DOSプロンプト(&D)")
-	    'run-console)
+	    #'(lambda ()
+		(interactive)
+		(if (and (featurep :windows-vista)
+			 (si:control-pressed)
+			 (si:shift-pressed))
+		    (run-admin-console)
+		  (run-console))))
 	   (:sep :above-kbd-macro)
 	   (:item :tag-command "キーボードマクロ記録開始(&S)"
 	    'start-kbd-macro)

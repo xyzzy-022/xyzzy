@@ -35,6 +35,7 @@ public:
 class loledata: public lisp_object
 {
 public:
+  lisp name;
   IDispatch *disp;
   IEnumVARIANT *enumerator;
   event_sink *event;
@@ -52,6 +53,13 @@ inline void
 check_oledata (lisp x)
 {
   check_type (x, Toledata, Qoledata);
+}
+
+inline lisp &
+xoledata_name (lisp x)
+{
+  assert (oledata_p (x));
+  return ((loledata *)x)->name;
 }
 
 inline IDispatch *&
@@ -79,10 +87,12 @@ inline loledata *
 make_oledata ()
 {
   loledata *p = ldata <loledata, Toledata>::lalloc ();
+  p->name = 0;
   p->disp = 0;
   p->enumerator = 0;
   p->event = 0;
   return p;
 }
 
+void set_oledata_name (lisp x);
 #endif

@@ -1043,6 +1043,8 @@ static symbols sys[] =
 
   /* system.cc */
   SI_DEFUN3 (uuid-create, 0, 0, FFneed_rest),
+  SI_DEFUN3 (get-key-state, 1, 0, 0),
+  SI_DEFUN3 (search-path, 1, 2, 0),
 
   /* Window.cc */
   SI_DEFUN3 (*instance-number, 0, 0, 0),
@@ -1467,6 +1469,7 @@ static symbols kwd[] =
   DEFKWD2 (size-pixel-p),
   DEFKWD2 (code),
   DEFKWD2 (address),
+  DEFKWD2 (verb),
 };
 
 static symbols unint[] =
@@ -1911,6 +1914,8 @@ static symbols ed[] =
   DEFUN3 (general-output-stream-p, 1, 0, 0),
   MAKE_SYMBOL2Q (buffer-stream),
   MAKE_SYMBOL2Q (socket-stream),
+  DEFUN3 (debug-output-stream-p, 1, 0, 0),
+  DEFVAR2 (*debug-output*),
 
   /* move.cc */
   DEFCMD3 (forward-char, 0, 1, 0, "p"),
@@ -2380,7 +2385,7 @@ static symbols ed[] =
   DEFUN3 (set-process-sentinel, 2, 0, 0),
   DEFUN3 (process-sentinel, 1, 0, 0),
   DEFUN3 (process-marker, 1, 0, 0),
-  DEFUN3 (shell-execute, 1, 2, 0),
+  DEFUN3 (shell-execute, 1, 2, FFneed_rest),
   DEFVAR2 (*xyzzyenv-show-flag*),
   DEFVAR2 (*default-process-encoding*),
   DEFVAR2 (*use-shell-execute-ex*),
@@ -2564,6 +2569,8 @@ static symbols ed[] =
   DEFVAR2 (*filer-mark-file-size-unit*),
   DEFUN3 (get-filer-font, 0, 0, 0),
   DEFUN3 (set-filer-font, 0, 0, FFneed_rest),
+  DEFVAR2 (*filer-show-hidden-files*),
+  DEFVAR2 (*filer-show-system-files*),
 
   /* edict.cc */
   DEFUN3 (lookup-dictionary, 4, 0, 0),
@@ -2605,9 +2612,11 @@ static symbols ed[] =
   DEFUN3 (ole-get-object, 1, 0, 0),
   DEFUN3 (ole-putprop, 3, 0, FFneed_rest),
   DEFUN3 (ole-method, 2, 0, FFneed_rest),
+  DEFUN2 (ole-method*, ole_method_star, 2, 2, 0),
   DEFUN3 (ole-getprop, 2, 0, FFneed_rest),
   DEFUN3 (ole-create-event-sink, 1, 2, 0),
   DEFUN3 (set-ole-event-handler, 3, 0, 0),
+  DEFUN3 (ole-enumerator-create, 1, 0, 0),
   DEFUN3 (ole-enumerator-next, 1, 0, 0),
   DEFUN3 (ole-enumerator-reset, 1, 0, 0),
   DEFUN3 (ole-enumerator-skip, 1, 1, 0),

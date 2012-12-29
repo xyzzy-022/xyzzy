@@ -99,8 +99,9 @@
   (unless *executing-macro*
     (let ((last-string *completion-last-string*))
       (setq *completion-last-string* string)
-      (when *print-completion-sort-function*
-	(setq list (sort list *print-completion-sort-function*)))
+      (if *print-completion-sort-function*
+	  (setq list (sort list *print-completion-sort-function*))
+	(setq list (nreverse list)))
       (cond (*print-completion-list-hook*
 	     (funcall *print-completion-list-hook* list prefix))
 	    ((and (cond ((eq popup-p ':always) t)
