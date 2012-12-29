@@ -40260,6 +40260,7 @@ OLEオブジェクトのコレクションを列挙します。
   BODY          : 繰り返しの本体
 
 使用例 :
+  (require "ole")
   (let ((ie (ole-create-object "InternetExplorer.Application")))
     (setf #{ie.Visible} t)
     #{ie.Navigate["http://www.google.co.jp/"]}
@@ -40294,6 +40295,7 @@ OLEオブジェクトのプロパティを取得します。
 
 リーダーマクロを利用して以下のように記述することもできます。
 
+  (require "ole")
   (let ((ie (ole-create-object "InternetExplorer.Application")))
     #{ie.Path})
   =&gt; "C:\\Program Files\\Internet Explorer\\"
@@ -40326,6 +40328,7 @@ OLEオブジェクトのプロパティを設定します。
 
 リーダーマクロを利用して以下のように記述することもできます。
 
+  (require "ole")
   (let ((ie (ole-create-object "InternetExplorer.Application")))
     (setf #{ie.Visible} t))
   =&gt; t
@@ -40358,6 +40361,7 @@ OLEオブジェクトのメソッドを起動します。
 
 リーダーマクロを利用して以下のように記述することもできます。
 
+  (require "ole")
   (let ((ie (ole-create-object "InternetExplorer.Application")))
     (setf #{ie.Visible} t)
     #{ie.Navigate["http://www.google.co.jp/"]})
@@ -40392,6 +40396,7 @@ OLEオブジェクトのメソッドを起動します。
 
 リーダーマクロを利用して以下のように記述することもできます。
 
+  (require "ole")
   (let ((ie (ole-create-object "InternetExplorer.Application")))
     (setf #{ie.Visible} t)
     #{ie.Navigate["http://www.google.co.jp/" {:Headers "Referer: http://www.google.co.jp/"}]})
@@ -40422,6 +40427,7 @@ OLEオブジェクトのイベントを受け取るイベント・シンクを�
                  通常は省略可能です。
 
 使用例 :
+  (require "ole")
   (let ((ie (ole-create-object "InternetExplorer.Application")))
     (ole-create-event-sink ie "DWebBrowserEvents2")
     (set-ole-event-handler ie "DownloadComplete"
@@ -40448,6 +40454,7 @@ OLEオブジェクトのイベントハンドラを設定します。
   HANDLER    : イベントハンドラを指定します。
 
 使用例 :
+  (require "ole")
   (let ((ie (ole-create-object "InternetExplorer.Application")))
     (ole-create-event-sink ie "DWebBrowserEvents2")
     (set-ole-event-handler ie "DownloadComplete"
