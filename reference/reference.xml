@@ -40760,7 +40760,11 @@ OLEオブジェクトのイベントハンドラを設定します。
 <arguments>control-pressed</arguments>
 <package>system</package>
 <description>
-左右どちらかの Control キーが押されている場合 t を返します。
+Control キーの状態を多値で返します。
+
+戻り値
+   一つ目は左右どちらかの Control キーが押されているか、押されていないか
+   二つ目はトグルになっているかどうか
 
 補足：
   xyzzy 0.2.2.246 から利用可能です。
@@ -40778,7 +40782,11 @@ OLEオブジェクトのイベントハンドラを設定します。
 <arguments>meta-pressed</arguments>
 <package>system</package>
 <description>
-左右どちらかの Alt キーが押されている場合 t を返します。
+Alt キーの状態を多値で返します。
+
+戻り値
+   一つ目は左右どちらかの Alt キーが押されているか、押されていないか
+   二つ目はトグルになっているかどうか
 
 補足：
   xyzzy 0.2.2.246 から利用可能です。
@@ -40796,7 +40804,11 @@ OLEオブジェクトのイベントハンドラを設定します。
 <arguments>shift-pressed</arguments>
 <package>system</package>
 <description>
-左右どちらかの Shift キーが押されている場合 t を返します。
+Shift キーの状態を多値で返します。
+
+戻り値
+   一つ目は左右どちらかの Shift キーが押されているか、押されていないか
+   二つ目はトグルになっているかどうか
 
 補足：
   xyzzy 0.2.2.246 から利用可能です。
