@@ -78,3 +78,15 @@ Fsi_search_path (lisp lfile, lisp lpath, lisp lext)
 
   return buffer ? make_path (buffer, 0) : Qnil;
 }
+
+void
+enable_wm_copydata ()
+{
+#define MSGFLT_ADD 1
+  typedef BOOL (WINAPI *CHANGEWINDOWMESSAGEFILTER)(UINT message, DWORD dwFlag);
+  CHANGEWINDOWMESSAGEFILTER proc = (CHANGEWINDOWMESSAGEFILTER) GetProcAddress (
+    GetModuleHandle ("user32"), "ChangeWindowMessageFilter");
+  if (!proc)
+    return;
+  proc (WM_COPYDATA, MSGFLT_ADD);
+}
