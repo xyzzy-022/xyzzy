@@ -78,3 +78,12 @@ Fsi_search_path (lisp lfile, lisp lpath, lisp lext)
 
   return buffer ? make_path (buffer, 0) : Qnil;
 }
+
+lisp
+Fadmin_user_p ()
+{
+  if (IsUserAnAdmin ())
+    return Qt;
+  else
+    return Qnil;
+}
