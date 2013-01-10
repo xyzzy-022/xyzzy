@@ -188,6 +188,17 @@ buffer_info::process_id (char *b, char *be) const
 }
 
 char *
+buffer_info::admin_user (char *b, char *be) const
+{
+  if (Fadmin_user_p () == Qt)
+    {
+      int f = 0;
+      b = stpncpy (b, "ŠÇ—Ò: ", be - b);
+    }
+  return b;
+}
+
+char *
 buffer_info::percent (char *b, char *be) const
 {
   if (b_percentp)
@@ -307,6 +318,10 @@ buffer_info::format (lisp fmt, char *b, char *be) const
 
             case '$':
               b = process_id (b, be);
+              break;
+
+            case '!':
+              b = admin_user (b, be);
               break;
             }
         }

@@ -35,6 +35,7 @@ public:
   char *position (char *, char *) const;
   char *host_name (char *, char *, int) const;
   char *process_id (char *, char *) const;
+  char *admin_user (char *, char *) const;
   char *percent(char *, char *) const;
 };
 
