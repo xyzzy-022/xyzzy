@@ -154,8 +154,9 @@ eval_xyzzysrv_param (xyzzysrv_param *param)
   return r;
 }
 
+// for backward compatibility.
 int
-read_listen_server (WPARAM wparam, LPARAM lparam)
+read_listen_server_wm_private_xyzzysrv (WPARAM wparam, LPARAM lparam)
 {
   HANDLE hproc = OpenProcess (PROCESS_DUP_HANDLE, 0, wparam);
   if (!hproc)
@@ -178,4 +179,18 @@ read_listen_server (WPARAM wparam, LPARAM lparam)
     }
   CloseHandle (hmap);
   return r;
+}
+
+int
+read_listen_server_wm_copydata (WPARAM wparam, LPARAM lparam)
+{
+  COPYDATASTRUCT *data = reinterpret_cast <COPYDATASTRUCT *> (lparam);
+  if (!data || data->cbData <= 0 || !data->lpData)
+    return -1;
+
+  xyzzysrv_param *param = reinterpret_cast <xyzzysrv_param *> (data->lpData);
+  if (data->cbData != param->size)
+    return -1;
+
+  return eval_xyzzysrv_param (param);
 }
