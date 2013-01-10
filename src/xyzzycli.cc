@@ -295,7 +295,7 @@ xmain (int argc, char **argv, const char *xyzzy, int multi_instance)
   data.dwData = 1;
   data.cbData = sv.param ()->size;
   data.lpData = sv.param ();
-  int r = SendMessage (ls.hwnd, WM_COPYDATA, 0, LPARAM (&data));
+  int r = SendMessage (ls.hwnd, WM_COPYDATA, 0, (LPARAM)&data);
   if (!r)
     return error (IDS_READ_FAILED);
   if (r > 0)
