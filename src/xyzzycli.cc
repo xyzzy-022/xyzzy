@@ -73,19 +73,25 @@ store (char *d, const char *s)
 
 class xyzzysrv
 {
-  xyzzysrv_param *m_param;
+  HANDLE m_hmap;
+  void *m_base;
 public:
-  xyzzysrv () : m_param (0) {}
+  xyzzysrv () : m_hmap (0), m_base (0) {}
   ~xyzzysrv ()
     {
-      if (m_param)
-        free (m_param);
+      if (m_base)
+        UnmapViewOfFile (m_base);
+      if (m_hmap)
+        CloseHandle (m_hmap);
     }
   int alloc (int size)
     {
       size += sizeof (xyzzysrv_param);
-      m_param = reinterpret_cast <xyzzysrv_param *> (malloc (size));
-      if (!m_param)
+      m_hmap = CreateFileMapping (HANDLE (-1), 0, PAGE_READWRITE, 0, size, 0);
+      if (!m_hmap)
+        return 0;
+      m_base = MapViewOfFile (m_hmap, FILE_MAP_WRITE, 0, 0, 0);
+      if (!m_base)
         return 0;
       param ()->size = size;
       param ()->pid = 0;
@@ -94,8 +100,9 @@ public:
       param ()->kill_ok = 0;
       return 1;
     }
-  xyzzysrv_param *param () const {return m_param;}
+  xyzzysrv_param *param () const {return (xyzzysrv_param *)m_base;}
   char *data () const {return param ()->data;}
+  HANDLE handle () const {return m_hmap;}
 };
 
 static int
@@ -291,11 +298,8 @@ xmain (int argc, char **argv, const char *xyzzy, int multi_instance)
 
   ForceSetForegroundWindow (ls.hwnd);
 
-  COPYDATASTRUCT data;
-  data.dwData = 1;
-  data.cbData = sv.param ()->size;
-  data.lpData = sv.param ();
-  int r = SendMessage (ls.hwnd, WM_COPYDATA, 0, (LPARAM)&data);
+  int r = SendMessage (ls.hwnd, RegisterWindowMessage (xyzzysrv_name),
+                       GetCurrentProcessId (), LPARAM (sv.handle ()));
   if (!r)
     return error (IDS_READ_FAILED);
   if (r > 0)
