@@ -163,8 +163,7 @@ void reload_caret_colors ();
 void start_listen_server ();
 void init_listen_server ();
 void end_listen_server ();
-int read_listen_server_wm_private_xyzzysrv (WPARAM, LPARAM);
-int read_listen_server_wm_copydata (WPARAM, LPARAM);
+int read_listen_server (WPARAM, LPARAM);
 extern UINT wm_private_xyzzysrv;
 
 /* ces.cc */
@@ -185,8 +184,5 @@ lisp get_tooltip_text (lisp);
 /* stdctl.cc */
 void stdctl_hook_init (HINSTANCE);
 int stdctl_operation (int);
-
-/* system.cc */
-void enable_wm_copydata ();
 
 #endif
