@@ -2711,6 +2711,9 @@ static symbols ed[] =
   DEFVAR2 (*restore-window-size*),
   DEFVAR2 (*restore-window-position*),
   DEFVAR2 (*buffer-list-sort-ignore-case*),
+
+  /* system.cc */
+  DEFUN3 (admin-user-p, 0, 0, 0),
 };
 
 static void

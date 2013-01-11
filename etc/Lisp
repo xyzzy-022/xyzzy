@@ -27,6 +27,7 @@ add-menu-separator
 add-popup-menu
 adjoin
 adjustable-array-p
+admin-user-p
 alpha-char-p
 alphanumericp
 and
