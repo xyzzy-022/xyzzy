@@ -168,6 +168,12 @@ buffer_info::position (char *b, char *be) const
 }
 
 char *
+buffer_info::version (char *b, char *be, int pound) const
+{
+  return stpncpy (b, pound ? DisplayVersionString : VersionString, be - b);
+}
+
+char *
 buffer_info::host_name (char *b, char *be, int pound) const
 {
   if (*sysdep.host_name)
@@ -272,7 +278,7 @@ buffer_info::format (lisp fmt, char *b, char *be) const
               break;
 
             case 'v':
-              b = version (b, be);
+              b = version (b, be, pound);
               break;
 
             case 'h':
