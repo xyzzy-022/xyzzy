@@ -7,7 +7,7 @@
 
 (in-package "editor")
 
-(export '(*shell* *eshell* *shell-command-option*
+(export '(*shell* *eshell* *shell-command-option* *shell-chdir-option-alist*
 	  execute-shell-command
 	  launch-application run-console run-admin-console pipe-command
 	  filter-buffer filter-region execute-subprocess kill-subprocess
@@ -20,6 +20,10 @@
   (defvar *eshell* shell))
 
 (defvar *shell-command-option* "/c")
+(defvar *shell-chdir-option-alist*
+  '(("cmd.exe" . "/k cd /d \"~A\"")
+    ("powershell.exe" . "-NoExit -Command \"cd '~A'\"")
+    ))
 
 (defvar *launch-app-directory* nil)
 
@@ -34,8 +38,15 @@
 
 (defun run-admin-console ()
   (interactive)
-  (shell-execute (si:search-path (or *eshell* *shell*)) nil nil
-		 :verb :runas))
+  (let ((path (si:search-path (or *eshell* *shell*) nil ".exe")))
+    (unless path
+      (error "shell‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: ~A" (or *eshell* *shell*)))
+    (let* ((exec-dir (map-slash-to-backslash (default-directory)))
+	   (params (let ((fmt (cdr (assoc (file-namestring path) *shell-chdir-option-alist*
+					  :test #'string-equal))))
+		     (when fmt
+		       (format nil fmt exec-dir)))))
+      (shell-execute path exec-dir params :verb :runas))))
 
 (defun shell-command-line (cmd dir)
   (when (and (not (featurep :windows-nt))
