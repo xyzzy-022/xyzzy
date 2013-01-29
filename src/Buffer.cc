@@ -1311,14 +1311,17 @@ Buffer::refresh_title_bar () const
       else
         x = lbuffer_name;
 
-      int l = (xstring_length (x) * 2 + strlen (TitleBarString) + 32);
-      char *b = (char *)alloca (l);
+      int l = (xstring_length (x) * 2 + strlen (TitleBarString) + 32 + 8);
+      char *b0 = (char *)alloca (l);
+      char *b = b0;
+      if (Fadmin_user_p () == Qt)
+        b = stpcpy (b, "管理者: ");
       if (xsymbol_value (Vtitle_bar_text_order) != Qnil)
         strcpy (stpcpy (store_title (x, b, b + l), " - "), TitleBarString);
       else
         store_title (x, stpcpy (stpcpy (b, TitleBarString), " - "), b + l);
 
-      SetWindowText (app.toplev, b);
+      SetWindowText (app.toplev, b0);
     }
   b_last_title_bar_buffer = 0; // 次回タイトルバーを強制的に再描画させる
 }

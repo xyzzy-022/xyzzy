@@ -168,6 +168,12 @@ buffer_info::position (char *b, char *be) const
 }
 
 char *
+buffer_info::version (char *b, char *be, int pound) const
+{
+  return stpncpy (b, pound ? DisplayVersionString : VersionString, be - b);
+}
+
+char *
 buffer_info::host_name (char *b, char *be, int pound) const
 {
   if (*sysdep.host_name)
@@ -185,6 +191,17 @@ buffer_info::process_id (char *b, char *be) const
   char tem[64];
   sprintf_s (tem, sizeof tem, "%d", sysdep.process_id);
   return stpncpy (b, tem, be - b);
+}
+
+char *
+buffer_info::admin_user (char *b, char *be) const
+{
+  if (Fadmin_user_p () == Qt)
+    {
+      int f = 0;
+      b = stpncpy (b, "ä«óùé“: ", be - b);
+    }
+  return b;
 }
 
 char *
@@ -261,7 +278,7 @@ buffer_info::format (lisp fmt, char *b, char *be) const
               break;
 
             case 'v':
-              b = version (b, be);
+              b = version (b, be, pound);
               break;
 
             case 'h':
@@ -307,6 +324,10 @@ buffer_info::format (lisp fmt, char *b, char *be) const
 
             case '$':
               b = process_id (b, be);
+              break;
+
+            case '!':
+              b = admin_user (b, be);
               break;
             }
         }

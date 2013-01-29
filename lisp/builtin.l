@@ -669,6 +669,7 @@
 (si::defun-builtin write-registry-literally (section key value))
 (si::defun-builtin read-registry (section key &optional root))
 (si::defun-builtin list-registry-key (section &optional root))
+(si::defun-builtin admin-user-p ())
 (si::defun-builtin user-config-path ())
 (si::defun-builtin xyzzy-ini-path ())
 (si::defun-builtin user-name ())

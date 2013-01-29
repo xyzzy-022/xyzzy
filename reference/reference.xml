@@ -18916,12 +18916,14 @@ NUMBER がゼロより小さければ t 、そうでなければ nil を返し�
   %i    IMEの状態
   %P    カーソル位置
   %/    カーソル位置がバッファ全体の何%の位置にあるか
+  %!    xyzzyが管理者として実行実行されている場合は "管理者: "
 
 備考：
   タイトルバーのフォーマットとほぼ同様ですが、
   %i, %P, %/ はモードラインのフォーマットでしか設定できません。
 
   %/, %$ は xyzzy 0.2.2.236 から利用可能です。
+  %! は xyzzy 0.2.2.247 から利用可能です。
 </description>
 <seealso>update-mode-line</seealso>
 <seealso>title-bar-format</seealso>
@@ -30103,6 +30105,7 @@ catchで指定されたラベルまで、非局所脱出します。
   %m    モード 
   %k    エンコーディング 
   %l    改行コード 
+  %!    xyzzyが管理者として実行実行されている場合は "管理者: "
 
 備考：
   モードラインのフォーマットとほぼ同様ですが、
@@ -30110,6 +30113,7 @@ catchで指定されたラベルまで、非局所脱出します。
 
 備考：
   %$ は xyzzy 0.2.2.236 から利用可能です。
+  %! は xyzzy 0.2.2.247 から利用可能です。
 </description>
 <seealso>mode-line-format</seealso>
 <link></link>
@@ -40823,6 +40827,21 @@ Shift キーの状態を多値で返します。
 <seealso>si:get-key-state</seealso>
 <seealso>si:control-pressed</seealso>
 <seealso>si:meta-pressed</seealso>
+<section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>admin-user-p</title>
+<type>Function</type>
+<arguments>admin-user-p</arguments>
+<package>editor</package>
+<description>
+xyzzyが管理者として実行されているtを返します。
+
+補足：
+  xyzzy 0.2.2.247 から利用可能です。
+</description>
 <section>システム</section>
 <file>builtin.l</file>
 </chapter>

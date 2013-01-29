@@ -113,6 +113,47 @@ Fstop_xyzzy_server ()
   return Qnil;
 }
 
+static int
+eval_xyzzysrv_param (xyzzysrv_param *param)
+{
+  int r = 0;
+  param->pid = 0;
+  param->hevent = 0;
+  param->hwnd = 0;
+  if (!IsBadReadPtr (param, param->size))
+    {
+      r = -1;
+      lisp stream = Qnil;
+      protect_gc gcpro (stream);
+      dynamic_bind dynb (Vsi_accept_kill_xyzzy, boole (param->kill_ok));
+      try
+        {
+          save_cursor_depth cursor_depth;
+          stream = Fmake_string_input_stream (make_string (param->data), 0, 0);
+          lisp obj = Feval (Fread (stream, Qnil, Qnil, Qnil));
+          if (wait_object_p (obj)
+              && xwait_object_hevent (obj)
+              && xwait_object_ref (obj))
+            {
+              param->pid = GetCurrentProcessId ();
+              param->hevent = xwait_object_hevent (obj);
+              param->hwnd = app.toplev;
+            }
+          r = 1;
+        }
+      catch (nonlocal_jump &)
+        {
+          print_condition (nonlocal_jump::data ());
+        }
+      if (stream != Qnil)
+        {
+          Fclose (stream, Qnil);
+          refresh_screen (1);
+        }
+    }
+  return r;
+}
+
 int
 read_listen_server (WPARAM wparam, LPARAM lparam)
 {
@@ -132,40 +173,7 @@ read_listen_server (WPARAM wparam, LPARAM lparam)
   if (v && !IsBadReadPtr (v, sizeof (xyzzysrv_param)))
     {
       xyzzysrv_param *param = (xyzzysrv_param *)v;
-      param->pid = 0;
-      param->hevent = 0;
-      param->hwnd = 0;
-      if (!IsBadReadPtr (param, param->size))
-        {
-          r = -1;
-          lisp stream = Qnil;
-          protect_gc gcpro (stream);
-          dynamic_bind dynb (Vsi_accept_kill_xyzzy, boole (param->kill_ok));
-          try
-            {
-              save_cursor_depth cursor_depth;
-              stream = Fmake_string_input_stream (make_string (param->data), 0, 0);
-              lisp obj = Feval (Fread (stream, Qnil, Qnil, Qnil));
-              if (wait_object_p (obj)
-                  && xwait_object_hevent (obj)
-                  && xwait_object_ref (obj))
-                {
-                  param->pid = GetCurrentProcessId ();
-                  param->hevent = xwait_object_hevent (obj);
-                  param->hwnd = app.toplev;
-                }
-              r = 1;
-            }
-          catch (nonlocal_jump &)
-            {
-              print_condition (nonlocal_jump::data ());
-            }
-          if (stream != Qnil)
-            {
-              Fclose (stream, Qnil);
-              refresh_screen (1);
-            }
-        }
+      r = eval_xyzzysrv_param (param);
       UnmapViewOfFile (v);
     }
   CloseHandle (hmap);
