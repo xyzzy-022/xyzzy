@@ -1314,7 +1314,7 @@ Buffer::refresh_title_bar () const
       int l = (xstring_length (x) * 2 + strlen (TitleBarString) + 32 + 8);
       char *b0 = (char *)alloca (l);
       char *b = b0;
-      if (Fadmin_user_p () == Qt)
+      if (Fadmin_user_p () == Qt && sysdep.Win6p ())
         b = stpcpy (b, "ä«óùé“: ");
       if (xsymbol_value (Vtitle_bar_text_order) != Qnil)
         strcpy (stpcpy (store_title (x, b, b + l), " - "), TitleBarString);
