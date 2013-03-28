@@ -7607,11 +7607,26 @@ C 言語などの if ... else if ... のようなものです。
 <chapter>
 <title>connect</title>
 <type>Function</type>
-<arguments>connect HOSTNAME SERVICE &amp;key :encoding</arguments>
+<arguments>connect HOSTNAME SERVICE &amp;key :encoding :ssl (:ssl-verify-mode :peer)</arguments>
 <package>editor</package>
 <description>
 ホストのポートとのTCP接続を開きます。
 成功すれば接続へのストリームを返します。
+
+  HOSTNAME         : 接続先のホスト名またはIPアドレスを指定します。
+  SERVICE          : サービス名またはポート番号を指定します。
+  :encoding        : エンコーディングのモードを指定します。
+        :binary        バイナリモードです。
+        :text          テキストモードです。（省略時は:text）
+        :canonical     :text と同じ意味になります。
+        :raw           改行コードの扱いが、LF のみになります。
+                       それ以外は :text と同じです。
+  :ssl             : SSL通信を行う場合はtを指定します。
+  :ssl-verify-mode : SSL証明書の検証モードを指定します。
+        :none          サーバ証明書を検証しません。
+        :peer          サーバ証明書を検証します。
+                       検証が失敗した場合socket-errorが通知されます。
+                       デフォルトは:peerです。
 
 参考：
   ;;; http://www.yahoo.co.jp/を取得してみる。
@@ -7619,8 +7634,20 @@ C 言語などの if ... else if ... のようなものです。
     (format stream "GET / HTTP/1.0\n\n")
     (while (setq in (read-line stream nil))
       (insert in "\n")))
+
+  ;;; https://www.google.co.jp/を取得してみる。
+  (with-open-stream (stream (connect "www.google.co.jp" "https" :ssl t))
+    (format stream "GET / HTTP/1.1\n")
+    (format stream "Host: www.google.co.jp\n\n")
+    (while (setq in (read-line stream nil))
+      (insert in "\n")))
+
+備考：
+  SSL接続は xyzzy 0.2.2.248 から利用可能です。
 </description>
 <seealso>open-network-stream</seealso>
+<seealso>socket-stream-ssl-p</seealso>
+<seealso>ssl-do-handshake</seealso>
 <seealso>xyzzyで提供されているストリームの種類</seealso>
 <section>入出力</section>
 <file>builtin.l</file>
@@ -40843,6 +40870,68 @@ xyzzyが管理者として実行されているならtを返します。
   xyzzy 0.2.2.247 から利用可能です。
 </description>
 <section>システム</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>socket-stream-ssl-p</title>
+<type>Function</type>
+<arguments>socket-stream-ssl-p STREAM</arguments>
+<package>editor</package>
+<description>
+STREAMがSSLストリームならtを返します。
+
+補足：
+  xyzzy 0.2.2.248 から利用可能です。
+</description>
+<section>入出力</section>
+<file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>ssl-do-handshake</title>
+<type>Function</type>
+<arguments>ssl-do-handshake STREAM SERVER-NAME &amp;key (:ssl-verify-mode :peer)</arguments>
+<package>editor</package>
+<description>
+STREAMに対してSSL認証を行いSSLストリームに変換しtを返します。
+STREAMがすでにSSLストリームなら何もせずnilを返します。
+その後の通信はすべてSSL通信となります。
+
+  STREAM           : ストリームを指定します。
+  SERVER-NAME      : 証明書の検証に使用するサーバ名（コモンネーム）を指定します。
+  :ssl-verify-mode : SSL証明書の検証モードを指定します。
+        :none          サーバ証明書を検証しません。
+        :peer          サーバ証明書を検証します。
+                       検証が失敗した場合socket-errorが通知されます。
+                       デフォルトは:peerです。
+
+参考：
+  ;;; Proxy経由でhttps://www.google.co.jp/を取得してみる。
+  (defun proxy-https-get (proxy-host proxy-port host port path)
+    (let (line res)
+      (with-open-stream (stream (connect proxy-host proxy-port))
+        (format stream "CONNECT ~A:~A HTTP/1.0~%~%" host port)
+        (setq line (read-line stream))
+        (unless (string-match "^HTTP/[0-9]\.[0-9] 200" line)
+          (plain-error "CONNECT failed: ~S" line))
+        (ssl-do-handshake stream host)
+        (format stream "GET ~A HTTP/1.0~%" path)
+        (format stream "Host: ~A~%~%" host)
+        (while (setq line (read-line stream nil))
+          (push line res))
+        (nreverse res))))
+
+  (format t "~{~A~%~}"
+          (proxy-https-get "proxy.example.com" 8080
+                           "www.google.co.jp" 443 "/"))
+
+補足：
+  xyzzy 0.2.2.248 から利用可能です。
+</description>
+<section>入出力</section>
+<seealso>connect</seealso>
+<seealso>socket-stream-ssl-p</seealso>
 <file>builtin.l</file>
 </chapter>
 
