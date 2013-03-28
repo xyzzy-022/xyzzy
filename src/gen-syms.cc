@@ -1470,6 +1470,10 @@ static symbols kwd[] =
   DEFKWD2 (code),
   DEFKWD2 (address),
   DEFKWD2 (verb),
+  DEFKWD2 (ssl),
+  DEFKWD2 (ssl-verify-mode),
+  DEFKWD2 (none),
+  DEFKWD2 (peer),
 };
 
 static symbols unint[] =
@@ -1893,6 +1897,7 @@ static symbols ed[] =
   DEFCONST2Q (*keyboard*),
   DEFUN3 (socket-stream-p, 1, 0, 0),
   DEFUN3 (connect, 2, 0, FFneed_rest),
+  DEFUN3 (ssl-do-handshake, 2, 0, FFneed_rest),
   DEFUN3 (make-listen-socket, 0, 2, FFneed_rest),
   DEFUN3 (accept-connection, 1, 0, FFneed_rest),
   DEFUN3 (socket-stream-local-name, 1, 0, 0),
@@ -1905,6 +1910,7 @@ static symbols ed[] =
   DEFUN3 (socket-stream-get-timeout, 1, 0, 0),
   DEFUN3 (socket-stream-set-oob-inline, 2, 0, 0),
   DEFUN3 (socket-stream-send-oob-data, 2, 0, 0),
+  DEFUN3 (socket-stream-ssl-p, 1, 0, 0),
   DEFUN3 (stream-encoding, 1, 0, 0),
   DEFUN3 (set-stream-encoding, 2, 0, 0),
   DEFUN3 (set-end-of-file, 1, 0, 0),

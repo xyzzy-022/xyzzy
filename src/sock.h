@@ -115,7 +115,7 @@ public:
   static const char *errmsg (int);
 
   void create (int, sock_type, int);
-  void close (int = 0);
+  virtual void close (int = 0);
   void shutdown (int, int);
 
   static void cancel ();
@@ -124,6 +124,10 @@ public:
     {s_wtimeo.tv_sec = sec; s_wtimeo.tv_usec = usec;}
   void recv_timeout (int sec, int usec = 0)
     {s_rtimeo.tv_sec = sec; s_rtimeo.tv_usec = usec;}
+  void send_timeout (timeval t)
+    {send_timeout (t.tv_sec, t.tv_usec);}
+  void recv_timeout (timeval t)
+    {recv_timeout (t.tv_sec, t.tv_usec);}
 
   const timeval &send_timeout () const {return s_wtimeo;}
   const timeval &recv_timeout () const {return s_rtimeo;}
@@ -134,6 +138,9 @@ public:
     {return readablep (sotimeval (sec, usec));}
   int writablep (int sec, int usec = 0) const
     {return writablep (sotimeval (sec, usec));}
+
+  virtual bool sslp () const {return false;}
+  SOCKET &socket () {return s_so;}
 
 protected:
   void sflush_buf (int);
@@ -155,16 +162,17 @@ public:
     {return s_rbuf.b_cnt > 0 || readablep (0);}
 
   void set_eof_error_p (int f) {s_eof_error_p = f;}
+  const int eof_error_p () const {return s_eof_error_p;}
 
-  void send (const void *, int, int = 0) const;
+  virtual void send (const void *, int, int = 0) const;
   void sendto (const saddr &, const void *, int, int = 0) const;
-  int recv (void *, int, int = 0) const;
+  virtual int recv (void *, int, int = 0) const;
   int recvfrom (saddr &, void *, int, int = 0) const;
   void listen (int = maxconn) const;
   SOCKET accept (saddr &) const;
   SOCKET accept () const;
   void bind (const saddr &) const;
-  void connect (const saddr &) const;
+  virtual void connect (const saddr &) const;
   void peeraddr (saddr &) const;
   void localaddr (saddr &) const;
   void getopt (int, optname, void *, int) const;

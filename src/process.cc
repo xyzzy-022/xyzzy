@@ -1048,17 +1048,17 @@ public:
   virtual void signal ()
     {
       try {p_so.close ();}
-      catch (sock_error &e) {FEsocket_error (e.error_code ());}
+      catch (sock_error &e) {FEsocket_error (e.error_code (), e.ope ());}
     }
   virtual void kill ()
     {
       try {p_so.close (1);}
-      catch (sock_error &e) {FEsocket_error (e.error_code ());}
+      catch (sock_error &e) {FEsocket_error (e.error_code (), e.ope ());}
     }
   virtual void send (const char *s, int l) const
     {
       try {p_so.send (s, l);}
-      catch (sock_error &e) {FEsocket_error (e.error_code ());}
+      catch (sock_error &e) {FEsocket_error (e.error_code (), e.ope ());}
     }
   void create (lisp, lisp);
   virtual int readin (u_char *, int);
@@ -1118,7 +1118,7 @@ SocketProcess::create (lisp host, lisp service)
       Fend_wait_cursor ();
       ResumeThread (hread_thread);
       WaitForSingleObject (hread_thread, INFINITE);
-      FEsocket_error (e.error_code ());
+      FEsocket_error (e.error_code (), e.ope ());
     }
 
   Fend_wait_cursor ();

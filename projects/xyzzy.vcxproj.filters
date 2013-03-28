@@ -417,6 +417,9 @@
     <ClCompile Include="..\src\dsfmt\dSFMT.cc">
       <Filter>ソース ファイル\dsfmt</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\sockssl.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\gen\xyzzy.rc">
@@ -828,6 +831,9 @@
     </ClInclude>
     <ClInclude Include="..\src\dsfmt\dSFMT-params216091.h">
       <Filter>ヘッダー ファイル\dsfmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\sockssl.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

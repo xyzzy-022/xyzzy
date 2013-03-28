@@ -63,6 +63,6 @@ lisp FEwin32_file_error (lisp, int, lisp);
 lisp FEend_of_file (lisp);
 lisp FEbignum_overflow ();
 lisp FEpower_number_too_large ();
-lisp FEsocket_error (int);
+lisp FEsocket_error (int, const char *);
 
 #endif
