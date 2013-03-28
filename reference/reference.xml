@@ -40837,7 +40837,7 @@ Shift キーの状態を多値で返します。
 <arguments>admin-user-p</arguments>
 <package>editor</package>
 <description>
-xyzzyが管理者として実行されているtを返します。
+xyzzyが管理者として実行されているならtを返します。
 
 補足：
   xyzzy 0.2.2.247 から利用可能です。
