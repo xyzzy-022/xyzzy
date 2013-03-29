@@ -1334,7 +1334,9 @@ print_stream (wStream &stream, const print_control &, lisp object)
       break;
 
     case st_socket:
-      print_unreadable_object (stream, object, "socket-stream");
+      print_unreadable_object (
+        stream, object,
+        (Fsocket_stream_ssl_p (object) == Qt) ? "ssl-socket-stream" : "socket-stream");
       break;
 
     case st_general_input:

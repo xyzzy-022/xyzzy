@@ -174,7 +174,9 @@
 	  (simple-package-error-datum2 c)))
 
 (defun *report-socket-error (c s)
-  (format s "~a" (socket-error-datum c)))
+  (format s "~A: ~A"
+	  (socket-error-operation c)
+	  (socket-error-datum c)))
 
 (defun *report-win32-exception (c s)
   (format s "Win32ó·äOÇ™î≠ê∂ÇµÇ‹ÇµÇΩ: ~A (~X) at 0x~X"

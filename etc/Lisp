@@ -1324,6 +1324,7 @@ skip-white-backward
 skip-white-forward
 sleep-for
 smart-indentation
+socket-stream-ssl-p
 software-type
 software-version
 some
@@ -1336,6 +1337,7 @@ split-string
 split-window
 split-window-vertically
 sqrt
+ssl-do-handshake
 stable-sort
 standard-char-p
 start-selection
@@ -3343,6 +3345,7 @@ simple-warn
 simple-warning-format-arguments
 simple-warning-format-string
 socket-error-datum
+socket-error-operation
 socket-stream-get-timeout
 socket-stream-local-address
 socket-stream-local-name

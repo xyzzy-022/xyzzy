@@ -152,7 +152,7 @@ init_condition ()
   E0 (        dde_not_processed, QCdde_error, Edde_not_processed, 1);
   E0 (        dde_server_died, QCdde_error, Edde_server_died, 1);
   E0 (        dde_terminated_transaction, QCdde_error, Edde_terminated_transaction, 1);
-  D1 (      socket_error, QCerror, Ssi_report_socket_error, 1, Kdatum);
+  D2 (      socket_error, QCerror, Ssi_report_socket_error, 1, Kdatum, Koperation);
   E0 (    storage_condition, QCserious_condition, Estorage_condition, 1);
   E0 (    stack_overflow, QCserious_condition, Estack_overflow, 1);
   D3 (    win32_exception, QCserious_condition, Ssi_report_win32_exception, 1, Kdescription, Kcode, Kaddress);
@@ -744,7 +744,7 @@ FEsimple_win32_error (int e, lisp v)
 }
 
 lisp
-FEsocket_error (int e)
+FEsocket_error (int e, const char *ope)
 {
   if (QUITP)
     {
@@ -752,7 +752,7 @@ FEsocket_error (int e)
       xsymbol_value (Vinhibit_quit) = Qnil;
       FEquit ();
     }
-  COND1 (socket_error, make_error (WIN32_ERROR, e));
+  COND2 (socket_error, make_error (WIN32_ERROR, e), make_string (ope ? ope : ""));
 }
 
 lisp
@@ -837,7 +837,7 @@ check_condition_def ()
   try {FEsimple_crtl_error (e, Qnil);} catch (nonlocal_jump &) {}
   try {FEsimple_win32_error (e);} catch (nonlocal_jump &) {}
   try {FEsimple_win32_error (e, Qnil);} catch (nonlocal_jump &) {}
-  try {FEsocket_error (0);} catch (nonlocal_jump &) {}
+  try {FEsocket_error (0, "");} catch (nonlocal_jump &) {}
   try {FEarchiver_error (e, Qnil);} catch (nonlocal_jump &) {}
   try {FEend_of_file (Qnil);} catch (nonlocal_jump &) {}
   try {FEwin32_file_error (Qnil, e, Qnil);} catch (nonlocal_jump &) {}

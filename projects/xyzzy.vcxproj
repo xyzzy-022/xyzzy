@@ -78,7 +78,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\gen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;rpcrt4.lib;wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;rpcrt4.lib;wsock32.lib;crypt32.lib;secur32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)src\zlib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>$(GenerateDebugInformation)</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -117,7 +117,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\gen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;rpcrt4.lib;wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;imm32.lib;mpr.lib;rpcrt4.lib;wsock32.lib;crypt32.lib;secur32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)src\zlib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>$(GenerateDebugInformation)</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -225,6 +225,7 @@
     <ClCompile Include="..\src\signal.cc" />
     <ClCompile Include="..\src\sock.cc" />
     <ClCompile Include="..\src\sockinet.cc" />
+    <ClCompile Include="..\src\sockssl.cc" />
     <ClCompile Include="..\src\statarea.cc" />
     <ClCompile Include="..\src\stdafx.cc">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -374,6 +375,7 @@
     <ClInclude Include="..\src\signal.h" />
     <ClInclude Include="..\src\sock.h" />
     <ClInclude Include="..\src\sockinet.h" />
+    <ClInclude Include="..\src\sockssl.h" />
     <ClInclude Include="..\src\statarea.h" />
     <ClInclude Include="..\src\stdafx.h" />
     <ClInclude Include="..\src\StrBuf.h" />

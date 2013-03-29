@@ -196,6 +196,16 @@
 
 ----
 
+### src/sockssl.h, src/sockssl.cc
+
+    THIS CODE AND INFORMATION IS PROVIDED 'AS IS' WITHOUT WARRANTY OF
+    ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+    THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
+    PARTICULAR PURPOSE.
+    Author: Leon Finker  7/2002
+
+----
+
 ### src/zlib/zlib.h, src/zlib/zconf.h, src/zlib/*/zlib.lib
 
     zlib.h -- interface of the 'zlib' general purpose compression library
