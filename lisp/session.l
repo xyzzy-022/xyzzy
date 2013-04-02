@@ -116,7 +116,7 @@
 					 (winconf-to-readable-winconf
 					  (pseudo-frame-winconf frame))
 					 (eq frame *current-pseudo-frame*)))))
-		       *pseudo-frame-list*))
+		       (list-pseudo-frames)))
 	(binfo (list-buffer-info)))
     (princ ";;; xyzzy session file.
 ;;; This file is generated automatically. do not edit.\n" s)
