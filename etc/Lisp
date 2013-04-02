@@ -1684,6 +1684,7 @@ zerop
 *modules*
 *move-forward-after-undo-deletion*
 *next-buffer-in-tab-order*
+*next-pseudo-frame-in-tab-order*
 *next-screen-context-lines*
 *package*
 *page-scroll-half-window*
