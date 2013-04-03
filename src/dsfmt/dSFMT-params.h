@@ -39,7 +39,7 @@
   #define SSE2_SHUFF 0x1b
 #elif defined(HAVE_ALTIVEC)
   #if defined(__APPLE__)  /* For OSX */
-    #define ALTI_SR (vector unsigned char)(4)
+    #define ALTI_SR (vector unsigned char)(4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)
     #define ALTI_SR_PERM \
         (vector unsigned char)(15,0,1,2,3,4,5,6,15,8,9,10,11,12,13,14)
     #define ALTI_SR_MSK \
@@ -47,7 +47,7 @@
     #define ALTI_PERM \
         (vector unsigned char)(12,13,14,15,8,9,10,11,4,5,6,7,0,1,2,3)
   #else
-    #define ALTI_SR      {4}
+    #define ALTI_SR      {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4}
     #define ALTI_SR_PERM {15,0,1,2,3,4,5,6,15,8,9,10,11,12,13,14}
     #define ALTI_SR_MSK  {0x000fffffU,0xffffffffU,0x000fffffU,0xffffffffU}
     #define ALTI_PERM    {12,13,14,15,8,9,10,11,4,5,6,7,0,1,2,3}
