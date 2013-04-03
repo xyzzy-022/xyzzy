@@ -53,7 +53,7 @@ inline static void do_recursion(w128_t *r, w128_t *a, w128_t * b,
     z = a->s;
     w = lung->s;
     x = vec_perm(w, (vector unsigned int)perm, perm);
-    y = vec_perm(z, sl1_perm, sl1_perm);
+    y = vec_perm(z, (vector unsigned int)sl1_perm, sl1_perm);
     y = vec_sll(y, sl1);
     y = vec_and(y, sl1_msk);
     w = vec_xor(x, b->s);

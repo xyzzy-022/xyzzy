@@ -1,3 +1,8 @@
+ver 2.2.1
+-------
+The code for ALTIVEC is changed, to fit to the ISA manual.
+This was reported by Tao Yao, thanks.
+
 ver 2.2.0
 -------
 move do_recursion to dSFMT-common.h
