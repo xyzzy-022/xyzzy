@@ -422,11 +422,17 @@ FontSet::save_params (const FontSetParam &param)
 static int CALLBACK
 fix_charset_proc (ENUMLOGFONT *elf, NEWTEXTMETRIC *, int type, LPARAM lparam)
 {
+  HDC hdc = GetDC (0);
   FontSetParam &param = *(FontSetParam *)lparam;
   if (*elf->elfLogFont.lfFaceName != '@')
     for (int i = 0; i < FONT_MAX; i++)
-      if (!strcmp (elf->elfLogFont.lfFaceName, param.fs_logfont[i].lfFaceName))
-        param.fs_logfont[i].lfCharSet = elf->elfLogFont.lfCharSet;
+      {
+        if (font_exist_p (hdc, param.fs_logfont[i].lfFaceName, param.fs_logfont[i].lfCharSet))
+          continue;
+        if (!strcmp (elf->elfLogFont.lfFaceName, param.fs_logfont[i].lfFaceName))
+          param.fs_logfont[i].lfCharSet = elf->elfLogFont.lfCharSet;
+      }
+  ReleaseDC (0, hdc);
   return 1;
 }
 
@@ -466,7 +472,7 @@ FontSet::load_params (FontSetParam &param)
     }
 
   HDC hdc = GetDC (0);
-  EnumFontFamilies (hdc, 0, FONTENUMPROC (fix_charset_proc), LPARAM (&param));
+  EnumFontFamiliesEx (hdc, 0, FONTENUMPROC (fix_charset_proc), LPARAM (&param), 0);
   ReleaseDC (0, hdc);
 }
 
@@ -561,4 +567,29 @@ get_font_height (HWND hwnd)
   SelectObject (hdc, ofont);
   ReleaseDC (hwnd, hdc);
   return tm.tmHeight;
+}
+
+static int CALLBACK
+check_valid_font (const ENUMLOGFONT *, const NEWTEXTMETRIC *,
+                  DWORD, LPARAM lparam)
+{
+  *(bool *)lparam = true;
+  return 0;
+}
+
+bool
+font_exist_p (const HDC hdc, const char *face, BYTE charset)
+{
+  bool exists = false;
+
+  LOGFONT font;
+  memset (&font, 0, sizeof LOGFONT);
+  font.lfCharSet = charset;
+  strcpy (font.lfFaceName, face);
+
+  EnumFontFamiliesEx (hdc, &font,
+                      FONTENUMPROC (check_valid_font),
+                      LPARAM (&exists), 0);
+
+  return exists;
 }
