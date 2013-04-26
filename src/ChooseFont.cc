@@ -35,8 +35,11 @@ ChooseFontP::enum_font_name_proc (ENUMLOGFONT *elf, NEWTEXTMETRIC *, int type, L
       && (elf->elfLogFont.lfPitchAndFamily & 3) == FIXED_PITCH)
     {
       HWND hwnd = HWND (lparam);
-      int i = SendMessage (hwnd, LB_ADDSTRING, 0, LPARAM (elf->elfLogFont.lfFaceName));
-      SendMessage (hwnd, LB_SETITEMDATA, i, (elf->elfLogFont.lfCharSet << 8) | type);
+      if (SendMessage (hwnd, LB_FINDSTRINGEXACT, WPARAM (-1), LPARAM (elf->elfLogFont.lfFaceName)) == LB_ERR)
+        {
+          int i = SendMessage (hwnd, LB_ADDSTRING, 0, LPARAM (elf->elfLogFont.lfFaceName));
+          SendMessage (hwnd, LB_SETITEMDATA, i, (elf->elfLogFont.lfCharSet << 8) | type);
+        }
     }
   return 1;
 }
@@ -44,8 +47,8 @@ ChooseFontP::enum_font_name_proc (ENUMLOGFONT *elf, NEWTEXTMETRIC *, int type, L
 void
 ChooseFontP::add_font_name (HWND hwnd, HDC hdc)
 {
-  EnumFontFamilies (hdc, 0, FONTENUMPROC (enum_font_name_proc),
-                    LPARAM (GetDlgItem (hwnd, IDC_NAMELIST)));
+  EnumFontFamiliesEx (hdc, 0, FONTENUMPROC (enum_font_name_proc),
+                      LPARAM (GetDlgItem (hwnd, IDC_NAMELIST)), 0);
 }
 
 int CALLBACK
