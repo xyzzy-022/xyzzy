@@ -12,7 +12,9 @@
 	  ctl-x-6-map next-pseudo-frame previous-pseudo-frame
 	  delete-all-pseudo-frames rename-pseudo-frame
 	  selected-pseudo-frame *select-pseudo-frame-hook*
-	  switch-pseudo-frame pseudo-frame-selector))
+	  switch-pseudo-frame pseudo-frame-selector
+	  *next-pseudo-frame-in-tab-order*
+	  ))
 
 (defstruct
   (pseudo-frame (:constructor pseudo-frame-constructor
@@ -23,9 +25,15 @@
 (defvar *current-pseudo-frame* nil)
 (defvar *pseudo-frame-list* nil)
 (defvar *select-pseudo-frame-hook* nil)
+(defvar *next-pseudo-frame-in-tab-order* nil)
 
 (defun selected-pseudo-frame ()
   *current-pseudo-frame*)
+
+(defun list-pseudo-frames (&optional (tab-order *next-pseudo-frame-in-tab-order*))
+  (if tab-order
+      (tab-bar-list-items 'pseudo-frame-bar)
+    *pseudo-frame-list*))
 
 (defun save-current-pseudo-frame ()
   (when *current-pseudo-frame*
@@ -127,10 +135,11 @@
 
 (defun other-pseudo-frame ()
   (interactive)
-  (let ((frame (or (cadr (member (pseudo-frame-name *current-pseudo-frame*)
-				 *pseudo-frame-list*
-				 :key #'pseudo-frame-name :test #'string=))
-		   (car *pseudo-frame-list*))))
+  (let* ((frames (list-pseudo-frames))
+	 (frame (or (cadr (member (pseudo-frame-name *current-pseudo-frame*)
+				  frames
+				  :key #'pseudo-frame-name :test #'string=))
+		    (car frames))))
     (unless (eq frame *current-pseudo-frame*)
       (select-pseudo-frame frame)
       t)))
@@ -139,12 +148,13 @@
 
 (defun previous-pseudo-frame ()
   (interactive)
-  (let ((frame (let ((n (position (pseudo-frame-name *current-pseudo-frame*)
-				  *pseudo-frame-list*
-				  :key #'pseudo-frame-name :test #'string=)))
-		 (if (and n (plusp n))
-		     (nth (- n 1) *pseudo-frame-list*)
-		   (car (last *pseudo-frame-list*))))))
+  (let* ((frames (list-pseudo-frames))
+	 (frame (let ((n (position (pseudo-frame-name *current-pseudo-frame*)
+				   frames
+				   :key #'pseudo-frame-name :test #'string=)))
+		  (if (and n (plusp n))
+		      (nth (- n 1) frames)
+		    (car (last frames))))))
     (unless (eq frame *current-pseudo-frame*)
       (select-pseudo-frame frame)
       t)))

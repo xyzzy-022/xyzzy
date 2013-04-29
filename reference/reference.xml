@@ -47,7 +47,7 @@ book
 -->
 <!--
 Copyright (c) 2007 The Xyzzy Documentation Project
-Copyright (C) 2012 xyzzy Project
+Copyright (C) 2012-2013 xyzzy Project
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the "Software"), 
@@ -36519,6 +36519,7 @@ FRAME のスロット deleted-fn に関数が設定されている場合、FRAME
 <seealso>next-pseudo-frame</seealso>
 <seealso>other-pseudo-frame</seealso>
 <seealso>switch-pseudo-frame</seealso>
+<seealso>*next-pseudo-frame-in-tab-order*</seealso>
 <link></link>
 <section>ウィンドウ</section>
 <file>pframe.l</file>
@@ -36530,11 +36531,13 @@ FRAME のスロット deleted-fn に関数が設定されている場合、FRAME
 <arguments>next-pseudo-frame</arguments>
 <package>editor</package>
 <description>
+次のフレームに移動します。[C-x 6 o]
 other-pseudo-frame の別名です。
 </description>
 <seealso>previous-pseudo-frame</seealso>
 <seealso>other-pseudo-frame</seealso>
 <seealso>switch-pseudo-frame</seealso>
+<seealso>*next-pseudo-frame-in-tab-order*</seealso>
 <link></link>
 <section>ウィンドウ</section>
 <file></file>
@@ -36551,6 +36554,7 @@ other-pseudo-frame の別名です。
 <seealso>previous-pseudo-frame</seealso>
 <seealso>next-pseudo-frame</seealso>
 <seealso>switch-pseudo-frame</seealso>
+<seealso>*next-pseudo-frame-in-tab-order*</seealso>
 <link></link>
 <section>ウィンドウ</section>
 <file>pframe.l</file>
@@ -40933,6 +40937,28 @@ STREAMがすでにSSLストリームなら何もせずnilを返します。
 <seealso>connect</seealso>
 <seealso>socket-stream-ssl-p</seealso>
 <file>builtin.l</file>
+</chapter>
+
+<chapter>
+<title>*next-pseudo-frame-in-tab-order*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+next-pseudo-frameで次に移動するフレームを、タブでの順番どおりにするか否かを設
+定します。もちろんprevious-pseudo-frameにも影響します。
+  t    フレームバーでの次のフレームに移動する。
+  nil  フレームの作成順に次のフレームに移動する。
+
+補足：
+  xyzzy 0.2.2.249 から利用可能です。
+</description>
+<seealso>next-pseudo-frame</seealso>
+<seealso>other-pseudo-frame</seealso>
+<seealso>previous-pseudo-frame</seealso>
+<link></link>
+<section>ウィンドウ</section>
+<file>pframe.l</file>
 </chapter>
 
 </book>

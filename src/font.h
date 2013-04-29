@@ -158,5 +158,6 @@ public:
 };
 
 int get_font_height (HWND hwnd);
+bool font_exist_p (const HDC hdc, const char *face, BYTE charset);
 
 #endif /* _font_h_ */
