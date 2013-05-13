@@ -1702,6 +1702,9 @@ zerop
 *print-option-show-dialog*
 *print-pretty*
 *process-command-line-hook*
+*pseudo-frame-bar-context-menu*
+*pseudo-frame-bar-context-menu-frame*
+*pseudo-frame-bar-context-menu-handler*
 *query-kill-buffer-hook*
 *query-kill-xyzzy-hook*
 *quotation-prefix*
