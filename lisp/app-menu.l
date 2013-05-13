@@ -480,6 +480,13 @@
 	       (interactive)
 	       (kill-buffer *buffer-bar-context-menu-buffer*)))))
 
+  (setq *pseudo-frame-bar-context-menu*
+	(define-popup-menu
+	  (:item 'close "•Â‚¶‚é(&C)"
+	   #'(lambda ()
+	       (interactive)
+	       (delete-pseudo-frame *pseudo-frame-bar-context-menu-frame*)))))
+
   (run-hooks '*init-app-menus-hook*)
   (set-menu *app-menu*)
   (add-file-history-to-menu)

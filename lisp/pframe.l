@@ -14,6 +14,9 @@
 	  selected-pseudo-frame *select-pseudo-frame-hook*
 	  switch-pseudo-frame pseudo-frame-selector
 	  *next-pseudo-frame-in-tab-order*
+	  *pseudo-frame-bar-context-menu*
+	  *pseudo-frame-bar-context-menu-frame*
+	  *pseudo-frame-bar-context-menu-handler*
 	  ))
 
 (defstruct
@@ -74,7 +77,8 @@
   (let ((frame (pseudo-frame-constructor name nil save-p selected-fn deleted-fn)))
     (setq *pseudo-frame-list* (nconc *pseudo-frame-list* (list frame)))
     (when (tool-bar-exist-p 'pseudo-frame-bar)
-      (tab-bar-add-item 'pseudo-frame-bar frame name))
+      (tab-bar-add-item 'pseudo-frame-bar frame name nil
+			'call-pseudo-frame-bar-context-menu-handler))
     frame))
 
 (defun create-pseudo-frame (name &optional save-p selected-fn deleted-fn)
@@ -203,7 +207,8 @@
 					(select-pseudo-frame frame)
 					(refresh-screen 'foo)))
   (mapc #'(lambda (frame)
-	    (tab-bar-add-item 'pseudo-frame-bar frame (pseudo-frame-name frame)))
+	    (tab-bar-add-item 'pseudo-frame-bar frame (pseudo-frame-name frame) nil
+			      'call-pseudo-frame-bar-context-menu-handler))
 	*pseudo-frame-list*)
   (tab-bar-select-item 'pseudo-frame-bar *current-pseudo-frame*))
 
@@ -231,6 +236,21 @@
 				  (member buffer x :test #'eq))
 			      (caddr (pseudo-frame-winconf frame)))))
 	     *pseudo-frame-list*))
+
+(defvar *pseudo-frame-bar-context-menu* nil)
+(defvar *pseudo-frame-bar-context-menu-frame* nil)
+
+(defun default-pseudo-frame-bar-context-menu-handler (frame)
+  (when frame
+    (setq *pseudo-frame-bar-context-menu-frame* frame)
+    *pseudo-frame-bar-context-menu*))
+
+(defvar *pseudo-frame-bar-context-menu-handler*
+  #'default-pseudo-frame-bar-context-menu-handler)
+
+(defun call-pseudo-frame-bar-context-menu-handler (frame)
+  (when *pseudo-frame-bar-context-menu-handler*
+    (funcall *pseudo-frame-bar-context-menu-handler* frame)))
 
 (define-command-bar 'pseudo-frame-bar "ÉtÉåÅ[ÉÄ(&F)")
 
