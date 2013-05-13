@@ -40969,6 +40969,9 @@ next-pseudo-frameで次に移動するフレームを、タブでの順番どお
 <description>
 フレーム・バー上で右クリックしたときに出てくるコンテキストメニューです。
 define-popup-menu で作成されています。（作成は app-menu.l）
+
+補足：
+  xyzzy 0.2.2.250 から利用可能です。
 </description>
 <section>フレーム</section>
 <file>pframe.l</file>
@@ -40982,6 +40985,9 @@ define-popup-menu で作成されています。（作成は app-menu.l）
 <description>
 フレーム・バー上で選択されているフレームです。ただし、フレームバー上の
 コンテキストメニューで取得専用くらいしか使用できません。
+
+補足：
+  xyzzy 0.2.2.250 から利用可能です。
 </description>
 <section>フレーム</section>
 <file>pframe.l</file>
@@ -40996,6 +41002,9 @@ define-popup-menu で作成されています。（作成は app-menu.l）
 デフォルトのフレーム・バー用コンテキストメニューハンドラです。
 標準の動作は *pseudo-frame-bar-context-menu-buffer* を定義し、
 *pseudo-frame-bar-context-menu* を返します。
+
+補足：
+  xyzzy 0.2.2.250 から利用可能です。
 </description>
 <seealso>*pseudo-frame-bar-context-menu*</seealso>
 <section>フレーム</section>
