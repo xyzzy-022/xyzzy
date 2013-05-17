@@ -2300,6 +2300,7 @@ static symbols ed[] =
   DEFUN3 (set-quit-char, 1, 0, 0),
   DEFUN3 (quit-char, 0, 0, 0),
   DEFVAR2 (*support-mouse-wheel*),
+  DEFVAR2 (*change-clipboard-hook*),
 
   /* mouse.cc */
   DEFVAR2 (*last-mouse-window*),
