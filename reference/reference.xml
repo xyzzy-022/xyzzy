@@ -41011,4 +41011,51 @@ define-popup-menu で作成されています。（作成は app-menu.l）
 <file>pframe.l</file>
 </chapter>
 
+<chapter>
+<title>*sync-kill-ring-with-clipboard*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+non-nil ならば削除バッファとクリップボードを同期します。
+[共通設定] - [さまざま] - [削除バッファとクリップボードを同期する(C)] で値を
+指定することができます。
+
+  t       : 削除バッファとクリップボードを中途半端に同期します。
+            xyzzyから他のアプリに切り替えるタイミングで削除バッファの方が
+            新しければ削除バッファの内容をクリップボードにコピーします。
+            また、yank (C-y) のタイミングでクリップボードの方が新しければ
+            クリップボードの内容を削除バッファにコピーします。
+  :always : 削除バッファとクリップボードを完全に同期します。
+            削除バッファやクリップボードにコピーされたタイミングで
+            すぐに同期します。
+            クリップボードにコピーされた内容は削除バッファに追加されてるので、
+            yank-pop (M-y) で遡って貼り付けることができます。
+  nil     : 削除バッファとクリップボードを同期しません。
+
+補足：
+  :always は xyzzy 0.2.2.250 から利用可能です。
+</description>
+<seealso></seealso>
+<section>変数と定数</section>
+<file>region.l</file>
+</chapter>
+
+<chapter>
+<title>*change-clipboard-hook*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+クリップボードに値が設定された時に処理を行うために使用されます。
+デフォルトではクリップボードの同期を行っています。
+
+補足：
+  xyzzy 0.2.2.250 から利用可能です。
+</description>
+<seealso></seealso>
+<section>変数と定数</section>
+<file></file>
+</chapter>
+
 </book>

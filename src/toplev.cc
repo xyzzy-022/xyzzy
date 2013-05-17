@@ -703,6 +703,8 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         SendMessage (app.hwnd_clipboard, msg, wparam, lparam);
       xsymbol_value (Vclipboard_newer_than_kill_ring_p) = Qt;
       xsymbol_value (Vkill_ring_newer_than_clipboard_p) = Qnil;
+      if (selected_window ())
+        selected_buffer ()->safe_run_hook (Vchange_clipboard_hook, 0);
       break;
 
     case WM_SYSCOLORCHANGE:
