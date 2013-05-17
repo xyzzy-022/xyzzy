@@ -49,7 +49,6 @@ Application::Application ()
   drag_window = 0;
   drag_buffer = 0;
   f_protect_quit = 0;
-  hwnd_clipboard = 0;
   last_cmd_tick = GetTickCount ();
   f_auto_save_pending = 0;
   default_caret_blink_time = 0;
