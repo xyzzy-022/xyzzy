@@ -7,6 +7,7 @@
 # include "vfs.h"
 # include "wm.h"
 # include "mousemsg.h"
+# include "clipboard.h"
 
 struct Window;
 struct Buffer;
@@ -373,7 +374,7 @@ public:
   HWND toplev;
   HWND hwnd_sw;
 
-  HWND hwnd_clipboard;
+  clipboard clipboard;
 
   kbd_queue kbdq;
   mouse_state mouse;

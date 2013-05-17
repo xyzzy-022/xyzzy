@@ -420,6 +420,9 @@
     <ClCompile Include="..\src\sockssl.cc">
       <Filter>ソース ファイル\ed</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\clipboard.cc">
+      <Filter>ソース ファイル\ed</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\gen\xyzzy.rc">
@@ -833,6 +836,9 @@
       <Filter>ヘッダー ファイル\dsfmt</Filter>
     </ClInclude>
     <ClInclude Include="..\src\sockssl.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\clipboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
