@@ -1583,6 +1583,7 @@ zerop
 *buffer-menu-mode-hook*
 *buffer-package*
 *change-buffer-colors-hook*
+*change-clipboard-hook*
 *char-encoding-list*
 *command-line-args-base-directory*
 *command-line-mailto-hook*
@@ -1730,6 +1731,7 @@ zerop
 *std-control-next-char*
 *std-control-prior-char*
 *std-control-up-char*
+*sync-kill-ring-with-clipboard*
 *tail-f-mode-hook*
 *this-command*
 *unicode-to-half-width*
