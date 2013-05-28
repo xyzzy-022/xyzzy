@@ -51,12 +51,8 @@
     (values (car x) pointer)))
 
 (defun current-kill (n &optional nomove)
-  (when *clipboard-newer-than-kill-ring-p*
-    (setq *clipboard-newer-than-kill-ring-p* nil)
-    (when *sync-kill-ring-with-clipboard*
-      (let ((x (get-clipboard-data)))
-	(when x
-	  (kill-new x)))))
+  (when *sync-kill-ring-with-clipboard*
+    (sync-clipboard-to-kill-ring))
   (unless *kill-ring*
     (plain-error "Kill ring is empty"))
   (multiple-value-setq
@@ -115,6 +111,8 @@
     (if (eq *last-command* 'kill-region)
 	(kill-append text (> from to))
       (kill-new text)))
+  (when (eq *sync-kill-ring-with-clipboard* :always)
+    (sync-kill-ring-to-clipboard))
   (when (and (interactive-p)
 	     (null *executing-macro*))
     (message "Region copied"))
@@ -200,14 +198,38 @@
   (interactive "*r\np")
   (shift-region start end (- column)))
 
-(push #'(lambda ()
-	  (and *sync-kill-ring-with-clipboard*
-	       *kill-ring-newer-than-clipboard-p*
-	       (car *kill-ring*)
-	       (copy-to-clipboard (apply #'concatenate 'string
-					 (car *kill-ring*))))
-	  t)
-      *deactivate-hook*)
+(defun current-kill-ring-data ()
+  (let ((x (car *kill-ring*)))
+    (when x
+      (apply #'concatenate 'string x))))
+
+(defun sync-kill-ring-to-clipboard ()
+  (when *kill-ring-newer-than-clipboard-p*
+    (let ((x (current-kill-ring-data)))
+      (when (and x (string/= x (get-clipboard-data)))
+	(copy-to-clipboard x)
+	(setq *clipboard-newer-than-kill-ring-p* nil
+	      *kill-ring-newer-than-clipboard-p* nil)))))
+
+(defun sync-clipboard-to-kill-ring ()
+  (when *clipboard-newer-than-kill-ring-p*
+    (let ((x (get-clipboard-data)))
+      (when (and x (string/= x (current-kill-ring-data)))
+	(kill-new x)
+	(setq *clipboard-newer-than-kill-ring-p* nil
+	      *kill-ring-newer-than-clipboard-p* nil)))))
+
+(defun sync-kill-ring-to-clipboard-hook ()
+  (when *sync-kill-ring-with-clipboard*
+    (sync-kill-ring-to-clipboard))
+  t)
+(add-hook '*deactivate-hook* 'sync-kill-ring-to-clipboard-hook)
+
+(defun sync-clipboard-to-kill-ring-always-hook ()
+  (when (eq *sync-kill-ring-with-clipboard* :always)
+    (sync-clipboard-to-kill-ring))
+  t)
+(add-hook '*change-clipboard-hook* 'sync-clipboard-to-kill-ring-always-hook)
 
 (global-set-key #\C-y 'yank)
 (global-set-key #\M-y 'yank-pop)

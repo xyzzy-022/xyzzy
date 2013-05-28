@@ -49,7 +49,6 @@ Application::Application ()
   drag_window = 0;
   drag_buffer = 0;
   f_protect_quit = 0;
-  hwnd_clipboard = 0;
   last_cmd_tick = GetTickCount ();
   f_auto_save_pending = 0;
   default_caret_blink_time = 0;
@@ -512,6 +511,7 @@ init_symbol_value_once ()
   xsymbol_value (Vunicode_to_half_width) = Qt;
   xsymbol_value (Vcolor_page_enable_dir_p) = Qnil;
   xsymbol_value (Vcolor_page_enable_subdir_p) = Qnil;
+  xsymbol_value (Vchange_clipboard_hook) = Qnil;
 }
 
 static void

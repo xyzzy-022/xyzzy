@@ -635,7 +635,7 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 #ifdef DnDTEST
       RegisterDragDrop (hwnd, &tdropt);
 #endif
-      app.hwnd_clipboard = SetClipboardViewer (hwnd);
+      app.clipboard.add_listener (hwnd);
       SetTimer (hwnd, TID_ITIMER, itimer::interval * 1000, 0);
       return 0;
 
@@ -646,7 +646,7 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 #endif
       app.user_timer.cleanup ();
       environ::save_geometry ();
-      ChangeClipboardChain (hwnd, app.hwnd_clipboard);
+      app.clipboard.remove_listener (hwnd);
       PostQuitMessage (0);
       app.toplev = 0;
       return 0;
@@ -692,17 +692,15 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       }
 
     case WM_CHANGECBCHAIN:
-      if (HWND (wparam) == app.hwnd_clipboard)
-        app.hwnd_clipboard = HWND (lparam);
-      else if (app.hwnd_clipboard)
-        SendMessage (app.hwnd_clipboard, msg, wparam, lparam);
+      app.clipboard.change_clipboard_chain (hwnd, msg, wparam, lparam);
       break;
 
     case WM_DRAWCLIPBOARD:
-      if (app.hwnd_clipboard)
-        SendMessage (app.hwnd_clipboard, msg, wparam, lparam);
-      xsymbol_value (Vclipboard_newer_than_kill_ring_p) = Qt;
-      xsymbol_value (Vkill_ring_newer_than_clipboard_p) = Qnil;
+      app.clipboard.draw_clipboard (hwnd, msg, wparam, lparam);
+      break;
+
+    case WM_CLIPBOARDUPDATE:
+      app.clipboard.clipboard_update (hwnd, msg, wparam, lparam);
       break;
 
     case WM_SYSCOLORCHANGE:
@@ -1013,6 +1011,7 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
                   end_wait_cursor (1);
                 }
             }
+          app.clipboard.repair_clipboard_chain_if_need (hwnd);
           break;
         }
       return 0;

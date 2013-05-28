@@ -1583,6 +1583,7 @@ zerop
 *buffer-menu-mode-hook*
 *buffer-package*
 *change-buffer-colors-hook*
+*change-clipboard-hook*
 *char-encoding-list*
 *command-line-args-base-directory*
 *command-line-mailto-hook*
@@ -1702,6 +1703,9 @@ zerop
 *print-option-show-dialog*
 *print-pretty*
 *process-command-line-hook*
+*pseudo-frame-bar-context-menu*
+*pseudo-frame-bar-context-menu-frame*
+*pseudo-frame-bar-context-menu-handler*
 *query-kill-buffer-hook*
 *query-kill-xyzzy-hook*
 *quotation-prefix*
@@ -1727,6 +1731,7 @@ zerop
 *std-control-next-char*
 *std-control-prior-char*
 *std-control-up-char*
+*sync-kill-ring-with-clipboard*
 *tail-f-mode-hook*
 *this-command*
 *unicode-to-half-width*

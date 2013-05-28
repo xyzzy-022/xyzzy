@@ -148,6 +148,7 @@
     <ClCompile Include="..\src\chname.cc" />
     <ClCompile Include="..\src\ChooseFont.cc" />
     <ClCompile Include="..\src\chunk.cc" />
+    <ClCompile Include="..\src\clipboard.cc" />
     <ClCompile Include="..\src\ColorDialog.cc" />
     <ClCompile Include="..\src\colors.cc" />
     <ClCompile Include="..\src\com.cc" />
@@ -288,6 +289,7 @@
     <ClInclude Include="..\src\ChooseFont.h" />
     <ClInclude Include="..\src\chtype.h" />
     <ClInclude Include="..\src\chunk.h" />
+    <ClInclude Include="..\src\clipboard.h" />
     <ClInclude Include="..\src\closure.h" />
     <ClInclude Include="..\src\ColorDialog.h" />
     <ClInclude Include="..\src\colors.h" />

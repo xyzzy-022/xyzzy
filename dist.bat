@@ -1,4 +1,9 @@
 @echo off
+rem
+rem _dist/ に xyzzy のソースをチェックアウトしてクリーンビルドを行い、
+rem xyzzy-(VERSION).zip と xyzzy-src-(VERSION).zip を作成する。
+rem
+
 setlocal
 cd /d %~dp0
 
