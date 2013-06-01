@@ -15,7 +15,7 @@ Debug (char *format, ...)
   va_end (ap);
 
   char buf[BUF_SIZE * 2];
-  sprintf_s (buf, "%s\n", msg);
+  sprintf_s (buf, BUF_SIZE * 2, "%s\n", msg);
   OutputDebugString (buf);
 }
 
