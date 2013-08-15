@@ -153,6 +153,22 @@
 
 (defun revert-buffer (&optional encoding)
   (interactive "0zEncoding: ")
+  (let ((filename (get-buffer-file-name))
+	(buffer nil)
+	(obuffer (selected-buffer)))
+    (when (and filename
+	       (not encoding)
+	       (not *find-file-no-auto-encoding*))
+      (unwind-protect
+	  (with-set-buffer
+	    (setq buffer (create-new-buffer "*revert-buffer*"))
+	    (set-buffer buffer)
+	    (let ((enc (find-file-auto-encoding filename)))
+	      (when enc
+		(setq encoding enc))))
+	(when buffer
+	  (delete-buffer buffer))
+	(set-buffer obuffer))))
   (let ((*expected-fileio-encoding* (or encoding *expected-fileio-encoding*)))
     (declare (special *expected-fileio-encoding*))
     (if revert-buffer-function
