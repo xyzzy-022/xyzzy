@@ -41073,7 +41073,7 @@ non-nil ならば削除バッファとクリップボードを同期します。
            Ctrl-g によるキャンセルができます
 
 補足：
-  xyzzy 0.2.2.250 から利用可能です。
+  xyzzy 0.2.2.251 から利用可能です。
 </description>
 <seealso>filer</seealso>
 <link></link>
