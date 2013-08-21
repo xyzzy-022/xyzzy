@@ -41058,4 +41058,27 @@ non-nil ならば削除バッファとクリップボードを同期します。
 <file></file>
 </chapter>
 
+<chapter>
+<title>*filer-use-shell-file-operation*</title>
+<type>Variable</type>
+<arguments></arguments>
+<package>editor</package>
+<description>
+ファイラでファイルの移動・コピー・削除をエクスプローラで行うかどうかを設定します。
+
+  non-nil  ファイルの移動・コピー・削除をエクスプローラで行う
+           ファイル操作の進捗状況の確認や GUI によるキャンセルができますが、
+           Ctrl-g によるキャンセルはできません
+  nil      ファイルの移動・コピー・削除を xyzzy で行う
+           Ctrl-g によるキャンセルができます
+
+補足：
+  xyzzy 0.2.2.250 から利用可能です。
+</description>
+<seealso>filer</seealso>
+<link></link>
+<section>ファイラ</section>
+<file>filer.l</file>
+</chapter>
+
 </book>

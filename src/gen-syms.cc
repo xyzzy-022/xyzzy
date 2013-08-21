@@ -852,6 +852,9 @@ static symbols sys[] =
   SI_DEFUN3 (*builtin-package-p, 1, 0, 0),
   SI_DEFUN3 (list-builtin-packages, 0, 0, 0),
 
+  /* pathnames.cc */
+  SI_DEFUN3 (*file-operation, 3, 0, FFneed_rest),
+
   /* lprint.cc */
   SI_DEFUN3 (*print-condition, 1, 0, 0),
   SI_DEFUN3 (*condition-string, 1, 0, 0),
@@ -1474,6 +1477,18 @@ static symbols kwd[] =
   DEFKWD2 (ssl-verify-mode),
   DEFKWD2 (none),
   DEFKWD2 (peer),
+  DEFKWD2 (allow-undo),
+  DEFKWD2 (files-only),
+  DEFKWD2 (no-connected-elements),
+  DEFKWD2 (no-ui),
+  DEFKWD2 (no-confirmation),
+  DEFKWD2 (no-confirm-mkdir),
+  DEFKWD2 (no-copy-security-attributes),
+  DEFKWD2 (no-error-ui),
+  DEFKWD2 (no-recursion),
+  DEFKWD2 (rename-on-collision),
+  DEFKWD2 (silent),
+  DEFKWD2 (want-nuke-warning),
 };
 
 static symbols unint[] =

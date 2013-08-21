@@ -1634,6 +1634,7 @@ zerop
 *filer-show-hidden-files*
 *filer-show-system-files*
 *filer-use-recycle-bin*
+*filer-use-shell-file-operation*
 *find-buffer-package-hook*
 *find-file-auto-encoding-use-utf8n*
 *find-file-auto-mode-function*
@@ -3162,6 +3163,7 @@ si:*dll-function-p
 si:*dll-module-p
 si:*enum-hash-table
 si:*environmentp
+si:*file-operation
 si:*find-in-environment
 si:*fixnump
 si:*flet-helper
