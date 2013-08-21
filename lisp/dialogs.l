@@ -238,10 +238,11 @@
 			:eol-code *expected-eol-code*)
     (when files
       (setq *file-dialog-filter-index* index)
-      (let ((*expected-fileio-encoding* encoding)
-	    (*expected-eol-code* eol-code))
-	(declare (special *expected-fileio-encoding* *expected-eol-code*))
-	(find-file files))
+      (let ((*expected-eol-code* eol-code))
+	(declare (special *expected-eol-code*))
+	(when (eq encoding *encoding-auto*)
+	  (setq encoding nil))
+	(find-file files encoding))
       (if multiple
 	  (dolist (f files t)
 	    (add-history f '*minibuffer-file-name-history*))
