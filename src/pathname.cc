@@ -2579,25 +2579,26 @@ file_operation_files (char *buf, lisp files)
 }
 
 lisp
-Fsi_file_operation (lisp operation, lisp from_names, lisp to_name, lisp keys)
+Fsi_file_operation (lisp operation, lisp from_names, lisp to_names, lisp keys)
 {
   SHFILEOPERATION f = get_shfileoperation_proc ();
 
   UINT func = file_operation_function (operation);
+  FILEOP_FLAGS flags = file_operation_flags (keys);
 
-  int len = count_file_operation_files (from_names);
-  char *fromf = (char *)alloca ((PATH_MAX + 10) * len);
+  int from_len = count_file_operation_files (from_names);
+  char *fromf = (char *)alloca ((PATH_MAX + 10) * from_len);
   file_operation_files (fromf, from_names);
 
   char *tof = nullptr;
   if (operation != Kdelete)
     {
-      tof = (char *)alloca (PATH_MAX + 10);
-      file_operation_file (tof, to_name); // FOF_MULTIDESTFILES not supported
+      int to_len = count_file_operation_files (to_names);
+      tof = (char *)alloca ((PATH_MAX + 10) * to_len);
+      file_operation_files (tof, to_names);
+      if (to_len > 1)
+        flags |= FOF_MULTIDESTFILES;
     }
-
-  FILEOP_FLAGS flags = file_operation_flags (keys);
-
 
   SHFILEOPSTRUCT fs = {0};
   fs.wFunc = func;

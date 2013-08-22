@@ -85,3 +85,109 @@
        (file-exist-p file))))
   => t
   => nil)
+
+
+(deftest shell-operation-copy-multi ()
+  (with-temp-files (file1 file2)
+    (with-temp-buffer
+      (insert "abc" #\LFD)
+      (write-file file1)
+      (write-file file2))
+    (with-temp-dirs (tmpdir)
+      (let ((new-file1 (merge-pathnames (file-namestring file1) tmpdir))
+            (new-file2 (merge-pathnames (file-namestring file2) tmpdir)))
+        (unwind-protect
+            (progn
+              (si:*file-operation :copy
+                                  (list file1 file2)
+                                  tmpdir
+                                  :no-ui t)
+              (values
+               (file-exist-p file1)
+               (file-exist-p file2)
+               (file-exist-p new-file1)
+               (file-exist-p new-file2)
+               (compare-file file1 new-file1)
+               (compare-file file2 new-file2)
+               ))
+          (delete-file new-file1)
+          (delete-file new-file2)))))
+  => t
+  => t
+  => t
+  => t
+  => t
+  => t)
+
+(deftest shell-operation-move-multi ()
+  (with-temp-files (file1 file2)
+    (with-temp-buffer
+      (insert "abc" #\LFD)
+      (write-file file1)
+      (write-file file2))
+    (with-temp-dirs (tmpdir)
+      (let ((new-file1 (merge-pathnames (file-namestring file1) tmpdir))
+            (new-file2 (merge-pathnames (file-namestring file2) tmpdir)))
+        (unwind-protect
+            (progn
+              (si:*file-operation :move
+                                  (list file1 file2)
+                                  tmpdir
+                                  :no-ui t)
+              (values
+               (file-exist-p file1)
+               (file-exist-p file2)
+               (file-exist-p new-file1)
+               (file-exist-p new-file2)
+               ))
+          (delete-file new-file1)
+          (delete-file new-file2)))))
+  => nil
+  => nil
+  => t
+  => t)
+
+(deftest shell-operation-move-multi2 ()
+  (with-temp-files (file1 file2)
+    (with-temp-buffer
+      (insert "abc" #\LFD)
+      (write-file file1)
+      (write-file file2))
+    (with-temp-dirs (tmpdir)
+      (let ((new-file1 (merge-pathnames (file-namestring file1) tmpdir))
+            (new-file2 (merge-pathnames (file-namestring file2) tmpdir)))
+        (unwind-protect
+            (progn
+              (si:*file-operation :move
+                                  (list file1 file2)
+                                  (list new-file1 new-file2)
+                                  :no-ui t)
+              (values
+               (file-exist-p file1)
+               (file-exist-p file2)
+               (file-exist-p new-file1)
+               (file-exist-p new-file2)
+               ))
+          (delete-file new-file1)
+          (delete-file new-file2)))))
+  => nil
+  => nil
+  => t
+  => t)
+
+(deftest shell-operation-delete-multi ()
+  (with-temp-files (file1 file2)
+    (with-temp-buffer
+      (insert "abc" #\LFD)
+      (write-file file1)
+      (write-file file2))
+    (si:*file-operation :delete
+                        (list file1 file2)
+                        nil
+                        :no-ui t)
+    (values
+     (file-exist-p file1)
+     (file-exist-p file2)
+     ))
+  => nil
+  => nil)
