@@ -6,16 +6,19 @@ IPADIC の単語を detect-char-encoding で判別して正解率をテストする。
 
 (defun detect-char-encoding-test (expected words-file)
   (long-operation
-    (let (result line fail-words)
+    (let (result line fail-words (n 0))
       (with-open-file (f words-file)
         (while (setf line (read-line f nil nil))
+          (when (zerop (mod n 1000))
+            (message "~A ~D" words-file n))
+          (incf n)
           (let ((encoding (detect-char-encoding line)))
             (let ((e (assoc encoding result)))
               (if e
                   (incf (cdr e))
                 (push (cons encoding 1) result)))
-;            (unless (eq encoding expected)
-              (push line fail-words)
+            (unless (eq encoding expected)
+              (push line fail-words))
             )))
       (when fail-words
         (with-output-to-temp-buffer (words-file nil)

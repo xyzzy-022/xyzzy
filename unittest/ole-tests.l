@@ -115,6 +115,9 @@
 (deftest print-oledata ()
   (values
    (string-matchp "IFileSystem" (format nil "~S" (ole-create-object "Scripting.FileSystemObject")))
-   (string-matchp "IXMLHttpRequest" (format nil "~S" (ole-create-object "MSXML2.XMLHTTP"))))
+   (string-matchp (if (featurep :windows-8)
+                      "IServerXMLHttpRequest"
+                    "IXMLHttpRequest")
+                  (format nil "~S" (ole-create-object "MSXML2.XMLHTTP"))))
   => non-nil
   => non-nil)

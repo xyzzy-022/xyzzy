@@ -36,6 +36,7 @@
 	  filer-close-modal
 	  filer-isearch-forward filer-isearch-backward
 	  *filer-use-recycle-bin*
+	  *filer-use-shell-file-operation*
 	  filer-delete-mask *filer-delete-mask-list*))
 
 (setq *filer-guide-text*
@@ -88,6 +89,7 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
 (defvar *filer-delete-read-only-files* nil)
 (defvar *filer-follow-links* t)
 (defvar *filer-use-recycle-bin* nil)
+(defvar *filer-use-shell-file-operation* nil)
 (defvar *filer-delete-mask* nil)
 (define-history-variable *filer-delete-mask-history* nil)
 
@@ -457,6 +459,10 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
 	    (t
 	     (filer-copy-file file (concat to-dir name)))))))
 
+(defun filer-do-copy-by-shell (files to-dir &optional dirl)
+  (si:*file-operation :copy files to-dir
+		      :no-confirm-mkdir t))
+
 (defun filer-do-move (files to-dir dirl)
   (dolist (file files)
     (let ((name (substring file dirl)))
@@ -495,6 +501,10 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
 	      (when (ask-file-error e)
 		(go retry)))))))))
 
+(defun filer-do-move-by-shell (files to-dir &optional dirl)
+  (si:*file-operation :move files to-dir
+		      :no-confirm-mkdir t))
+
 (defun filer-copy-1 (fn mv dest)
   (let ((if-exists :error)
 	(if-access-denied :error))
@@ -521,10 +531,16 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
     (message "done.")))
 
 (defun filer-copy (&optional dest)
-  (filer-copy-1 #'filer-do-copy nil dest))
+  (filer-copy-1 (if *filer-use-shell-file-operation*
+		    #'filer-do-copy-by-shell
+		  #'filer-do-copy)
+		nil dest))
 
 (defun filer-move (&optional dest)
-  (filer-copy-1 #'filer-do-move t dest))
+  (filer-copy-1 (if *filer-use-shell-file-operation*
+		    #'filer-do-move-by-shell
+		  #'filer-do-move)
+		t dest))
 
 (defun filer-get-copy-file-name (name)
   (multiple-value-bind (result data)
@@ -557,7 +573,9 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
 	  (declare (special if-exists if-access-denied))
 	  (setq new-file (merge-pathnames new-file (filer-get-directory)))
 	  (filer-subscribe-to-reload (directory-namestring new-file))
-	  (filer-copy-file old-file new-file)
+	  (if *filer-use-shell-file-operation*
+	      (filer-do-copy-by-shell old-file new-file)
+	    (filer-copy-file old-file new-file))
 	  (message "done."))))))
 
 (defun *filer-drag-and-drop-helper (effect files src dest)
@@ -644,6 +662,10 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
 	    (when (ask-file-error e)
 	      (go retry))))))))
 
+(defun filer-do-delete-by-shell (files)
+  (si:*file-operation :delete files nil
+		      :allow-undo *filer-use-recycle-bin*))
+
 (defun filer-query-delete (files)
   (eq (dialog-box '(dialog 0 0 254 115
 		    (:caption "削除の確認")
@@ -661,20 +683,23 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
   (long-operation
     (let ((marks (filer-get-mark-files)))
       (when (and marks
-		 (if *filer-query-delete-precisely*
-		     (filer-query-delete marks)
-		   (yes-or-no-p "~A" (concat "選択されたファイルを削除しまっせ"
-					     (and *filer-delete-mask*
-						  (filer-delete-mask-string *filer-delete-mask*
-									    "\n削除マスク: "))))))
+		 (or *filer-use-shell-file-operation*
+		     (if *filer-query-delete-precisely*
+			 (filer-query-delete marks)
+		       (yes-or-no-p "~A" (concat "選択されたファイルを削除しまっせ"
+						 (and *filer-delete-mask*
+						      (filer-delete-mask-string *filer-delete-mask*
+										"\n削除マスク: ")))))))
 	(filer-subscribe-to-reload (filer-get-directory) t)
-	(let ((if-access-denied (if *filer-delete-read-only-files*
-				    :force :error))
-	      (delete-non-empty-directory
-	       *filer-delete-non-empty-directory*))
-	  (declare (special if-access-denied
-			    delete-non-empty-directory))
-	  (filer-do-delete marks))
+	(if *filer-use-shell-file-operation*
+	    (filer-do-delete-by-shell marks)
+	  (let ((if-access-denied (if *filer-delete-read-only-files*
+				      :force :error))
+		(delete-non-empty-directory
+		 *filer-delete-non-empty-directory*))
+	    (declare (special if-access-denied
+			      delete-non-empty-directory))
+	    (filer-do-delete marks)))
 	(message "done.")))))
 
 (defun filer-delete-mask-string (mask &optional (prefix ""))

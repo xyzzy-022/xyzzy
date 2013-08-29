@@ -391,7 +391,7 @@ Fsi_closure_variable (lisp closure)
         }
       if (xcdr (v) == Qunbound)
         {
-          if (xsymbol_flags (xcar (v)) & SFdynamic_bind | SFspecial)
+          if (xsymbol_flags (xcar (v)) & (SFdynamic_bind | SFspecial))
             xcar (var) = xcons (xcar (v), xsymbol_value (xcar (v)));
           else
             xcar (var) = xcar (v);

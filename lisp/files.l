@@ -64,10 +64,7 @@
 		   (set-buffer buffer)
 		   (when eol-code
 		     (set-buffer-eol-code eol-code))
-		   (let ((*expected-fileio-encoding*
-			  (or encoding *expected-fileio-encoding*)))
-		     (declare (special *expected-fileio-encoding*))
-		     (revert-buffer))
+		   (revert-buffer encoding)
 		   nil))
 		(t t)))
       (or nomsg
