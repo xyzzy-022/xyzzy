@@ -2,7 +2,7 @@
 setlocal
 cd /d %~dp0
 
-call "%VS100COMNTOOLS%\vsvars32.bat"
+call "%VS110COMNTOOLS%\vsvars32.bat"
 
 if "%1"=="" (set CONFIGURATION=Release) else (set CONFIGURATION=%1)
 if "%2"=="" (set TARGET=Build) else (set TARGET=%2)
