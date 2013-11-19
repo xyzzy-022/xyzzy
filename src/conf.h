@@ -116,6 +116,7 @@ int read_conf (const char *, const char *, WINDOWPLACEMENT &);
 void flush_conf ();
 int conf_load_geometry (HWND, const char *, const char * = 0, int = 1, int = 1);
 void conf_save_geometry (HWND, const char *, const char * = 0, int = 1, int = 1);
+void adjust_snap_window_size (HWND, WINDOWPLACEMENT &);
 void make_geometry_key (char* buf, size_t bufsize, const char *prefix);
 
 void conf_write_string (const char *, const char *, const char *);
