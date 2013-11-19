@@ -274,6 +274,9 @@ conf_save_geometry (HWND hwnd, const char *section,
   w.length = sizeof w;
   if (!GetWindowPlacement (hwnd, &w))
     return;
+  if (xsymbol_value (Vfiler_save_window_snap_size) != Qnil)
+    adjust_snap_window_size (hwnd, w);
+
   char b[64];
   make_geometry_key (b, sizeof b, prefix);
 
