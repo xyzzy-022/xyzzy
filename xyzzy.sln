@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual C++ Express 2012
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xyzzy", "projects\xyzzy.vcxproj", "{0267AF5C-C0AC-43FF-87F9-F1C181012AB4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A2C59236-6E41-487F-AB4A-E988D1C627D8} = {A2C59236-6E41-487F-AB4A-E988D1C627D8}

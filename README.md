@@ -121,8 +121,8 @@ https://github.com/xyzzy はすでにアカウントが取られていたので 
 
 ### 環境
 
-  * Visual Studio Express 2012 for Windows Desktop
-    * <http://aka.ms/ExpressDsk>
+  * Visual C++ 2010 Express SP1
+    * <http://www.microsoft.com/japan/msdn/vstudio/express/>
   * msysGit
     * <http://code.google.com/p/msysgit/>
   * 7zip
