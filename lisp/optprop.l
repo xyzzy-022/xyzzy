@@ -715,7 +715,7 @@
 
 (add-option-prop-page
  'filer
- '(dialog 0 0 243 195
+ '(dialog 0 0 243 252
    (:caption "ファイラ")
    (:control
     (:button icon "アイコンをファイルから取ってくる(&I)" #x50010003 7 7 116 10)
@@ -723,23 +723,24 @@
     (:button savemask "マスクを保存する(&M)" #x50010003 7 19 76 10)
     (:button modeless "2画面ファイラをモードレスに(&L)" #x50010003 126 19 105 10)
     (:button comma "ファイルサイズをカンマ区切りで表示(&C)" #x50010003 7 31 130 10)
-    (:button hidden "隠しファイル、隠しフォルダ、または隠しドライブを表示しない(&H)" #x50010003 7 43 182 10)
-    (:button system "保護されたオペレーティング システム ファイルを表示しない(&J)" #x50010003 7 55 182 10)
-    (:button use-recycle-bin "ファイルの削除にゴミ箱を使用する(&G)" #x50010003 7 67 182 10)
-    (:button shell-operation "ファイルの移動・コピー・削除をエクスプローラに任せる(&W)" #x50010003 7 79 182 10)
-    (:button precious "ファイルを削除するときにもっと丁寧に確認して(&P)" #x50010003 7 91 159 10)
-    (:button rdonly "書込み禁止ファイルを何も言わずに消す(&R)" #x50010003 7 103 142 10)
-    (:button dosname "MS-DOSファイル名が重複したとき勝手にリネームする(&U)" #x50010003 7 115 182 10)
-    (:button nil "同名ファイルの確認のデフォルト" #x50000007 7 131 176 49)
-    (:button yes "する(&Y)" #x50030009 13 143 37 10)
-    (:button no "しない(&S)" #x50000009 54 143 42 10)
-    (:button newer "日付が新しければ(&N)" #x50000009 100 143 78 10)
-    (:button all "いちいち聞くな(&A)" #x50030003 13 155 66 10)
-    (:button makedefault "新しく選択されたものをデフォルトにする(&D)" #x50010003 13 167 140 10)
-    (:button nil "中にファイルがあるディレクトリを削除するとき" #x50000007 7 185 188 51)
-    (:button force "有無を言わさずに消す(&O)" #x50030009 13 197 90 10)
-    (:button firsttime "最初の一回だけ確認する(&F)" #x50000009 13 209 98 10)
-    (:button everytime "毎回確認する(&E)" #x50000009 13 221 65 10)))
+    (:button savesnapsize "エアロスナップでウィンドウサイズを変更した場合も保存(&X)" #x50010003 7 43 182 10)
+    (:button hidden "隠しファイル、隠しフォルダ、または隠しドライブを表示しない(&H)" #x50010003 7 55 182 10)
+    (:button system "保護されたオペレーティング システム ファイルを表示しない(&J)" #x50010003 7 67 182 10)
+    (:button use-recycle-bin "ファイルの削除にゴミ箱を使用する(&G)" #x50010003 7 79 182 10)
+    (:button shell-operation "ファイルの移動・コピー・削除をエクスプローラに任せる(&W)" #x50010003 7 91 182 10)
+    (:button precious "ファイルを削除するときにもっと丁寧に確認して(&P)" #x50010003 7 103 159 10)
+    (:button rdonly "書込み禁止ファイルを何も言わずに消す(&R)" #x50010003 7 115 142 10)
+    (:button dosname "MS-DOSファイル名が重複したとき勝手にリネームする(&U)" #x50010003 7 127 182 10)
+    (:button nil "同名ファイルの確認のデフォルト" #x50000007 7 143 176 49)
+    (:button yes "する(&Y)" #x50030009 13 155 37 10)
+    (:button no "しない(&S)" #x50000009 54 155 42 10)
+    (:button newer "日付が新しければ(&N)" #x50000009 100 155 78 10)
+    (:button all "いちいち聞くな(&A)" #x50030003 13 167 66 10)
+    (:button makedefault "新しく選択されたものをデフォルトにする(&D)" #x50010003 13 179 140 10)
+    (:button nil "中にファイルがあるディレクトリを削除するとき" #x50000007 7 197 188 51)
+    (:button force "有無を言わさずに消す(&O)" #x50030009 13 209 90 10)
+    (:button firsttime "最初の一回だけ確認する(&F)" #x50000009 13 221 98 10)
+    (:button everytime "毎回確認する(&E)" #x50000009 13 233 65 10)))
  #'(lambda ()
      (list (cons 'icon *filer-retrieve-icon*)
 	   (cons 'query *filer-query-before-process*)
@@ -748,6 +749,7 @@
 	   (cons 'modeless (not *filer-modal*))
 	   (cons 'comma *filer-format-comma*)
 	   (cons 'savemask *filer-save-file-mask*)
+	   (cons 'savesnapsize *filer-save-window-snap-size*)
 	   (cons 'dosname *rename-alternate-file-name*)
 	   (cons 'hidden (not *filer-show-hidden-files*))
 	   (cons 'system (not *filer-show-system-files*))
@@ -770,6 +772,7 @@
      (setq *filer-query-delete-precisely* (cdr (assoc 'precious data)))
      (setq *filer-delete-read-only-files* (cdr (assoc 'rdonly data)))
      (setq *filer-save-file-mask* (cdr (assoc 'savemask data)))
+     (setq *filer-save-window-snap-size* (cdr (assoc 'savesnapsize data)))
      (setq *rename-alternate-file-name* (cdr (assoc 'dosname data)))
      (setq *filer-show-hidden-files* (not (cdr (assoc 'hidden data))))
      (setq *filer-show-system-files* (not (cdr (assoc 'system data))))
@@ -808,6 +811,7 @@
    *filer-ask-same-name-all-default* *filer-ask-same-name-make-default*
    *filer-delete-read-only-files* *filer-delete-non-empty-directory*
    *filer-save-file-mask* *filer-modal* *filer-format-comma*
+   *filer-save-window-snap-size*
    *rename-alternate-file-name*
    *filer-show-hidden-files* *filer-show-system-files*
    *filer-use-recycle-bin*

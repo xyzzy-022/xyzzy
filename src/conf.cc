@@ -2,6 +2,7 @@
 #include "ed.h"
 #include "environ.h"
 #include "print.h"
+#include "monitor.h"
 
 #define DECLARE_CONF(NAME, VALUE) char NAME[] = VALUE;
 #include "conf.h"
@@ -273,6 +274,9 @@ conf_save_geometry (HWND hwnd, const char *section,
   w.length = sizeof w;
   if (!GetWindowPlacement (hwnd, &w))
     return;
+  if (xsymbol_value (Vfiler_save_window_snap_size) != Qnil)
+    adjust_snap_window_size (hwnd, w);
+
   char b[64];
   make_geometry_key (b, sizeof b, prefix);
 
@@ -284,6 +288,31 @@ conf_save_geometry (HWND hwnd, const char *section,
     }
 
   write_conf (section, b, w);
+}
+
+void
+adjust_snap_window_size (HWND hwnd, WINDOWPLACEMENT &w)
+{
+  if (w.showCmd != SW_SHOWNORMAL) return;
+
+  RECT r;
+  if (!GetWindowRect (hwnd, &r)) return;
+
+  w.rcNormalPosition.left = r.left;
+  w.rcNormalPosition.top = r.top;
+  w.rcNormalPosition.right = r.right;
+  w.rcNormalPosition.bottom = r.bottom;
+
+  MONITORINFO info;
+  if (monitor.get_monitorinfo_from_window (hwnd, &info))
+    {
+      int taskbar_width = info.rcWork.left - info.rcMonitor.left;
+      int taskbar_height = info.rcWork.top - info.rcMonitor.top;
+      w.rcNormalPosition.left -= taskbar_width;
+      w.rcNormalPosition.top -= taskbar_height;
+      w.rcNormalPosition.right -= taskbar_width;
+      w.rcNormalPosition.bottom -= taskbar_height;
+    }
 }
 
 void
