@@ -14,7 +14,7 @@ curl http://zlib.net/%ZLIBZIP% -o %ZLIBZIP%
 
 cd %ZLIBVER%
 
-call "%VS100COMNTOOLS%\vsvars32.bat"
+call "%VS120COMNTOOLS%\vsvars32.bat"
 
 nmake -f win32/Makefile.msc LOC=-MT
 copy zlib.lib %ZLIBDIST%\Release
