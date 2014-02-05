@@ -1141,7 +1141,7 @@ lb: sb
 lisp
 Finteger_length (x) integer
 {
-s: {return make_fixnum (log2 (x >= 0 ? x : ~x));}
+s: {return make_fixnum (static_cast <long> (log2 (x >= 0 ? x : ~x)));}
 l: s
 b: {return make_fixnum (x->howlong ());}
 }
