@@ -1,8 +1,6 @@
 #include <windows.h>
 #include <malloc.h>
 
-#pragma data_seg (".text")
-
 typedef unsigned long u_long;
 typedef unsigned char u_char;
 
