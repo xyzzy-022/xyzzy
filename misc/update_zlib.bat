@@ -5,8 +5,8 @@ cd /d %~dp0
 REM src/zlib を更新します
 REM curl.exe, 7za.exe が必要です。
 
-set ZLIBVER=zlib-1.2.7
-set ZLIBZIP=zlib127.zip
+set ZLIBVER=zlib-1.2.8
+set ZLIBZIP=zlib128.zip
 set ZLIBDIST=%~dp0\..\src\zlib
 
 curl http://zlib.net/%ZLIBZIP% -o %ZLIBZIP%
