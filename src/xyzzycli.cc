@@ -3,8 +3,6 @@
 #include "xyzzycli.h"
 #include "listen.h"
 
-#pragma data_seg (".text")
-
 #define PACK_VERSION(MAJ, MIN) MAKELONG ((MIN), (MAJ))
 
 #ifndef SPI_GETFOREGROUNDLOCKTIMEOUT

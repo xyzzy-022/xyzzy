@@ -931,7 +931,7 @@ round (bignum_rep *&q, bignum_rep *&r,
 inline long
 bignum_rep::log2 () const
 {
-  return br_len ? (br_len - 1) * BR_SHIFT + ::log2 (br_data[br_len - 1]) : 0;
+  return static_cast <long> (br_len ? (br_len - 1) * BR_SHIFT + ::log2 (br_data[br_len - 1]) : 0);
 }
 
 long
@@ -949,7 +949,7 @@ bignum_rep::howlong () const
       if (i < 0)
         x--;
     }
-  return (br_len - 1) * BR_SHIFT + ::log2 (x);
+  return static_cast <long> ((br_len - 1) * BR_SHIFT + ::log2 (x));
 }
 
 static bignum_rep *
@@ -1390,7 +1390,7 @@ ato_bignum_rep (bignum_rep *&br, const Char *p, int pl, int radix)
 {
   static bignum_rep_long brl (0);
   const Char *pe = p + pl;
-  int width = pl * log2 (radix) / BR_SHIFT + 1;
+  int width = static_cast <int> (pl * log2 (radix) / BR_SHIFT + 1);
   bignum_rep *rep;
   if (width <= SHORT_PER_LONG)
     {
