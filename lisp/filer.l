@@ -1073,7 +1073,7 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
 	(add-history from '*filer-rename-regexp-from-history*)
 	(add-history to '*filer-rename-regexp-to-history*)
 	(let ((matches (mapcan #'(lambda (filename)
-				   (let* ((name (file-namestring filename)))
+				   (let* ((name (file-namestring (remove-trail-slash filename))))
 				     (when (string-matchp from name)
 				       (let ((r (string-replace-match name to)))
 					 (when (and r (string/= r ""))
@@ -1092,7 +1092,7 @@ K:mkdir  L:ドライブ  M:移動  N:ファイル名  O:圧縮  P:DIR??"
 			(list (cons 'list
 				    (mapcar #'(lambda (x)
 						(format nil "~A -> ~A"
-							(file-namestring (car x))
+							(file-namestring (remove-trail-slash (car x)))
 							(let ((l (string/= dir (cdr x))))
 							  (if l (subseq (cdr x) l) (cdr x)))))
 					    matches)))
