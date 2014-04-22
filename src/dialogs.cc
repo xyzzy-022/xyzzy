@@ -232,11 +232,92 @@ get_selected_item (HWND list)
   return 0;
 }
 
-static int CALLBACK
-compare_buffer (LPARAM p1, LPARAM p2, LPARAM param)
+
+class select_buffer_comparator
+{
+private:
+  enum buffer_list_sort_flags
+    {
+      SORT_NAME,
+      SORT_SIZE,
+      SORT_MODE,
+      SORT_FILE,
+      SORT_INDEX_MASK = 3,
+    };
+
+  // SORT FLAGS
+  //
+  //         0
+  // 765432 10
+  // nnnnnn tt
+  // ------ --
+  //    \    \__ Sort Type (Name, Size, Mode, File)
+  //     \ _____ Reserved
+  int c_sort_flags;
+  Buffer *c_selected_buffer;
+
+public:
+  static int CALLBACK compare_buffer (LPARAM p1, LPARAM p2, LPARAM param);
+  static select_buffer_comparator *get_comparator (HWND dlg);
+
+  select_buffer_comparator ()
+       : c_selected_buffer (nullptr),
+         c_sort_flags (SORT_NAME)
+    {
+      lisp save_flags = xsymbol_value (Vsave_buffer_list_sort_flags);
+      lisp last_flags = xsymbol_value (Vlast_buffer_list_sort_flags);
+
+      if (save_flags != Qnil && last_flags != Qnil)
+        {
+          // initialize by last settings
+          if (fixnump (last_flags))
+            c_sort_flags = fixnum_value (last_flags);
+        }
+      else
+        {
+          // initialize by default settings
+          lisp v = xsymbol_value (Vbuffer_list_sort_type);
+          if (fixnump (v))
+            set_sort_type (fixnum_value (v));
+        }
+    }
+
+  int sort_type () { return c_sort_flags & SORT_INDEX_MASK; }
+  void set_sort_type (int type)
+    {
+      c_sort_flags = (c_sort_flags & ~SORT_INDEX_MASK) | (type & SORT_INDEX_MASK);
+    }
+
+  int &sort_flags () { return c_sort_flags; }
+  Buffer *&selected_buffer () { return c_selected_buffer; }
+
+  int compare_buffer (LPARAM p1, LPARAM p2);
+  void sort_items (HWND list);
+
+private:
+  void save_sort_item ();
+};
+
+int CALLBACK
+select_buffer_comparator::compare_buffer (LPARAM p1, LPARAM p2, LPARAM param)
+{
+  select_buffer_comparator *comparator = reinterpret_cast <select_buffer_comparator *> (param);
+  return comparator->compare_buffer (p1, p2);
+}
+
+select_buffer_comparator *
+select_buffer_comparator::get_comparator (HWND dlg)
+{
+  return reinterpret_cast <select_buffer_comparator *> (GetWindowLong (dlg, DWL_USER));
+}
+
+int
+select_buffer_comparator::compare_buffer (LPARAM p1, LPARAM p2)
 {
   Buffer *b1 = (Buffer *)p1;
   Buffer *b2 = (Buffer *)p2;
+  int param = sort_type ();
+
   if (xsymbol_value (Vsort_buffer_list_by_created_order) != Qnil)
     return b1->b_create_count - b2->b_create_count;
   for (int item = param, next = 0; item < 4; item = next++)
@@ -292,15 +373,27 @@ compare_buffer (LPARAM p1, LPARAM p2, LPARAM param)
   return 0;
 }
 
-static void
-sort_items (HWND list, int param)
+void
+select_buffer_comparator::sort_items (HWND list)
 {
   if (xsymbol_value (Vsort_buffer_list_by_created_order) == Qnil)
-    ListView_SetSortMark (list, param, LVSM_DOWN);
-  ListView_SortItems (list, compare_buffer, param);
+    ListView_SetSortMark (list, sort_type (), LVSM_DOWN);
+
+  ListView_SortItems (list, select_buffer_comparator::compare_buffer, this);
   int i = lv_find_selected_item (list);
   if (i >= 0)
     ListView_EnsureVisible (list, i, 0);
+
+  save_sort_item ();
+}
+
+void
+select_buffer_comparator::save_sort_item ()
+{
+  if (xsymbol_value (Vsave_buffer_list_sort_flags) == Qnil)
+    xsymbol_value (Vlast_buffer_list_sort_flags) = Qnil;
+  else
+    xsymbol_value (Vlast_buffer_list_sort_flags) = make_fixnum (sort_flags ());
 }
 
 static void
@@ -325,13 +418,13 @@ resize_child_window (HWND dlg, UINT id, int dx, int dy)
                 SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER);
 }
 
-
 static BOOL CALLBACK
 select_buffer_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   static const char cfgBufferSelector[] = "BufferSelector";
   static RECT init_rect;
   static RECT last_rect;
+  select_buffer_comparator *comparator = nullptr;
 
   switch (msg)
     {
@@ -343,7 +436,8 @@ select_buffer_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
       set_window_icon (dlg);
       SetWindowLong (dlg, DWL_USER, lparam);
       buffer_list_init (GetDlgItem (dlg, IDC_LIST));
-      sort_items (GetDlgItem (dlg, IDC_LIST), 0);
+      comparator = reinterpret_cast <select_buffer_comparator *> (lparam);
+      comparator->sort_items (GetDlgItem (dlg, IDC_LIST));
       ImmAssociateContext (GetDlgItem (dlg, IDC_LIST), 0);
       return 1;
 
@@ -362,7 +456,12 @@ select_buffer_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
               {
               case LVN_COLUMNCLICK:
                 if (xsymbol_value (Vsort_buffer_list_by_created_order) == Qnil)
-                  sort_items (nm->hwndFrom, ((NM_LISTVIEW *)nm)->iSubItem);
+                  {
+                    comparator = select_buffer_comparator::get_comparator (dlg);
+                    int sort_type = ((NM_LISTVIEW *)nm)->iSubItem;
+                    comparator->set_sort_type (sort_type);
+                    comparator->sort_items (nm->hwndFrom);
+                  }
                 return 1;
 
               case NM_DBLCLK:
@@ -382,7 +481,8 @@ select_buffer_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
             Buffer *bp = get_selected_item (GetDlgItem (dlg, IDC_LIST));
             if (!bp)
               return 1;
-            *(Buffer **)GetWindowLong (dlg, DWL_USER) = bp;
+            comparator = select_buffer_comparator::get_comparator (dlg);
+            comparator->selected_buffer () = bp;
             EndDialog (dlg, IDOK);
             return 1;
           }
@@ -431,13 +531,13 @@ select_buffer_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 lisp
 Fbuffer_selector ()
 {
-  Buffer *bp = 0;
+  select_buffer_comparator comparator;
   int r = DialogBoxParam (app.hinst, MAKEINTRESOURCE (IDD_SELECT_BUFFER),
-                          get_active_window (), select_buffer_proc, LPARAM (&bp));
+                          get_active_window (), select_buffer_proc, LPARAM (&comparator));
   Fdo_events ();
   if (r != IDOK)
     QUIT;
-  return r == IDOK ? bp->lbp : Qnil;
+  return r == IDOK ? comparator.selected_buffer ()->lbp : Qnil;
 }
 
 static int

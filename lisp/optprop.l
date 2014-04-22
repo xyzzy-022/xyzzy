@@ -382,6 +382,11 @@
 (register-history-variable
  '(auto-save *auto-save-interval* *auto-save-interval-timer*))
 
+(defconstant *buffer-list-sort-by-name* 0)
+(defconstant *buffer-list-sort-by-size* 1)
+(defconstant *buffer-list-sort-by-mode* 2)
+(defconstant *buffer-list-sort-by-file* 3)
+
 (add-option-prop-page
  'misc
  '(dialog 0 0 198 195
@@ -397,21 +402,27 @@
     (:button halfpage "ページスクロールは半画面ずつ(&P)" #x50010003 7 84 116 10)
     (:button sortc "バッファリストを作成順にソートする(&C)" #x50010003 7 95 126 10)
     (:button bsort "バッファリストを大文字小文字を区別しないでソートする(&B)" #x50010003 7 106 184 10)
-    (:static nil "スクロールマージン(&R):" #x50020000 7 124 68 8)
-    (:edit margin nil #x50810086 119 121 39 14)
-    (:spin marginspin nil #x500000b6 158 120 9 14)
-    (:static nil "アンドゥの回数(&U):" #x50020000 7 138 54 8)
-    (:edit undo nil #x50810086 119 135 39 14)
-    (:spin undospin nil #x500000b6 158 134 9 14)
-    (:static nil "ヒストリの個数(&H):" #x50020000 7 152 53 8)
-    (:edit hist nil #x50810086 119 149 39 14)
-    (:spin histspin nil #x500000b6 158 148 9 14)
-    (:static nil "保存するヒストリの個数(&S):" #x50020000 7 166 79 8)
-    (:edit savehist nil #x50810086 119 163 39 14)
-    (:spin savehistspin nil #x500000b6 158 163 9 14)
-    (:static nil "メニューに表示するファイル履歴(&M):" #x50020000 7 180 106 8)
-    (:edit menuhist nil #x50810086 119 177 39 14)
-    (:spin menuhistspin nil #x500000b6 158 177 9 14)))
+    (:button save-sort-flags "バッファリストで指定したソート方法を保存する(&T)" #x50010003 7 117 184 10)
+    (:button nil "バッファリストのソート方法のデフォルト" #x50000007 11 130 200 28)
+    (:button sort-by-buffer-name "バッファ名(&W)" #x50030009 16 141 48 10)
+    (:button sort-by-buffer-size "サイズ(&X)" #x50000009 66 141 42 10)
+    (:button sort-by-buffer-mode "モード(&Y)" #x50000009 110 141 44 10)
+    (:button sort-by-buffer-file "ファイル名(&Z)" #x50000009 156 141 50 10)
+    (:static nil "スクロールマージン(&R):" #x50020000 7 163 68 8)
+    (:edit margin nil #x50810086 119 160 39 14)
+    (:spin marginspin nil #x500000b6 158 159 9 14)
+    (:static nil "アンドゥの回数(&U):" #x50020000 7 177 54 8)
+    (:edit undo nil #x50810086 119 174 39 14)
+    (:spin undospin nil #x500000b6 158 173 9 14)
+    (:static nil "ヒストリの個数(&H):" #x50020000 7 191 53 8)
+    (:edit hist nil #x50810086 119 188 39 14)
+    (:spin histspin nil #x500000b6 158 187 9 14)
+    (:static nil "保存するヒストリの個数(&S):" #x50020000 7 205 79 8)
+    (:edit savehist nil #x50810086 119 202 39 14)
+    (:spin savehistspin nil #x500000b6 158 202 9 14)
+    (:static nil "メニューに表示するファイル履歴(&M):" #x50020000 7 219 106 8)
+    (:edit menuhist nil #x50810086 119 216 39 14)
+    (:spin menuhistspin nil #x500000b6 158 216 9 14)))
  #'(lambda ()
      (list (cons 'ime *ime-control*)
 	   (cons 'saveime *save-buffer-ime-mode*)
@@ -423,12 +434,19 @@
 	   (cons 'halfpage *page-scroll-half-window*)
 	   (cons 'bsort *buffer-list-sort-ignore-case*)
 	   (cons 'sortc *sort-buffer-list-by-created-order*)
+	   (cons 'save-sort-flags *save-buffer-list-sort-flags*)
+	   (cons 'sort-by-buffer-name (member *buffer-list-sort-type* '(nil *buffer-list-sort-by-name*)))
+	   (cons 'sort-by-buffer-size (eq *buffer-list-sort-type* *buffer-list-sort-by-size*))
+	   (cons 'sort-by-buffer-mode (eq *buffer-list-sort-type* *buffer-list-sort-by-mode*))
+	   (cons 'sort-by-buffer-file (eq *buffer-list-sort-type* *buffer-list-sort-by-file*))
 	   (cons 'histspin *minibuffer-maximum-history-count*)
 	   (cons 'savehistspin *save-history*)
 	   (cons 'menuhistspin *menu-history-max*)
 	   (cons 'marginspin (default-value '*scroll-margin*))
 	   (cons 'undospin (default-value 'kept-undo-information))))
- '((sortc :disable (bsort))
+ '((sortc :disable (bsort save-sort-flags
+			  sort-by-buffer-name sort-by-buffer-size
+			  sort-by-buffer-mode sort-by-buffer-file))
    (marginspin :min 0 :max 1000)
    (margin :min 0 :range-error "0以上を指定してください"
 	   :type integer :type-error "数値を入力してください")
@@ -457,6 +475,13 @@
      (setq *page-scroll-half-window* (cdr (assoc 'halfpage data)))
      (setq *buffer-list-sort-ignore-case* (cdr (assoc 'bsort data)))
      (setq *sort-buffer-list-by-created-order* (cdr (assoc 'sortc data)))
+     (setq *save-buffer-list-sort-flags* (cdr (assoc 'save-sort-flags data)))
+     (setq *buffer-list-sort-type*
+	   (cond ((cdr (assoc 'sort-by-buffer-name data)) *buffer-list-sort-by-name*)
+		 ((cdr (assoc 'sort-by-buffer-size data)) *buffer-list-sort-by-size*)
+		 ((cdr (assoc 'sort-by-buffer-mode data)) *buffer-list-sort-by-mode*)
+		 ((cdr (assoc 'sort-by-buffer-file data)) *buffer-list-sort-by-file*)
+		 (t *buffer-list-sort-by-name*)))
      (setq *minibuffer-maximum-history-count* (cdr (assoc 'hist data)))
      (let ((margin (cdr (assoc 'margin data)))
 	   (omargin (default-value '*scroll-margin*)))
@@ -570,6 +595,9 @@
    *beep-on-never* *beep-on-warn* *save-history* *menu-history-max*
    kept-undo-information *buffer-list-sort-ignore-case*
    *sort-buffer-list-by-created-order*
+   *last-buffer-list-sort-flags*
+   *save-buffer-list-sort-flags*
+   *buffer-list-sort-type*
    *brackets-is-wildcard-character*
    *save-resume-info* *enable-D&D-edit* *select-match* *reverse-match*
    *no-wrap-search-on-kbd-macro* *sync-kill-ring-with-clipboard*
