@@ -243,16 +243,18 @@ private:
       SORT_MODE,
       SORT_FILE,
       SORT_INDEX_MASK = 3,
+      SORT_REV = 1 << 2,
     };
 
   // SORT FLAGS
   //
-  //         0
-  // 765432 10
-  // nnnnnn tt
-  // ------ --
-  //    \    \__ Sort Type (Name, Size, Mode, File)
-  //     \ _____ Reserved
+  //          0
+  // 76543 2 10
+  // nnnnn r tt
+  // ----- | --
+  //   \   \  \__ Sort Type (Name, Size, Mode, File)
+  //    \   \____ Reverse Sort Flag
+  //     \_______ Reserved
   int c_sort_flags;
   Buffer *c_selected_buffer;
 
@@ -279,6 +281,7 @@ public:
           lisp v = xsymbol_value (Vbuffer_list_sort_type);
           if (fixnump (v))
             set_sort_type (fixnum_value (v));
+          set_reverse (xsymbol_value (Vbuffer_list_sort_reverse) != Qnil);
         }
     }
 
@@ -286,6 +289,15 @@ public:
   void set_sort_type (int type)
     {
       c_sort_flags = (c_sort_flags & ~SORT_INDEX_MASK) | (type & SORT_INDEX_MASK);
+    }
+
+  bool reverse () { return (c_sort_flags & SORT_REV) ? true : false; }
+  void set_reverse (bool on)
+    {
+      if (on)
+        c_sort_flags |= SORT_REV;
+      else
+        c_sort_flags &= ~SORT_REV;
     }
 
   int &sort_flags () { return c_sort_flags; }
@@ -302,7 +314,8 @@ int CALLBACK
 select_buffer_comparator::compare_buffer (LPARAM p1, LPARAM p2, LPARAM param)
 {
   select_buffer_comparator *comparator = reinterpret_cast <select_buffer_comparator *> (param);
-  return comparator->compare_buffer (p1, p2);
+  int d = comparator->compare_buffer (p1, p2);
+  return comparator->reverse () ? -d : d;
 }
 
 select_buffer_comparator *
@@ -377,7 +390,10 @@ void
 select_buffer_comparator::sort_items (HWND list)
 {
   if (xsymbol_value (Vsort_buffer_list_by_created_order) == Qnil)
-    ListView_SetSortMark (list, sort_type (), LVSM_DOWN);
+    {
+      int direction = reverse () ? LVSM_UP : LVSM_DOWN;
+      ListView_SetSortMark (list, sort_type (), direction);
+    }
 
   ListView_SortItems (list, select_buffer_comparator::compare_buffer, this);
   int i = lv_find_selected_item (list);
@@ -459,7 +475,15 @@ select_buffer_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
                   {
                     comparator = select_buffer_comparator::get_comparator (dlg);
                     int sort_type = ((NM_LISTVIEW *)nm)->iSubItem;
-                    comparator->set_sort_type (sort_type);
+                    if (comparator->sort_type () == sort_type)
+                      {
+                        comparator->set_reverse (!comparator->reverse ());
+                      }
+                    else
+                      {
+                        comparator->set_sort_type (sort_type);
+                        comparator->set_reverse (false);
+                      }
                     comparator->sort_items (nm->hwndFrom);
                   }
                 return 1;
