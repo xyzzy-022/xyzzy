@@ -131,7 +131,7 @@ charclass::copy (Char *b, cc &f, int size) const
   return b;
 }
 
-#define INFINITY (CHAR_LIMIT - 1)
+#define REPEAT_INFINITY (CHAR_LIMIT - 1)
 
 class regexp_compile
 {
@@ -662,13 +662,13 @@ regexp_compile::compile (const Char *pattern, int size)
         case '*':
           if (!r_last_start)
             goto normal_char;
-          b = closure (b, 0, INFINITY, check_postfix (p, pe));
+          b = closure (b, 0, REPEAT_INFINITY, check_postfix (p, pe));
           break;
 
         case '+':
           if (!r_last_start)
             goto normal_char;
-          b = closure (b, 1, INFINITY, check_postfix (p, pe));
+          b = closure (b, 1, REPEAT_INFINITY, check_postfix (p, pe));
           break;
 
         case '?':
@@ -717,13 +717,13 @@ regexp_compile::compile (const Char *pattern, int size)
                           if (c < '0' || c > '9')
                             break;
                           maxrep = maxrep * 10 + c - '0';
-                          maxrep = min (maxrep, INFINITY);
+                          maxrep = min (maxrep, REPEAT_INFINITY);
                         }
                       if (p == op2 + 1)
                         {
                           if (p == op + 2)
                             error (Ere_malformed_repeat_count);
-                          maxrep = INFINITY;
+                          maxrep = REPEAT_INFINITY;
                         }
                     }
                   else
@@ -1631,7 +1631,7 @@ Regexp::end_save_regs (int n, point_t point)
 inline int
 Regexp::repeat_max (Char n)
 {
-  return n == INFINITY ? INT_MAX - 1 : n;
+  return n == REPEAT_INFINITY ? INT_MAX - 1 : n;
 }
 
 inline int
