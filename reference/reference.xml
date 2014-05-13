@@ -2718,8 +2718,8 @@ make-processで外部コマンドを実行するときのxyzzyenv.exeの
 補足：
   xyzzy 0.2.2.242 から利用可能です。
 </description>
-<section>変数と定数</section>
 <seealso>make-process</seealso>
+<section>変数と定数</section>
 <file></file>
 </chapter>
 
@@ -7126,8 +7126,8 @@ set-text-attribute で設定した属性を全部消します
 <description>
 入力ストリームにバッファリングされている入力をクリアします。
 </description>
-<section>入出力</section>
 <seealso>open</seealso>
+<section>入出力</section>
 <file>builtin.l</file>
 </chapter>
 
@@ -7181,8 +7181,8 @@ UNDO情報から直近の境界を削除します。
         t       ストリームに対する副作用を取り消そうとします。
         nil     ストリーム普通に終了します。
 </description>
-<section>入出力</section>
 <seealso>open</seealso>
+<section>入出力</section>
 <file>builtin.l</file>
 </chapter>
 
@@ -15952,7 +15952,8 @@ killした内容は*kill-ring*ともクリップボードとも違う領域に�
 </description>
 <seealso>copy-rectangle-selection</seealso>
 <seealso>kill-rectangle</seealso>
-<seealso>operate-on-rectangle-selection</seealso><link></link>
+<seealso>operate-on-rectangle-selection</seealso>
+<link></link>
 <section>リージョン</section>
 <file>select.l</file>
 </chapter>
@@ -24412,8 +24413,8 @@ get-buffer-file-nameの戻り値がnilの場合）に限り、
 補足：
   xyzzy 0.2.2.236 から利用可能です。
 </description>
-<section>バッファ</section>
 <seealso>set-buffer-colors</seealso>
+<section>バッファ</section>
 <file>builtin.l</file>
 </chapter>
 
@@ -26549,8 +26550,8 @@ Windows 7以降のタスクバーではこのアプリケーションIDを元に
 備考：
   xyzzy 0.2.2.239 から利用可能です。
 </description>
-<section>データ型</section>
 <seealso>si:list-builtin-packages</seealso>
+<section>データ型</section>
 <file>package.l</file>
 </chapter>
 
@@ -39424,6 +39425,7 @@ INTEGERの1の補数(2進数表現で0と1を反転させたもの)を返しま�
 
 <chapter>
 <title>logandc1</title>
+<type>Function</type
 <arguments>logandc1 X Y</arguments>
 <package>lisp</package>
 <description>
@@ -39444,6 +39446,7 @@ Xの1の補数 と Y のビット毎の論理積を返します。
 
 <chapter>
 <title>logandc2</title>
+<type>Function</type
 <arguments>logandc2 X Y</arguments>
 <package>lisp</package>
 <description>
@@ -40933,9 +40936,9 @@ STREAMがすでにSSLストリームなら何もせずnilを返します。
 補足：
   xyzzy 0.2.2.248 から利用可能です。
 </description>
-<section>入出力</section>
 <seealso>connect</seealso>
 <seealso>socket-stream-ssl-p</seealso>
+<section>入出力</section>
 <file>builtin.l</file>
 </chapter>
 
