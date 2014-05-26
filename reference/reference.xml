@@ -39425,7 +39425,7 @@ INTEGERの1の補数(2進数表現で0と1を反転させたもの)を返しま�
 
 <chapter>
 <title>logandc1</title>
-<type>Function</type
+<type>Function</type>
 <arguments>logandc1 X Y</arguments>
 <package>lisp</package>
 <description>
@@ -39446,7 +39446,7 @@ Xの1の補数 と Y のビット毎の論理積を返します。
 
 <chapter>
 <title>logandc2</title>
-<type>Function</type
+<type>Function</type>
 <arguments>logandc2 X Y</arguments>
 <package>lisp</package>
 <description>
