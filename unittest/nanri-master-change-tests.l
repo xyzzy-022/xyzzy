@@ -1154,6 +1154,10 @@
   (calendar-japanese-holiday-spec 2008 5 6)
   => "振替休日")
 
+(deftest fix-calendar-04 ()
+  "calendar の祝日を現行法に合わせる"
+  (calendar-japanese-holiday-spec 2016 8 11)
+  => "山の日")
 
 ;; 	* lisp : fix typo in lisp/timestmp.l.
 ;; 	コメントのtypoを修正。
