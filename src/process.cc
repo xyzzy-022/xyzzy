@@ -5,6 +5,7 @@
 #include "byte-stream.h"
 #include "mainframe.h"
 
+
 class EnvStrings
 {
   char *e_env;
@@ -87,14 +88,14 @@ EnvStrings::setup (lisp lenv)
         }
     }
 
-  for (char **e = environ; *e; e++, n++)
+  for (char **e = _environ; *e; e++, n++)
     ;
 
   l = (l + sizeof (char **) - 1) / sizeof (char **) * sizeof (char **);
   e_buf = (char *)xmalloc (l + sizeof (char **) * n);
   char **nb = (char **)(e_buf + l);
   char **ne = nb;
-  for (char **e = environ; *e; e++, ne++)
+  for (char **e = _environ; *e; e++, ne++)
     *ne = *e;
 
   char *b = e_buf;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Manifest File Schema
+     https://docs.microsoft.com/en-us/windows/desktop/sbscs/manifest-file-schema -->
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1"
+          manifestVersion="1.0"
+          xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" >
+  <asmv3:application>
+    <!-- https://docs.microsoft.com/en-us/windows/desktop/sbscs/application-manifests -->
+    <asmv3:windowsSettings>
+      <!-- Per Monitor V1 [OS >= Windows 10 Anniversary Update (1607, 10.0.14393, Redstone 1)]
+           Values: Unaware, System, PerMonitor 
+           "dpiAwareness" があるときは "dpiAware" は無視される。従って, V1 の記述も必要. -->
+      <!-- Per Monitor V2 [OS >= Windows 10 Creators Update (1703, 10.0.15063, Redstone 2)]
+           Value: PerMonitorV2 -->
+      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">
+	      PerMonitorV2, PerMonitor</dpiAwareness>
+      <!-- Per Monitor V1 [OS >= Windows 8.1] 
+           Values: False, True, Per-monitor, True/PM -->
+      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
+	      true/PM</dpiAware>
+    </asmv3:windowsSettings>
+  </asmv3:application>
+</assembly>

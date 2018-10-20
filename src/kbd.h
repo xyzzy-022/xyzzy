@@ -4,6 +4,8 @@
 #include "reconv.h"
 #include "gime.h"
 
+#pragma warning(disable:4302)
+
 class kbd_macro_context;
 
 class kbd_queue
@@ -129,7 +131,8 @@ public:
   int kbd_mblead_p (int) const;
   static const class FontObject &kbd_encoding_font ();
   LANGID get_kbd_langid () const
-    {return LANGID (get_kbd_layout ());}
+    { // ‰º16bit ‚Í LANGID. warning C4302 ‚Í–â‘è‚È‚¢.
+      return LANGID (get_kbd_layout ());}
   HKL get_kbd_layout () const;
   int ime_property () const {return ime_prop;}
   int unicode_kbd_p () const {return unicode_kbd;}

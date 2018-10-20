@@ -1,6 +1,8 @@
 #ifndef _environ_h_
 # define _environ_h_
 
+#undef environ // <stdlib.h> ‚Ìƒ}ƒNƒ‚ğE‚·
+
 class environ
 {
 public:

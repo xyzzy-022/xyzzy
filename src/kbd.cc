@@ -971,7 +971,7 @@ HKL
 kbd_queue::get_kbd_layout () const
 {
   if (GetKeyboardLayout)
-    return GetKeyboardLayout (0);
+    return GetKeyboardLayout(0); // 0=current thread
 
   char b[KL_NAMELENGTH];
   if (GetKeyboardLayoutName (b))

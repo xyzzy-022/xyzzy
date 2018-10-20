@@ -5,9 +5,18 @@
 
 #pragma once
 
+#define STRICT 1
+#define WIN32_LEAN_AND_MEAN 1
+
 #include "targetver.h"
 
 #include <windows.h>
+
+#include <shellapi.h> // HDROP
+#include <wincrypt.h> // HCRYPTPROV
+#include <commdlg.h> // PRINTDLG, CHOOSEFONT
+#include <cderr.h>
+#include <WinIoCtl.h> // FSCTL_LOCK_VOLUME
 
 #include <commctrl.h>
 #include <ctype.h>
@@ -44,8 +53,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
-#include <windows.h>
-#include <winioctl.h>
+//#include <windows.h>
+//#include <winioctl.h>
 #include <winreg.h>
 #include <winsock.h>
 #include <wtypes.h>

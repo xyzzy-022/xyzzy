@@ -842,4 +842,7 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="xyzzy.manifest" />
+  </ItemGroup>
 </Project>
