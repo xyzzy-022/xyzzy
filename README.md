@@ -111,24 +111,16 @@ https://github.com/xyzzy はすでにアカウントが取られていたので 
 ----
 
 ## サポート OS
-
-  * Windows XP SP3 以降をサポート
-
+  * Windows 10 
 
 ----
 
 ## ビルド方法
 
 ### 環境
-
-  * Visual Studio Express 2013 for Windows Desktop
-    * <http://www.microsoft.com/ja-jp/download/details.aspx?id=40787>
-  * msysGit
-    * <http://code.google.com/p/msysgit/>
-  * 7zip
-    * <http://www.7-zip.org/>
-    * リリース作業時のみ
-    * 7za.exe をパスの通ったところに置く
+  * Visual Studio 2017 Community Edition
+  * Git
+  * tar
 
 ### 手順
 
