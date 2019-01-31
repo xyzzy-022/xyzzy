@@ -74,7 +74,7 @@
       <BrowseInformation>true</BrowseInformation>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <LanguageStandard>std:c++17</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)src\gen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
