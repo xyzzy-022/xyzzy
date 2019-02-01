@@ -929,7 +929,8 @@ NormalProcess::create (lisp command, lisp execdir, const char *env, int show)
   int result = CreateProcess (0, cmdline, 0, 0, 1,
                               (CREATE_NEW_PROCESS_GROUP
                                | CREATE_DEFAULT_ERROR_MODE
-                               | NORMAL_PRIORITY_CLASS),
+                               | NORMAL_PRIORITY_CLASS
+                               | CREATE_NO_WINDOW),
                               (void *)env, dir, &si, &pi);
   int error = GetLastError ();
 
