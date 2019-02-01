@@ -499,7 +499,7 @@ void
 init_char_encoding ()
 {
   xsymbol_value (Vinternal_char_encoding_list) = Qnil;
-
+ 
   lisp ce;
 
   ce = make_char_encoding (encoding_auto_detect,
@@ -511,7 +511,14 @@ init_char_encoding ()
   xsymbol_value (Qencoding_sjis) = ce;
   xsymbol_value (Vencoding_sjis) = ce;
 
-  ce = Fmake_utf8_encoding(make_string("utf8"), make_string("UTF8"), make_string(""));
+  ce = Fmake_utf8_encoding(
+      make_string("utf8"), 
+      make_string("Unicode (UTF-8)"), 
+      make_list(
+          Kcjk, Kjp, 
+          Kwindows,Qt,
+          Ksignature,Qt,
+          0));
   xsymbol_value (Qencoding_utf8) = ce;
   xsymbol_value (Vencoding_utf8) = ce;
   
