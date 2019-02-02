@@ -1571,9 +1571,9 @@
      (find-file-auto-encoding-test0 "# vim:set fileencoding=utf-8 :" *encoding-utf8n*)
      (find-file-auto-encoding-test0 "#coding:utf-8" *encoding-utf8n*)
      ))
-  => "sjis"
-  => "sjis"
-  => "sjis")
+  => "utf8"
+  => "utf8"
+  => "utf8")
 
 
 (defun find-file-auto-xml-encoding-test (param encoding)
