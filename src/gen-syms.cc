@@ -1743,6 +1743,7 @@ static symbols ed[] =
   MAKE_SYMBOL2 (*before-delete-buffer-hook*),
   MAKE_SYMBOL2 (*delete-buffer-hook*),
   MAKE_SYMBOL2 (*default-fileio-encoding*),
+  MAKE_SYMBOL2 (*default-buffer-encoding*),
   MAKE_SYMBOL2 (*expected-fileio-encoding*),
   MAKE_SYMBOL2 (*default-eol-code*),
   MAKE_SYMBOL2 (*expected-eol-code*),

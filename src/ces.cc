@@ -522,8 +522,11 @@ init_char_encoding ()
   xsymbol_value (Qencoding_utf8) = ce;
   xsymbol_value (Vencoding_utf8) = ce;
   
-  xsymbol_value (Vdefault_fileio_encoding) = xsymbol_value (Vencoding_utf8);
+  xsymbol_value (Vdefault_fileio_encoding) = xsymbol_value (Vencoding_sjis);
   xsymbol_value (Vexpected_fileio_encoding) = xsymbol_value (Vencoding_auto);
+
+  xsymbol_value (Vdefault_buffer_encoding) = xsymbol_value(Vencoding_utf8);
+
 }
 
 static lisp
