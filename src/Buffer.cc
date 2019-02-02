@@ -148,7 +148,7 @@ Buffer::Buffer (lisp name, lisp filename, lisp dirname, int temporary)
     n = eol_crlf;
   b_eol_code = eol_code (n);
 
-  lchar_encoding = symbol_value_char_encoding (Vdefault_buffer_encoding);
+  lchar_encoding = symbol_value_char_encoding (Vdefault_fileio_encoding);
 
   b_selection_type = SELECTION_VOID;
   b_selection_point = NO_MARK_SET;

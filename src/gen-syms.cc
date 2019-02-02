@@ -1667,7 +1667,7 @@ static symbols unint[] =
 
   MAKE_SYMBOL2Q (encoding-sjis),
   MAKE_SYMBOL2Q (encoding-auto),
-  MAKE_SYMBOL2Q (encoding-utf8),
+  MAKE_SYMBOL2Q (encoding-utf8n),
 
   MAKE_SYMBOL2 (kbd-encoding),
   MAKE_SYMBOL2 (internal-char-encoding-list),
@@ -1743,7 +1743,6 @@ static symbols ed[] =
   MAKE_SYMBOL2 (*before-delete-buffer-hook*),
   MAKE_SYMBOL2 (*delete-buffer-hook*),
   MAKE_SYMBOL2 (*default-fileio-encoding*),
-  MAKE_SYMBOL2 (*default-buffer-encoding*),
   MAKE_SYMBOL2 (*expected-fileio-encoding*),
   MAKE_SYMBOL2 (*default-eol-code*),
   MAKE_SYMBOL2 (*expected-eol-code*),
@@ -2673,7 +2672,7 @@ static symbols ed[] =
   DEFUN3 (char-encoding-type, 1, 0, 0),
   DEFUN3 (char-encoding-signature, 1, 0, 0),
   DEFVAR2 (*encoding-sjis*),
-  DEFVAR2 (*encoding-utf8*),
+  DEFVAR2 (*encoding-utf8n*),
   MAKE_SYMBOL2 (*encoding-euc-jp*),
   MAKE_SYMBOL2 (*encoding-jis*),
   MAKE_SYMBOL2 (*encoding-default-utf16le-bom*),

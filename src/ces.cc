@@ -512,20 +512,17 @@ init_char_encoding ()
   xsymbol_value (Vencoding_sjis) = ce;
 
   ce = Fmake_utf8_encoding(
-      make_string("utf8"), 
-      make_string("Unicode (UTF-8)"), 
+      make_string("utf8n"), 
+      make_string("Unicode (UTF-8N)"), 
       make_list(
           Kcjk, Kjp, 
           Kwindows,Qt,
-          Ksignature,Qt,
           0));
-  xsymbol_value (Qencoding_utf8) = ce;
-  xsymbol_value (Vencoding_utf8) = ce;
+  xsymbol_value (Qencoding_utf8n) = ce;
+  xsymbol_value (Vencoding_utf8n) = ce;
   
-  xsymbol_value (Vdefault_fileio_encoding) = xsymbol_value (Vencoding_sjis);
+  xsymbol_value (Vdefault_fileio_encoding) = xsymbol_value (Vencoding_utf8n);
   xsymbol_value (Vexpected_fileio_encoding) = xsymbol_value (Vencoding_auto);
-
-  xsymbol_value (Vdefault_buffer_encoding) = xsymbol_value(Vencoding_utf8);
 
 }
 
