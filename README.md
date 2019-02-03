@@ -26,9 +26,9 @@ Emacs っぽいテキストエディタのようなものです。
 ## ビルド方法
 
 ### 環境
+  * Windows 10
   * Visual Studio 2017 Community Edition
   * Git
-  * tar
 
 ### 手順
 
