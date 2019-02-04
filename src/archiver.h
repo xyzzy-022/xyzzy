@@ -20,7 +20,7 @@ protected:
          ar_esuffixes (esuffixes), ar_rsuffixes (rsuffixes) {}
   int doit (HWND, const char *) const;
   int extract (HWND, const char *) const;
-  int extract_noresp (HWND, const char *, int, const char *) const;
+  int extract_noresp (HWND, const char *, long long, const char *) const;
   int extract (HWND, const char *, const char *, const char *,
                const char *, const char *, const char *) const;
   int extract1 (HWND, const char *, const char *, const char *,

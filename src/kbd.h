@@ -86,7 +86,7 @@ public:
 
   input_mode mode () const;
   int save_p () const;
-  int macro_is_running () const;
+  long long macro_is_running () const;
   int disablep () const;
   int idlep () const;
   void start_macro ();
@@ -164,10 +164,10 @@ kbd_queue::save_p () const
   return (current_mode & ~im_disable) == im_save;
 }
 
-inline int
+inline long long
 kbd_queue::macro_is_running () const
 {
-  return int (kbd_macro);
+  return long long (kbd_macro);
 }
 
 inline int

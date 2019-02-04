@@ -38,12 +38,13 @@ typedef unsigned char u_char;
 typedef unsigned short u_short;
 typedef unsigned int u_int;
 typedef unsigned long u_long;
+typedef unsigned long long u_longlong;
 
 typedef u_char u_int8_t;
 typedef u_short u_int16_t;
 typedef u_long u_int32_t;
 
-typedef u_long pointer_t;
+typedef u_longlong pointer_t;
 
 typedef u_int16_t Char;
 # define CHAR_LIMIT 0x10000

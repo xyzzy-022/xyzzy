@@ -39,20 +39,20 @@ make_long_int (long x)
 inline int
 short_int_p (lisp x)
 {
-  return (u_long (x) & SHORT_INT_TEST_BITS) == Lshort_int;
+  return (u_longlong (x) & SHORT_INT_TEST_BITS) == Lshort_int;
 }
 
 inline lisp
 make_short_int (long x)
 {
-  return lisp ((u_long (x) << LSHORT_INT_SHIFT) | Lshort_int);
+  return lisp ((u_longlong (x) << LSHORT_INT_SHIFT) | Lshort_int);
 }
 
-inline long
+inline long long
 xshort_int_value (lisp x)
 {
   assert (short_int_p (x));
-  return long (x) >> LSHORT_INT_SHIFT;
+  return long long (x) >> LSHORT_INT_SHIFT;
 }
 
 # include "bignum.h"
