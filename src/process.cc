@@ -558,7 +558,7 @@ Process::store_output (const Char *w, int l)
       r.data = w;
       r.size = l;
       r.done = 0;
-      DWORD result;
+      unsigned long long result;
 
       do
         if (SendMessageTimeout (app.toplev, WM_PRIVATE_PROCESS_OUTPUT,

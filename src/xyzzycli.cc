@@ -296,7 +296,7 @@ xmain (int argc, char **argv, const char *xyzzy, int multi_instance)
 
   ForceSetForegroundWindow (ls.hwnd);
 
-  int r = SendMessage (ls.hwnd, RegisterWindowMessage (xyzzysrv_name),
+  __int64 r = SendMessage (ls.hwnd, RegisterWindowMessage (xyzzysrv_name),
                        GetCurrentProcessId (), LPARAM (sv.handle ()));
   if (!r)
     return error (IDS_READ_FAILED);

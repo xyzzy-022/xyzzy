@@ -107,7 +107,7 @@ se_handler (u_int code, EXCEPTION_POINTERS *ep)
 static int
 get_section_name (void *base, void *p, char *buf, int size)
 {
-  DWORD nread;
+  unsigned long long nread;
   IMAGE_DOS_HEADER dos;
   if (!ReadProcessMemory (GetCurrentProcess (),
                           base, &dos, sizeof dos, &nread))
@@ -252,28 +252,28 @@ print_module_allocation (FILE *fp)
   putc ('\n', fp);
 }
 
-#ifdef _M_IX86
+#ifdef _M_X64
 static void
-x86_print_registers (FILE *fp, const CONTEXT &c)
+x64_print_registers (FILE *fp, const CONTEXT &c)
 {
   fprintf (fp, "Registers:\n");
-  fprintf (fp, "EAX: %08x  EBX: %08x  ECX: %08x  EDX: %08x  ESI: %08x\n",
-           c.Eax, c.Ebx, c.Ecx, c.Edx, c.Esi);
-  fprintf (fp, "EDI: %08x  ESP: %08x  EBP: %08x  EIP: %08x  EFL: %08x\n",
-           c.Edi, c.Esp, c.Ebp, c.Eip, c.EFlags);
+  fprintf (fp, "RAX: %08x  RBX: %08x  RCX: %08x  RDX: %08x  RSI: %08x\n",
+           c.Rax, c.Rbx, c.Rcx, c.Rdx, c.Rsi);
+  fprintf (fp, "RDI: %08x  RSP: %08x  RBP: %08x  RIP: %08x  EFL: %08x\n",
+           c.Rdi, c.Rsp, c.Rbp, c.Rip, c.EFlags);
   fprintf (fp, "CS: %04x  DS: %04x  ES: %04x  SS: %04x  FS: %04x  GS: %04x\n\n",
            c.SegCs, c.SegDs, c.SegEs, c.SegSs, c.SegFs, c.SegGs);
 
-  DWORD eip = c.Eip - 16;
+  unsigned long long rip = c.Rip - 16;
   for (int j = 0; j < 2; j++)
     {
-      fprintf (fp, "%08x:", eip);
-      for (int i = 0; i < 16; i++, eip++)
+      fprintf (fp, "%08x:", rip);
+      for (int i = 0; i < 16; i++, rip++)
         {
-          if (IsBadReadPtr ((void *)eip, 1))
+          if (IsBadReadPtr ((void *)rip, 1))
             fprintf (fp, " ??");
           else
-            fprintf (fp, " %02x", *(u_char *)eip);
+            fprintf (fp, " %02x", *(u_char *)rip);
         }
       putc ('\n', fp);
     }
@@ -281,33 +281,33 @@ x86_print_registers (FILE *fp, const CONTEXT &c)
 }
 
 static void
-x86_stack_dump (FILE *fp, const CONTEXT &c)
+x64_stack_dump (FILE *fp, const CONTEXT &c)
 {
   fprintf (fp, "Stack dump:\n");
-  DWORD esp = c.Esp, ebp = c.Ebp;
+  unsigned long long rsp = c.Rsp, rbp = c.Rbp;
 
   for (int i = 0; i < 64; i++)
     {
-      DWORD buf[16], nread;
-      if (!ReadProcessMemory (GetCurrentProcess (), (void *)esp,
+      unsigned long long buf[16], nread;
+      if (!ReadProcessMemory (GetCurrentProcess (), (void *)rsp,
                               buf, sizeof buf, &nread)
           || nread != sizeof buf)
         break;
       for (int j = 0; j < 16; j += 4)
         fprintf (fp, "%08x: %08x %08x %08x %08x\n",
-                 esp + j * 4, buf[j], buf[j + 1], buf[j + 2], buf[j + 3]);
+                 rsp + j * 4, buf[j], buf[j + 1], buf[j + 2], buf[j + 3]);
       fprintf (fp, "\n");
-      if (ebp <= esp || ebp & 3)
+      if (rbp <= rsp || rbp & 3)
         break;
-      esp = ebp;
-      if (!ReadProcessMemory (GetCurrentProcess (), (void *)esp,
-                              &ebp, sizeof ebp, &nread))
-        ebp = 0;
+      rsp = rbp;
+      if (!ReadProcessMemory (GetCurrentProcess (), (void *)rsp,
+                              &rbp, sizeof rbp, &nread))
+        rbp = 0;
 //      esp += sizeof ebp;
     }
 }
 
-#endif /* _M_IX86 */
+#endif /* _M_X64 */
 
 static int
 bad_object_p (FILE *fp, lisp object)
@@ -438,9 +438,9 @@ cleanup_exception ()
         fprintf (fp, " (%s)", module);
       fprintf (fp, "\n\n");
 
-#ifdef _M_IX86
-      x86_print_registers (fp, Win32Exception::c);
-      x86_stack_dump (fp, Win32Exception::c);
+#ifdef _M_X64
+      x64_print_registers (fp, Win32Exception::c);
+      x64_stack_dump (fp, Win32Exception::c);
 #else
 # error "yet"
 #endif

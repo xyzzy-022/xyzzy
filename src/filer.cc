@@ -1890,7 +1890,7 @@ Filer::Notify (NMHDR *nm)
           return 1;
 
         case LVN_PROCESSKEY:
-          SetWindowLong (id_hwnd, DWL_MSGRESULT,
+          SetWindowLong (id_hwnd, DWLP_MSGRESULT,
                          process_keys ((LV_PROCESSKEY *)nm));
           return 1;
 
@@ -2157,7 +2157,7 @@ Filer::GetMinMaxInfo (MINMAXINFO *mmi)
   GetWindowRect (id_hwnd, &dr);
   GetWindowRect (GetDlgItem (id_hwnd, IDC_LIST1), &r);
   mmi->ptMinTrackSize.y = (dr.bottom - dr.top) - (r.bottom - r.top) + 50;
-  SetWindowLong (id_hwnd, DWL_MSGRESULT, 0);
+  SetWindowLong (id_hwnd, DWLP_MSGRESULT, 0);
   return 1;
 }
 
@@ -2188,7 +2188,7 @@ Filer::save_geometry () const
   flush_conf ();
 }
 
-BOOL
+long long
 Filer::WndProc (UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)

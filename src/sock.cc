@@ -50,7 +50,7 @@ init_winsock_functions ()
 }
 
 #ifdef __XYZZY__
-static int WINAPI
+static long long WINAPI
 blocking_hook ()
 {
   Fdo_events ();

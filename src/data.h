@@ -52,8 +52,9 @@ class ldata: public ldataP
 {
   static int l_nuses;
   static int l_nfrees;
-  static ldataP l_ld;
+
 public:
+  static ldataP l_ld;
   static T *lalloc ();
   static void sweep ();
   static void unuse (T *);

@@ -14,8 +14,8 @@ struct symbols
   int opt;
   int flags;
   const char *interactive;
-  int offset;
-  int len;
+  __int64 offset;
+  __int64 len;
   int iindex;
 };
 
@@ -2748,7 +2748,7 @@ static symbols ed[] =
 static void
 print_name (const symbols *p)
 {
-  printf ("SS + %d, ", p->offset);
+  printf ("SS + %I64d, ", p->offset);
 }
 
 static void
@@ -2813,7 +2813,7 @@ print_defuns (symbols *p, int n, const char *pkg)
         print_cname (p->fn);
         printf (", &");
         print_cname (p->sym);
-        printf (", 0, %d, %d, %d, %d, %d},\n",
+        printf (", 0, %I64d, %d, %d, %d, %d},\n",
                 p->len, p->req, p->opt, p->flags, p->iindex);
       }
   printf ("  {0},\n");
@@ -2837,7 +2837,7 @@ print_defvars (symbols *p, int n, const char *pkg)
         print_name (p);
         printf ("&");
         print_cname (p->sym);
-        printf (", %d, %d},\n", p->len, p->flags);
+        printf (", %I64d, %d},\n", p->len, p->flags);
       }
   printf ("  {0},\n");
   printf ("};\n\n");
@@ -2924,7 +2924,7 @@ do_all (void (*fn)(symbols *, int, const char *))
   fn (unint, numberof (unint), "unint");
 }
 
-static int soffset;
+static __int64 soffset;
 
 static void
 compose (symbols *p, int n, const char *)
@@ -3053,7 +3053,7 @@ process_interactive ()
 static void
 print_version ()
 {
-  printf ("int dump_version = %d;\n", time (0));
+  printf ("int dump_version = %I64d;\n", time (0));
 }
 
 void

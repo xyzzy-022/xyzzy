@@ -1737,7 +1737,7 @@ print_engine::set_print_range () const
 
 static int user_abort;
 
-static BOOL CALLBACK
+static long long CALLBACK
 printing_dlgproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)

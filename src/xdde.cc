@@ -23,7 +23,7 @@ HSZ Dde::hsz_server;
 
 static HDDEDATA CALLBACK
 dde_callback (UINT type, UINT fmt, HCONV hconv, HSZ sz1, HSZ sz2,
-              HDDEDATA dde_data, DWORD data1, DWORD data2)
+              HDDEDATA dde_data, unsigned long long data1, unsigned long long data2)
 {
   switch (type)
     {

@@ -244,7 +244,7 @@ XMessageBox::init_dialog ()
   return 0;
 }
 
-BOOL
+long long
 XMessageBox::WndProc (UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -274,20 +274,20 @@ XMessageBox::WndProc (UINT msg, WPARAM wparam, LPARAM lparam)
   return 0;
 }
 
-BOOL CALLBACK
+long long CALLBACK
 XMessageBox::WndProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   XMessageBox *p;
   if (msg == WM_INITDIALOG)
     {
-      SetWindowLong (hwnd, DWL_USER, lparam);
+      SetWindowLong (hwnd, DWLP_USER, lparam);
       p = (XMessageBox *)lparam;
       p->hwnd = hwnd;
       p->WndProc (msg, wparam, lparam);
     }
   else
     {
-      p = (XMessageBox *)GetWindowLong (hwnd, DWL_USER);
+      p = (XMessageBox *)GetWindowLong (hwnd, DWLP_USER);
       if (p)
         p->WndProc (msg, wparam, lparam);
     }

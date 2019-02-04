@@ -32,7 +32,7 @@ protected:
   int f_crlf;
   int f_no_wrap;
 
-  BOOL WndProc (UINT, WPARAM, LPARAM);
+  long long WndProc (UINT, WPARAM, LPARAM);
   BOOL init_dialog ();
   void calc_text_rect (RECT &) const;
   void calc_button_size (RECT br[MAX_BUTTONS]) const;
@@ -41,7 +41,7 @@ protected:
   void create_label (const char *, const RECT &, int) const;
   void create_icon (const RECT &) const;
   void create_buttons (const RECT br[MAX_BUTTONS]) const;
-  static BOOL CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM);
+  static long long CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM);
 public:
   XMessageBox (HINSTANCE hinst_, const char *msg_, const char *title_,
                int crlf, int no_wrap)

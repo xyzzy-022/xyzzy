@@ -465,7 +465,7 @@ lisp
 funcall_builtin (lisp f, lisp arglist)
 {
   assert (functionp (f));
-#ifdef _M_IX86
+#ifdef _M_X64
   int nargs = xfunction_nargs (f) + xfunction_nopts (f) + (need_rest_p (f) ? 1 : 0);
   lisp *stack = (lisp *)alloca (sizeof (lisp) * nargs);
   for (int i = xfunction_nargs (f); i > 0; i--)

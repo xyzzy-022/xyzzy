@@ -59,7 +59,7 @@ protected:
   virtual void notify_color (int) {}
 
   static void measure_item (HWND, int, MEASUREITEMSTRUCT *);
-  static BOOL CALLBACK ccp_dialog_proc (HWND, UINT, WPARAM, LPARAM);
+  static long long CALLBACK ccp_dialog_proc (HWND, UINT, WPARAM, LPARAM);
 
 public:
   int ccp_modified;

@@ -49,8 +49,8 @@ class SelectColor
   static int initialized;
 
   int find_match (const XCOLORREF &) const;
-  static BOOL CALLBACK select_color_dlgproc (HWND, UINT, WPARAM, LPARAM);
-  BOOL dlgproc (UINT, WPARAM, LPARAM);
+  static  long long CALLBACK select_color_dlgproc (HWND, UINT, WPARAM, LPARAM);
+  long long dlgproc (UINT, WPARAM, LPARAM);
   void do_command (int, int);
   void draw_button (int, DRAWITEMSTRUCT *);
   void draw_combo (DRAWITEMSTRUCT *);
@@ -277,7 +277,7 @@ SelectColor::init_dialog ()
   ReleaseDC (hwnd, hdc);
 }
 
-BOOL
+long long
 SelectColor::dlgproc (UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -302,7 +302,7 @@ SelectColor::dlgproc (UINT msg, WPARAM wparam, LPARAM lparam)
     }
 }
 
-BOOL CALLBACK
+long long CALLBACK
 SelectColor::select_color_dlgproc (HWND hwnd, UINT msg,
                                    WPARAM wparam, LPARAM lparam)
 {
@@ -310,7 +310,7 @@ SelectColor::select_color_dlgproc (HWND hwnd, UINT msg,
   if (msg == WM_INITDIALOG)
     {
       p = (SelectColor *)lparam;
-      SetWindowLong (hwnd, DWL_USER, lparam);
+      SetWindowLong (hwnd, DWLP_USER, lparam);
       p->hwnd = hwnd;
     }
   else if (msg == WM_MEASUREITEM)
@@ -320,7 +320,7 @@ SelectColor::select_color_dlgproc (HWND hwnd, UINT msg,
     }
   else
     {
-      p = (SelectColor *)GetWindowLong (hwnd, DWL_USER);
+      p = (SelectColor *)GetWindowLong (hwnd, DWLP_USER);
       if (!p)
         return 0;
     }
@@ -353,7 +353,7 @@ ChangeColorsPageP::reset () const
   ccp_parent->ps_result = IDCANCEL;
 }
 
-BOOL CALLBACK
+long long CALLBACK
 ChangeColorsPageP::ccp_dialog_proc (HWND hwnd, UINT msg,
                                     WPARAM wparam, LPARAM lparam)
 {
@@ -361,7 +361,7 @@ ChangeColorsPageP::ccp_dialog_proc (HWND hwnd, UINT msg,
   if (msg == WM_INITDIALOG)
     {
       p = (ChangeColorsPageP *)((PROPSHEETPAGE *)lparam)->lParam;
-      SetWindowLong (hwnd, DWL_USER, LPARAM (p));
+      SetWindowLong (hwnd, DWLP_USER, LPARAM (p));
       p->ccp_hwnd = hwnd;
       if (!p->ccp_parent->ps_moved)
         {
@@ -377,7 +377,7 @@ ChangeColorsPageP::ccp_dialog_proc (HWND hwnd, UINT msg,
     }
   else
     {
-      p = (ChangeColorsPageP *)GetWindowLong (hwnd, DWL_USER);
+      p = (ChangeColorsPageP *)GetWindowLong (hwnd, DWLP_USER);
       if (!p)
         return 0;
     }
@@ -473,7 +473,7 @@ ChangeColorsPageP::do_notify (int, NMHDR *nm)
   switch (nm->code)
     {
     case PSN_KILLACTIVE:
-      SetWindowLong (ccp_hwnd, DWL_MSGRESULT, !get_result ());
+      SetWindowLong (ccp_hwnd, DWLP_MSGRESULT, !get_result ());
       return 1;
 
     case PSN_SETACTIVE:

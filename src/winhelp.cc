@@ -287,7 +287,7 @@ iset::load (lisp filename)
   is_files = f;
 }
 
-static BOOL CALLBACK
+static long long CALLBACK
 select_dialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -295,7 +295,7 @@ select_dialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_INITDIALOG:
       {
         iset *is = (iset *)lparam;
-        SetWindowLong (dlg, DWL_USER, LONG (is));
+        SetWindowLong (dlg, DWLP_USER, LONG (is));
         center_window (dlg);
         set_window_icon (dlg);
         is->init_files (dlg);
@@ -316,7 +316,7 @@ select_dialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
         case IDOK:
           {
-            iset *is = (iset *)GetWindowLong (dlg, DWL_USER);
+            iset *is = (iset *)GetWindowLong (dlg, DWLP_USER);
             char buf[256];
             GetDlgItemText (dlg, IDC_TOPIC, buf, sizeof buf);
             if (strcmp (buf, is->is_topic))

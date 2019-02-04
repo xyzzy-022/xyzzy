@@ -2668,7 +2668,7 @@ static void
 activate_xyzzy_window (HWND hwnd)
 {
   Fbegin_wait_cursor ();
-  DWORD r;
+  unsigned long long r;
   int ok = SendMessageTimeout (hwnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, 1000, &r);
   Fend_wait_cursor ();
   if (!ok)
@@ -3239,7 +3239,7 @@ ForceSetForegroundWindow (HWND hwnd)
       if (!ok)
         {
           HWND hwnd_fg = GetForegroundWindow ();
-          DWORD r;
+          unsigned long long r;
           if (hwnd_fg && SendMessageTimeout (hwnd_fg, WM_NULL, 0, 0,
                                              SMTO_ABORTIFHUNG | SMTO_BLOCK, 100, &r))
             {

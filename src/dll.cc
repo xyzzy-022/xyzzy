@@ -351,7 +351,7 @@ funcall_dll (lisp fn, lisp arglist)
   if (!xdll_function_proc (fn))
     FEprogram_error (Edll_not_initialized, fn);
 
-#ifdef _M_IX86
+#ifdef _M_X64
   int arg_size = xdll_function_arg_size (fn) + calc_vaarg_size (fn, arglist);
   char *stack = (char *)alloca (arg_size);
   for (const u_char *at = xdll_function_arg_types (fn),
@@ -435,7 +435,7 @@ funcall_c_callable (lisp fn, lisp arglist)
   return Ffuncall (xc_callable_function (fn), arglist);
 }
 
-#ifdef _M_IX86
+#ifdef _M_X64
 
 /*
   ESP ------------------

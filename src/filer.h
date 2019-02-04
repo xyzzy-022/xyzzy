@@ -330,7 +330,7 @@ public:
   lisp result ();
   Filer (lisp, lisp, lisp, lisp, lisp, lisp, lisp, lisp, int);
   ~Filer ();
-  virtual BOOL WndProc (UINT, WPARAM, LPARAM);
+  virtual long long WndProc (UINT, WPARAM, LPARAM);
   void restore_dir () const;
   int left_window_p (const FilerView *) const;
   int primary_window_p (const FilerView *) const;

@@ -50,7 +50,7 @@ split (char *&beg)
 }
 
 static char *
-split (char *&beg, int &l)
+split (char *&beg, __int64 &l)
 {
   char *p = skip_token (beg);
   if (*beg == '"')
@@ -65,10 +65,10 @@ split (char *&beg, int &l)
   return skip_white (p);
 }
 
-static u_long
+static unsigned __int64
 parse_long (const char *p)
 {
-  u_long val = 0;
+  unsigned __int64 val = 0;
   for (; *p >= '0' && *p <= '9'; p++)
     val = val * 10 + *p - '0';
   return val;
@@ -127,12 +127,12 @@ cmdmatch (const char *p, const char *pe, const char *s)
 static void
 set_title (char *cmd)
 {
-  int cmdl;
+  __int64 cmdl;
   char *opt = split (cmd, cmdl);
   if (cmdmatch (cmd, cmd + cmdl, "cmd")
       || cmdmatch (cmd, cmd + cmdl, "command"))
     {
-      int optl;
+      __int64 optl;
       char *arg = split (opt, optl);
       if (optl == 2 && !bcasecmp (opt, "/c", 2))
         {

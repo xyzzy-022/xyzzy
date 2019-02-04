@@ -940,7 +940,7 @@ preview_dialog::update_scale ()
   set_scale_combo ();
 }
 
-BOOL
+long long
 preview_dialog::wndproc (UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -985,19 +985,19 @@ preview_dialog::wndproc (UINT msg, WPARAM wparam, LPARAM lparam)
     }
 }
 
-BOOL CALLBACK
+long long CALLBACK
 preview_dialog::wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   preview_dialog *p;
   if (msg == WM_INITDIALOG)
     {
       p = (preview_dialog *)lparam;
-      SetWindowLong (hwnd, DWL_USER, lparam);
+      SetWindowLong (hwnd, DWLP_USER, lparam);
       p->p_hwnd = hwnd;
     }
   else
     {
-      p = (preview_dialog *)GetWindowLong (hwnd, DWL_USER);
+      p = (preview_dialog *)GetWindowLong (hwnd, DWLP_USER);
       if (!p)
         return 0;
     }

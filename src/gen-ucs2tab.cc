@@ -14,7 +14,7 @@ invalid (const char *file, int linenum)
 static int
 parse_line (char *b, int &mb, ucs2_t &wc, const char *file, int linenum, int undef_ok = 0)
 {
-  int l = strlen (b);
+  __int64 l = strlen (b);
   if (l && b[l - 1] == '\n')
     b[l - 1] = 0;
   if (!*b || *b == '#')
@@ -622,16 +622,16 @@ read_gb2312 (ucs2_t *wbuf)
   output_diff (wc2cp936, wbuf2, "wc2gb2312");
 }
 
-struct cns_table {Char c; u_short i;};
+struct cns_table {Char c; unsigned __int64 i;};
 #define CNS_NIL_THRESHOLD 0x2000
 
 static int
-test_cns_table (Char *buf, Char cc, const cns_table *cnstab, int csize)
+test_cns_table (Char *buf, Char cc, const cns_table *cnstab, __int64 csize)
 {
   int i = 0;
   for (const cns_table *cp = cnstab, *const ce = cnstab + csize; cp < ce; cp++)
     {
-      int e = cp->i;
+      __int64 e = cp->i;
       for (; i < e; i++, cc++)
         buf[i] = cc;
       if (cp->c >= CNS_NIL_THRESHOLD)
@@ -704,7 +704,7 @@ make_cns_table (const char *name, const Char *p, int size)
     {
       if (!(i % 4))
         printf ("\n ");
-      printf (" {0x%04x, 0x%04x},", cnstab[i].c, cnstab[i].i);
+      printf (" {0x%04x, 0x%04I64x},", cnstab[i].c, cnstab[i].i);
     }
   printf ("\n};\n\n");
 }

@@ -12,8 +12,8 @@ public:
   const char *remote;
 
 private:
-  static BOOL CALLBACK netpass_dlgproc (HWND, UINT, WPARAM, LPARAM);
-  BOOL dlgproc (UINT, WPARAM, LPARAM);
+  static long long CALLBACK netpass_dlgproc (HWND, UINT, WPARAM, LPARAM);
+  long long dlgproc (UINT, WPARAM, LPARAM);
   void do_command (int, int);
   void init_dialog ();
 
@@ -52,7 +52,7 @@ NetPassDlg::init_dialog ()
   SetDlgItemText (hwnd, IDC_SHARE_NAME, remote);
 }
 
-BOOL
+long long
 NetPassDlg::dlgproc (UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -70,19 +70,19 @@ NetPassDlg::dlgproc (UINT msg, WPARAM wparam, LPARAM lparam)
     }
 }
 
-BOOL CALLBACK
+long long CALLBACK
 NetPassDlg::netpass_dlgproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   NetPassDlg *p;
   if (msg == WM_INITDIALOG)
     {
       p = (NetPassDlg *)lparam;
-      SetWindowLong (hwnd, DWL_USER, lparam);
+      SetWindowLong (hwnd, DWLP_USER, lparam);
       p->hwnd = hwnd;
     }
   else
     {
-      p = (NetPassDlg *)GetWindowLong (hwnd, DWL_USER);
+      p = (NetPassDlg *)GetWindowLong (hwnd, DWLP_USER);
       if (!p)
         return 0;
     }

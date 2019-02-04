@@ -1204,7 +1204,7 @@ Dialog::measure_item (HWND hwnd, MEASUREITEMSTRUCT *mis)
     }
 }
 
-BOOL CALLBACK
+long long CALLBACK
 ldialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -1213,7 +1213,7 @@ ldialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
       {
         Dialog *d = (Dialog *)lparam;
         d->d_hwnd = dlg;
-        SetWindowLong (dlg, DWL_USER, lparam);
+        SetWindowLong (dlg, DWLP_USER, lparam);
         set_window_icon (dlg);
         d->center_window ();
         d->init_items ();
@@ -1222,7 +1222,7 @@ ldialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_NOTIFY:
       {
-        Dialog *d = (Dialog *)GetWindowLong (dlg, DWL_USER);
+        Dialog *d = (Dialog *)GetWindowLong (dlg, DWLP_USER);
         if (!d)
           return 0;
         d->process_notify ((NMHDR *)lparam);
@@ -1238,7 +1238,7 @@ ldialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
         default:
           {
-            Dialog *d = (Dialog *)GetWindowLong (dlg, DWL_USER);
+            Dialog *d = (Dialog *)GetWindowLong (dlg, DWLP_USER);
             if (!d)
               return 0;
             d->process_command (LOWORD (wparam), HIWORD (wparam));
@@ -1249,7 +1249,7 @@ ldialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_DRAWITEM:
       {
-        Dialog *d = (Dialog *)GetWindowLong (dlg, DWL_USER);
+        Dialog *d = (Dialog *)GetWindowLong (dlg, DWLP_USER);
         if (!d)
           return 0;
         d->draw_item (wparam, (DRAWITEMSTRUCT *)lparam);
@@ -1258,7 +1258,7 @@ ldialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_PRIVATE_LISTBOX_CHAR:
       {
-        Dialog *d = (Dialog *)GetWindowLong (dlg, DWL_USER);
+        Dialog *d = (Dialog *)GetWindowLong (dlg, DWLP_USER);
         if (!d)
           return 0;
         d->listbox_char (wparam, lparam);
@@ -1725,7 +1725,7 @@ Fdialog_box (lisp dialog, lisp init, lisp handlers)
   return d.d_retval;
 }
 
-BOOL CALLBACK
+long long CALLBACK
 lprop_page_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -1740,14 +1740,14 @@ lprop_page_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
             center_window (GetParent (dlg));
             set_window_icon (GetParent (dlg));
           }
-        SetWindowLong (dlg, DWL_USER, LPARAM (d));
+        SetWindowLong (dlg, DWLP_USER, LPARAM (d));
         d->init_items ();
       }
       return 1;
 
     case WM_NOTIFY:
       {
-        PropPage *d = (PropPage *)GetWindowLong (dlg, DWL_USER);
+        PropPage *d = (PropPage *)GetWindowLong (dlg, DWLP_USER);
         if (!d)
           return 0;
         switch (((NMHDR *)lparam)->code)
@@ -1773,7 +1773,7 @@ lprop_page_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_COMMAND:
       {
-        PropPage *d = (PropPage *)GetWindowLong (dlg, DWL_USER);
+        PropPage *d = (PropPage *)GetWindowLong (dlg, DWLP_USER);
         if (!d)
           return 0;
         d->process_command (LOWORD (wparam), HIWORD (wparam));
@@ -1782,7 +1782,7 @@ lprop_page_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_DRAWITEM:
       {
-        PropPage *d = (PropPage *)GetWindowLong (dlg, DWL_USER);
+        PropPage *d = (PropPage *)GetWindowLong (dlg, DWLP_USER);
         if (!d)
           return 0;
         d->draw_item (wparam, (DRAWITEMSTRUCT *)lparam);
@@ -1791,7 +1791,7 @@ lprop_page_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_PRIVATE_LISTBOX_CHAR:
       {
-        PropPage *d = (PropPage *)GetWindowLong (dlg, DWL_USER);
+        PropPage *d = (PropPage *)GetWindowLong (dlg, DWLP_USER);
         if (!d)
           return 0;
         d->listbox_char (wparam, lparam);
@@ -1857,7 +1857,7 @@ PropPage::get_result ()
 void
 PropPage::kill_active ()
 {
-  SetWindowLong (d_hwnd, DWL_MSGRESULT, !get_result ());
+  SetWindowLong (d_hwnd, DWLP_MSGRESULT, !get_result ());
 }
 
 void
