@@ -26,10 +26,10 @@ xlong_int_value (lisp x)
 }
 
 inline llong_int *
-make_long_int (long long x)
+make_long_int (long x)
 {
   llong_int *p = ldata <llong_int, Tlong_int>::lalloc ();
-  p->value = (long) x;
+  p->value = x;
   return p;
 }
 
@@ -39,20 +39,20 @@ make_long_int (long long x)
 inline int
 short_int_p (lisp x)
 {
-  return (u_longlong (x) & SHORT_INT_TEST_BITS) == Lshort_int;
+  return (u_long (x) & SHORT_INT_TEST_BITS) == Lshort_int;
 }
 
 inline lisp
-make_short_int (long long x)
+make_short_int (long x)
 {
-  return lisp ((u_longlong (x) << LSHORT_INT_SHIFT) | Lshort_int);
+  return lisp ((u_long (x) << LSHORT_INT_SHIFT) | Lshort_int);
 }
 
-inline long long
+inline long
 xshort_int_value (lisp x)
 {
   assert (short_int_p (x));
-  return long long (x) >> LSHORT_INT_SHIFT;
+  return long (x) >> LSHORT_INT_SHIFT;
 }
 
 # include "bignum.h"
@@ -163,11 +163,11 @@ fixnump (lisp x)
 }
 
 long coerce_to_long_error (lisp);
-unsigned long long unsigned_long_value (lisp);
+u_long unsigned_long_value (lisp);
 
 /*GENERIC_FUNCTION:INTEGER*/
 inline lisp
-make_fixnum (long long x)
+make_fixnum (long x)
 {
   if (x >= LSHORT_INT_MIN && x <= LSHORT_INT_MAX)
     return make_short_int (x);
