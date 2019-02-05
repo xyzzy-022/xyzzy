@@ -17,7 +17,7 @@ u_longlong alloc_page::ap_block_size;
 
 #ifdef DEBUG
 static int
-power_of_2_p (u_int size)
+power_of_2_p (unsigned long long size)
 {
   int n;
   for (n = 0; size; size >>= 1)
@@ -27,7 +27,7 @@ power_of_2_p (u_int size)
 }
 #endif
 
-alloc_page::alloc_page (u_int size)
+alloc_page::alloc_page (unsigned long long size)
      : ap_rep (0)
 {
   assert (size);
@@ -125,7 +125,7 @@ alloc_page::free (void *p)
       pointer_t base = pointer_t (p);
       assert (!(base & (ap_unit_size - 1)));
 
-      u_long mask = ~(ap_block_size - 1);
+      unsigned long long mask = ~(ap_block_size - 1);
       base &= mask;
 
       alloc_page_rep *r, *prev = 0;
@@ -213,7 +213,7 @@ fixed_heap::free (void *p)
   pointer_t base = pointer_t (p);
   assert (!(base & (fh_heap_size - 1)));
 
-  u_long mask = ~(fh_ap.ap_page_size - 1);
+  unsigned long long mask = ~(fh_ap.ap_page_size - 1);
   base &= mask;
 
   u_int count = 1;

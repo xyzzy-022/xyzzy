@@ -57,7 +57,7 @@ stpcpy (char *d, const char *s)
 }
 
 char *
-stpncpy (char *d, const char *s, int n)
+stpncpy (char *d, const char *s, long long n)
 {
   for (; n > 0; n--)
   {

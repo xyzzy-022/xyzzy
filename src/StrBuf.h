@@ -44,7 +44,7 @@ public:
   void fill (int, int);
   void fill (Char, int);
   void add (const char *);
-  void add (const Char *, int);
+  void add (const Char *, long long);
   void add (StrBuf &);
   void add_simple (const char *);
   void add_simple (const char *, int);

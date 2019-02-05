@@ -10,17 +10,17 @@ private:
   static buffer_bar *b_bar;
   static Buffer *b_last_buffer;
   buffer_bar_drop_target b_drop_target;
-  int b_drop_index;
+  long long b_drop_index;
   enum {DROP_TIMER_ID = 10};
 
   buffer_bar (dock_frame &);
   virtual ~buffer_bar () {b_bar = 0;}
   virtual int notify (NMHDR *, LRESULT &);
   int create (HWND);
-  Buffer *nth (int i) const {return (Buffer *)tab_bar::nth (i);}
+  Buffer *nth (long long i) const {return (Buffer *)tab_bar::nth (i);}
   Buffer *current () const;
-  int insert (const Buffer *, int);
-  int modify (const Buffer *, int);
+  long long insert (const Buffer *, long long);
+  long long modify (const Buffer *, int);
   static char *set_buffer_name (const Buffer *, char *, int);
   virtual int need_text (TOOLTIPTEXT &);
   virtual void draw_item (const draw_item_struct &);

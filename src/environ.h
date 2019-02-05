@@ -112,7 +112,7 @@ WriteRegistry::set (const char *key, long val) const
 inline int
 WriteRegistry::set (const char *key, const char *val) const
 {
-  return set (key, REG_SZ, val, strlen (val) + 1);
+  return set (key, REG_SZ, val, (int) strlen (val) + 1);
 }
 
 inline int

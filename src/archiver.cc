@@ -115,12 +115,12 @@ ArchiverP::sepmap (char *s, int f, int t)
 }
 
 int
-ArchiverP::match_suffix (const char *path, int l,
+ArchiverP::match_suffix (const char *path, long long l,
                          const char *const *list) const
 {
   for (; *list; list++)
     {
-      unsigned long long x = strlen (*list);
+      long long x = strlen (*list);
       if (l >= x && !_memicmp (*list, path + l - x, x))
         return 1;
     }

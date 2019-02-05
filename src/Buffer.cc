@@ -481,7 +481,7 @@ create_default_buffers ()
 }
 
 Buffer *
-Buffer::find_buffer (const Char *name, int l, long version)
+Buffer::find_buffer (const Char *name, long long l, long version)
 {
   Buffer *bp;
   for (bp = b_blist; bp; bp = bp->b_next)
@@ -513,7 +513,7 @@ Buffer::find_buffer (lisp name, long version, int do_parse)
   if (p == p0 || *p != '<')
     return 0;
 
-  int l = p - p0;
+  long long l = p - p0;
   for (version = 0, p++; *p != '>'; p++)
     version = version * 10 + *p - '0';
 
@@ -1311,7 +1311,7 @@ Buffer::refresh_title_bar () const
       else
         x = lbuffer_name;
 
-      int l = (xstring_length (x) * 2 + strlen (TitleBarString) + 32 + 8);
+      long long l = (xstring_length (x) * 2 + strlen (TitleBarString) + 32 + 8);
       char *b0 = (char *)alloca (l);
       char *b = b0;
       if (Fadmin_user_p () == Qt && sysdep.Win6p ())

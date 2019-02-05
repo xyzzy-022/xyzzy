@@ -51,10 +51,10 @@ coerce_to_long_error (lisp object)
 }
 
 /*GENERIC_FUNCTION:INTEGER*/
-u_long
+unsigned long long
 unsigned_long_value (lisp x)
 {
-  long val;
+  long long val;
   if (short_int_p (x))
     val = xshort_int_value (x);
   else if (long_int_p (x))

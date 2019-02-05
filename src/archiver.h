@@ -43,12 +43,12 @@ public:
     {return ERROR_NOT_SUPPORT;}
   virtual int remove (HWND, const char *, const char *) const
     {return ERROR_NOT_SUPPORT;}
-  int match_suffix (const char *, int, const char *const *) const;
-  int match_csuffix (const char *path, int l) const
+  int match_suffix (const char *, long long, const char *const *) const;
+  int match_csuffix (const char *path, long long l) const
     {return match_suffix (path, l, ar_csuffixes);}
-  int match_esuffix (const char *path, int l) const
+  int match_esuffix (const char *path, long long l) const
     {return match_suffix (path, l, ar_esuffixes);}
-  int match_rsuffix (const char *path, int l) const
+  int match_rsuffix (const char *path, long long l) const
     {return match_suffix (path, l, ar_rsuffixes);}
   virtual void puts_create (FILE *, char *, const char *) const;
   virtual void puts_extract (FILE *, char *) const;

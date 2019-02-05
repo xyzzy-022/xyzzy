@@ -210,7 +210,7 @@ read_conf (const char *section, const char *name, WINDOWPLACEMENT &w)
 void
 conf_write_string (const char *section, const char *name, const char *string)
 {
-  int l = strlen (string);
+  long long l = strlen (string);
   char *b = (char *)alloca (l + 3);
   *b = '"';
   memcpy (b + 1, string, l);

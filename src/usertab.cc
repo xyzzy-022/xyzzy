@@ -15,7 +15,7 @@ class user_tab_bar: public tab_bar
   virtual int need_text (TOOLTIPTEXT &);
   virtual void draw_item (const draw_item_struct &);
   virtual int notify (NMHDR *, LRESULT &);
-  lisp nth (int i) const {return lisp (tab_bar::nth (i));}
+  lisp nth (long long i) const {return lisp (tab_bar::nth (i));}
   lisp current () const;
   void sel_change () const;
 

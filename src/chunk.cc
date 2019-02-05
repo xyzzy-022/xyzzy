@@ -86,7 +86,7 @@ lisp
 Fsi_make_string_chunk (lisp string)
 {
   check_string (string);
-  int l = w2sl (xstring_contents (string), xstring_length (string));
+  long long l = w2sl (xstring_contents (string), xstring_length (string));
   lisp chunk = make_chunk ();
   xchunk_type (chunk) = Qnil;
   xchunk_size (chunk) = l + 1;
@@ -107,7 +107,7 @@ lisp
 Fsi_chunk_data (lisp chunk)
 {
   check_chunk (chunk);
-  return make_fixnum (long (xchunk_data (chunk)));
+  return make_fixnum (long long (xchunk_data (chunk)));
 }
 
 lisp
@@ -134,7 +134,7 @@ Fsi_chunk_owner (lisp chunk)
 lisp
 Fsi_address_of (lisp object)
 {
-  return make_fixnum (long (object));
+  return make_fixnum (long long (object));
 }
 
 static char *
@@ -155,7 +155,7 @@ fill_chunk (lisp chunk, int byte, lisp loffset, lisp lsize)
 {
   char *p = calc_chunk_ptr (chunk, loffset);
   char *pe = (char *)xchunk_data (chunk) + xchunk_size (chunk);
-  int size;
+  long long size;
   if (!lsize || lsize == Qnil)
     size = pe - p;
   else
@@ -187,7 +187,7 @@ Fsi_copy_chunk (lisp fchunk, lisp tchunk, lisp lsize, lisp foffset, lisp toffset
   char *t = calc_chunk_ptr (tchunk, toffset);
   char *fe = (char *)xchunk_data (fchunk) + xchunk_size (fchunk);
   char *te = (char *)xchunk_data (tchunk) + xchunk_size (tchunk);
-  int size;
+  long long size;
   if (!lsize || lsize == Qnil)
     size = min (fe - f, te - t);
   else

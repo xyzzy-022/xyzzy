@@ -149,7 +149,7 @@ public:
   void begin () {b_bb = b_bp = b_buf;}
   void put (T c) {*b_bp++ = c;}
   int room () const {return b_be - b_bp;}
-  int length () const {return b_bp - b_bb;}
+  long long length () const {return b_bp - b_bb;}
   const T *base () const {return b_buf;}
   const T *head () const {return b_bb;}
   const T *tail () const {return b_bp;}
@@ -165,7 +165,7 @@ protected:
   virtual int refill ();
   virtual void refill_internal () = 0;
 public:
-  void flush (const Char *&b, int &l)
+  void flush (const Char *&b, long long &l)
     {
       b = head ();
       l = length ();

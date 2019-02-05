@@ -27,10 +27,10 @@ protected:
 
   /* 割り当て単位ごとのページの個数
      0の場合はページごとの管理をせずに割り当て単位をそのまま返す */
-  u_int ap_units_per_block;
+  unsigned long long ap_units_per_block;
 
 public:
-  alloc_page (u_int size);
+  alloc_page (unsigned long long size);
   ~alloc_page () {}
 
   void *alloc ();
@@ -49,7 +49,7 @@ protected:
   struct fixed_heap_rep *fh_heap;
 
   u_int fh_heap_size;
-  u_int fh_heap_per_page;
+  unsigned long long fh_heap_per_page;
 
 public:
   fixed_heap (u_int size);

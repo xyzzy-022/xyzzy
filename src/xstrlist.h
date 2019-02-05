@@ -49,7 +49,7 @@ public:
     }
   static xstring_pair_node *alloc (const char *s1, const char *s2)
     {
-      int l1 = strlen (s1);
+      long long l1 = strlen (s1);
       xstring_pair_node *p =
         (xstring_pair_node *)new char [sizeof *p + l1 + strlen (s2)];
       p->str2 = p->str1 + l1 + 1;

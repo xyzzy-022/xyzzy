@@ -585,7 +585,7 @@ Process::store_output (const Char *w, int l)
 class process_output_stream: public Char_output_wstream
 {
   Process &p_proc;
-  virtual void swrite (const Char *w, int l)
+  virtual void swrite (const Char *w, long long l)
     {p_proc.store_output (w, l);}
 public:
   process_output_stream (Process &proc) : p_proc (proc) {}
@@ -653,7 +653,7 @@ Process::flush_input ()
 {
   if (p_input_stream)
     {
-      int l;
+      long long l;
       const Char *b;
       p_input_stream->flush (b, l);
       if (l)

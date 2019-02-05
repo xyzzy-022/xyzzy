@@ -15,7 +15,7 @@ bignum_rep bignum_rep_zero = {0, 0, BR_POSITIVE, 0, {0}};
 bignum_rep bignum_rep_one = {0, 1, BR_POSITIVE, 0, {1}};
 bignum_rep bignum_rep_minus_one = {0, 1, BR_NEGATIVE, 0, {1}};
 
-long bignum_allocated_bytes;
+long long bignum_allocated_bytes;
 
 static inline u_short
 lowpart (u_long x)
@@ -64,9 +64,9 @@ bignum_rep::normalize ()
 }
 
 void
-bignum_rep::clear_from (int from)
+bignum_rep::clear_from (long long from)
 {
-  int l = br_len - from;
+  long long l = br_len - from;
   if (l > 0)
     memset (br_data + from, 0, sizeof *br_data * l);
 }
@@ -124,7 +124,7 @@ bignum_rep_long::init (u_long x)
 }
 
 bignum_rep *
-br_new (int len)
+br_new (long long len)
 {
   int size = (len + (BR_PADSIZE - 1)) & ~(BR_PADSIZE - 1);
   if (!size)
@@ -135,7 +135,7 @@ br_new (int len)
 #endif
   bignum_rep *r = (bignum_rep *)new char[sizeof (bignum_rep)
                                          + (size - 1) * sizeof (u_short)];
-  bignum_allocated_bytes += min (BIGNUM_ALLOCATE_MAX, len);
+  bignum_allocated_bytes += min ((long long)BIGNUM_ALLOCATE_MAX, len);
   r->br_space = size;
   r->br_len = len;
   r->br_allocated = 1;
@@ -143,12 +143,12 @@ br_new (int len)
 }
 
 static bignum_rep *
-br_alloc (bignum_rep *old, const bignum_rep *src, int len, int sign)
+br_alloc (bignum_rep *old, const bignum_rep *src, long long len, int sign)
 {
   if (!len)
     len = 1;
   bignum_rep *r;
-  int srclen = src ? src->br_len : 0;
+  long long srclen = src ? src->br_len : 0;
   if (!old || old->br_space < len)
     r = br_new (len);
   else
@@ -171,25 +171,25 @@ br_alloc (bignum_rep *old, const bignum_rep *src, int len, int sign)
 }
 
 inline bignum_rep *
-br_alloc (bignum_rep *old, const bignum_rep *src, int len)
+br_alloc (bignum_rep *old, const bignum_rep *src, long long len)
 {
   return br_alloc (old, src, len, src->br_sign);
 }
 
 inline bignum_rep *
-br_realloc (bignum_rep *r, int len)
+br_realloc (bignum_rep *r, long long len)
 {
   return br_alloc (r, r, len, r->br_sign);
 }
 
 inline bignum_rep *
-br_calloc (bignum_rep *r, int len)
+br_calloc (bignum_rep *r, long long len)
 {
   return br_alloc (r, 0, len, BR_POSITIVE);
 }
 
 inline bignum_rep *
-br_calloc (int len)
+br_calloc (long long len)
 {
   return br_calloc (0, len);
 }
@@ -287,7 +287,7 @@ br_copy_one (bignum_rep *r, int sign)
 }
 
 static inline int
-br_compare (const u_short *x, const u_short *y, int l)
+br_compare (const u_short *x, const u_short *y, long long l)
 {
   int d = 0;
   for (x += l, y += l; l > 0 && !(d = *--x - *--y); l--)
@@ -295,19 +295,19 @@ br_compare (const u_short *x, const u_short *y, int l)
   return d;
 }
 
-int
+long long
 br_ucompare (const bignum_rep *x, const bignum_rep *y)
 {
-  int d = x->br_len - y->br_len;
+  long long d = x->br_len - y->br_len;
   if (!d)
     d = br_compare (x->br_data, y->br_data, x->br_len);
   return d;
 }
 
-int
+long long
 br_compare (const bignum_rep *x, const bignum_rep *y)
 {
-  int d = x->br_sign - y->br_sign;
+  long long d = x->br_sign - y->br_sign;
   if (!d)
     {
       d = br_ucompare (x, y);
@@ -348,7 +348,7 @@ bignum_rep::to_long () const
     {
       long sum = br_data[br_len - 1];
       if (SHORT_PER_LONG > 2)
-        for (int i = br_len - 2; i >= 0; i--)
+        for (long long i = br_len - 2; i >= 0; i--)
           sum = up (sum) + br_data[i];
       return plusp () ? sum : -sum;
     }
@@ -358,7 +358,7 @@ bignum_rep::to_long () const
     return plusp () ? LONG_MAX : LONG_MIN;
   t = up (t) + br_data[SHORT_PER_LONG - 2];
   if (SHORT_PER_LONG > 2)
-    for (int i = SHORT_PER_LONG - 3; i >= 0; i--)
+    for (long long i = SHORT_PER_LONG - 3; i >= 0; i--)
       t = up (t) + br_data[i];
   return plusp () ? t : -long (t);
 }
@@ -381,7 +381,7 @@ bignum_rep::to_ulong () const
   if (br_len > SHORT_PER_LONG)
     return ULONG_MAX;
   u_long sum = 0;
-  for (int i = br_len - 1; i >= 0; i--)
+  for (long long i = br_len - 1; i >= 0; i--)
     sum = up (sum) + br_data[i];
   return sum;
 }
@@ -391,9 +391,9 @@ bignum_rep::coerce_to_long () const
 {
   if (!br_len)
     return 0;
-  int l = min (br_len, int (SHORT_PER_LONG));
+  long long l = min (br_len, long long (SHORT_PER_LONG));
   u_long sum = 0;
-  for (int i = l - 1; i >= 0; i--)
+  for (long long i = l - 1; i >= 0; i--)
     sum = up (sum) + br_data[i];
   return plusp () ? sum : -long (sum);
 }
@@ -403,9 +403,9 @@ bignum_rep::coerce_to_int64 () const
 {
   if (!br_len)
     return (int64_t)0;
-  int l = min (br_len, int (SHORT_PER_INT64));
+  long long l = min (br_len, long long (SHORT_PER_INT64));
   uint64_t sum = 0;
-  for (int i = l - 1; i >= 0; i--)
+  for (long long i = l - 1; i >= 0; i--)
     sum = up64 (sum) + br_data[i];
   return plusp () ? sum : -int64_t (sum);
 }
@@ -417,20 +417,20 @@ bignum_rep::to_double () const
     return 0;
   double d = br_data[br_len - 1];
   const double e = BR_RADIX;
-  for (int i = br_len - 2; i >= 0; i--)
+  for (long long i = br_len - 2; i >= 0; i--)
     d = d * e + br_data[i];
   return plusp () ? d : -d;
 }
 
 bignum_rep *
-add (bignum_rep *r, const bignum_rep *x, const bignum_rep *y, int negate)
+add (bignum_rep *r, const bignum_rep *x, const bignum_rep *y, long long negate)
 {
-  int yl = y->br_len;
+  long long yl = y->br_len;
   if (!yl)
     return br_copy (r, x);
 
   int ysign = negate ? !y->br_sign : y->br_sign;
-  int xl = x->br_len;
+  long long xl = x->br_len;
   if (!xl)
     return br_copy (r, y, ysign);
 
@@ -445,7 +445,7 @@ add (bignum_rep *r, const bignum_rep *x, const bignum_rep *y, int negate)
 
   if (xsign != ysign)
     {
-      int f = br_ucompare (x, y);
+      long long f = br_ucompare (x, y);
       if (!f)
         return br_copy_zero (r);
 
@@ -555,8 +555,8 @@ add (bignum_rep *r, const bignum_rep *x, const bignum_rep *y, int negate)
 bignum_rep *
 multiply (bignum_rep *r, const bignum_rep *x, const bignum_rep *y)
 {
-  int xl = x->br_len;
-  int yl = y->br_len;
+  long long xl = x->br_len;
+  long long yl = y->br_len;
   int rsign = x->br_sign == y->br_sign;
 
   if (!xl || !yl)
@@ -566,7 +566,7 @@ multiply (bignum_rep *r, const bignum_rep *x, const bignum_rep *y)
   if (yl == 1 && y->br_data[0] == 1)
     return br_copy (r, x, rsign);
 
-  int rl = xl + yl;
+  long long rl = xl + yl;
 
   bignum_rep *old;
   if (r == x || r == y)
@@ -614,13 +614,13 @@ multiply (bignum_rep *r, const bignum_rep *x, const bignum_rep *y)
 }
 
 static void
-do_divide (u_short *r0, const u_short *y0, int yl, u_short *qs, int ql)
+do_divide (u_short *r0, const u_short *y0, long long yl, u_short *qs, long long ql)
 {
   const u_short *ye = y0 + yl;
   u_short d1 = y0[yl - 1];
   u_short d2 = y0[yl - 2];
 
-  for (int l = ql - 1, i = l + yl; l >= 0; l--, i--)
+  for (long long l = ql - 1, i = l + yl; l >= 0; l--, i--)
     {
       u_short qhat;
       if (d1 == r0[i])
@@ -682,7 +682,7 @@ do_divide (u_short *r0, const u_short *y0, int yl, u_short *qs, int ql)
 int
 remainder (const bignum_rep *r, u_short div)
 {
-  int xl = r->br_len;
+  long long xl = r->br_len;
   if (!xl || div == 1)
     return 0;
 
@@ -738,7 +738,7 @@ divide (const u_short *x, int xl, u_short xdiv, u_short *r)
 # pragma warning (default:4035)
 #else /* not _M_IX86 */
 static int
-divide (const u_short *x, int xl, u_short div, u_short *r)
+divide (const u_short *x, long long xl, u_short div, u_short *r)
 {
   if (!xl || div == 1)
     return 0;
@@ -760,13 +760,13 @@ divide (const u_short *x, int xl, u_short div, u_short *r)
 bignum_rep *
 divide (bignum_rep *q, const bignum_rep *x, const bignum_rep *y)
 {
-  int xl = x->br_len;
-  int yl = y->br_len;
+  long long xl = x->br_len;
+  long long yl = y->br_len;
 
   if (!yl)
     FEdivision_by_zero ();
 
-  int f = br_ucompare (x, y);
+  long long f = br_ucompare (x, y);
   if (f < 0)
     return br_copy_zero (q);
 
@@ -782,7 +782,7 @@ divide (bignum_rep *q, const bignum_rep *x, const bignum_rep *y)
     }
   else
     {
-      int ql = xl - yl + 1;
+      long long ql = xl - yl + 1;
       u_short d = u_short (BR_RADIX / (y->br_data[yl - 1] + 1));
       if (d != 1 || q == y)
         {
@@ -810,13 +810,13 @@ truncate (bignum_rep *&bq, bignum_rep *&br,
   bignum_rep *q = 0;
   bignum_rep *r = 0;
 
-  int xl = x->br_len;
-  int yl = y->br_len;
+  long long xl = x->br_len;
+  long long yl = y->br_len;
 
   if (!yl)
     FEdivision_by_zero ();
 
-  int f = br_ucompare (x, y);
+  long long f = br_ucompare (x, y);
   if (f < 0)
     {
       r = br_copy (r, x);
@@ -834,7 +834,7 @@ truncate (bignum_rep *&bq, bignum_rep *&br,
         {
           u_short yy = y->br_data[0];
           safe_bignum_rep qq (br_alloc (q, x, x->br_len));
-          int rem = divide (qq->br_data, qq->br_len, yy, qq->br_data);
+          long long rem = divide (qq->br_data, qq->br_len, yy, qq->br_data);
           r = br_copy (r, long (rem));
           q = qq.release ();
           if (rem)
@@ -842,7 +842,7 @@ truncate (bignum_rep *&bq, bignum_rep *&br,
         }
       else
         {
-          int ql = xl - yl + 1;
+          long long ql = xl - yl + 1;
           u_short d = u_short (BR_RADIX / (y->br_data[yl - 1] + 1));
           if (d != 1)
             {
@@ -911,7 +911,7 @@ round (bignum_rep *&q, bignum_rep *&r,
   safe_bignum_rep qq (q);
   safe_bignum_rep rr (r);
   bignum_rep *r2 = add (0, r, r, 0);
-  int f = br_ucompare (r2, y);
+  long long f = br_ucompare (r2, y);
   br_delete (r2);
   if (f < 0 || (!f && q->evenp ()))
     {
@@ -942,7 +942,7 @@ bignum_rep::howlong () const
   int x = br_data[br_len - 1];
   if (minusp ())
     {
-      int i;
+      long long i;
       for (i = br_len - 2; i >= 0; i--)
         if (br_data[i])
           break;
@@ -955,7 +955,7 @@ bignum_rep::howlong () const
 static bignum_rep *
 lshift (bignum_rep *r, const bignum_rep *x, long y)
 {
-  int xl = x->br_len;
+  long long xl = x->br_len;
   if (!xl || !y)
     return br_copy (r, x);
 
@@ -967,7 +967,7 @@ lshift (bignum_rep *r, const bignum_rep *x, long y)
 
   if (y > 0)
     {
-      int rl = bw + xl + 1;
+      long long rl = bw + xl + 1;
       int xr_eq = x == r;
       if (xr_eq)
         r = br_realloc (r, rl);
@@ -990,7 +990,7 @@ lshift (bignum_rep *r, const bignum_rep *x, long y)
     }
   else
     {
-      int rl = xl - bw;
+      long long rl = xl - bw;
       if (rl < 0)
         return br_copy_zero (r);
 
@@ -1039,7 +1039,7 @@ expt (bignum_rep *r, const bignum_rep *x, long y)
   int rsign = ((x->br_sign == BR_POSITIVE || !(y & 1))
                ? BR_POSITIVE : BR_NEGATIVE);
 
-  int xl = x->br_len;
+  long long xl = x->br_len;
   if (!y || (xl == 1 && x->br_data[0] == 1))
     return br_copy_one (r, rsign);
   if (!xl || y < 0)
@@ -1068,11 +1068,11 @@ expt (bignum_rep *r, const bignum_rep *x, long y)
 bignum_rep *
 gcd (const bignum_rep *x, const bignum_rep *y)
 {
-  int ul = x->br_len;
+  long long ul = x->br_len;
   if (!ul)
     return br_copy (0, y, BR_POSITIVE);
 
-  int vl = y->br_len;
+  long long vl = y->br_len;
   if (!vl)
     return br_copy (0, x, BR_POSITIVE);
 
@@ -1114,7 +1114,7 @@ found:
   while (!t->zerop ())
     {
       long sft = 0;
-      int tl = t->br_len;
+      long long tl = t->br_len;
       for (int i = 0; i < tl; i++)
         {
           u_long tt = t->br_data[i];
@@ -1185,9 +1185,9 @@ void
 logope (bignum_rep *&r, logope_code ope,
         const bignum_rep *x, const bignum_rep *y)
 {
-  int xl = x->br_len;
-  int yl = y->br_len;
-  int rl = max (xl, yl) + 1;
+  long long xl = x->br_len;
+  long long yl = y->br_len;
+  long long rl = max (xl, yl) + 1;
 
   r = br_calloc (r, rl);
   u_long c, i1 = x->minusp (), i2 = y->minusp ();
@@ -1264,9 +1264,9 @@ logtest (const bignum_rep *x, const bignum_rep *y)
 {
   if (x->minusp () && y->minusp ())
     return 1;
-  int xl = x->br_len;
-  int yl = y->br_len;
-  int rl = max (xl, yl);
+  long long xl = x->br_len;
+  long long yl = y->br_len;
+  long long rl = max (xl, yl);
   u_long c, i1 = x->minusp (), i2 = y->minusp ();
   for (int i = 0; i < rl; i++)
     {
@@ -1311,7 +1311,7 @@ logbitp (const bignum_rep *x, long index)
 long
 logcount (const bignum_rep *x)
 {
-  int xl = x->br_len;
+  long long xl = x->br_len;
   int n = 0;
   if (x->plusp ())
     {
@@ -1333,7 +1333,7 @@ logcount (const bignum_rep *x)
   return n;
 }
 
-int
+long long
 bignum_rep::fmtwidth (u_long base) const
 {
   return (br_len + 1) * BR_SHIFT / (::log2 (base) - 1) + 16;
@@ -1358,7 +1358,7 @@ bignum_rep::to_ascii (char *b, int base, int dot, int sign,
         ;
       while (1)
         {
-          int rem = divide (r->br_data, r->br_len, div, r->br_data);
+          long long rem = divide (r->br_data, r->br_len, div, r->br_data);
           r->normalize ();
           if (!r->br_len)
             {

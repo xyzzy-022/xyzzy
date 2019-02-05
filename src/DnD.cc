@@ -566,7 +566,7 @@ filer_drop_target::check_self (const char *path, char *base, char *target)
 int
 filer_drop_target::check_self (const wchar_t *w, char *base, char *target)
 {
-  int l = wcslen (w) * 2 + 1;
+  int l = (int) wcslen (w) * 2 + 1;
   char *p = (char *)alloca (l);
   WideCharToMultiByte (CP_OEMCP, 0, w, -1, p, l, 0, 0);
   return check_self (p, base, target);

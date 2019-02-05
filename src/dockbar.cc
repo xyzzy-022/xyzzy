@@ -491,8 +491,8 @@ tab_bar::create (HWND hwnd_parent)
   return 1;
 }
 
-DWORD
-tab_bar::nth (int i) const
+unsigned long long
+tab_bar::nth (long long i) const
 {
   TC_ITEM ti;
   ti.mask = TCIF_PARAM;
@@ -668,7 +668,7 @@ tab_bar::abbrev_text (HDC hdc, char *s0, int l, int cx) const
 }
 
 void
-tab_bar::draw_item (const draw_item_struct &dis, char *s, int l,
+tab_bar::draw_item (const draw_item_struct &dis, char *s, long long l,
                     COLORREF fg, COLORREF bg) const
 {
   SIZE sz;

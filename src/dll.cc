@@ -617,7 +617,7 @@ init_c_callable (lisp cc)
   insn[0] = 0x68;
   *(lisp *)&insn[1] = cc;
   insn[5] = 0xe8;
-  *(long *)&insn[6] = stub - ((char *)insn + 0xa);
+  *(long *)&insn[6] = (long)(stub - ((char *)insn + 0xa));
   if (xc_callable_convention (cc) == CALLING_CONVENTION_STDCALL)
     {
       insn[0xa] = 0xc2;

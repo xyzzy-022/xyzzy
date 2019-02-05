@@ -23,7 +23,7 @@ paint_color_list (DRAWITEMSTRUCT *dis, const char *string, COLORREF color)
       ExtTextOut (dis->hDC,
                   r.left + size.cx,
                   (r.top + r.bottom - size.cy) / 2,
-                  ETO_OPAQUE | ETO_CLIPPED, &r, string, strlen (string), 0);
+                  ETO_OPAQUE | ETO_CLIPPED, &r, string, (UINT) strlen (string), 0);
 
       HGDIOBJ open = SelectObject (dis->hDC, sysdep.hpen_black);
       HBRUSH hbr = CreateSolidBrush (color);
@@ -52,9 +52,9 @@ class SelectColor
   static  long long CALLBACK select_color_dlgproc (HWND, UINT, WPARAM, LPARAM);
   long long dlgproc (UINT, WPARAM, LPARAM);
   void do_command (int, int);
-  void draw_button (int, DRAWITEMSTRUCT *);
+  void draw_button (long long, DRAWITEMSTRUCT *);
   void draw_combo (DRAWITEMSTRUCT *);
-  static void measure_item (HWND, int, MEASUREITEMSTRUCT *);
+  static void measure_item (HWND, long long, MEASUREITEMSTRUCT *);
   void add_combo ();
   void init_dialog ();
 
@@ -125,7 +125,7 @@ SelectColor::do_command (int id, int code)
     case IDC_COMBO:
       if (code == CBN_SELCHANGE)
         {
-          int i = SendDlgItemMessage (hwnd, IDC_COMBO, CB_GETCURSEL, 0, 0);
+          long long i = SendDlgItemMessage (hwnd, IDC_COMBO, CB_GETCURSEL, 0, 0);
           if (i == CB_ERR)
             return;
           i = SendDlgItemMessage (hwnd, IDC_COMBO, CB_GETITEMDATA, i, 0);
@@ -175,14 +175,14 @@ SelectColor::draw_combo (DRAWITEMSTRUCT *dis)
   else
     {
       char b[256];
-      if (!LoadString (app.hinst, dis->itemData, b, sizeof b))
+      if (!LoadString (app.hinst, (UINT) dis->itemData, b, sizeof b))
         *b = 0;
-      paint_color_list (dis, b, GetSysColor (dis->itemData - IDS_COLOR_SCROLLBAR));
+      paint_color_list (dis, b, GetSysColor ((int)(dis->itemData - IDS_COLOR_SCROLLBAR)));
     }
 }
 
 void
-SelectColor::draw_button (int id, DRAWITEMSTRUCT *dis)
+SelectColor::draw_button (long long id, DRAWITEMSTRUCT *dis)
 {
   COLORREF fg;
   int on = 0;
@@ -236,7 +236,7 @@ SelectColor::draw_button (int id, DRAWITEMSTRUCT *dis)
 }
 
 void
-SelectColor::measure_item (HWND hwnd, int id, MEASUREITEMSTRUCT *mis)
+SelectColor::measure_item (HWND hwnd, long long id, MEASUREITEMSTRUCT *mis)
 {
   if (id == IDC_COMBO)
     mis->itemHeight = get_font_height (hwnd) + 2;
@@ -251,7 +251,7 @@ SelectColor::add_combo ()
   HWND combo = GetDlgItem (hwnd, IDC_COMBO);
   for (int i = IDS_COLOR_SCROLLBAR; i <= IDS_COLOR_BTNHIGHLIGHT; i++)
     {
-      int j = SendMessage (combo, CB_ADDSTRING, 0, i);
+      long long j = SendMessage (combo, CB_ADDSTRING, 0, i);
       if (j != CB_ERR && cur == i)
         SendMessage (combo, CB_SETCURSEL, j, 0);
     }
@@ -310,7 +310,7 @@ SelectColor::select_color_dlgproc (HWND hwnd, UINT msg,
   if (msg == WM_INITDIALOG)
     {
       p = (SelectColor *)lparam;
-      SetWindowLong (hwnd, DWLP_USER, lparam);
+      SetWindowLong (hwnd, DWLP_USER, (LONG) lparam);
       p->hwnd = hwnd;
     }
   else if (msg == WM_MEASUREITEM)
@@ -320,7 +320,7 @@ SelectColor::select_color_dlgproc (HWND hwnd, UINT msg,
     }
   else
     {
-      p = (SelectColor *)GetWindowLong (hwnd, DWLP_USER);
+      p = (SelectColor *)GetWindowLongPtr (hwnd, DWLP_USER);
       if (!p)
         return 0;
     }
@@ -377,7 +377,7 @@ ChangeColorsPageP::ccp_dialog_proc (HWND hwnd, UINT msg,
     }
   else
     {
-      p = (ChangeColorsPageP *)GetWindowLong (hwnd, DWLP_USER);
+      p = (ChangeColorsPageP *)GetWindowLongPtr (hwnd, DWLP_USER);
       if (!p)
         return 0;
     }
@@ -435,7 +435,7 @@ ChangeColorsPageP::do_command (int id, int code)
     case IDC_SET_COLOR:
       {
         SelectColor sc;
-        int n = SendDlgItemMessage (ccp_hwnd, IDC_COLOR_LIST, LB_GETCURSEL, 0, 0);
+        long long n = SendDlgItemMessage (ccp_hwnd, IDC_COLOR_LIST, LB_GETCURSEL, 0, 0);
         if (n != LB_ERR && sc.select_color (ccp_hwnd, ccp_curcc[n]))
           {
             RECT r;
@@ -468,7 +468,7 @@ ChangeColorsPageP::do_command (int id, int code)
 }
 
 BOOL
-ChangeColorsPageP::do_notify (int, NMHDR *nm)
+ChangeColorsPageP::do_notify (long long, NMHDR *nm)
 {
   switch (nm->code)
     {
@@ -488,7 +488,7 @@ ChangeColorsPageP::do_notify (int, NMHDR *nm)
 }
 
 BOOL
-ChangeColorsPageP::draw_item (int id, DRAWITEMSTRUCT *dis)
+ChangeColorsPageP::draw_item (long long id, DRAWITEMSTRUCT *dis)
 {
   switch (id)
     {
@@ -498,17 +498,17 @@ ChangeColorsPageP::draw_item (int id, DRAWITEMSTRUCT *dis)
       else if (prop_fg_p (dis->itemData))
         {
           char b[32];
-          sprintf (b, "•¶Žš%d", dis->itemData - PROP_FG_OFFSET + 1);
+          sprintf (b, "•¶Žš%I64d", dis->itemData - PROP_FG_OFFSET + 1);
           paint_color_list (dis, b, ccp_curcc[dis->itemData]);
         }
       else if (prop_bg_p (dis->itemData))
         {
           char b[32];
-          sprintf (b, "”wŒi%d", dis->itemData - PROP_BG_OFFSET + 1);
+          sprintf (b, "”wŒi%I64d", dis->itemData - PROP_BG_OFFSET + 1);
           paint_color_list (dis, b, ccp_curcc[dis->itemData]);
         }
       else if (misc_p (dis->itemData))
-        paint_color_list (dis, misc_color_name (dis->itemData - MISC_OFFSET),
+        paint_color_list (dis, misc_color_name ((int)dis->itemData - MISC_OFFSET),
                           ccp_curcc[dis->itemData]);
       else
         paint_color_list (dis, wcolor_index_names[dis->itemData].display_name,
@@ -521,7 +521,7 @@ ChangeColorsPageP::draw_item (int id, DRAWITEMSTRUCT *dis)
 }
 
 void
-ChangeColorsPageP::measure_item (HWND hwnd, int, MEASUREITEMSTRUCT *mis)
+ChangeColorsPageP::measure_item (HWND hwnd, long long, MEASUREITEMSTRUCT *mis)
 {
   mis->itemHeight = max (get_font_height (hwnd), 14);
 }
@@ -607,7 +607,7 @@ ChooseFontPage::get_result ()
       ccp_modified = 1;
     }
 
-  int i = SendDlgItemMessage (ccp_hwnd, IDC_BACKSL, BM_GETCHECK, 0, 0);
+  long long i = SendDlgItemMessage (ccp_hwnd, IDC_BACKSL, BM_GETCHECK, 0, 0);
   if (i != cfp_param.fs_use_backsl)
     {
       cfp_param.fs_use_backsl = i;
@@ -740,7 +740,7 @@ ChangeColorsDialog::do_command (int id, int code)
 
     case IDC_DIR:
       EnableWindow (GetDlgItem (ccp_hwnd, IDC_SUBDIR),
-                    SendDlgItemMessage (ccp_hwnd, IDC_DIR, BM_GETCHECK, 0, 0));
+                    (BOOL) SendDlgItemMessage (ccp_hwnd, IDC_DIR, BM_GETCHECK, 0, 0));
       return 1;
 
     default:
@@ -760,7 +760,7 @@ ChangeColorsDialog::get_result ()
 {
   ChangeColorsPageP::get_result ();
 
-  int i = SendDlgItemMessage (ccp_hwnd, IDC_DIR, BM_GETCHECK, 0, 0);
+  long long i = SendDlgItemMessage (ccp_hwnd, IDC_DIR, BM_GETCHECK, 0, 0);
   if (i != ccd_dir)
     {
       ccd_dir = i;

@@ -191,7 +191,7 @@ Dde::execute (HCONV hconv, long timeout, const char *data, int l)
 inline void
 Dde::execute (HCONV hconv, long timeout, const char *data)
 {
-  execute (hconv, timeout, data, strlen (data) + 1);
+  execute (hconv, timeout, data, (int) strlen (data) + 1);
 }
 
 inline void
@@ -206,7 +206,7 @@ Dde::poke (HCONV hconv, long timeout, const char *item, const char *data, int l)
 inline void
 Dde::poke (HCONV hconv, long timeout, const char *item, const char *data)
 {
-  poke (hconv, timeout, item, data, strlen (data) + 1);
+  poke (hconv, timeout, item, data, (int) strlen (data) + 1);
 }
 
 inline HDDEDATA

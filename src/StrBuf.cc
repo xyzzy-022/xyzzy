@@ -111,7 +111,7 @@ StrBuf::fill (Char c, int size)
 }
 
 void
-StrBuf::add (const Char *s, int size)
+StrBuf::add (const Char *s, long long size)
 {
   assert (!sb_finished);
   if (!size)
