@@ -616,7 +616,7 @@ Window::paint_glyphs (HDC hdc, HDC hdcmem, const glyph_t *gstart, const glyph_t 
 
       if (c & GLYPH_BITMAP_BIT)
         {
-          long long x = r.left + (b - buf) * app.text_font.cell ().cx;
+          int x = r.left + (int) (b - buf) * app.text_font.cell ().cx;
           for (; b < be; b++, x += app.text_font.cell ().cx)
             {
               int w = w_clsize.cx - x;
@@ -1520,7 +1520,7 @@ public:
   regexp_kwd::regexp_kwd (lisp, point_t, const Buffer *);
   int kwdmatch (const Point &, int, int &);
   int kwdmatch_begin (const Point &, int);
-  int valid_p () const {return (int) rk_list;}
+  long long valid_p () const {return long long(rk_list);}
   point_t match_beg () const {return rk_match_beg;}
   point_t match_end () const {return rk_match_end;}
   int value (int i) const {return rk_use_vals ? rk_vals[i] : rk_val;}

@@ -200,7 +200,7 @@ public:
   lisp pop ();
   void drop ();
   lisp &top ();
-  void set_stack (int);
+  void set_stack (long long);
   long long stack_depth () const;
   lisp &local (int);
 
@@ -297,7 +297,7 @@ ByteCode::top ()
 }
 
 inline void
-ByteCode::set_stack (int i)
+ByteCode::set_stack (long long i)
 {
   assert (i >= 0 && i < bc_stacke - bc_stackb);
   bc_stackp = bc_stackb + i;

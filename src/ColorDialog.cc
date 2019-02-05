@@ -43,7 +43,7 @@ class SelectColor
 {
   HWND hwnd;
   XCOLORREF cc;
-  int current_id;
+  long long current_id;
   COLORREF colors[20];
   static COLORREF cust[16];
   static int initialized;
@@ -131,7 +131,7 @@ SelectColor::do_command (int id, int code)
           i = SendDlgItemMessage (hwnd, IDC_COMBO, CB_GETITEMDATA, i, 0);
           if (i == CB_ERR)
             return;
-          cc = XCOLORREF (RGB (0, 0, 0), i - IDS_COLOR_SCROLLBAR);
+          cc = XCOLORREF (RGB (0, 0, 0), (int) i - IDS_COLOR_SCROLLBAR);
           if (current_id >= 0)
             InvalidateRect (GetDlgItem (hwnd, current_id), 0, 0);
           current_id = -1;
@@ -361,7 +361,7 @@ ChangeColorsPageP::ccp_dialog_proc (HWND hwnd, UINT msg,
   if (msg == WM_INITDIALOG)
     {
       p = (ChangeColorsPageP *)((PROPSHEETPAGE *)lparam)->lParam;
-      SetWindowLong (hwnd, DWLP_USER, LPARAM (p));
+      SetWindowLongPtr (hwnd, DWLP_USER, LPARAM (p));
       p->ccp_hwnd = hwnd;
       if (!p->ccp_parent->ps_moved)
         {

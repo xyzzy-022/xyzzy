@@ -249,7 +249,7 @@ ChooseFontP::notify_size_pixel (HWND hwnd, int code)
   long long i = SendDlgItemMessage (hwnd, IDC_SIZE_PIXEL, BM_GETCHECK, 0, 0);
   if (i != cf_param.fs_size_pixel)
     {
-      cf_param.fs_size_pixel = i;
+      cf_param.fs_size_pixel = (int) i;
 
       long long i = SendDlgItemMessage (hwnd, IDC_SIZELIST, LB_GETCURSEL, 0, 0);
       if (i == LB_ERR)

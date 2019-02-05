@@ -31,7 +31,7 @@ set_appid (IShellLink *sl, lisp lappid)
 
   long long l = (strlen (b) + 1);
   wchar_t *w = (wchar_t *)alloca (l * sizeof (wchar_t));
-  MultiByteToWideChar (CP_ACP, 0, b, -1, w, l);
+  MultiByteToWideChar (CP_ACP, 0, b, -1, w, (int)l);
 
   safe_com <IPropertyStore> store;
   ole_error (sl->QueryInterface (IID_PPV_ARGS(&store)));
@@ -91,7 +91,7 @@ Fcreate_shortcut (lisp lobject, lisp llink, lisp keys)
       map_sl_to_backsl (path);
       long long l = (strlen (path) + 1);
       wchar_t *w = (wchar_t *)alloca (l * sizeof (wchar_t));
-      MultiByteToWideChar (CP_ACP, 0, path, -1, w, l);
+      MultiByteToWideChar (CP_ACP, 0, path, -1, w, (int)l);
 
       ULONG ul;
       safe_idl idl (ialloc);
@@ -121,7 +121,7 @@ Fcreate_shortcut (lisp lobject, lisp llink, lisp keys)
   pathname2cstr (llink, path);
   long long l = (strlen (path) + 1);
   wchar_t *w = (wchar_t *)alloca (l * sizeof (wchar_t));
-  MultiByteToWideChar (CP_ACP, 0, path, -1, w, l);
+  MultiByteToWideChar (CP_ACP, 0, path, -1, w, (int)l);
   ole_error (pf->Save (w, 1));
 
   return Qt;
@@ -194,7 +194,7 @@ Fresolve_shortcut (lisp lshortcut)
   map_sl_to_backsl (shortcut);
   long long l = (strlen (shortcut) + 1);
   wchar_t *w = (wchar_t *)alloca (l * sizeof (wchar_t));
-  MultiByteToWideChar (CP_ACP, 0, shortcut, -1, w, l);
+  MultiByteToWideChar (CP_ACP, 0, shortcut, -1, w, (int)l);
 
   safe_com <IShellLink> sl;
   ole_error (CoCreateInstance (CLSID_ShellLink, 0, CLSCTX_INPROC_SERVER,
@@ -246,7 +246,7 @@ Fole_drop_files (lisp lpath, lisp lclsid, lisp ldir, lisp lfiles)
   for (nfiles = 0; consp (f); f = xcdr (f), nfiles++)
     {
       check_string (xcar (f));
-      maxl = max (maxl, xstring_length (xcar (f)));
+      maxl = max (maxl, (long long) xstring_length (xcar (f)));
     }
 
   if (!nfiles)
@@ -264,7 +264,7 @@ Fole_drop_files (lisp lpath, lisp lclsid, lisp ldir, lisp lfiles)
 
   maxl++;
   wchar_t *wbuf = (wchar_t *)alloca (sizeof *wbuf * maxl);
-  MultiByteToWideChar (CP_ACP, 0, dir, -1, wbuf, maxl);
+  MultiByteToWideChar (CP_ACP, 0, dir, -1, wbuf, (int) maxl);
 
   ULONG eaten;
   safe_idl dir_idl (ialloc);

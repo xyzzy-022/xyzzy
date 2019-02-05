@@ -61,10 +61,10 @@ public:
 struct FontSetParam
 {
   LOGFONT fs_logfont[FONT_MAX];
-  int fs_use_backsl;
-  int fs_line_spacing;
-  int fs_recommend_size;
-  int fs_size_pixel;
+  long long fs_use_backsl;
+  long long fs_line_spacing;
+  long long fs_recommend_size;
+  long long fs_size_pixel;
 };
 
 class FontSet

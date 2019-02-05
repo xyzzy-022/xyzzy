@@ -56,7 +56,7 @@ protected:
   virtual BOOL draw_item (long long, DRAWITEMSTRUCT *);
   virtual void do_destroy () {}
 
-  virtual void notify_color (int) {}
+  virtual void notify_color (long long) {}
 
   static void measure_item (HWND, long long, MEASUREITEMSTRUCT *);
   static long long CALLBACK ccp_dialog_proc (HWND, UINT, WPARAM, LPARAM);
@@ -127,9 +127,9 @@ protected:
   virtual void notify_color (int);
 
 public:
-  int ccd_dir;
-  int ccd_subdir;
-  int ccd_default;
+  long long ccd_dir;
+  long long ccd_subdir;
+  long long ccd_default;
   ChangeColorsDialog ()
        : ChangeColorsPageP (USER_DEFINABLE_COLORS),
          ccd_dir (0), ccd_subdir (0), ccd_default (0)

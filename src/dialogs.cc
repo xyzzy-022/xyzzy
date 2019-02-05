@@ -579,7 +579,7 @@ count_filter_size (lisp filters)
     }
   if (size)
     size++;
-  return size;
+  return (int) size;
 }
 
 static void
@@ -640,7 +640,7 @@ OFN::init_eol_list ()
       {
         char b[64];
         LoadString (app.hinst, eol_list[i].id, b, sizeof b);
-        long long j = SendDlgItemMessage (ofn_hwnd, IDC_EOL_CODE, CB_ADDSTRING, 0, LPARAM (b));
+        int j = (int) SendDlgItemMessage (ofn_hwnd, IDC_EOL_CODE, CB_ADDSTRING, 0, LPARAM (b));
         if (j != CB_ERR)
           {
             SendDlgItemMessage (ofn_hwnd, IDC_EOL_CODE, CB_SETITEMDATA, j, eol_list[i].code);
