@@ -427,7 +427,7 @@ create_file_stream (lisp filename, lisp direction, lisp if_exists,
       xfile_stream_alt_pathname (stream) = 0;
     }
 
-  int fd = _open_osfhandle (long (h), access == GENERIC_READ ? _O_RDONLY : 0);
+  int fd = _open_osfhandle ((intptr_t)h, access == GENERIC_READ ? _O_RDONLY : 0);
   if (fd == -1)
     {
       CloseHandle (h);
@@ -774,7 +774,7 @@ write_buffer_stream (lisp stream, const Char *b, size_t size)
   Point point;
   Buffer *bp = buffer_stream_point (stream, point);
   bp->check_read_only ();
-  bp->insert_chars (point, b, size);
+  bp->insert_chars (point, b, (int)size);
   xmarker_point (xbuffer_stream_marker (stream)) = point.p_point;
 }
 
@@ -1076,7 +1076,7 @@ Fsocket_stream_send_oob_data (lisp stream, lisp string)
 {
   valid_socket_stream_p (stream);
   check_string (string);
-  int l = w2sl (string);
+  int l = (int)w2sl (string);
   char *s = (char *)alloca (l);
   w2s (s, string);
   try
@@ -1887,7 +1887,7 @@ write_stream (lisp stream, const Char *b, size_t size)
         case st_string_output:
           {
             lisp string = xstring_stream_output (stream);
-            int need = xstring_length (string) + size;
+            int need = (int)(xstring_length (string) + size);
             int room = xstring_dimension (string);
             if (need > room)
               {
@@ -1897,7 +1897,7 @@ write_stream (lisp stream, const Char *b, size_t size)
                 realloc_element (string, need - room, sizeof (Char));
               }
             bcopy (b, &xstring_contents (string) [xstring_length (string)], size);
-            xstring_length (string) += size;
+            xstring_length (string) += (int)size;
             xstream_column (stream) = update_column (xstream_column (stream), b, size);
             return;
           }
@@ -1924,7 +1924,7 @@ write_stream (lisp stream, const Char *b, size_t size)
           break;
 
         case st_status:
-          app.status_window.puts (b, size);
+          app.status_window.puts (b, (int)size);
           xstream_column (stream) = update_column (xstream_column (stream), b, size);
           return;
 
