@@ -185,9 +185,9 @@ inline lisp
 make_fixnum (long long x)
 {
     if (x >= LSHORT_INT_MIN && x <= LSHORT_INT_MAX)
-        return make_short_int(x);
-    else if (x >= MAXLONG && x <= MINLONG)
-        return make_long_int(x);
+        return make_short_int((long)x);
+    else if (x >= MINLONG && x <= MAXLONG)
+        return make_long_int((long)x);
     else
         return make_long_long_int(x);
 
