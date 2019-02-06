@@ -51,7 +51,7 @@ coerce_to_long_error (lisp object)
 }
 
 /*GENERIC_FUNCTION:INTEGER*/
-unsigned long
+u_long
 unsigned_long_value (lisp x)
 {
   long val;
