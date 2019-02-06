@@ -53,7 +53,7 @@ public:
   void set_default (int n) {default_btn = n;}
   void set_close (int id) {close_id = id;}
   void set_icon (HICON h) {hicon = h;}
-  int doit (HWND);
+  long long doit (HWND);
 };
 
 int MsgBox (HWND, const char *, const char *, UINT, int);

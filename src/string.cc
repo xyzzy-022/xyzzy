@@ -18,7 +18,7 @@ update_column (int column, Char c)
 }
 
 int
-update_column (int column, const Char *s, int size)
+update_column (int column, const Char *s, long long size)
 {
   for (const Char *se = s + size; s < se; s++)
     column = update_column (column, *s);
@@ -26,7 +26,7 @@ update_column (int column, const Char *s, int size)
 }
 
 int
-update_column (int column, Char c, int size)
+update_column (int column, Char c, long long size)
 {
   if (size)
     {

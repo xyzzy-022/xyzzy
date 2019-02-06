@@ -243,7 +243,7 @@ mouse_state::click_count (WPARAM wparam, LPARAM lparam)
     ms_click_count++;
   ms_point = p;
   ms_time = t;
-  ms_modifier = ms_last_modifier = wparam;
+  ms_modifier = ms_last_modifier = (UINT) wparam;
 }
 
 void
@@ -251,7 +251,7 @@ mouse_state::down (Window *wp, WPARAM wparam, LPARAM lparam, UINT button)
 {
   if (!ms_kbdq.idlep ())
     return;
-  if (wp->w_bufp && !((wparam & ~button) & MK_BUTTON_MASK))
+  if (wp->w_bufp && !(((UINT)wparam & ~button) & MK_BUTTON_MASK))
     {
       ms_hwnd = wp->w_hwnd;
       SetCapture (ms_hwnd);

@@ -13,7 +13,7 @@ get_mouse_scroll_lines ()
       HWND hwnd = FindWindow (MSH_WHEELMODULE_CLASS, MSH_WHEELMODULE_TITLE);
       if (hwnd)
         {
-          nlines = SendMessage (hwnd, PWM_MSH_SCROLL_LINES, 0, 0);
+          nlines = (UINT) SendMessage (hwnd, PWM_MSH_SCROLL_LINES, 0, 0);
           if (nlines)
             return nlines;
         }
@@ -150,7 +150,7 @@ struct auto_scroll_param
   int state;
   int interval;
   HCURSOR hcur[3];
-  UINT timer_id;
+  unsigned long long timer_id;
   void (__stdcall *callback)(int, void *);
   void *arg;
 };
@@ -238,7 +238,7 @@ begin_auto_scroll (HWND hwnd_parent, const POINT &point,
     {
       if (!GetMessage (&msg, 0, 0, 0))
         {
-          PostQuitMessage (msg.wParam);
+          PostQuitMessage ((int) msg.wParam);
           break;
         }
 

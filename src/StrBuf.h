@@ -41,8 +41,8 @@ public:
 
   void add (int);
   void add (Char);
-  void fill (int, int);
-  void fill (Char, int);
+  void fill (int, long long);
+  void fill (Char, long long);
   void add (const char *);
   void add (const Char *, long long);
   void add (StrBuf &);
@@ -107,7 +107,7 @@ StrBuf::add (int c)
 }
 
 inline void
-StrBuf::fill (int c, int n)
+StrBuf::fill (int c, long long n)
 {
   fill (Char (c & 0xff), n);
 }

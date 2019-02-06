@@ -30,6 +30,8 @@
 # define BITS_PER_SHORT (sizeof (short) * CHAR_BIT)
 # define BITS_PER_INT (sizeof (int) * CHAR_BIT)
 # define BITS_PER_LONG (sizeof (long) * CHAR_BIT)
+# define BITS_PER_LONGLONG (sizeof (long long) * CHAR_BIT)
+
 
 # define PATH_MAX 1024
 # define BUFFER_NAME_MAX PATH_MAX

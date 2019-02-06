@@ -95,6 +95,7 @@ enum lisp_object_type
   // 即値でない整数。30bitと32bitにどれだけ違いがあるとか突っ込まないように。
   // 昔は即値な整数はなかったのだ。
   Tlong_int     = TNnumber | TNreal | TNrational | TNinteger | TNfixnum | 1,
+  Tlonglong_int = TNnumber | TNreal | TNrational | TNinteger | TNfixnum | 1,
   Tbignum       = TNnumber | TNreal | TNrational | TNinteger | TNbignum, // bignum
   Tfraction     = TNnumber | TNreal | TNrational,      // 分数
   Tsingle_float = TNnumber | TNreal | TNfloat | 1,     // 単精度浮動小数点

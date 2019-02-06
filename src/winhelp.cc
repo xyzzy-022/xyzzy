@@ -13,8 +13,8 @@ Frun_winhelp (lisp file, lisp topic)
 
   check_string (topic);
   char *b = (char *)alloca (xstring_length (topic) * 2 + 1);
-  w2s (b, topic);
-  return boole (WinHelp (app.toplev, path, HELP_PARTIALKEY, DWORD (b)));
+  w2s (b, topic); 
+  return boole (WinHelp (app.toplev, path, HELP_PARTIALKEY, (ULONG_PTR) b));
 }
 
 lisp
@@ -124,7 +124,7 @@ void
 iset::find_topic (ifile *f)
 {
   const char *topic = is_topic + is_tplus;
-  int len = strlen (topic);
+  int len = (int)strlen (topic);
 
   short nbytes;
   if (fread (&nbytes, sizeof nbytes, 1, f->if_fp) != 1)
@@ -245,7 +245,7 @@ iset::init_files (HWND dlg)
     for (int i = 0; i < f->if_nfiles; i++)
       if (is_match_all || f->if_headers[i].ih_match)
         {
-          int idx = SendDlgItemMessage (dlg, IDC_FILES, LB_ADDSTRING, 0,
+          int idx = (int) SendDlgItemMessage (dlg, IDC_FILES, LB_ADDSTRING, 0,
                                         LPARAM (f->if_headers[i].ih_title));
           if (idx != LB_ERR)
             SendDlgItemMessage (dlg, IDC_FILES, LB_SETITEMDATA,
@@ -295,7 +295,7 @@ select_dialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_INITDIALOG:
       {
         iset *is = (iset *)lparam;
-        SetWindowLong (dlg, DWLP_USER, LONG (is));
+        SetWindowLongPtr (dlg, DWLP_USER, (ULONG_PTR) is);
         center_window (dlg);
         set_window_icon (dlg);
         is->init_files (dlg);
@@ -316,7 +316,7 @@ select_dialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
         case IDOK:
           {
-            iset *is = (iset *)GetWindowLong (dlg, DWLP_USER);
+            iset *is = (iset *)GetWindowLongPtr (dlg, DWLP_USER);
             char buf[256];
             GetDlgItemText (dlg, IDC_TOPIC, buf, sizeof buf);
             if (strcmp (buf, is->is_topic))
@@ -327,7 +327,7 @@ select_dialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
                 SetFocus (GetDlgItem (dlg, IDC_FILES));
                 return 1;
               }
-            int idx = SendDlgItemMessage (dlg, IDC_FILES, LB_GETCURSEL, 0, 0);
+            int idx = (int) SendDlgItemMessage (dlg, IDC_FILES, LB_GETCURSEL, 0, 0);
             if (idx == LB_ERR)
               return 1;
             is->is_match = (iheader *)SendDlgItemMessage (dlg, IDC_FILES, LB_GETITEMDATA,
@@ -397,7 +397,7 @@ Ffind_winhelp_path (lisp index_file, lisp ltopic)
   return make_string (is.is_match->ih_file);
 }
 
-typedef HWND (WINAPI *HTMLHELPPROC)(HWND, LPCSTR, UINT, DWORD);
+typedef HWND (WINAPI *HTMLHELPPROC)(HWND, LPCSTR, UINT, ULONG_PTR);
 
 #define HH_KEYWORD_LOOKUP 0xd
 #define HH_GET_LAST_ERROR 0x14
@@ -441,11 +441,11 @@ Fhtml_help (lisp lfile, lisp lkeyword)
   link.pszKeywords = keyword;
   link.fIndexOnFail = 1;
 
-  if (HtmlHelp (GetDesktopWindow (), file, HH_KEYWORD_LOOKUP, (DWORD)&link))
+  if (HtmlHelp (GetDesktopWindow (), file, HH_KEYWORD_LOOKUP, (ULONG_PTR)&link))
     return Qt;
 
   HH_LAST_ERROR err = {sizeof err};
-  if (HtmlHelp (0, 0, HH_GET_LAST_ERROR, (DWORD)&err)
+  if (HtmlHelp (0, 0, HH_GET_LAST_ERROR, (ULONG_PTR)&err)
       && FAILED (err.hr))
     {
       if (err.description)

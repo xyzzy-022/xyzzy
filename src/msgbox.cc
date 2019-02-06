@@ -280,21 +280,21 @@ XMessageBox::WndProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   XMessageBox *p;
   if (msg == WM_INITDIALOG)
     {
-      SetWindowLong (hwnd, DWLP_USER, lparam);
+      SetWindowLongPtr (hwnd, DWLP_USER, lparam);
       p = (XMessageBox *)lparam;
       p->hwnd = hwnd;
       p->WndProc (msg, wparam, lparam);
     }
   else
     {
-      p = (XMessageBox *)GetWindowLong (hwnd, DWLP_USER);
+      p = (XMessageBox *)GetWindowLongPtr (hwnd, DWLP_USER);
       if (p)
         p->WndProc (msg, wparam, lparam);
     }
   return 0;
 }
 
-int
+long long
 XMessageBox::doit (HWND hwnd)
 {
   if (!nbuttons)

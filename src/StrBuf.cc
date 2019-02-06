@@ -83,7 +83,7 @@ StrBuf::alloc ()
 }
 
 void
-StrBuf::fill (Char c, int size)
+StrBuf::fill (Char c, long long size)
 {
   assert (!sb_finished);
   if (!size)

@@ -1410,10 +1410,24 @@ dump_object (FILE *fp, const llong_int *d, int n,
 }
 
 static inline void
+dump_object(FILE *fp, const llonglong_int *d, int n,
+    const u_long used[LDATA_MAX_OBJECTS_PER_LONGLONG])
+{
+    dump_simple(fp, d, n, used);
+}
+
+static inline void
 rdump_object (FILE *fp, llong_int *d, int n,
               const u_long used[LDATA_MAX_OBJECTS_PER_LONG])
 {
   rdump_simple (fp, d, n, used);
+}
+
+static inline void
+rdump_object(FILE *fp, llonglong_int *d, int n,
+    const u_long used[LDATA_MAX_OBJECTS_PER_LONGLONG])
+{
+    rdump_simple(fp, d, n, used);
 }
 
 static void
