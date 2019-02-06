@@ -239,7 +239,7 @@ realloc_element (lisp vector, int ext, int size)
   lisp disp = xarray_displaced_to (vector);
   if (disp != Qnil)
     {
-      int offset = ((char *)xbase_vector_contents (vector)
+      long long offset = ((char *)xbase_vector_contents (vector)
                     - (char *)xbase_vector_contents (disp)) / size;
       int total = fixnum_value (Farray_total_size (disp));
       if (offset + new_size > total)

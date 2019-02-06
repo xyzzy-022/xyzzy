@@ -71,14 +71,14 @@ user_tab_bar::gc_mark (void (*f)(lisp))
 lisp
 user_tab_bar::current () const
 {
-  int i = get_cursel ();
+  long long i = get_cursel ();
   return i >= 0 ? nth (i) : 0;
 }
 
 int
 user_tab_bar::item_pos (lisp item, lisp &place) const
 {
-  int n = item_count ();
+  long long n = item_count ();
   for (int i = 0; i < n; i++)
     {
       lisp p = nth (i);
@@ -157,7 +157,7 @@ user_tab_bar::draw_item (const draw_item_struct &dis)
 {
   lisp name = item_name ((lisp)dis.data);
   char buf[ITEM_NAME_MAX];
-  int l = w2s (buf, buf + sizeof buf, name) - buf;
+  int l = (int)(w2s (buf, buf + sizeof buf, name) - buf);
   if (dis.state & ODS_SELECTED)
     tab_bar::draw_item (dis, buf, l,
                         get_misc_color (MC_TAB_SEL_FG),
@@ -193,7 +193,7 @@ user_tab_bar::add_item (lisp item, lisp name, lisp tooltip, lisp menu,
   lisp p = make_item (item, name, tooltip, menu);
   lisp q = xcons (p, u_item);
 
-  int n;
+  long long n;
   switch (pos)
     {
     case UTB_FIRST:
@@ -274,7 +274,7 @@ user_tab_bar::delete_item (lisp item)
         selchg = set_cursel (i + 1) >= 0;
     }
 
-  int r = tab_bar::delete_item (i);
+  long long r = tab_bar::delete_item (i);
   if (r)
     delq (p, &u_item);
 
@@ -302,7 +302,7 @@ lisp
 user_tab_bar::list_items ()
 {
   lisp r = Qnil;
-  int n = item_count ();
+  long long n = item_count ();
   for (int i = 0; i < n; i++)
     {
       lisp p = nth (i);
