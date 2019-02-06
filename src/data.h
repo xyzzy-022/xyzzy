@@ -87,7 +87,7 @@ struct ldata_free_rep
 };
 
 inline void
-bitset (u_long *p, int i)
+bitset (u_long *p, long long i)
 {
   p[i / (sizeof *p * CHAR_BIT)] |= 1 << i % (sizeof *p * CHAR_BIT);
 }
@@ -99,7 +99,7 @@ bitisset (const u_long *p, int i)
 }
 
 inline void
-bitclr (u_long *p, int i)
+bitclr (u_long *p, long long i)
 {
   p[i / (sizeof *p * CHAR_BIT)] &= ~(1 << i % (sizeof *p * CHAR_BIT));
 }

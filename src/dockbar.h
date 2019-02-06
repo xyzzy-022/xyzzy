@@ -246,9 +246,9 @@ public:
   void set_button (int, const TBBUTTON &, int = 0);
   long long item_rect (int i, RECT &r)
     {return sendmsg (TB_GETITEMRECT, i, LPARAM (&r));}
-  long long get_state (int id)
+  long long get_state (long long id)
     {return sendmsg (TB_GETSTATE, id, 0);}
-  long long set_state (int id, int state)
+  long long set_state (long long id, long long state)
     {return sendmsg (TB_SETSTATE, id, MAKELONG (state, 0));}
   long long enable_button (int id, int f)
     {return sendmsg (TB_ENABLEBUTTON, id, MAKELONG (f ? 1 : 0, 0));}

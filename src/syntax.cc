@@ -3762,7 +3762,7 @@ syntax_state::update_column_comment (const Char *p)
     return;
 
   Point point;
-  point.p_offset = p - ss_chunk->c_text;
+  point.p_offset = (int)(p - ss_chunk->c_text);
   point.p_point = 0;
   point.p_chunk = ss_chunk;
   if (ss_bp->column_comment_p (ss_tab, point))

@@ -264,7 +264,7 @@ check_object_type_bit (lisp x, lisp_object_type_bits bit, lisp expected)
 }
 
 inline lisp
-boole (int x)
+boole (long long x)
 {
   return x ? Qt : Qnil;
 }

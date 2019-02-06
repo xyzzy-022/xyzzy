@@ -36,7 +36,7 @@ public:
   virtual void gc_mark (void (*)(lisp));
   void add_item (lisp, lisp, lisp, lisp, int, lisp);
   int modify_item (lisp, lisp, lisp, lisp);
-  int delete_item (lisp);
+  long long delete_item (lisp);
   int select_item (lisp);
   lisp current_item ();
   lisp find_item (lisp);
@@ -257,7 +257,7 @@ user_tab_bar::modify_item (lisp item, lisp name, lisp tooltip, lisp menu)
   return 1;
 }
 
-int
+long long
 user_tab_bar::delete_item (lisp item)
 {
   lisp p;

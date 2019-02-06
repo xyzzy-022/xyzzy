@@ -10,7 +10,7 @@ class user_tool_bar: public tool_bar
       lisp ti_tooltip;
       lisp ti_command;
       lisp ti_init;
-      long long ti_id;
+      int ti_id;
       int ti_bitmap;
     };
 
@@ -153,7 +153,7 @@ user_tool_bar::update_ui ()
           }
 #else
         long long ostate = get_state (u_item[i].ti_id);
-        int state = ostate;
+        long long state = ostate;
         if (flags & MF_GRAYED)
           state &= ~TBSTATE_ENABLED;
         else
