@@ -1667,6 +1667,7 @@ static symbols unint[] =
 
   MAKE_SYMBOL2Q (encoding-sjis),
   MAKE_SYMBOL2Q (encoding-auto),
+  MAKE_SYMBOL2Q (encoding-utf8n),
 
   MAKE_SYMBOL2 (kbd-encoding),
   MAKE_SYMBOL2 (internal-char-encoding-list),
@@ -2671,6 +2672,7 @@ static symbols ed[] =
   DEFUN3 (char-encoding-type, 1, 0, 0),
   DEFUN3 (char-encoding-signature, 1, 0, 0),
   DEFVAR2 (*encoding-sjis*),
+  DEFVAR2 (*encoding-utf8n*),
   MAKE_SYMBOL2 (*encoding-euc-jp*),
   MAKE_SYMBOL2 (*encoding-jis*),
   MAKE_SYMBOL2 (*encoding-default-utf16le-bom*),

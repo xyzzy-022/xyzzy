@@ -926,7 +926,7 @@ lisp
 Fsi_environ ()
 {
   lisp r = Qnil;
-  for (char **e = environ; *e; e++)
+  for (char **e = _environ; *e; e++)
     {
       char *eq = strchr (*e, '=');
       if (!eq) continue;

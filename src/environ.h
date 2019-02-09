@@ -1,5 +1,7 @@
 #ifndef _environ_h_
-# define _environ_h_
+#define _environ_h_
+
+#undef environ
 
 class environ
 {

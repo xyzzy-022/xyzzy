@@ -1,14 +1,14 @@
 #ifndef _clipboard_h_
 # define _clipboard_h_
 
-typedef BOOL (*AddClipboardFormatListener)(HWND hwnd);
-typedef BOOL (*RemoveClipboardFormatListener)(HWND hwnd);
+typedef BOOL (*XyzAddClipboardFormatListener)(HWND hwnd);
+typedef BOOL (*XyzRemoveClipboardFormatListener)(HWND hwnd);
 
 class clipboard
 {
 private:
-  AddClipboardFormatListener AddClipboardFormatListenerProc;
-  RemoveClipboardFormatListener RemoveClipboardFormatListenerProc;
+  XyzAddClipboardFormatListener AddClipboardFormatListenerProc;
+  XyzRemoveClipboardFormatListener RemoveClipboardFormatListenerProc;
 
   HWND hwnd_next_clipboard;
   DWORD last_clipboard_seqno;
