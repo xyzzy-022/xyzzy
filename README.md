@@ -27,7 +27,7 @@ Emacs っぽいテキストエディタのようなものです。
 
 ### 環境
   * Windows 10
-  * Visual Studio 2017 Community Edition
+  * Visual Studio 2017 Enterprise Edition / (Community Edition)
   * Git
 
 ### 手順
