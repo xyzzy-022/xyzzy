@@ -119,10 +119,10 @@ resolver::wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     {
       d = (resolver *)((CREATESTRUCT *)lparam)->lpCreateParams;
       d->r_hwnd = hwnd;
-      SetWindowLong (hwnd, 0, LPARAM (d));
+      SetWindowLongPtr (hwnd, 0, LPARAM (d));
     }
   else
-    d = (resolver *)GetWindowLong (hwnd, 0);
+    d = (resolver *)GetWindowLongPtr (hwnd, 0);
 
   LRESULT r = (d ? d->wndproc (msg, wparam, lparam)
                : DefWindowProc (hwnd, msg, wparam, lparam));

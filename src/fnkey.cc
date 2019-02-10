@@ -21,13 +21,13 @@ int FKWin::fk_default_nbuttons;
 static inline void
 set_window (HWND hwnd, FKWin *wp)
 {
-  SetWindowLong (hwnd, 0, LONG (wp));
+  SetWindowLongPtr (hwnd, 0, long long (wp));
 }
 
 static inline FKWin *
 get_window (HWND hwnd)
 {
-  return (FKWin *)GetWindowLong (hwnd, 0);
+  return (FKWin *)GetWindowLongPtr (hwnd, 0);
 }
 
 FKWin::FKWin ()
