@@ -77,13 +77,15 @@ public:
 };
 
 # define LDATASIZE_NOBJS(SIZE) \
-  ((LDATA_PAGE_SIZE - offsetof (ldata_rep, dr_data)) / (SIZE))
+  ((LDATA_PAGE_SIZE - offsetof (ldata_rep, dr_data)) / LSIZE(SIZE))
 
 # define LDATA_NOBJS(T) (LDATASIZE_NOBJS (sizeof (T)))
 
+# define LSIZE(SIZE) max(SIZE,sizeof(long long))
+
 struct ldata_free_rep
 {
-  ldata_free_rep *lf_next;
+  ldata_free_rep *lf_next = 0;
 };
 
 inline void
