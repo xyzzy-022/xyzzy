@@ -79,8 +79,8 @@ ldataP::morecore (int type, int size)
   ldata_rep *p = alloc (type);
   char *d = p->dr_data;
   ld_freep = (ldata_free_rep *)d;
-  for (char *de = d + size * (LDATASIZE_NOBJS (size) - 1); d < de; d += LSIZE(size))
-    ((ldata_free_rep *)d)->lf_next = (ldata_free_rep *)(d + LSIZE(size));
+  for (char *de = d + size * (LDATASIZE_NOBJS (size) - 1); d < de; d += size)
+    ((ldata_free_rep *)d)->lf_next = (ldata_free_rep *)(d + size);
   ((ldata_free_rep *)d)->lf_next = NULL;
 }
 

@@ -8,6 +8,7 @@ class llong_int: public lisp_object
 {
 public:
   long value;
+  long padding;
 };
 
 class llonglong_int : public lisp_object
@@ -200,6 +201,7 @@ class lsingle_float: public lisp_object
 {
 public:
   float value;
+  long padding;
 };
 
 class ldouble_float: public lisp_object
