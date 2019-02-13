@@ -496,7 +496,15 @@ funcall_builtin (lisp f, lisp arglist)
 #ifdef DEBUG_GC
   MARK_FUNCALL (f);
 #endif
-  return lfunction_proc_0 (xfunction_fn (f))();
+  if (nargs == 0)
+      return lfunction_proc_0(xfunction_fn(f))();
+  else if (nargs == 1)
+      return lfunction_proc_1(xfunction_fn(f))(*stack);
+  else if (nargs == 2)
+      return lfunction_proc_2(xfunction_fn(f))(*(stack - 1), *stack);
+  else if (nargs == 3)
+      return lfunction_proc_3(xfunction_fn(f))(*(stack - 2), *(stack - 1), *stack);
+
 #else
 # error "Not tested"
 #endif

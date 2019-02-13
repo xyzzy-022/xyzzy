@@ -5,16 +5,14 @@
 # include "cdecl.h"
 # include "alloc.h"
 
-# define LDATA_PAGE_SIZE 1024
+# define LDATA_PAGE_SIZE 1024LL
 # define LDATA_PAGE_MASK (LDATA_PAGE_SIZE - 1)
-# define LDATA_MIN_SIZE 8
+# define LDATA_MIN_SIZE 4
 # define LDATA_RADIX 2
 
 # define LDATA_MAX_OBJECTS_PER_LONG \
   ((LDATA_PAGE_SIZE / LDATA_MIN_SIZE + BITS_PER_LONG - 1) / BITS_PER_LONG)
 
-# define LDATA_MAX_OBJECTS_PER_LONGLONG \
-  ((LDATA_PAGE_SIZE / LDATA_MIN_SIZE + BITS_PER_LONG - 1) / BITS_PER_LONGLONG)
 
 struct ldata_rep
 {
