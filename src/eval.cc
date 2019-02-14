@@ -506,6 +506,16 @@ funcall_builtin (lisp f, lisp arglist)
       return lfunction_proc_2(xfunction_fn(f))(*(stack - 1), *stack);
   else if (nargs == 3)
       return lfunction_proc_3(xfunction_fn(f))(*(stack - 2), *(stack - 1), *stack);
+  else if (nargs == 4)
+      return lfunction_proc_4(xfunction_fn(f))(*(stack - 3), *(stack - 2), *(stack - 1), *stack);
+  else if (nargs == 5)
+      return lfunction_proc_5(xfunction_fn(f))(*(stack - 4), *(stack - 3), *(stack - 2), *(stack - 1), *stack);
+  else if (nargs == 6)
+      return lfunction_proc_6(xfunction_fn(f))(*(stack - 5), *(stack - 4), *(stack - 3), *(stack - 2), *(stack - 1), *stack);
+  else if (nargs == 7)
+      return lfunction_proc_7(xfunction_fn(f))(*(stack - 6), *(stack - 5), *(stack - 4), *(stack - 3), *(stack - 2), *(stack - 1), *stack);
+  else
+      FEprogram_error(Einvalid_argument);
 
 #else
 # error "Not tested"
