@@ -492,6 +492,8 @@ funcall_builtin (lisp f, lisp arglist)
     *stack = consp (arglist) ? arglist : Qnil;
   else if (consp (arglist))
     FEtoo_many_arguments ();
+  else
+    stack--;
 
 #ifdef DEBUG_GC
   MARK_FUNCALL (f);
