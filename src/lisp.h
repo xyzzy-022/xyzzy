@@ -151,7 +151,8 @@ typedef lisp (__stdcall *lfunction_proc_4)(lisp, lisp, lisp, lisp);
 typedef lisp (__stdcall *lfunction_proc_5)(lisp, lisp, lisp, lisp, lisp);
 typedef lisp (__stdcall *lfunction_proc_6)(lisp, lisp, lisp, lisp, lisp, lisp);
 typedef lisp (__stdcall *lfunction_proc_7)(lisp, lisp, lisp, lisp, lisp, lisp, lisp);
-
+typedef lisp (__stdcall *lfunction_proc_8)(lisp, lisp, lisp, lisp, lisp, lisp, lisp, lisp);
+typedef lisp (__stdcall *lfunction_proc_9)(lisp, lisp, lisp, lisp, lisp, lisp, lisp, lisp, lisp);
 
 # include "fns.h"
 # ifndef EXTERN
