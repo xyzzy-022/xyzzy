@@ -352,57 +352,18 @@ unpack_string_chunk (lisp chunk, lisp loffset, lisp lsize, lisp lzero_term)
     }
 }
 
-lisp
-unpack_string_pointer (lisp laddress, lisp lsize, lisp lzero_term)
-{
-  char *p = reinterpret_cast <char*> (unsigned_long_value (laddress));
-
-  int zero_term = !lzero_term || lzero_term != Qnil;
-  if (!lsize || lsize == Qnil)
-    {
-      if (!zero_term)
-        FErange_error (lsize);
-      try
-        {
-          size_t l = s2wl (p);
-          lisp string = make_string (l);
-          s2w (xstring_contents (string), p);
-          return string;
-        }
-      catch (Win32Exception &e)
-        {
-          e.throw_lisp_error ();
-          throw;
-        }
-    }
-  else
-    {
-      char *pe = p + fixnum_value (lsize);
-      if (pe < p)
-        FErange_error (lsize);
-      try
-        {
-          size_t l = s2wl (p, pe, zero_term);
-          lisp string = make_string (l);
-          s2w (xstring_contents (string), p, pe, zero_term);
-          return string;
-        }
-      catch (Win32Exception &e)
-        {
-          e.throw_lisp_error ();
-          throw;
-        }
-    }
-}
 
 // si:unpack-string chunk offset &optional size (zero_term t)
 lisp
 Fsi_unpack_string (lisp chunk, lisp loffset, lisp lsize, lisp lzero_term)
 {
-  if (chunk == Qnil)
-    return unpack_string_pointer (loffset, lsize, lzero_term);
-  else
-    return unpack_string_chunk (chunk, loffset, lsize, lzero_term);
+  if (chunk == Qnil) {
+    //Want to kill this case.
+    FEprogram_error(Einvalid_argument);
+  }
+
+  return unpack_string_chunk (chunk, loffset, lsize, lzero_term);
+
 }
 
 int64_t
