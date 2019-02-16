@@ -104,7 +104,7 @@ ChooseFontP::add_font_size (HWND hwnd, long long i)
   xdpi x;
   x.hwnd = GetDlgItem (hwnd, IDC_SIZELIST);
   x.dpi = cf_dpi;
-  x.pixel = cf_param.fs_size_pixel;
+  x.pixel = (long) cf_param.fs_size_pixel;
 
   HDC hdc = GetDC (hwnd);
   EnumFontFamilies (hdc, face, FONTENUMPROC (enum_font_size_proc), LPARAM (&x));

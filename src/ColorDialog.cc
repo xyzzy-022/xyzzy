@@ -133,7 +133,7 @@ SelectColor::do_command (int id, int code)
             return;
           cc = XCOLORREF (RGB (0, 0, 0), (int) i - IDS_COLOR_SCROLLBAR);
           if (current_id >= 0)
-            InvalidateRect (GetDlgItem (hwnd, current_id), 0, 0);
+            InvalidateRect (GetDlgItem (hwnd, (int)current_id), 0, 0);
           current_id = -1;
           InvalidateRect (GetDlgItem (hwnd, IDC_CURRENT), 0, 0);
         }
@@ -154,7 +154,7 @@ SelectColor::do_command (int id, int code)
             if (i != current_id)
               {
                 if (current_id >= 0)
-                  InvalidateRect (GetDlgItem (hwnd, current_id), 0, 0);
+                  InvalidateRect (GetDlgItem (hwnd, (int)current_id), 0, 0);
                 if (i >= 0)
                   InvalidateRect (GetDlgItem (hwnd, i), 0, 0);
                 current_id = i;
@@ -200,7 +200,7 @@ SelectColor::draw_button (long long id, DRAWITEMSTRUCT *dis)
           if (current_id != id)
             {
               if (current_id >= 0)
-                InvalidateRect (GetDlgItem (hwnd, current_id), 0, 0);
+                InvalidateRect (GetDlgItem (hwnd, (int)current_id), 0, 0);
               InvalidateRect (GetDlgItem (hwnd, IDC_CURRENT), 0, 0);
             }
           current_id = id;
@@ -647,7 +647,7 @@ ChooseFontPage::init_dialog ()
 
   cfp_font.init_dialog (ccp_hwnd);
 
-  SetDlgItemInt (ccp_hwnd, IDC_LSP, cfp_param.fs_line_spacing, 0);
+  SetDlgItemInt (ccp_hwnd, IDC_LSP, (int) cfp_param.fs_line_spacing, 0);
   SendDlgItemMessage (ccp_hwnd, IDC_LSPSPIN, UDM_SETRANGE,
                       0, MAKELONG (30, 0));
   SendDlgItemMessage (ccp_hwnd, IDC_LSPSPIN, UDM_SETPOS,
@@ -711,7 +711,7 @@ ChangeColorsDialog::init_dialog ()
 {
   ChangeColorsPageP::init_dialog ();
   SendDlgItemMessage (ccp_hwnd, IDC_DIR, BM_SETCHECK, ccd_dir, 0);
-  EnableWindow (GetDlgItem (ccp_hwnd, IDC_SUBDIR), ccd_dir);
+  EnableWindow (GetDlgItem (ccp_hwnd, IDC_SUBDIR), (int) ccd_dir);
   if (ccd_dir)
     SendDlgItemMessage (ccp_hwnd, IDC_SUBDIR, BM_SETCHECK, ccd_subdir, 0);
   Window *wp = selected_window ();

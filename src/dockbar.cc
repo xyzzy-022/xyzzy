@@ -36,7 +36,7 @@ dock_bar::subclass ()
 {
   if (!SetProp (b_hwnd, b_dock_bar_prop, HANDLE (this)))
     return 0;
-  b_wndproc = (WNDPROC)SetWindowLong (b_hwnd, GWLP_WNDPROC, LONG (WNDPROC (wndproc)));
+  b_wndproc = (WNDPROC)SetWindowLongPtr (b_hwnd, GWLP_WNDPROC, (LONG_PTR) WNDPROC (wndproc));
   if (b_wndproc)
     return 1;
   RemoveProp (b_hwnd, b_dock_bar_prop);
@@ -48,7 +48,7 @@ dock_bar::unsubclass ()
 {
   if (b_wndproc)
     {
-      SetWindowLong (b_hwnd, GWLP_WNDPROC, LONG (b_wndproc));
+      SetWindowLongPtr (b_hwnd, GWLP_WNDPROC, LONG_PTR (b_wndproc));
       RemoveProp (b_hwnd, b_dock_bar_prop);
       b_wndproc = 0;
     }
@@ -348,7 +348,7 @@ tool_bar::calc_client_size (SIZE &sz, int vert) const
     {
       sz.cx = 0;
       sz.cy = t_button_size.cy;
-      int n = button_count ();
+      int n = (int) button_count ();
       for (int i = 0; i < n; i++)
         {
           TBBUTTON b;
@@ -410,7 +410,7 @@ tool_bar::set_bitmap ()
 
   TBADDBITMAP tbab;
   tbab.hInst = 0;
-  tbab.nID = (UINT)(HBITMAP)*t_bm;
+  tbab.nID = (UINT_PTR)(HBITMAP)*t_bm;
   add_bitmap (tbab, bm.bmWidth / 16);
 }
 
@@ -447,7 +447,7 @@ tool_bar::dock_edge ()
 
       if (!new_comctl_p ())
         {
-          int n = button_count ();
+          int n = (int) button_count ();
           for (int i = 0; i < n; i++)
             {
               TBBUTTON b;
@@ -496,7 +496,7 @@ tab_bar::nth (long long i) const
 {
   TC_ITEM ti;
   ti.mask = TCIF_PARAM;
-  return get_item (i, ti) ? ti.lParam : 0;
+  return get_item ((int) i, ti) ? ti.lParam : 0;
 }
 
 void
@@ -506,7 +506,7 @@ tab_bar::modify_spin ()
   if (!hwnd_spin)
     return;
 
-  HWND *buf = (HWND *)GetWindowLong (b_hwnd, 0);
+  HWND *buf = (HWND *)GetWindowLongPtr (b_hwnd, 0);
 
   int offset;
   if (IsBadWritePtr (buf, sizeof *buf * 10)
@@ -587,7 +587,7 @@ tab_bar::dock_edge ()
 void
 tab_bar::calc_tab_height ()
 {
-  int nitem = item_count ();
+  int nitem = (int) item_count ();
   if (!nitem)
     {
       TC_ITEM ti;
@@ -660,11 +660,11 @@ tab_bar::abbrev_text (HDC hdc, char *s0, int l, int cx) const
       se = CharPrev (s0, se);
       if (se == s0)
         break;
-      GetTextExtentPoint32 (hdc, s0, se - s0, &sz);
+      GetTextExtentPoint32 (hdc, s0, (int)(se - s0), &sz);
     }
   while (sz.cx > cx);
   strcpy (se, "...");
-  return se - s0 + 3;
+  return (int) (se - s0 + 3);
 }
 
 void
@@ -672,7 +672,7 @@ tab_bar::draw_item (const draw_item_struct &dis, char *s, long long l,
                     COLORREF fg, COLORREF bg) const
 {
   SIZE sz;
-  GetTextExtentPoint32 (dis.hdc, s, l, &sz);
+  GetTextExtentPoint32 (dis.hdc, s, (int) l, &sz);
 
   int x, y;
   switch (edge ())
@@ -712,14 +712,14 @@ tab_bar::draw_item (const draw_item_struct &dis, char *s, long long l,
         if (dis.state & ODS_SELECTED)
           y++;
         if (sz.cx > cx)
-          l = abbrev_text (dis.hdc, s, l, cx);
+          l = (int) abbrev_text (dis.hdc, s, l, cx);
         break;
       }
     }
 
   COLORREF ofg = SetTextColor (dis.hdc, fg);
   COLORREF obg = SetBkColor (dis.hdc, bg);
-  ExtTextOut (dis.hdc, x, y, ETO_CLIPPED | ETO_OPAQUE, &dis.r, s, l, 0);
+  ExtTextOut (dis.hdc, x, y, ETO_CLIPPED | ETO_OPAQUE, &dis.r, s, (int) l, 0);
   SetTextColor (dis.hdc, ofg);
   SetBkColor (dis.hdc, obg);
   if (dis.state & ODS_SELECTED && GetFocus () == b_hwnd)
@@ -751,7 +751,7 @@ tab_bar::erase_bkgnd (HDC hdc)
   cr.bottom = min (cr.bottom, wr.bottom);
   IntersectClipRect (hdc, cr.left, cr.top, cr.right, cr.bottom);
 
-  int n = item_count ();
+  int n = (int) item_count ();
   if (n > 0)
     {
       RECT r;
@@ -807,7 +807,7 @@ tab_bar::paint_left (HDC hdc, const RECT &cr, const RECT &clip, int n)
   HGDIOBJ of = SelectObject (hdc, t_horz_text ? sysdep.ui_font () : sysdep.ui_font90 ());
   draw_item_struct dis;
   dis.hdc = hdc;
-  int cur = get_cursel ();
+  int cur = (int) get_cursel ();
   for (int i = 0; i < n; i++)
     {
       RECT r;
@@ -852,7 +852,7 @@ tab_bar::paint_top (HDC hdc, const RECT &cr, const RECT &clip, int n)
   HGDIOBJ of = SelectObject (hdc, sysdep.ui_font ());
   draw_item_struct dis;
   dis.hdc = hdc;
-  int cur = get_cursel ();
+  int cur = (int) get_cursel ();
   for (int i = 0; i < n; i++)
     {
       RECT r;
@@ -897,7 +897,7 @@ tab_bar::paint_right (HDC hdc, const RECT &cr, const RECT &clip, int n)
   HGDIOBJ of = SelectObject (hdc, t_horz_text ? sysdep.ui_font () : sysdep.ui_font270 ());
   draw_item_struct dis;
   dis.hdc = hdc;
-  int cur = get_cursel ();
+  int cur = (int) get_cursel ();
   for (int i = 0; i < n; i++)
     {
       RECT r;
@@ -942,7 +942,7 @@ tab_bar::paint_bottom (HDC hdc, const RECT &cr, const RECT &clip, int n)
   HGDIOBJ of = SelectObject (hdc, sysdep.ui_font ());
   draw_item_struct dis;
   dis.hdc = hdc;
-  int cur = get_cursel ();
+  int cur = (int) get_cursel ();
   for (int i = 0; i < n; i++)
     {
       RECT r;
@@ -1040,7 +1040,7 @@ tab_bar::paint ()
       IntersectClipRect (hdc, r.left, r.top, r.right, r.bottom);
     }
 
-  int n = item_count ();
+  int n = (int) item_count ();
   if (n > 0)
     {
       SetTextColor (hdc, sysdep.btn_text);
@@ -1123,7 +1123,7 @@ tab_bar::spin_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       break;
 
     case WM_NCDESTROY:
-      SetWindowLong (hwnd, GWLP_WNDPROC, LONG (oproc));
+      SetWindowLongPtr (hwnd, GWLP_WNDPROC, LONG_PTR (oproc));
       RemoveProp (hwnd, b_tab_bar_spin_prop);
       break;
     }
@@ -1136,9 +1136,9 @@ tab_bar::parent_notify (UINT msg, UINT id, HWND hwnd)
   if (msg == WM_CREATE && id == IDC_TAB_SPIN
       && !(GetWindowLong (hwnd, GWL_STYLE) & UDS_HORZ))
     {
-      WNDPROC o = (WNDPROC)GetWindowLong (hwnd, GWLP_WNDPROC);
+      WNDPROC o = (WNDPROC)GetWindowLongPtr (hwnd, GWLP_WNDPROC);
       if (o && SetProp (hwnd, b_tab_bar_spin_prop, HANDLE (o)))
-        SetWindowLong (hwnd, GWLP_WNDPROC, LONG (spin_wndproc));
+        SetWindowLongPtr (hwnd, GWLP_WNDPROC, LONG_PTR (spin_wndproc));
     }
 }
 
@@ -1149,7 +1149,7 @@ tab_bar::notify_spin (NMHDR *nm, LRESULT &r) const
       && (GetWindowLong (nm->hwndFrom, GWL_STYLE)
           & (UDS_HORZ | UDS_WRAP)) == UDS_WRAP)
     {
-      DWORD range = SendMessage (nm->hwndFrom, UDM_GETRANGE, 0, 0);
+      long long range = SendMessage (nm->hwndFrom, UDM_GETRANGE, 0, 0);
 
       // ”ÍˆÍ‚ª‹t“]‚µ‚Ä‚¢‚é
       int mn = LOWORD (range), mx = HIWORD (range);
@@ -1305,7 +1305,7 @@ tab_bar::lbtn_down (int x, int y)
       MSG msg;
       if (!GetMessage (&msg, 0, 0, 0))
         {
-          PostQuitMessage (msg.wParam);
+          PostQuitMessage ((int) msg.wParam);
           ReleaseCapture ();
           break;
         }
@@ -1367,7 +1367,7 @@ tab_bar::move_tab (int x, int y)
 
   TC_HITTESTINFO htinfo;
   htinfo.pt = pt;
-  int oindex = hit_test (htinfo);
+  int oindex = (int) hit_test (htinfo);
   if (oindex < 0 || oindex != get_cursel ())
     return 0;
 
@@ -1384,7 +1384,7 @@ tab_bar::move_tab (int x, int y)
       MSG msg;
       if (!GetMessage (&msg, 0, 0, 0))
         {
-          PostQuitMessage (msg.wParam);
+          PostQuitMessage ((int) msg.wParam);
           break;
         }
       if (GetCapture () != b_hwnd)
@@ -1395,7 +1395,7 @@ tab_bar::move_tab (int x, int y)
           {
             htinfo.pt.x = short (LOWORD (msg.lParam));
             htinfo.pt.y = short (HIWORD (msg.lParam));
-            int index = hit_test (htinfo);
+            int index = (int) hit_test (htinfo);
             SetCursor (index < 0 ? hcur_no : (index == oindex ? hcur_old : hcur_mv));
             break;
           }
@@ -1406,7 +1406,7 @@ tab_bar::move_tab (int x, int y)
             y = short (HIWORD (msg.lParam));
             htinfo.pt.x = x;
             htinfo.pt.y = y;
-            int index = hit_test (htinfo);
+            int index = (int) hit_test (htinfo);
             if (index >= 0 && index != oindex)
               {
                 RECT r;
@@ -1520,7 +1520,7 @@ tab_bar::do_context_menu (const POINT *pt)
 
   if (!pt)
     {
-      i = get_cursel ();
+      i = (int) get_cursel ();
       if (i >= 0)
         {
           RECT r;
@@ -1535,7 +1535,7 @@ tab_bar::do_context_menu (const POINT *pt)
     }
   else
     {
-      int n = item_count ();
+      int n = (int) item_count ();
       for (i = n - 1; i >= 0; i--)
         {
           RECT r;
@@ -2188,7 +2188,7 @@ dock_frame::move_bar (dock_bar *bar, int x, int y)
       MSG msg;
       if (!GetMessage (&msg, 0, 0, 0))
         {
-          PostQuitMessage (msg.wParam);
+          PostQuitMessage ((int) msg.wParam);
           ReleaseCapture ();
           break;
         }

@@ -663,7 +663,7 @@ OFN::init_encoding_list ()
         {
           char b[256];
           w2s (b, b + sizeof b, xchar_encoding_display_name (encoding));
-          long long j = SendDlgItemMessage (ofn_hwnd, IDC_CHAR_ENCODING, CB_ADDSTRING, 0, LPARAM (b));
+          int j = (int) SendDlgItemMessage (ofn_hwnd, IDC_CHAR_ENCODING, CB_ADDSTRING, 0, LPARAM (b));
           if (j != CB_ERR)
             {
               SendDlgItemMessage (ofn_hwnd, IDC_CHAR_ENCODING, CB_SETITEMDATA,
