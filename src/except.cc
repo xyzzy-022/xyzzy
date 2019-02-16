@@ -124,7 +124,7 @@ get_section_name (void *base, void *p, char *buf, int size)
   if (nt.Signature != IMAGE_NT_SIGNATURE)
     return 0;
 
-  DWORD rva = DWORD (p) - DWORD (base);
+  unsigned long long rva = unsigned long long (p) - unsigned long long (base);
 
   IMAGE_SECTION_HEADER *section =
     (IMAGE_SECTION_HEADER *)((char *)base + dos.e_lfanew
@@ -156,14 +156,14 @@ get_module_base_name (HMODULE h, LPSTR buf, DWORD size)
   char *p = jrindex (buf, '\\');
   if (p)
     strcpy (buf, p + 1);
-  int l = strlen (buf);
+  int l = (int) strlen (buf);
   if (l >= 4 && !_stricmp (buf + l - 4, ".dll"))
     buf[l - 4] = 0;
   return 1;
 }
 
 static int
-get_module_name (DWORD addr, MEMORY_BASIC_INFORMATION *bi, char *buf)
+get_module_name (unsigned long long addr, MEMORY_BASIC_INFORMATION *bi, char *buf)
 {
   switch (bi->AllocationProtect & ~(PAGE_GUARD | PAGE_NOCACHE))
     {
@@ -198,12 +198,12 @@ find_module_name (void *addr, char *buf)
 {
   SYSTEM_INFO si;
   GetSystemInfo (&si);
-  addr = (void *)(DWORD (addr) & ~si.dwPageSize);
+  addr = (void *)((unsigned long long) addr & ~(unsigned long long) si.dwPageSize);
 
   MEMORY_BASIC_INFORMATION bi;
   memset (&bi, 0, sizeof bi);
   return (VirtualQuery (addr, &bi, sizeof bi)
-          && get_module_name (DWORD (addr), &bi, buf));
+          && get_module_name ((unsigned long long) addr, &bi, buf));
 }
 
 static void
@@ -229,15 +229,15 @@ print_modules (FILE *fp, DWORD addr, MEMORY_BASIC_INFORMATION *bi)
   if (!get_module_base_name (HMODULE (bi->AllocationBase), path, MAX_PATH))
     return;
   char *p = path + lstrlen (path);
-  if (get_section_name (bi->AllocationBase, bi->BaseAddress, p + 1, path + sizeof path - p - 1))
+  if (get_section_name (bi->AllocationBase, bi->BaseAddress, p + 1, (int)(path + sizeof path - p - 1)))
     *p = '!';
-  fprintf (fp, "%08x - %08x: %s\n", addr, addr + bi->RegionSize, path);
+  fprintf (fp, "%16x - %16llx: %s\n", addr, addr + bi->RegionSize, path);
 }
 
 static void
 print_module_allocation (FILE *fp)
 {
-  for (DWORD addr = 0; addr < 0xffffffff;)
+  for (unsigned long long addr = 0; addr < 0xffffffff;)
     {
       MEMORY_BASIC_INFORMATION bi;
       if (VirtualQuery ((void *)addr, &bi, sizeof bi))
@@ -257,9 +257,9 @@ static void
 x64_print_registers (FILE *fp, const CONTEXT &c)
 {
   fprintf (fp, "Registers:\n");
-  fprintf (fp, "RAX: %08x  RBX: %08x  RCX: %08x  RDX: %08x  RSI: %08x\n",
+  fprintf (fp, "RAX: %16llx  RBX: %16llx  RCX: %16llx  RDX: %16llx  RSI: %16llx\n",
            c.Rax, c.Rbx, c.Rcx, c.Rdx, c.Rsi);
-  fprintf (fp, "RDI: %08x  RSP: %08x  RBP: %08x  RIP: %08x  EFL: %08x\n",
+  fprintf (fp, "RDI: %16llx  RSP: %16llx  RBP: %16llx  RIP: %16llx  EFL: %16llx\n",
            c.Rdi, c.Rsp, c.Rbp, c.Rip, c.EFlags);
   fprintf (fp, "CS: %04x  DS: %04x  ES: %04x  SS: %04x  FS: %04x  GS: %04x\n\n",
            c.SegCs, c.SegDs, c.SegEs, c.SegSs, c.SegFs, c.SegGs);
@@ -402,7 +402,7 @@ cleanup_exception ()
   const char* desc = get_exception_description (Win32Exception::code);
   char path[PATH_MAX];
   GetModuleFileName (0, path, PATH_MAX);
-  int l = strlen (path);
+  int l = (int) strlen (path);
   if (l >= 4 && !_stricmp (path + l - 4, ".exe"))
     strcpy (path + l - 4, ".BUG");
   else
@@ -433,7 +433,7 @@ cleanup_exception ()
                sysdep.os_ver.szCSDVersion);
 
       fprintf (fp, "%08x: %s\n", Win32Exception::code, desc);
-      fprintf (fp, "at %08x", Win32Exception::r.ExceptionAddress);
+      fprintf (fp, "at %16llx", Win32Exception::r.ExceptionAddress);
       if (*module)
         fprintf (fp, " (%s)", module);
       fprintf (fp, "\n\n");
@@ -444,7 +444,7 @@ cleanup_exception ()
 #else
 # error "yet"
 #endif
-      fprintf (fp, "Initial stack: %08x  GC: %d\n\n",
+      fprintf (fp, "Initial stack: %16llx  GC: %d\n\n",
                app.initial_stack, app.in_gc);
 
       print_module_allocation (fp);
@@ -457,7 +457,7 @@ cleanup_exception ()
     }
 
   char msg[1024], *p = msg;
-  p += sprintf (p, "致命的な例外(%s)が発生しました。\nat %08x",
+  p += sprintf (p, "致命的な例外(%s)が発生しました。\nat %16llx",
                 desc, Win32Exception::r.ExceptionAddress);
   if (*module)
     p += sprintf (p, " (%s)", module);

@@ -331,7 +331,7 @@ tool_bar::wndproc (UINT msg, WPARAM wparam, LPARAM lparam)
 }
 
 int
-tool_bar::create (HWND hwnd_parent, DWORD style, UINT id)
+tool_bar::create (HWND hwnd_parent, DWORD style, unsigned long long id)
 {
   if (!dock_bar::create (0, TOOLBARCLASSNAME, 0,
                          style, 0, 0, 0, 0, hwnd_parent,
@@ -368,7 +368,7 @@ tool_bar::calc_client_size (SIZE &sz, int vert) const
       int flat_p = tb_flat_p ();
       if (!flat_p)
         sz.cy += 2;
-      int n = button_count ();
+      int n = (int)button_count ();
       for (int i = 0; i < n; i++)
         {
           TBBUTTON b;
@@ -712,7 +712,7 @@ tab_bar::draw_item (const draw_item_struct &dis, char *s, long long l,
         if (dis.state & ODS_SELECTED)
           y++;
         if (sz.cx > cx)
-          l = (int) abbrev_text (dis.hdc, s, l, cx);
+          l = (int) abbrev_text (dis.hdc, s, (int) l, cx);
         break;
       }
     }

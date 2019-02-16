@@ -117,7 +117,7 @@ Fwrite_registry (lisp lsection, lisp lkey, lisp val)
 
   if (stringp (val))
     {
-      int l = w2sl (val);
+      int l = (int) w2sl (val);
       char *b = (char *)alloca (l + 1);
       w2s (b, val);
       if (!r.set (key, b, l + 1))

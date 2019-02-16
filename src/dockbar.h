@@ -216,7 +216,7 @@ protected:
 public:
   tool_bar (dock_frame &, lisp);
   ~tool_bar ();
-  int create (HWND, DWORD, UINT);
+  int create (HWND, DWORD, unsigned long long);
   long long set_bitmap_size (int cx, int cy)
     {
       t_bitmap_size.cx = cx;

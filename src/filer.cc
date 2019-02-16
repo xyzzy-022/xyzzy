@@ -476,7 +476,7 @@ check_share_folder (const char *path)
   if (FAILED (SHGetMalloc (&ialloc)))
     return 0;
 
-  int l = strlen (path) + 1;
+  int l = (int) (strlen (path) + 1);
   wchar_t *w = (wchar_t *)alloca (sizeof *w * l);
   MultiByteToWideChar (CP_ACP, 0, path, -1, w, l);
 
@@ -571,7 +571,7 @@ FilerView::dispinfo (LV_ITEM *lv)
 }
 
 static int
-compare_filename (const char *s1, const char *s2, int param)
+compare_filename (const char *s1, const char *s2, long long param)
 {
   if (!(param & FilerView::SORT_NUM))
     return (param & FilerView::SORT_CASE
@@ -707,7 +707,7 @@ FilerView::set_title (const char *mask) const
   if (stringp (title))
     l += xstring_length (title) * 2 + 3;
   if (mask)
-    l += strlen (mask) + 1;
+    l += (int) (strlen (mask) + 1);
   char *b0 = (char *)alloca (l);
   char *b = w2s (b0, fv_ldir);
   if (mask)
@@ -895,7 +895,7 @@ FilerView::disk_space (double nbytes, char *buf, int c)
   for (; *e != '.'; e--)
     ;
   strcpy (b, u[i]);
-  insert_comma (buf, e - buf);
+  insert_comma (buf, (int)(e - buf));
 }
 
 void
@@ -1348,7 +1348,7 @@ FilerView::thread_main ()
         if (!fv_icon_path || !fv_chunk)
           continue;
 
-        len = strlen (fv_icon_path);
+        len = (int) strlen (fv_icon_path);
         path = (char *)alloca (len + MAX_PATH + 1);
         strcpy (path, fv_icon_path);
         sequence = fv_sequence;
@@ -2105,7 +2105,7 @@ paint_text (HDC hdc, lisp string, const RECT &r)
   char *s = (char *)alloca (w2sl (string) + 1);
   w2s (s, string);
   ExtTextOut (hdc, r.left, r.top, ETO_CLIPPED | ETO_OPAQUE,
-              &r, s, strlen (s), 0);
+              &r, s, (int) strlen (s), 0);
 }
 
 void
@@ -2474,7 +2474,7 @@ Filer::read_char () const
       MSG msg;
       if (!GetMessage (&msg, 0, 0, 0))
         {
-          PostQuitMessage (msg.wParam);
+          PostQuitMessage ((int) msg.wParam);
           return lChar_EOF;
         }
       switch (msg.message)
@@ -2938,13 +2938,13 @@ const char ViewerWindow::vw_classname[] = "viewer";
 static inline void
 set_window (HWND hwnd, ViewerWindow *wp)
 {
-  SetWindowLong (hwnd, 0, LONG (wp));
+  SetWindowLongPtr (hwnd, 0, long long (wp));
 }
 
 static inline ViewerWindow *
 get_window (HWND hwnd)
 {
-  return (ViewerWindow *)GetWindowLong (hwnd, 0);
+  return (ViewerWindow *)GetWindowLongPtr (hwnd, 0);
 }
 
 static LRESULT CALLBACK
@@ -3017,14 +3017,14 @@ ViewerWindow::~ViewerWindow ()
   w_hwnd_ml = 0;
 }
 
-int
+HWND
 ViewerWindow::init (HWND parent, ViewerBuffer *bp)
 {
   w_bufp = bp;
   w_point.p_point = 0;
   w_point.p_chunk = bp->b_chunkb;
   w_point.p_offset = 0;
-  return (int)CreateWindowEx (sysdep.Win4p () ? WS_EX_CLIENTEDGE : 0,
+  return CreateWindowEx (sysdep.Win4p () ? WS_EX_CLIENTEDGE : 0,
                               vw_classname, "",
                               WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,
                               0, 0, 0, 0, parent, 0, app.hinst, this);

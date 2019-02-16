@@ -1934,61 +1934,61 @@ process_interactive_string (lisp fmt, lisp args)
               break;
 
             case 's':
-              v1 = read_minibuffer (p0, p - p0, load_default (args, nargs), Qnil, Qnil,
+              v1 = read_minibuffer (p0, (int)(p - p0), load_default (args, nargs), Qnil, Qnil,
                                     load_history (args, nargs), 0, 0, 0, Qnil, opt_arg);
               break;
 
             case 'a':
-              v1 = complete_read (p0, p - p0, load_default (args, nargs),
+              v1 = complete_read (p0, (int)(p - p0), load_default (args, nargs),
                                   Kfunction_name, Qnil,
                                   load_history (args, nargs, Ksymbol_name),
                                   1, opt_arg);
               break;
 
             case 'C':
-              v1 = complete_read (p0, p - p0, load_default (args, nargs),
+              v1 = complete_read (p0, (int)(p - p0), load_default (args, nargs),
                                   Kcommand_name, Qnil,
                                   load_history (args, nargs, Ksymbol_name),
                                   1, opt_arg);
               break;
 
             case 'S':
-              v1 = complete_read (p0, p - p0, load_default (args, nargs),
+              v1 = complete_read (p0, (int)(p - p0), load_default (args, nargs),
                                   Ksymbol_name, Qnil,
                                   load_history (args, nargs, Ksymbol_name),
                                   1, opt_arg);
               break;
 
             case 'v':
-              v1 = complete_read (p0, p - p0, load_default (args, nargs),
+              v1 = complete_read (p0, (int)(p - p0), load_default (args, nargs),
                                   Kvariable_name, Qnil,
                                   load_history (args, nargs, Ksymbol_name),
                                   1, opt_arg);
               break;
 
             case 'F':
-              v1 = read_filename (p0, p - p0, Kfile_name,
+              v1 = read_filename (p0, (int)(p - p0), Kfile_name,
                                   load_title (args, nargs),
                                   load_default (args, nargs),
                                   load_history (args, nargs));
               break;
 
             case 'l':
-              v1 = read_filename (p0, p - p0, Kfile_name_list,
+              v1 = read_filename (p0, (int)(p - p0), Kfile_name_list,
                                   load_title (args, nargs),
                                   load_default (args, nargs),
                                   load_history (args, nargs));
               break;
 
             case 'f':
-              v1 = read_filename (p0, p - p0, Kexist_file_name,
+              v1 = read_filename (p0, (int)(p - p0), Kexist_file_name,
                                   load_title (args, nargs),
                                   load_default (args, nargs),
                                   load_history (args, nargs));
               break;
 
             case 'D':
-              v1 = read_filename (p0, p - p0, Kdirectory_name,
+              v1 = read_filename (p0, (int)(p - p0), Kdirectory_name,
                                   load_title (args, nargs),
                                   load_default (args, nargs),
                                   load_history (args, nargs));
@@ -2002,7 +2002,7 @@ process_interactive_string (lisp fmt, lisp args)
                   def = c == 'B' ? Fother_buffer (0) : Fselected_buffer ();
                 if (bufferp (def))
                   def = Fbuffer_name (def);
-                v1 = complete_read (p0, p - p0, def,
+                v1 = complete_read (p0, (int)(p - p0), def,
                                     c == 'B' ? Kbuffer_name : Kexist_buffer_name,
                                     Qnil,
                                     load_history (args, nargs, Kbuffer_name),
@@ -2018,13 +2018,13 @@ process_interactive_string (lisp fmt, lisp args)
                 }
               /* fall thru... */
             case 'n':
-              v1 = minibuffer_read_integer (p0, p - p0);
+              v1 = minibuffer_read_integer (p0, (int)(p - p0));
               break;
 
             case 'x':
             case 'X':
               v1 = funcall_1 (Vread_from_string,
-                              read_minibuffer (p0, p - p0, Qnil, Klisp_sexp,
+                              read_minibuffer (p0,(int)(p - p0), Qnil, Klisp_sexp,
                                                Qnil, Klisp_sexp,
                                                0, 0, 0, Qnil, opt_arg));
               if (c == 'X')
@@ -2040,7 +2040,7 @@ process_interactive_string (lisp fmt, lisp args)
               break;
 
             case 'e':
-              v1 = complete_read (p0, p - p0, load_default (args, nargs),
+              v1 = complete_read (p0,(int)(p - p0), load_default (args, nargs),
                                   Kcommand_line, Qnil, load_history (args, nargs),
                                   0, opt_arg);
               break;
@@ -2052,7 +2052,7 @@ process_interactive_string (lisp fmt, lisp args)
                   v1 = Qnil;
                   break;
                 }
-              v1 = complete_read (p0, p - p0, Qnil,
+              v1 = complete_read (p0,(int) (p - p0), Qnil,
                                   c == 'z' ? Kchar_encoding : Kexact_char_encoding,
                                   Qnil,
                                   load_history (args, nargs, Kchar_encoding),

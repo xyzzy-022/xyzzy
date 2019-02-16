@@ -251,7 +251,7 @@ class ViewerWindow: public Window
 public:
   ViewerWindow ();
   ~ViewerWindow ();
-  int init (HWND, ViewerBuffer *);
+  HWND init (HWND, ViewerBuffer *);
   void resize (int, int, int, int);
   void update_window ();
   void repaint ();
