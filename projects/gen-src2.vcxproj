@@ -152,6 +152,7 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).gen-src2.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

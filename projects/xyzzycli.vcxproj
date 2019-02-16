@@ -150,6 +150,7 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion)xyzzycli..pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>$(GenerateDebugInformation)</GenerateDebugInformation>
