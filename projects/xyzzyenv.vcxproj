@@ -115,6 +115,7 @@
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).xyzzyenv.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>$(GenerateDebugInformation)</GenerateDebugInformation>
