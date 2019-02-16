@@ -1362,7 +1362,7 @@ count_cf_wtext_length (const ucs2_t *string)
       }
     else if (w2i (*s) == Char (-1))
       l++;
-  return s - string + l;
+  return (int) (s - string + l);
 }
 
 static int

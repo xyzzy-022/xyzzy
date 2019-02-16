@@ -509,7 +509,7 @@ translate_unicode (HWND hwnd, WPARAM wparam, LPARAM lparam)
   BYTE b[256];
   GetKeyboardState (b);
   wchar_t w[2];
-  switch (ToUnicode (wparam, lparam, b, w, 2, 0))
+  switch (ToUnicode ((int)wparam, (int)lparam, b, w, 2, 0))
     {
     default:
       return 0;
@@ -545,7 +545,7 @@ XyzzyTranslateMessage (const MSG *msg)
           if (msg->wParam == VK_PROCESSKEY
               && xsymbol_value (Vime_does_not_process_control_backslach) != Qnil)
             {
-              int key = to_ascii_char (app.kbdq.gime.ImmGetVirtualKey (msg->hwnd), msg->lParam);
+              int key = to_ascii_char (app.kbdq.gime.ImmGetVirtualKey (msg->hwnd), (int) msg->lParam);
               if (key == '\\' || key == '_')
                 {
                   PostMessage (msg->hwnd, msg->message == WM_KEYDOWN ? WM_CHAR : WM_SYSCHAR,
@@ -556,11 +556,11 @@ XyzzyTranslateMessage (const MSG *msg)
           else
             {
               if (app.kbdq.unicode_kbd_p () && msg->message == WM_KEYDOWN
-                  && exkey_index (msg->wParam, 0) < 0
+                  && exkey_index ((int) msg->wParam, 0) < 0
                   && translate_unicode (msg->hwnd, msg->wParam, msg->lParam))
                 return 1;
 
-              int key = to_ascii_char (msg->wParam, msg->lParam);
+              int key = to_ascii_char ((int) msg->wParam, (int) msg->lParam);
               if (maybe_ctrl_char_p (key))
                 {
                   PostMessage (msg->hwnd, msg->message == WM_KEYDOWN ? WM_CHAR : WM_SYSCHAR,
@@ -573,8 +573,10 @@ XyzzyTranslateMessage (const MSG *msg)
           /* fall thru... */
         case WM_KEYUP:
         case WM_SYSKEYUP:
-          if (exkey_index (msg->wParam, (msg->message == WM_SYSKEYDOWN
-                                         || msg->message == WM_SYSKEYUP)) >= 0)
+          if (exkey_index ((int) msg->wParam, 
+                                        (msg->message == WM_SYSKEYDOWN
+                                        || msg->message == WM_SYSKEYUP)
+             ) >= 0)
             return 0;
           break;
         }
@@ -657,7 +659,7 @@ decode_ctlchars (UINT vk, UINT sc)
 lChar
 decode_syschars (WPARAM wparam)
 {
-  lChar cc = lookup_translate_table (wparam);
+  lChar cc = lookup_translate_table ((int)wparam);
   if (GetKeyState (VK_MENU) < 0)
     {
       if (ascii_char_p (cc))
@@ -680,11 +682,11 @@ decode_syskeys (WPARAM wparam, LPARAM lparam)
   if (wparam == VK_TAB)
     return lChar_EOF;
 
-  lChar c = pre_decode_vkeys (wparam, 1);
+  lChar c = pre_decode_vkeys ((int)wparam, 1);
   if (c != lChar_EOF)
     return c;
 
-  c = decode_vkeys (wparam);
+  c = decode_vkeys ((int)wparam);
   if (c != lChar_EOF)
     {
       if (GetKeyState (VK_SHIFT) < 0)
@@ -696,7 +698,7 @@ decode_syskeys (WPARAM wparam, LPARAM lparam)
     }
   else
     {
-      c = decode_ctlchars (wparam, lparam);
+      c = decode_ctlchars ((int)wparam, (int)lparam);
       if (c != lChar_EOF)
         {
           c = lookup_translate_table (c);
@@ -710,11 +712,11 @@ decode_syskeys (WPARAM wparam, LPARAM lparam)
 lChar
 decode_keys (WPARAM wparam, LPARAM lparam)
 {
-  lChar c = pre_decode_vkeys (wparam, 0);
+  lChar c = pre_decode_vkeys ((int)wparam, 0);
   if (c != lChar_EOF)
     return c;
 
-  c = decode_vkeys (wparam);
+  c = decode_vkeys ((int)wparam);
   if (c != lChar_EOF)
     {
       if (GetKeyState (VK_SHIFT) < 0)
@@ -726,7 +728,7 @@ decode_keys (WPARAM wparam, LPARAM lparam)
     }
   else
     {
-      c = decode_ctlchars (wparam, lparam);
+      c = decode_ctlchars ((int)wparam, (int)lparam);
       if (c != lChar_EOF)
         {
           c = lookup_translate_table (c);
@@ -742,11 +744,11 @@ decode_keys (WPARAM wparam, LPARAM lparam)
           BYTE state[256];
           WORD key[2];
           GetKeyboardState (state);
-          if (ToAscii (wparam, lparam, state, key, 0) > 0)
+          if (ToAscii ((int)wparam, (int)lparam, state, key, 0) > 0)
             return lChar_EOF;
 
           if (wparam >= '@' && wparam < '@' + 0x20)
-            c = wparam - '@';
+            c = (int) wparam - '@';
           else
             return lChar_EOF;
           c = lookup_translate_table (c);
@@ -770,7 +772,7 @@ kbd_queue::copy_queue (Char *b0, int size) const
        i = (i + QUEUE_MAX - 1) % QUEUE_MAX)
     if (cc[i] != lChar_EOF && !(cc[i] & LCHAR_MENU))
       *--b = Char (cc[i]);
-  int l = b0 + size - b;
+  int l = (int)(b0 + size - b);
   if (pending != lChar_EOF && l)
     l--;
   bcopy (b, b0, l);
@@ -849,21 +851,21 @@ kbd_queue::reconvert (RECONVERTSTRING *rsbuf, int unicode_p)
           if (!unicode_p)
             {
               reconv = (RECONVERTSTRING *)xmalloc (sizeof *reconv + (b3 - b0) + 1);
-              reconv->dwSize = sizeof *reconv + (b3 - b0) + 1;
+              reconv->dwSize = (DWORD) (sizeof *reconv + (b3 - b0) + 1);
               reconv->dwVersion = 0;
-              reconv->dwStrLen = b3 - b0;
+              reconv->dwStrLen = (DWORD) (b3 - b0);
               reconv->dwStrOffset = sizeof *reconv;
-              reconv->dwCompStrLen = b2 - b1;
-              reconv->dwCompStrOffset = b1 - b0;
-              reconv->dwTargetStrLen = b2 - b1;
-              reconv->dwTargetStrOffset = b1 - b0;
+              reconv->dwCompStrLen = (DWORD) (b2 - b1);
+              reconv->dwCompStrOffset = (DWORD) (b1 - b0);
+              reconv->dwTargetStrLen = (DWORD) (b2 - b1);
+              reconv->dwTargetStrOffset = (DWORD) (b1 - b0);
               strcpy ((char *)(reconv + 1), b0);
             }
           else
             {
-              int l1 = MultiByteToWideChar (CP_ACP, 0, b0, b1 - b0, 0, 0);
-              int l2 = MultiByteToWideChar (CP_ACP, 0, b1, b2 - b1, 0, 0);
-              int l3 = MultiByteToWideChar (CP_ACP, 0, b2, b3 - b2, 0, 0);
+              int l1 = MultiByteToWideChar (CP_ACP, 0, b0, (int)(b1 - b0), 0, 0);
+              int l2 = MultiByteToWideChar (CP_ACP, 0, b1, (int)(b2 - b1), 0, 0);
+              int l3 = MultiByteToWideChar (CP_ACP, 0, b2, (int)(b3 - b2), 0, 0);
               int l = l1 + l2 + l3;
               size = sizeof *reconv + (l + 1) * sizeof (wchar_t);
               reconv = (RECONVERTSTRING *)xmalloc (size);
@@ -912,8 +914,8 @@ kbd_queue::documentfeed (RECONVERTSTRING *rsbuf, int unicode_p)
 
       char *content = w2s (c);
       char *before = w2s (b);
-      long len = strlen (content);
-      long offset = strlen (before);
+      long len = (long)strlen (content);
+      long offset = (long)strlen (before);
       if (unicode_p)
         {
           int numc = MultiByteToWideChar (CP_ACP, 0, content, len, 0, 0);
@@ -938,7 +940,7 @@ kbd_queue::documentfeed (RECONVERTSTRING *rsbuf, int unicode_p)
       if (!unicode_p)
         strncpy ((char *)(rsbuf + 1), content, len);
       else
-        MultiByteToWideChar (CP_ACP, 0, content, -1, (wchar_t *)(rsbuf + 1), strlen (content));
+        MultiByteToWideChar (CP_ACP, 0, content, -1, (wchar_t *)(rsbuf + 1), (int)strlen (content));
 
       return size;
     }
@@ -1193,7 +1195,7 @@ store_wcs (Char *b0, const ucs2_t *w, int l, const Char *tab)
         }
       *b++ = cc;
     }
-  return b - b0;
+  return (int)(b - b0);
 }
 
 void
@@ -1369,7 +1371,7 @@ Fset_ime_read_string (lisp string)
   if (!hIMC)
     return Qnil;
   int f = app.kbdq.gime.ImmSetCompositionString (hIMC, SCS_SETSTR, 0, 0,
-                                                 read, strlen (read));
+                                                 read, (DWORD) strlen (read));
   app.kbdq.gime.ImmReleaseContext (app.toplev, hIMC);
   return boole (f);
 }
@@ -1414,7 +1416,7 @@ static int
 get_kbd_layout_name (HKL hkl, char *buf, int size)
 {
   char k[256];
-  sprintf (k, "SYSTEM\\CurrentControlSet\\Control\\Keyboard Layouts\\%08x", hkl);
+  sprintf (k, "SYSTEM\\CurrentControlSet\\Control\\Keyboard Layouts\\%16llx", hkl);
   ReadRegistry r (HKEY_LOCAL_MACHINE, k);
   return ((!r.fail () && r.get ("Layout Text", buf, size) > 0)
           || app.kbdq.gime.ImmGetDescription (hkl, buf, size) > 0);
@@ -1444,7 +1446,7 @@ Flist_kbd_layout ()
       char buf[256];
       if (get_kbd_layout_name (h[i], buf, sizeof buf)
           || get_kbd_layout_name (HKL (HIWORD (h[i])), buf, sizeof buf))
-        r = xcons (xcons (make_fixnum (int (h[i])),
+        r = xcons (xcons (make_fixnum ((long long)(h[i])),
                           make_string (buf)),
                    r);
     }
@@ -1494,7 +1496,7 @@ Fselect_kbd_layout (lisp layout)
     {
       if (!fixnump (layout))
         FEtype_error (layout, xsymbol_value (Qor_string_integer));
-      hkl = HKL (fixnum_value (layout));
+      hkl = HKL ((long long)fixnum_value (layout));
     }
   if (!ActivateKeyboardLayout (hkl, 0))
     FEsimple_win32_error (GetLastError ());
@@ -1508,8 +1510,8 @@ Fcurrent_kbd_layout ()
   char buf[256];
   if (get_kbd_layout_name (hkl, buf, sizeof buf)
       || get_kbd_layout_name (HKL (HIWORD (hkl)), buf, sizeof buf))
-    return xcons (make_fixnum (int (hkl)), make_string (buf));
-  return xcons (make_fixnum (int (hkl)), Qnil);
+    return xcons (make_fixnum ((long long) (hkl)), make_string (buf));
+  return xcons (make_fixnum ((long long) (hkl)), Qnil);
 }
 
 int

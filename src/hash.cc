@@ -23,7 +23,7 @@ sxhashval (lisp object)
 }
 
 /*GENERIC_FUNCTION:IMMEDIATE*/
-static u_int
+static unsigned long long
 sxhash_imm (lisp object, hash_test_proc test)
 {
   if (short_int_p (object))
@@ -36,7 +36,7 @@ sxhash_imm (lisp object, hash_test_proc test)
 }
 
 /*GENERIC_FUNCTION:NUMBER*/
-static u_int
+static unsigned long long
 sxhash_eql (lisp object)
 {
   if (immediatep (object))
@@ -78,7 +78,7 @@ sxhash_eql (lisp object)
 }
 
 /*GENERIC_FUNCTION*/
-static u_int
+static unsigned long long
 sxhash_equal (lisp object, int depth)
 {
   u_int hashval = 0;
@@ -106,7 +106,7 @@ sxhash_equal (lisp object, int depth)
 }
 
 /*GENERIC_FUNCTION*/
-static u_int
+static unsigned long long
 sxhash_equalp (lisp object, int depth)
 {
   u_int hashval = 0;
@@ -327,8 +327,8 @@ find_hash_entry (lisp key, lisp hash_table)
   assert (size);
   assert (size & 1);
   hash_test_proc test = xhash_table_test_fn (hash_table);
-  u_int hashval = sxhash (key, test);
-  u_int h = hashval % size;
+  unsigned long long hashval = sxhash (key, test);
+  unsigned long long h = hashval % size;
   for (u_int i = 0; i <= size; i++)
     {
       if (entry[h].key == Qunbound)
@@ -412,7 +412,7 @@ add_hash_entry (lisp key, lisp value, lhash_table *table)
   assert (size & 1);
   hash_entry *entry = table->entry;
   hash_test_proc test = table->test;
-  u_int hashval = sxhash (key, test);
+  unsigned long long hashval = sxhash (key, test);
   u_int h = hashval % size;
   int pos = -1;
   for (u_int i = 0; i <= size; i++)
