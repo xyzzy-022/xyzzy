@@ -16,10 +16,10 @@ make_hash_table ()
   return p;
 }
 
-static inline u_int
+static inline unsigned long long
 sxhashval (lisp object)
 {
-  return u_int (object) >> 3;
+  return unsigned long long (object) >> 3;
 }
 
 /*GENERIC_FUNCTION:IMMEDIATE*/
@@ -184,11 +184,11 @@ sxhash_equalp (lisp object, int depth)
   return hashval;
 }
 
-static u_int
+static unsigned long long
 sxhash (lisp object, hash_test_proc test)
 {
   if (test == Feq)
-    return u_int (object) >> 3;
+    return unsigned long long (object) >> 3;
   if (test == Feql)
     return sxhash_eql (object);
   if (test == Fequal)

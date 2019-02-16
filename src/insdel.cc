@@ -1266,7 +1266,7 @@ count_cf_text_length (const u_char *string)
           s++;
         }
     }
-  return s - string - l;
+  return (int) (s - string - l);
 }
 
 static int
@@ -1304,11 +1304,11 @@ make_string_from_cf_text (lisp lstring, const u_char *s)
   const char* ss = reinterpret_cast<const char*> (s);
   lisp encoding = symbol_value (Vclipboard_char_encoding, selected_buffer ());
   if (encoding_auto_detect_p (encoding))
-    encoding = detect_char_encoding (ss, strlen (ss));
+    encoding = detect_char_encoding (ss, (int) strlen (ss));
   if (encoding_sjis_p (encoding))
     return make_string_from_cf_text_sjis (lstring, s);
 
-  int sl = strlen (ss);
+  int sl = (int) strlen (ss);
   xinput_strstream str1 (ss, sl);
   encoding_input_stream_helper is1 (encoding, str1);
   int l = is1->total_length ();
@@ -1341,7 +1341,7 @@ make_string_from_cf_text (lisp lstring, const u_char *s)
             }
         }
 eof:
-  xstring_length (lstring) = b - xstring_contents (lstring);
+  xstring_length (lstring) = (int) (b - xstring_contents (lstring));
 
   return 1;
 }

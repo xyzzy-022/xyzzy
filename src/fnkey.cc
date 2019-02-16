@@ -89,7 +89,7 @@ FKWin::paint_text (HDC hdc, int n, const RECT &br, int offset) const
     *buf = 0;
 
   ExtTextOut (hdc, r.left + 2, r.top + 2, ETO_CLIPPED | ETO_OPAQUE,
-              &r, buf, strlen (buf), 0);
+              &r, buf, (int) strlen (buf), 0);
 
   SetBkColor (hdc, obg);
   SetTextColor (hdc, ofg);
@@ -209,7 +209,7 @@ FKWin::button_on (int n)
 }
 
 void
-FKWin::OnLButtonDown (int x, int y, int keys)
+FKWin::OnLButtonDown (int x, int y, long long keys)
 {
   POINT pt;
   pt.x = x;
@@ -230,7 +230,7 @@ FKWin::OnLButtonDown (int x, int y, int keys)
 }
 
 void
-FKWin::OnLButtonUp (int x, int y, int keys)
+FKWin::OnLButtonUp (int x, int y, long long keys)
 {
   if (GetCapture () == fk_hwnd)
     ReleaseCapture ();
@@ -261,7 +261,7 @@ FKWin::OnLButtonUp (int x, int y, int keys)
 }
 
 void
-FKWin::OnMouseMove (int x, int y, int keys)
+FKWin::OnMouseMove (int x, int y, long long keys)
 {
   if (fk_cur_btn == -1)
     return;

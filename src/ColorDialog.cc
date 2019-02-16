@@ -607,14 +607,14 @@ ChooseFontPage::get_result ()
       ccp_modified = 1;
     }
 
-  long long i = SendDlgItemMessage (ccp_hwnd, IDC_BACKSL, BM_GETCHECK, 0, 0);
+  int i = (int) SendDlgItemMessage (ccp_hwnd, IDC_BACKSL, BM_GETCHECK, 0, 0);
   if (i != cfp_param.fs_use_backsl)
     {
       cfp_param.fs_use_backsl = i;
       ccp_modified = 1;
     }
 
-  i = SendDlgItemMessage (ccp_hwnd, IDC_RECOMMEND_SIZE, BM_GETCHECK, 0, 0);
+  i = (int) SendDlgItemMessage (ccp_hwnd, IDC_RECOMMEND_SIZE, BM_GETCHECK, 0, 0);
   if (i != cfp_param.fs_recommend_size)
     {
       cfp_param.fs_recommend_size = i;

@@ -53,9 +53,9 @@ public:
   int height () const {return fk_height;}
   void OnPaint ();
   void OnSize (int, int);
-  void OnLButtonDown (int, int, int);
-  void OnLButtonUp (int, int, int);
-  void OnMouseMove (int, int, int);
+  void OnLButtonDown (int, int, long long);
+  void OnLButtonUp (int, int, long long);
+  void OnMouseMove (int, int, long long);
   void OnKillFocus ();
   void OnCancelMode ();
   void set_vkey (int);
