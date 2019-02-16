@@ -48,6 +48,13 @@ chunk_ptr (char *address, lisp lsize)
 lisp
 Fsi_make_chunk (lisp type, lisp lsize, lisp src_chunk, lisp loffset)
 {
+
+  if (loffset)
+  {
+    //Want to kill loffset parameter
+    FEprogram_error(Einvalid_argument);
+  }
+
   int size = fixnum_value (lsize);
   if (size < 0)
     FErange_error (lsize);
@@ -65,8 +72,12 @@ Fsi_make_chunk (lisp type, lisp lsize, lisp src_chunk, lisp loffset)
         }
       else
         {
+          //loffset does not work already
+          if (unsigned_long_value(loffset) != 0)
+              FEprogram_error(Einvalid_argument);
+
           xchunk_data (chunk) =
-            chunk_ptr ((char *)unsigned_long_value (loffset), lsize);
+            chunk_ptr ((char *) 0, lsize);
           xchunk_owner (chunk) = Qnil;
         }
     }
