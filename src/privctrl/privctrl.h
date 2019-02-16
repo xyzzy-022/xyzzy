@@ -66,7 +66,7 @@ typedef struct _LV_PROCESSKEY
 
 # define LVM_SETSUBIMAGELIST (LVM_FIRST + 807)
 # define ListView_SetSubImageList(hwnd, himl, iImageList) \
-  (HIMAGELIST)(UINT)SendMessage ((hwnd), LVM_SETSUBIMAGELIST, \
+  (HIMAGELIST)(unsigned long long)SendMessage ((hwnd), LVM_SETSUBIMAGELIST, \
                                  (WPARAM)(iImageList), \
                                  (LPARAM)(unsigned long long)(HIMAGELIST)(himl))
 

@@ -207,7 +207,7 @@ find_module_name (void *addr, char *buf)
 }
 
 static void
-print_modules (FILE *fp, DWORD addr, MEMORY_BASIC_INFORMATION *bi)
+print_modules (FILE *fp, unsigned long long addr, MEMORY_BASIC_INFORMATION *bi)
 {
   switch (bi->AllocationProtect & ~(PAGE_GUARD | PAGE_NOCACHE))
     {
@@ -231,7 +231,7 @@ print_modules (FILE *fp, DWORD addr, MEMORY_BASIC_INFORMATION *bi)
   char *p = path + lstrlen (path);
   if (get_section_name (bi->AllocationBase, bi->BaseAddress, p + 1, (int)(path + sizeof path - p - 1)))
     *p = '!';
-  fprintf (fp, "%16x - %16llx: %s\n", addr, addr + bi->RegionSize, path);
+  fprintf (fp, "%16llx - %16llx: %s\n", addr, addr + bi->RegionSize, path);
 }
 
 static void
@@ -244,7 +244,7 @@ print_module_allocation (FILE *fp)
         print_modules (fp, addr, &bi);
       else
         bi.RegionSize = 0;
-      DWORD oaddr = addr;
+      unsigned long long oaddr = addr;
       addr += bi.RegionSize ? bi.RegionSize : 64 * 1024;
       if (addr < oaddr)
         break;
@@ -259,7 +259,7 @@ x64_print_registers (FILE *fp, const CONTEXT &c)
   fprintf (fp, "Registers:\n");
   fprintf (fp, "RAX: %16llx  RBX: %16llx  RCX: %16llx  RDX: %16llx  RSI: %16llx\n",
            c.Rax, c.Rbx, c.Rcx, c.Rdx, c.Rsi);
-  fprintf (fp, "RDI: %16llx  RSP: %16llx  RBP: %16llx  RIP: %16llx  EFL: %16llx\n",
+  fprintf (fp, "RDI: %16llx  RSP: %16llx  RBP: %16llx  RIP: %16llx  EFL: %8lx\n",
            c.Rdi, c.Rsp, c.Rbp, c.Rip, c.EFlags);
   fprintf (fp, "CS: %04x  DS: %04x  ES: %04x  SS: %04x  FS: %04x  GS: %04x\n\n",
            c.SegCs, c.SegDs, c.SegEs, c.SegSs, c.SegFs, c.SegGs);
@@ -267,7 +267,7 @@ x64_print_registers (FILE *fp, const CONTEXT &c)
   unsigned long long rip = c.Rip - 16;
   for (int j = 0; j < 2; j++)
     {
-      fprintf (fp, "%08x:", rip);
+      fprintf (fp, "%16llx:", rip);
       for (int i = 0; i < 16; i++, rip++)
         {
           if (IsBadReadPtr ((void *)rip, 1))
@@ -294,7 +294,7 @@ x64_stack_dump (FILE *fp, const CONTEXT &c)
           || nread != sizeof buf)
         break;
       for (int j = 0; j < 16; j += 4)
-        fprintf (fp, "%08x: %08x %08x %08x %08x\n",
+        fprintf (fp, "%16llx: %16llx %16llx %16llx %16llx\n",
                  rsp + j * 4, buf[j], buf[j + 1], buf[j + 2], buf[j + 3]);
       fprintf (fp, "\n");
       if (rbp <= rsp || rbp & 3)
@@ -433,7 +433,7 @@ cleanup_exception ()
                sysdep.os_ver.szCSDVersion);
 
       fprintf (fp, "%08x: %s\n", Win32Exception::code, desc);
-      fprintf (fp, "at %16llx", Win32Exception::r.ExceptionAddress);
+      fprintf (fp, "at %16llx", (unsigned long long) Win32Exception::r.ExceptionAddress);
       if (*module)
         fprintf (fp, " (%s)", module);
       fprintf (fp, "\n\n");
@@ -445,7 +445,7 @@ cleanup_exception ()
 # error "yet"
 #endif
       fprintf (fp, "Initial stack: %16llx  GC: %d\n\n",
-               app.initial_stack, app.in_gc);
+               (unsigned long long) app.initial_stack, app.in_gc);
 
       print_module_allocation (fp);
       lisp_stack_trace (fp);
@@ -458,7 +458,7 @@ cleanup_exception ()
 
   char msg[1024], *p = msg;
   p += sprintf (p, "’v–½“I‚È—áŠO(%s)‚ª”­¶‚µ‚Ü‚µ‚½B\nat %16llx",
-                desc, Win32Exception::r.ExceptionAddress);
+                desc, (unsigned long long) Win32Exception::r.ExceptionAddress);
   if (*module)
     p += sprintf (p, " (%s)", module);
   *p++ = '\n';
