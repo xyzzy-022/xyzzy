@@ -127,8 +127,8 @@ protected:
   virtual void notify_color (int);
 
 public:
-  long long ccd_dir;
-  long long ccd_subdir;
+  int ccd_dir;
+  int ccd_subdir;
   long long ccd_default;
   ChangeColorsDialog ()
        : ChangeColorsPageP (USER_DEFINABLE_COLORS),

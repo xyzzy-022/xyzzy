@@ -39,7 +39,7 @@ Dialog::enable_windows (dlgctrl *c, int status)
       dlgctrl *x = get_item (xcar (grp));
       if (x)
         {
-          HWND hwnd = GetDlgItem (d_hwnd, x->id ());
+          HWND hwnd = GetDlgItem (d_hwnd, (int) x->id ());
           EnableWindow (hwnd, status);
           InvalidateRect (hwnd, 0, 0);
         }
@@ -50,7 +50,7 @@ Dialog::enable_windows (dlgctrl *c, int status)
       dlgctrl *x = get_item (xcar (grp));
       if (x)
         {
-          HWND hwnd = GetDlgItem (d_hwnd, x->id ());
+          HWND hwnd = GetDlgItem (d_hwnd, (int) x->id ());
           EnableWindow (hwnd, !status);
           InvalidateRect (hwnd, 0, 0);
         }
@@ -85,14 +85,14 @@ Dialog::send_ltext (int id, int msg, WPARAM wparam, lisp init, dlg_txtwidth *dt)
       if (dt)
         {
           SIZE sz;
-          if (GetTextExtentPoint32 (dt->hdc, b, be - b, &sz)
+          if (GetTextExtentPoint32 (dt->hdc, b, (int)(be - b), &sz)
               && sz.cx > dt->l)
             dt->l = sz.cx;
         }
-      return SendDlgItemMessage (d_hwnd, id, msg, wparam, LPARAM (b));
+      return (int) SendDlgItemMessage (d_hwnd, id, msg, wparam, LPARAM (b));
     }
   else
-    return SendDlgItemMessage (d_hwnd, id, msg, wparam, LPARAM (""));
+    return (int) SendDlgItemMessage (d_hwnd, id, msg, wparam, LPARAM (""));
 }
 
 void
@@ -102,11 +102,11 @@ Dialog::button_pre_init (dlgctrl *c)
     {
     case BS_AUTOCHECKBOX:
     case BS_AUTORADIOBUTTON:
-      SendDlgItemMessage (d_hwnd, c->id (), BM_SETCHECK, 0, 0);
+      SendDlgItemMessage (d_hwnd, (int) c->id (), BM_SETCHECK, 0, 0);
       break;
 
     case BS_AUTO3STATE:
-      SendDlgItemMessage (d_hwnd, c->id (), BM_SETCHECK, 2, 0);
+      SendDlgItemMessage (d_hwnd, (int) c->id (), BM_SETCHECK, 2, 0);
       break;
     }
 }
@@ -118,18 +118,18 @@ Dialog::button_init (dlgctrl *c, lisp init)
     {
     case BS_AUTOCHECKBOX:
     case BS_AUTORADIOBUTTON:
-      SendDlgItemMessage (d_hwnd, c->id (), BM_SETCHECK, init != Qnil, 0);
+      SendDlgItemMessage (d_hwnd, (int) c->id (), BM_SETCHECK, init != Qnil, 0);
       break;
 
     case BS_AUTO3STATE:
-      SendDlgItemMessage (d_hwnd, c->id (), BM_SETCHECK,
+      SendDlgItemMessage (d_hwnd, (int) c->id (), BM_SETCHECK,
                           (init == Kdisable ? 2 : init != Qnil), 0);
       break;
 
     case BS_PUSHBUTTON:
     case BS_DEFPUSHBUTTON:
     case BS_GROUPBOX:
-      send_ltext (c->id (), WM_SETTEXT, 0, init);
+      send_ltext ((int) c->id (), WM_SETTEXT, 0, init);
       break;
     }
 }
@@ -138,7 +138,7 @@ static lisp
 get_window_text (HWND dlg, int id)
 {
   HWND hwnd = GetDlgItem (dlg, id);
-  int l = max (0L, SendMessage (hwnd, WM_GETTEXTLENGTH, 0, 0)) + 2;
+  int l = max (0L, (long) SendMessage (hwnd, WM_GETTEXTLENGTH, 0, 0)) + 2;
   char *b = (char *)alloca (l);
   *b = 0;
   GetWindowText (hwnd, b, l);
@@ -169,7 +169,7 @@ Dialog::button_push (dlgctrl *c)
       dlgctrl *r = get_item (safe_find_keyword (Krelated, kwd));
       if (r)
         {
-          lisp s = get_window_text (d_hwnd, r->id ());
+          lisp s = get_window_text (d_hwnd, (int) r->id ());
           if (s != Qnil)
             args = xcons (Kdefault, xcons (s, args));
         }
@@ -177,7 +177,7 @@ Dialog::button_push (dlgctrl *c)
       lisp result = (*fn)(args);
       if (result != Qnil && r)
         {
-          send_ltext (r->id (), WM_SETTEXT, 0, result);
+          send_ltext ((int) r->id (), WM_SETTEXT, 0, result);
           enable_windows (r, 1);
           invalidate_ctrls (r);
         }
@@ -202,7 +202,7 @@ Dialog::button_command (dlgctrl *c, UINT msg)
       break;
 
     case BS_AUTORADIOBUTTON:
-      if (SendDlgItemMessage (d_hwnd, c->id (), BM_GETCHECK, 0, 0) == 1)
+      if (SendDlgItemMessage (d_hwnd, (int) c->id (), BM_GETCHECK, 0, 0) == 1)
         {
           enable_windows (c, 1);
           invalidate_ctrls (c);
@@ -212,7 +212,7 @@ Dialog::button_command (dlgctrl *c, UINT msg)
     case BS_AUTOCHECKBOX:
     case BS_AUTO3STATE:
       {
-        int checked = SendDlgItemMessage (d_hwnd, c->id (), BM_GETCHECK, 0, 0) == 1;
+        int checked = SendDlgItemMessage (d_hwnd, (int) c->id (), BM_GETCHECK, 0, 0) == 1;
         enable_windows (c, checked);
         if (checked)
           invalidate_ctrls (c);
@@ -228,10 +228,10 @@ Dialog::button_result (dlgctrl *c)
     {
     case BS_AUTOCHECKBOX:
     case BS_AUTORADIOBUTTON:
-      return boole (SendDlgItemMessage (d_hwnd, c->id (), BM_GETCHECK, 0, 0) == 1);
+      return boole (SendDlgItemMessage (d_hwnd, (int) c->id (), BM_GETCHECK, 0, 0) == 1);
 
     case BS_AUTO3STATE:
-      switch (SendDlgItemMessage (d_hwnd, c->id (), BM_GETCHECK, 0, 0))
+      switch (SendDlgItemMessage (d_hwnd, (int) c->id (), BM_GETCHECK, 0, 0))
         {
         case 2:
           return Kdisable;
@@ -255,7 +255,7 @@ Dialog::button_invalidate (class dlgctrl *)
 void
 Dialog::edit_pre_init (dlgctrl *c)
 {
-  int id = c->id ();
+  int id = (int) c->id ();
   lisp kwd = c->keyword ();
 
   long n;
@@ -270,7 +270,7 @@ Dialog::edit_pre_init (dlgctrl *c)
 void
 Dialog::edit_init (dlgctrl *c, lisp init)
 {
-  send_ltext (c->id (), WM_SETTEXT, 0, init);
+  send_ltext ((int) c->id (), WM_SETTEXT, 0, init);
 }
 
 void
@@ -284,7 +284,7 @@ Dialog::edit_command (dlgctrl *c, UINT msg)
       {
         char buf[10];
         *buf = 0;
-        GetDlgItemText (d_hwnd, c->id (), buf, sizeof buf);
+        GetDlgItemText (d_hwnd, (int)c->id (), buf, sizeof buf);
         if (safe_find_keyword (Knon_null, c->keyword ()) != Qnil)
           enable_windows (c, *buf);
         if (*buf)
@@ -318,8 +318,8 @@ Dialog::check_result_type (dlgctrl *c, const char *s)
 lisp
 Dialog::edit_result (dlgctrl *c)
 {
-  HWND hwnd = GetDlgItem (d_hwnd, c->id ());
-  int l = max (0L, SendMessage (hwnd, WM_GETTEXTLENGTH, 0, 0)) + 2;
+  HWND hwnd = GetDlgItem (d_hwnd, (int) c->id ());
+  int l = max (0L, (long) SendMessage (hwnd, WM_GETTEXTLENGTH, 0, 0)) + 2;
   char *b = (char *)alloca (l);
   GetWindowText (hwnd, b, l);
   lisp kwd = c->keyword ();
@@ -332,7 +332,7 @@ Dialog::edit_result (dlgctrl *c)
 inline void
 Dialog::edit_invalidate (class dlgctrl *c)
 {
-  SetDlgItemText (d_hwnd, c->id (), "");
+  SetDlgItemText (d_hwnd,(int) c->id (), "");
 }
 
 inline void
@@ -343,7 +343,7 @@ Dialog::static_pre_init (dlgctrl *)
 void
 Dialog::static_init (dlgctrl *c, lisp init)
 {
-  send_ltext (c->id (), WM_SETTEXT, 0, init);
+  send_ltext ((int) c->id (), WM_SETTEXT, 0, init);
 }
 
 inline void
@@ -370,7 +370,7 @@ Dialog::link_pre_init (dlgctrl *)
 void
 Dialog::link_init (dlgctrl *c, lisp init)
 {
-  send_ltext (c->id (), WM_SETTEXT, 0, init);
+  send_ltext ((int) c->id (), WM_SETTEXT, 0, init);
 }
 
 void
@@ -428,14 +428,14 @@ Dialog::listbox_pre_init (dlgctrl *c)
   SelectObject (hdc, ofont);
   ReleaseDC (d_hwnd, hdc);
 
-  SendDlgItemMessage (d_hwnd, c->id (), LB_SETHORIZONTALEXTENT,
+  SendDlgItemMessage (d_hwnd, (int) c->id (), LB_SETHORIZONTALEXTENT,
                       width * tm.tmAveCharWidth, 0);
 }
 
 void
 Dialog::listbox_init (dlgctrl *c, lisp init)
 {
-  int id = c->id ();
+  int id = (int) c->id ();
   DWORD style = c->style ();
   if (style & LBS_OWNERDRAWFIXED)
     {
@@ -444,9 +444,9 @@ Dialog::listbox_init (dlgctrl *c, lisp init)
           SendDlgItemMessage (d_hwnd, id, LB_ADDSTRING, 0, LPARAM (xcar (init)));
       else
         {
-          int nitems = SendDlgItemMessage (d_hwnd, id, LB_GETCOUNT, 0, 0);
+          int nitems = (int) SendDlgItemMessage (d_hwnd, id, LB_GETCOUNT, 0, 0);
           for (int i = 0; i < nitems; i++)
-            if (SendDlgItemMessage (d_hwnd, id, LB_GETITEMDATA, i, 0) == LONG (init))
+            if (SendDlgItemMessage (d_hwnd, id, LB_GETITEMDATA, i, 0) == long long (init))
               {
                 if (style & (LBS_MULTIPLESEL | LBS_EXTENDEDSEL))
                   SendDlgItemMessage (d_hwnd, id, LB_SETSEL, 1, i);
@@ -490,7 +490,7 @@ Dialog::listbox_init (dlgctrl *c, lisp init)
           long n;
           if (safe_fixnum_value (init, &n) && n >= 0)
             {
-              int nitems = SendDlgItemMessage (d_hwnd, id, LB_GETCOUNT, 0, 0);
+              int nitems = SendDlgItemMessage (d_hwnd, (int) id, LB_GETCOUNT, 0, 0);
               for (int i = 0; i < nitems; i++)
                 if (SendDlgItemMessage (d_hwnd, id, LB_GETITEMDATA, i, 0) == n)
                   {
@@ -515,8 +515,8 @@ Dialog::listbox_command (dlgctrl *c, UINT msg)
     case LBN_SELCHANGE:
       {
         int selected = (c->style () & (LBS_MULTIPLESEL | LBS_EXTENDEDSEL)
-                        ? SendDlgItemMessage (d_hwnd, c->id (), LB_GETSELCOUNT, 0, 0) > 0
-                        : SendDlgItemMessage (d_hwnd, c->id (), LB_GETCURSEL, 0, 0) != LB_ERR);
+                        ? SendDlgItemMessage (d_hwnd, (int) c->id (), LB_GETSELCOUNT, 0, 0) > 0
+                        : SendDlgItemMessage (d_hwnd, (int) c->id (), LB_GETCURSEL, 0, 0) != LB_ERR);
         if (safe_find_keyword (Kmust_match, c->keyword ()) != Qnil)
           enable_windows (c, selected);
         if (selected)
@@ -526,7 +526,7 @@ Dialog::listbox_command (dlgctrl *c, UINT msg)
 
     case LBN_DBLCLK:
       {
-        DWORD def = SendMessage (d_hwnd, DM_GETDEFID, 0, 0);
+        DWORD def = (DWORD)SendMessage (d_hwnd, DM_GETDEFID, 0, 0);
         if (HIWORD (def) == DC_HASDEFID)
           PostMessage (d_hwnd, WM_COMMAND, MAKELONG (LOWORD (def), 0),
                        LPARAM (GetDlgItem (d_hwnd, LOWORD (def))));
@@ -538,7 +538,7 @@ Dialog::listbox_command (dlgctrl *c, UINT msg)
 lisp
 Dialog::make_lb_string (int id, int getlen, int gettext, int idx)
 {
-  int l = max (0L, SendDlgItemMessage (d_hwnd, id, getlen, idx, 0)) + 2;
+  int l = max (0L, (long) SendDlgItemMessage (d_hwnd, id, getlen, idx, 0)) + 2;
   char *b = (char *)alloca (l * 2);
   if (SendDlgItemMessage (d_hwnd, id, gettext, idx, LPARAM (b)) == LB_ERR)
     *b = 0;
@@ -548,7 +548,7 @@ Dialog::make_lb_string (int id, int getlen, int gettext, int idx)
 lisp
 Dialog::listbox_result (dlgctrl *c)
 {
-  int id = c->id ();
+  int id = (int) c->id ();
   lisp kwd = c->keyword ();
   lisp must_match = safe_find_keyword (Kmust_match, kwd);
   int idx = safe_find_keyword (Kindex, kwd) != Qnil;
@@ -559,7 +559,7 @@ Dialog::listbox_result (dlgctrl *c)
           && SendDlgItemMessage (d_hwnd, id, LB_GETSELCOUNT, 0, 0) <= 0)
         return warn (must_match);
 
-      int nitems = SendDlgItemMessage (d_hwnd, id, LB_GETCOUNT, 0, 0);
+      int nitems = (int) SendDlgItemMessage (d_hwnd, id, LB_GETCOUNT, 0, 0);
       if (nitems == LB_ERR)
         return Qnil;
 
@@ -576,7 +576,7 @@ Dialog::listbox_result (dlgctrl *c)
     }
   else
     {
-      int i = SendDlgItemMessage (d_hwnd, id, LB_GETCURSEL, 0, 0);
+      int i = (int) SendDlgItemMessage (d_hwnd, id, LB_GETCURSEL, 0, 0);
       if (i == LB_ERR)
         return must_match == Qnil ? Qnil : warn (must_match);
       if (style & LBS_OWNERDRAWFIXED)
@@ -590,10 +590,10 @@ Dialog::listbox_result (dlgctrl *c)
 void
 Dialog::listbox_invalidate (class dlgctrl *c)
 {
-  int id = c->id ();
+  int id = (int) c->id ();
   if (c->style () & (LBS_MULTIPLESEL | LBS_EXTENDEDSEL))
     {
-      int nitems = SendDlgItemMessage (d_hwnd, id, LB_GETCOUNT, 0, 0);
+      int nitems = (int) SendDlgItemMessage (d_hwnd, id, LB_GETCOUNT, 0, 0);
       for (int i = 0; i < nitems; i++)
         SendDlgItemMessage (d_hwnd, id, LB_SETSEL, 0, i);
     }
@@ -607,7 +607,7 @@ Dialog::combobox_pre_init (dlgctrl *c)
   long n;
   if (safe_fixnum_value (safe_find_keyword (Klimit, c->keyword ()), &n)
       && n > 0)
-    SendDlgItemMessage (d_hwnd, c->id (), CB_LIMITTEXT, n, 0);
+    SendDlgItemMessage (d_hwnd,(int)  c->id (), CB_LIMITTEXT, n, 0);
 //  if (c->style () & CBS_OWNERDRAWFIXED)
 //    ;
 }
@@ -615,7 +615,7 @@ Dialog::combobox_pre_init (dlgctrl *c)
 void
 Dialog::combobox_init (dlgctrl *c, lisp init)
 {
-  int id = c->id ();
+  int id = (int) c->id ();
   if (c->style () & CBS_OWNERDRAWFIXED)
     {
       if (init == Qnil || (consp (init) && consp (xcar (init))))
@@ -623,9 +623,9 @@ Dialog::combobox_init (dlgctrl *c, lisp init)
           SendDlgItemMessage (d_hwnd, id, CB_ADDSTRING, 0, LPARAM (xcar (init)));
       else
         {
-          int nitems = SendDlgItemMessage (d_hwnd, id, CB_GETCOUNT, 0, 0);
+          int nitems = (int) SendDlgItemMessage (d_hwnd, id, CB_GETCOUNT, 0, 0);
           for (int i = 0; i < nitems; i++)
-            if (SendDlgItemMessage (d_hwnd, id, CB_GETITEMDATA, i, 0) == LONG (init))
+            if (SendDlgItemMessage (d_hwnd, id, CB_GETITEMDATA, i, 0) == long long (init))
               {
                 SendDlgItemMessage (d_hwnd, id, CB_SETCURSEL, i, 0);
                 break;
@@ -646,7 +646,7 @@ Dialog::combobox_init (dlgctrl *c, lisp init)
           long n;
           if (safe_fixnum_value (init, &n) && n >= 0)
             {
-              int nitems = SendDlgItemMessage (d_hwnd, id, CB_GETCOUNT, 0, 0);
+              int nitems = (int) SendDlgItemMessage (d_hwnd, id, CB_GETCOUNT, 0, 0);
               for (int i = 0; i < nitems; i++)
                 if (SendDlgItemMessage (d_hwnd, id, CB_GETITEMDATA, i, 0) == n)
                   {
@@ -670,7 +670,7 @@ Dialog::combobox_command (dlgctrl *c, UINT msg)
     case CBN_EDITCHANGE:
       {
         char buf[10];
-        if (SendDlgItemMessage (d_hwnd, c->id (), WM_GETTEXT, sizeof buf, LPARAM (buf)) >= 0)
+        if (SendDlgItemMessage (d_hwnd,(int) c->id (), WM_GETTEXT, sizeof buf, LPARAM (buf)) >= 0)
           {
             if (safe_find_keyword (Knon_null, c->keyword ()) != Qnil)
               enable_windows (c, *buf);
@@ -683,7 +683,7 @@ Dialog::combobox_command (dlgctrl *c, UINT msg)
     case CBN_SELENDOK:
       {
         lisp kwd = c->keyword ();
-        int selected = SendDlgItemMessage (d_hwnd, c->id (), CB_GETCURSEL, 0, 0) != CB_ERR;
+        int selected = (int) SendDlgItemMessage (d_hwnd, c->id (), CB_GETCURSEL, 0, 0) != CB_ERR;
         if (safe_find_keyword (Knon_null, kwd) != Qnil
             || safe_find_keyword (Kmust_match, kwd) != Qnil)
           enable_windows (c, selected);
@@ -694,7 +694,7 @@ Dialog::combobox_command (dlgctrl *c, UINT msg)
 
     case CBN_DBLCLK:
       {
-        DWORD def = SendMessage (d_hwnd, DM_GETDEFID, 0, 0);
+        DWORD def = (DWORD) SendMessage (d_hwnd, DM_GETDEFID, 0, 0);
         if (HIWORD (def) == DC_HASDEFID)
           PostMessage (d_hwnd, WM_COMMAND, MAKELONG (LOWORD (def), 0),
                        LPARAM (GetDlgItem (d_hwnd, LOWORD (def))));
@@ -706,7 +706,7 @@ Dialog::combobox_command (dlgctrl *c, UINT msg)
 lisp
 Dialog::combobox_result (dlgctrl *c)
 {
-  int id = c->id ();
+  int id = (int) c->id ();
   lisp kwd = c->keyword ();
   int idx = safe_find_keyword (Kindex, kwd) != Qnil;
   lisp must_match = safe_find_keyword (Kmust_match, kwd);
@@ -714,7 +714,7 @@ Dialog::combobox_result (dlgctrl *c)
 
   if (idx)
     {
-      int i = SendDlgItemMessage (d_hwnd, id, CB_GETCURSEL, 0, 0);
+      int i = (int) SendDlgItemMessage (d_hwnd, id, CB_GETCURSEL, 0, 0);
       if (i == CB_ERR)
         return must_match == Qnil ? Qnil : warn (must_match);
       return make_fixnum (SendDlgItemMessage (d_hwnd, id, CB_GETITEMDATA, i, 0));
@@ -722,14 +722,14 @@ Dialog::combobox_result (dlgctrl *c)
 
   if (c->style () & CBS_OWNERDRAWFIXED)
     {
-      int i = SendDlgItemMessage (d_hwnd, id, CB_GETCURSEL, 0, 0);
+      int i = (int) SendDlgItemMessage (d_hwnd, id, CB_GETCURSEL, 0, 0);
       if (i == CB_ERR)
         return must_match == Qnil ? Qnil : warn (must_match);
       return lisp (SendDlgItemMessage (d_hwnd, id, CB_GETITEMDATA, i, 0));
     }
   else
     {
-      int l = max (0L, SendDlgItemMessage (d_hwnd, id, WM_GETTEXTLENGTH, 0, 0)) + 2;
+      int l = max (0L, (long) SendDlgItemMessage (d_hwnd, id, WM_GETTEXTLENGTH, 0, 0)) + 2;
       char *b = (char *)alloca (l);
       *b = 0;
 
@@ -744,7 +744,7 @@ Dialog::combobox_result (dlgctrl *c)
         }
       else
         {
-          int i = SendDlgItemMessage (d_hwnd, id, CB_GETCURSEL, 0, 0);
+          int i = SendDlgItemMessage (d_hwnd, (int) id, CB_GETCURSEL, 0, 0);
           if (i == CB_ERR)
             return must_match == Qnil ? Qnil : warn (must_match);
           return make_lb_string (id, CB_GETLBTEXTLEN, CB_GETLBTEXT, i);
@@ -755,7 +755,7 @@ Dialog::combobox_result (dlgctrl *c)
 void
 Dialog::combobox_invalidate (class dlgctrl *c)
 {
-  int id = c->id ();
+  int id = (int) c->id ();
   if ((c->style () & 3) != CBS_DROPDOWNLIST)
     SetDlgItemText (d_hwnd, id, "");
   SendDlgItemMessage (d_hwnd, id, CB_SETCURSEL, WPARAM (-1), 0);
@@ -764,7 +764,7 @@ Dialog::combobox_invalidate (class dlgctrl *c)
 void
 Dialog::spin_pre_init (dlgctrl *c)
 {
-  int id = c->id ();
+  int id = (int) c->id ();
   lisp kwd = c->keyword ();
   long mn, mx;
   if (safe_fixnum_value (safe_find_keyword (Kmin, kwd), &mn)
@@ -779,7 +779,7 @@ Dialog::spin_init (dlgctrl *c, lisp init)
   long val;
   if (safe_fixnum_value (init, &val))
     {
-      int id = c->id ();
+      int id = (int) c->id ();
       SendDlgItemMessage (d_hwnd, id, UDM_SETPOS, 0, MAKELONG (short (val), 0));
       if (c->style () & UDS_SETBUDDYINT)
         {
@@ -804,7 +804,7 @@ Dialog::spin_result (dlgctrl *c)
 {
   if (c->style () & UDS_SETBUDDYINT)
     return Qnil;
-  return make_fixnum (SendDlgItemMessage (d_hwnd, c->id (), UDM_GETPOS, 0, 0));
+  return make_fixnum (SendDlgItemMessage (d_hwnd, (int) c->id (), UDM_GETPOS, 0, 0));
 }
 
 inline void
@@ -822,9 +822,9 @@ Dialog::init_items ()
       with_ctl (wclass, pre_init (c), (void));
       lisp kwd = c->keyword ();
       if (safe_find_keyword (Khide, kwd) == Khide)
-        ShowWindow (GetDlgItem (d_hwnd, c->id ()), SW_HIDE);
+        ShowWindow (GetDlgItem (d_hwnd, (int) c->id ()), SW_HIDE);
       if (safe_find_keyword (Kdisable, kwd) == Kdisable)
-        EnableWindow (GetDlgItem (d_hwnd, c->id ()), 0);
+        EnableWindow (GetDlgItem (d_hwnd, (int) c->id ()), 0);
     }
 
   for (lisp p = d_init; consp (p); p = xcdr (p))
@@ -861,7 +861,7 @@ Dialog::get_result (dlgctrl *button)
           for (lisp p = d_item; consp (p); p = xcdr (p))
             {
               dlgctrl *c = (dlgctrl *)xcar (p);
-              HWND hwnd = GetDlgItem (d_hwnd, c->id ());
+              HWND hwnd = GetDlgItem (d_hwnd, (int) c->id ());
               if (!IsWindowVisible (hwnd) || !IsWindowEnabled (hwnd))
                 continue;
               lisp wclass = c->wclass ();
@@ -905,7 +905,7 @@ Dialog::process_command (int id, UINT msg)
 void
 Dialog::process_notify (NMHDR *nm)
 {
-  dlgctrl *c = get_item (nm->idFrom);
+  dlgctrl *c = get_item ((int) nm->idFrom);
   if (c)
     {
       lisp wclass = c->wclass ();
@@ -955,10 +955,10 @@ item_string (lisp item, char *buf, int size)
             }
           else if (c == '\t')
             {
-              int col = b - b0;
+              int col = (int)(b - b0);
               int goal = ((col + app.default_tab_columns) / app.default_tab_columns
                           * app.default_tab_columns);
-              for (int n = min (goal - col, be - b); n > 0; n--)
+              for (int n = min (goal - col, (int)(be - b)); n > 0; n--)
                 *b++ = ' ';
             }
           else if (c == CC_DEL)
@@ -999,7 +999,7 @@ draw_item (HDC hdc, const RECT &r, int x, lisp item, int right)
 {
   char buf[2048];
   item_string (item, buf, sizeof buf);
-  int l = strlen (buf);
+  int l = (int) strlen (buf);
   if (right)
     {
       SIZE size;
@@ -1096,7 +1096,7 @@ lb_match_p (int ch, lisp item)
 static int
 lb_match_p (HWND hwnd, int index, lisp columns, int ch, int lindex)
 {
-  int data = SendMessage (hwnd, LB_GETITEMDATA, index, 0);
+  long long data = SendMessage (hwnd, LB_GETITEMDATA, index, 0);
   if (!data || data == LB_ERR)
     return 0;
   lisp item = lisp (data);
@@ -1123,7 +1123,7 @@ lb_match_p (HWND hwnd, int index, lisp columns, int ch, int lindex)
 static int
 lb_match_p (HWND hwnd, int index, int ch)
 {
-  int l = max (0L, SendMessage (hwnd, LB_GETTEXTLEN, index, 0)) + 2;
+  int l = max (0L, (long) SendMessage (hwnd, LB_GETTEXTLEN, index, 0)) + 2;
   u_char *b = (u_char *)alloca (l * 2);
   if (SendMessage (hwnd, LB_GETTEXT, index, LPARAM (b)) == LB_ERR)
     return 0;
@@ -1140,12 +1140,12 @@ Dialog::listbox_char (int id, int ch)
   if (!c)
     return;
   DWORD style = c->style ();
-  int cursel = SendMessage (hwnd,
+  int cursel = (int) SendMessage (hwnd,
                             style & (LBS_MULTIPLESEL | LBS_EXTENDEDSEL) ? LB_GETCARETINDEX : LB_GETCURSEL,
                             0, 0);
   if (cursel < 0)
     cursel = -1;
-  int ncount = SendMessage (hwnd, LB_GETCOUNT, 0, 0);
+  int ncount = (int) SendMessage (hwnd, LB_GETCOUNT, 0, 0);
   int goal;
 
   ch = char_upcase (ch);
@@ -1213,7 +1213,7 @@ ldialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
       {
         Dialog *d = (Dialog *)lparam;
         d->d_hwnd = dlg;
-        SetWindowLong (dlg, DWLP_USER, lparam);
+        SetWindowLongPtr (dlg, DWLP_USER, lparam);
         set_window_icon (dlg);
         d->center_window ();
         d->init_items ();
@@ -1222,7 +1222,7 @@ ldialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_NOTIFY:
       {
-        Dialog *d = (Dialog *)GetWindowLong (dlg, DWLP_USER);
+        Dialog *d = (Dialog *)GetWindowLongPtr (dlg, DWLP_USER);
         if (!d)
           return 0;
         d->process_notify ((NMHDR *)lparam);
@@ -1238,7 +1238,7 @@ ldialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
         default:
           {
-            Dialog *d = (Dialog *)GetWindowLong (dlg, DWLP_USER);
+            Dialog *d = (Dialog *)GetWindowLongPtr (dlg, DWLP_USER);
             if (!d)
               return 0;
             d->process_command (LOWORD (wparam), HIWORD (wparam));
@@ -1249,19 +1249,19 @@ ldialog_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_DRAWITEM:
       {
-        Dialog *d = (Dialog *)GetWindowLong (dlg, DWLP_USER);
+        Dialog *d = (Dialog *)GetWindowLongPtr (dlg, DWLP_USER);
         if (!d)
           return 0;
-        d->draw_item (wparam, (DRAWITEMSTRUCT *)lparam);
+        d->draw_item ((int) wparam, (DRAWITEMSTRUCT *)lparam);
         return 1;
       }
 
     case WM_PRIVATE_LISTBOX_CHAR:
       {
-        Dialog *d = (Dialog *)GetWindowLong (dlg, DWLP_USER);
+        Dialog *d = (Dialog *)GetWindowLongPtr (dlg, DWLP_USER);
         if (!d)
           return 0;
-        d->listbox_char (wparam, lparam);
+        d->listbox_char ((int) wparam, (int) lparam);
         return 1;
       }
 
@@ -1314,7 +1314,7 @@ PropSheetFont::find_font (const DLGTEMPLATE *tmpl)
   w += *w == 0xffff ? 2 : 1 + wcslen (w);
   w += 1 + wcslen (w);
   point = short (*w++);
-  int l = wcslen (w);
+  int l = (int) wcslen (w);
   if (l < LF_FACESIZE)
     {
       wcscpy (face, w);
@@ -1576,7 +1576,7 @@ Dialog::create_dialog_template (lisp dialog, lisp handlers,
           item = xcdr (item);
           lisp lstyle = xcar (item);
           item = xcdr (item);
-          if (DWORD (w) & (sizeof (DWORD) - 1))
+          if (unsigned long long (w) & (sizeof (DWORD) - 1))
             *w++ = 0;
           DLGITEMTEMPLATE *tmpl = (DLGITEMTEMPLATE *)w;
           tmpl->style = fixnum_value (lstyle);
@@ -1710,10 +1710,10 @@ Fdialog_box (lisp dialog, lisp init, lisp handlers)
                              | WS_CAPTION | WS_SYSMENU),
                             0);
 
-  int result = DialogBoxIndirectParam (app.hinst,
-                                       d.get_template (),
-                                       get_active_window (), ldialog_proc,
-                                       LPARAM (&d));
+  int result = (int) DialogBoxIndirectParam (app.hinst,
+                                        d.get_template (),
+                                        get_active_window (), ldialog_proc,
+                                        LPARAM (&d));
   Fdo_events ();
   if (result != IDOK)
     {
@@ -1740,14 +1740,14 @@ lprop_page_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
             center_window (GetParent (dlg));
             set_window_icon (GetParent (dlg));
           }
-        SetWindowLong (dlg, DWLP_USER, LPARAM (d));
+        SetWindowLongPtr (dlg, DWLP_USER, LPARAM (d));
         d->init_items ();
       }
       return 1;
 
     case WM_NOTIFY:
       {
-        PropPage *d = (PropPage *)GetWindowLong (dlg, DWLP_USER);
+        PropPage *d = (PropPage *)GetWindowLongPtr (dlg, DWLP_USER);
         if (!d)
           return 0;
         switch (((NMHDR *)lparam)->code)
@@ -1773,7 +1773,7 @@ lprop_page_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_COMMAND:
       {
-        PropPage *d = (PropPage *)GetWindowLong (dlg, DWLP_USER);
+        PropPage *d = (PropPage *)GetWindowLongPtr (dlg, DWLP_USER);
         if (!d)
           return 0;
         d->process_command (LOWORD (wparam), HIWORD (wparam));
@@ -1782,19 +1782,19 @@ lprop_page_proc (HWND dlg, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_DRAWITEM:
       {
-        PropPage *d = (PropPage *)GetWindowLong (dlg, DWLP_USER);
+        PropPage *d = (PropPage *)GetWindowLongPtr (dlg, DWLP_USER);
         if (!d)
           return 0;
-        d->draw_item (wparam, (DRAWITEMSTRUCT *)lparam);
+        d->draw_item ((int) wparam, (DRAWITEMSTRUCT *)lparam);
         return 1;
       }
 
     case WM_PRIVATE_LISTBOX_CHAR:
       {
-        PropPage *d = (PropPage *)GetWindowLong (dlg, DWLP_USER);
+        PropPage *d = (PropPage *)GetWindowLongPtr (dlg, DWLP_USER);
         if (!d)
           return 0;
-        d->listbox_char (wparam, lparam);
+        d->listbox_char ((int) wparam, (int) lparam);
         return 1;
       }
 
@@ -1984,7 +1984,7 @@ Fproperty_sheet (lisp pages, lisp caption, lisp lstart_page)
 
   sheet.ps_curpage = psh.nStartPage;
 
-  int result = PropertySheet (&psh);
+  int result = (int) PropertySheet (&psh);
 
   Fdo_events ();
 

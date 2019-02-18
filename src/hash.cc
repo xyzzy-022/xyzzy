@@ -81,7 +81,7 @@ sxhash_eql (lisp object)
 static unsigned long long
 sxhash_equal (lisp object, int depth)
 {
-  u_int hashval = 0;
+  unsigned long long hashval = 0;
   while (depth++ < SXHASH_DEPTH)
     {
       if (immediatep (object))
@@ -109,7 +109,7 @@ sxhash_equal (lisp object, int depth)
 static unsigned long long
 sxhash_equalp (lisp object, int depth)
 {
-  u_int hashval = 0;
+  unsigned long long hashval = 0;
   while (depth++ < SXHASH_DEPTH)
     {
       if (immediatep (object))
@@ -310,10 +310,10 @@ Fhash_table_p (lisp object)
   return boole (hash_table_p (object));
 }
 
-static inline u_int
-hashinc (u_int hashval, u_int size)
+static inline unsigned long long
+hashinc (unsigned long long hashval, u_int size)
 {
-  u_int d = hashval / size % size;
+  unsigned long long d = hashval / size % size;
   return d ? d : 1;
 }
 
