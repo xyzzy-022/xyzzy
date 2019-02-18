@@ -744,7 +744,7 @@ Dialog::combobox_result (dlgctrl *c)
         }
       else
         {
-          int i = SendDlgItemMessage (d_hwnd, (int) id, CB_GETCURSEL, 0, 0);
+          int i = (int) SendDlgItemMessage (d_hwnd, (int) id, CB_GETCURSEL, 0, 0);
           if (i == CB_ERR)
             return must_match == Qnil ? Qnil : warn (must_match);
           return make_lb_string (id, CB_GETLBTEXTLEN, CB_GETLBTEXT, i);
