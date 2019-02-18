@@ -841,7 +841,7 @@ file_name_dialog_hook (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   if (msg == WM_INITDIALOG)
     {
       lparam = ((OPENFILENAME *)lparam)->lCustData;
-      SetWindowLong (hwnd, DWLP_USER, (LONG)lparam);
+      SetWindowLongPtr (hwnd, DWLP_USER, lparam);
       ofn = (OFN *)lparam;
       ofn->ofn_hwnd = hwnd;
     }
