@@ -25,7 +25,7 @@ void
 subclass_combo::subclass (HWND hwnd_parent, UINT id, WNDPROC wndproc)
 {
   m_hwnd = GetWindow (GetDlgItem (hwnd_parent, id), GW_CHILD);
-  m_owndproc = (WNDPROC)SetWindowLong (m_hwnd, GWLP_WNDPROC, LONG (wndproc));
+  m_owndproc = (WNDPROC)SetWindowLongPtr (m_hwnd, GWLP_WNDPROC, (LONG_PTR) wndproc);
 }
 
 LRESULT
@@ -192,7 +192,7 @@ print_dialog::add_lang () const
       char buf[128];
       *buf = 0;
       LoadString (app.hinst, FontSet::lang_id (i), buf, sizeof buf);
-      int idx = SendDlgItemMessage (m_hwnd, IDC_LANG, CB_ADDSTRING, 0, LPARAM (buf));
+      int idx = (int) SendDlgItemMessage (m_hwnd, IDC_LANG, CB_ADDSTRING, 0, LPARAM (buf));
       SendDlgItemMessage (m_hwnd, IDC_LANG, CB_SETITEMDATA, idx, i);
     }
   SendDlgItemMessage (m_hwnd, IDC_LANG, CB_SETCURSEL, FONT_ASCII, 0);
@@ -388,13 +388,13 @@ print_dialog::save_history (UINT id_combo, const char *section)
 {
   HWND hwnd_combo = GetDlgItem (m_hwnd, id_combo);
   delete_conf (section);
-  int n = SendMessage (hwnd_combo, CB_GETCOUNT, 0, 0);
+  int n = (int) SendMessage (hwnd_combo, CB_GETCOUNT, 0, 0);
   for (int i = 0; i < n; i++)
     {
       // WinME の CB_GETLBTEXTLEN は文字数を返すらしいので(ただし未確認)、
       // バッファを倍にしておく。
       char buf[MAX_HEADER_LENGTH * 2 + 2];
-      int l = SendMessage (hwnd_combo, CB_GETLBTEXTLEN, i, 0);
+      int l = (int) SendMessage (hwnd_combo, CB_GETLBTEXTLEN, i, 0);
       if (l > 0 && l < MAX_HEADER_LENGTH
           && SendMessage (hwnd_combo, CB_GETLBTEXT, i, LPARAM (buf)) > 0)
         {
@@ -484,7 +484,7 @@ print_dialog::notify_spin (NMHDR *nm, const char *unit)
 {
   if (nm->code != UDN_DELTAPOS)
     return 0;
-  int range = SendMessage (nm->hwndFrom, UDM_GETRANGE, 0, 0);
+  int range = (int) SendMessage (nm->hwndFrom, UDM_GETRANGE, 0, 0);
   NM_UPDOWN *u = (NM_UPDOWN *)nm;
   if (u->iPos + u->iDelta < HIWORD (range)
       || u->iPos + u->iDelta > LOWORD (range))
@@ -558,7 +558,7 @@ print_dialog::range_command (UINT id, int code, UINT spin,
   LONG val = parse_margin_text (id, unit);
   if (val < 0)
     val = defalt;
-  int range = SendDlgItemMessage (m_hwnd, spin, UDM_GETRANGE, 0, 0);
+  int range = (int) SendDlgItemMessage (m_hwnd, spin, UDM_GETRANGE, 0, 0);
   val = min (max (val, LONG (HIWORD (range))), LONG (LOWORD (range)));
   SendDlgItemMessage (m_hwnd, spin, UDM_SETPOS, 0, MAKELONG (short (val), 0));
 
@@ -570,7 +570,7 @@ print_dialog::range_command (UINT id, int code, UINT spin,
 int
 print_dialog::current_lang () const
 {
-  int i = SendDlgItemMessage (m_hwnd, IDC_LANG, CB_GETCURSEL, 0, 0);
+  int i = (int) SendDlgItemMessage (m_hwnd, IDC_LANG, CB_GETCURSEL, 0, 0);
   if (i == CB_ERR)
     return -1;
   i = SendDlgItemMessage (m_hwnd, IDC_LANG, CB_GETITEMDATA, i, 0);
@@ -748,7 +748,7 @@ print_dialog::history_command (UINT id_combo, UINT code, UINT id_add, UINT id_de
     {
     case CBN_SELCHANGE:
       {
-        int n = SendDlgItemMessage (m_hwnd, id_combo, CB_GETCURSEL, 0, 0);
+        int n = (int) SendDlgItemMessage (m_hwnd, id_combo, CB_GETCURSEL, 0, 0);
         if (n == CB_ERR)
           return 0;
         fadd = 0;
@@ -1002,12 +1002,12 @@ print_dialog::wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   if (msg == WM_INITDIALOG)
     {
       p = (print_dialog *)lparam;
-      SetWindowLong (hwnd, DWLP_USER, lparam);
+      SetWindowLongPtr (hwnd, DWLP_USER, lparam);
       p->m_hwnd = hwnd;
     }
   else
     {
-      p = (print_dialog *)GetWindowLong (hwnd, DWLP_USER);
+      p = (print_dialog *)GetWindowLongPtr (hwnd, DWLP_USER);
       if (!p)
         return 0;
     }
@@ -1017,7 +1017,7 @@ print_dialog::wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 int
 print_dialog::do_modal (HWND hwnd)
 {
-  return DialogBoxParam (app.hinst, MAKEINTRESOURCE (IDD_PRINT),
+  return (int) DialogBoxParam (app.hinst, MAKEINTRESOURCE (IDD_PRINT),
                          hwnd, wndproc, LPARAM (this));
 }
 

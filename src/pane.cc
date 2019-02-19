@@ -360,7 +360,7 @@ pane::move_splitter (const POINT &pos)
     {
       if (!GetMessage (&msg, 0, 0, 0))
         {
-          PostQuitMessage (msg.wParam);
+          PostQuitMessage ((int)msg.wParam);
           break;
         }
       if (GetCapture () != hwnd)

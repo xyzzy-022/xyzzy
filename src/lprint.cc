@@ -110,7 +110,7 @@ fmt_float::roundf (int d)
 }
 
 static char *
-store_uint (char *b, u_int n)
+store_uint (char *b, unsigned long long n)
 {
   *--b = 0;
   do
@@ -662,7 +662,7 @@ print_integer_width (lisp linteger, int base)
 {
   assert (base >= 2 && base <= 36);
   if (bignump (linteger))
-    return xbignum_rep (linteger)->fmtwidth (base) + 32;
+    return (int) xbignum_rep (linteger)->fmtwidth (base) + 32;
   else
     return BITS_PER_LONG + 32;
 }
@@ -1562,7 +1562,7 @@ print_chunk (wStream &stream, const print_control &pc, lisp object)
   stream.add ("#<chunk :type ");
   print_symbol (stream, pc, xchunk_type (object));
   stream.add (" :size ");
-  stream.add (store_uint (buf + sizeof buf, xchunk_size (object)));
+  stream.add (store_uint (buf + sizeof buf, (u_int) xchunk_size (object)));
   print_object_address (stream, object);
   stream.add (">");
 }
@@ -2138,7 +2138,7 @@ Format::integer (wStream &stream, lisp linteger, int base, int istart)
   char *b0 = (char *)alloca (fmtw);
   char *be = b0 + fmtw;
   char *b = print_integer (be, pc, linteger, atsign);
-  int l = be - b - 1;
+  int l = (int) (be - b - 1);
   if (!colon)
     {
       if (mincol > l)
@@ -2428,7 +2428,7 @@ Format::fixed_format (wStream &stream)
     {
       if (param_is_given (0))
         {
-          int l = strlen (f.buf);
+          int l = (int) strlen (f.buf);
           if (l > w && param_is_given (3))
             stream.fill (overflow, w);
           else
@@ -2470,9 +2470,9 @@ Format::fixed_format (wStream &stream)
           if (f.sign < 0 || atsign)
             n++;
           if (f.exp < 0)
-            n += 1 - f.exp + max (f.be - f.b0, 1);
+            n += 1 - f.exp + max ((int)(f.be - f.b0), 1);
           else
-            n += 1 + max (f.exp, f.be - f.b0);
+            n += 1 + max (f.exp, (int)(f.be - f.b0));
           w = n;
         }
     }
@@ -2482,9 +2482,9 @@ Format::fixed_format (wStream &stream)
   else
     {
       d = max (w - fixed_fmt_width (f.sign, atsign, f.exp, d), 0);
-      d = max (1, min (d, f.be - f.b0 - f.exp - 1));
+      d = max (1, min (d, (int)(f.be - f.b0 - f.exp - 1)));
       f.roundf (d);
-      d = max (1, min (d, f.be - f.b0 - f.exp - 1));
+      d = max (1, min (d, (int)(f.be - f.b0 - f.exp - 1)));
     }
 
   int no_lead_zero = 0;
@@ -2577,7 +2577,7 @@ Format::exp_format (wStream &stream)
     {
       if (param_is_given (0))
         {
-          int l = strlen (f.buf);
+          int l = (int) strlen (f.buf);
           if (l > w && param_is_given (4))
             stream.fill (overflow, w);
           else
@@ -2704,7 +2704,7 @@ Format::general_format (wStream &stream)
   int n = f.exp + 1;
   if (!param_is_given (1))
     {
-      int l = f.be - f.b0;
+      int l = (int) (f.be - f.b0);
       int q;
       if (f.exp < 0)
         q = 1 - f.exp + l;
@@ -3088,7 +3088,7 @@ Format::case_conversion (wStream &stream)
   wStream tem (stream.columns ());
   try
     {
-      SaveCtlString x (*this, p, pe - p);
+      SaveCtlString x (*this, p, (int)(pe - p));
       process (tem);
     }
   catch (UpAndOut)
@@ -3177,7 +3177,7 @@ Format::conditional (wStream &stream)
   for (pe--; *pe != '~'; pe--)
     ;
   {
-    SaveCtlString x (*this, p, pe - p);
+    SaveCtlString x (*this, p, (int)(pe - p));
     process (stream);
   }
 
@@ -3216,7 +3216,7 @@ Format::iteration (wStream &stream)
           try
             {
               lisp x = getarg ();
-              format_internal (stream, p, pe - p, x, args_left () ? IL_NOT_EXIT : IL_EXIT,
+              format_internal (stream, p, (int)(pe - p), x, args_left () ? IL_NOT_EXIT : IL_EXIT,
                                backward_compat_p);
             }
           catch (UpAndOut e)
@@ -3238,7 +3238,7 @@ Format::iteration (wStream &stream)
             break;
           try
             {
-              format_internal (stream, p, pe - p, xcar (args),
+              format_internal (stream, p, (int)(pe - p), xcar (args),
                                consp (xcdr (args)) ? IL_NOT_EXIT : IL_EXIT,
                                backward_compat_p);
             }
@@ -3261,7 +3261,7 @@ Format::iteration (wStream &stream)
             break;
           try
             {
-              SaveCtlString x (*this, p, pe - p);
+              SaveCtlString x (*this, p, (int)(pe - p));
               process (stream);
             }
           catch (UpAndOut e)
@@ -3279,7 +3279,7 @@ Format::iteration (wStream &stream)
       lisp l = Flist_length (args);
       if (l == Qnil)
         error (Eargument_is_circle);
-      Format f (p, pe - p, IL_ILLEGAL, backward_compat_p);
+      Format f (p, (int)(pe - p), IL_ILLEGAL, backward_compat_p);
       lisp *v = (lisp *)alloca (sizeof (lisp) * fixnum_value (l));
       f.setarg (v, args);
       if (once_at_least)

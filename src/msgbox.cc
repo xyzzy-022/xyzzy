@@ -390,7 +390,7 @@ MsgBoxEx (HWND hwnd, const char *msg, const char *title,
   if (beep && xsymbol_value (Vvisible_bell) == Qnil)
     ding (icon);
 
-  return mb.doit (hwnd);
+  return (int) mb.doit (hwnd);
 }
 
 int

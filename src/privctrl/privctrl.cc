@@ -19,7 +19,7 @@ ParentWndProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       {
         OWNERDRAWPROC proc = get_owner_draw_proc (((DRAWITEMSTRUCT *)lparam)->hwndItem);
         if (proc)
-          return proc (wparam, (DRAWITEMSTRUCT *)lparam);
+          return proc ((UINT)wparam, (DRAWITEMSTRUCT *)lparam);
         break;
       }
     }

@@ -174,7 +174,7 @@ resolver::wait (HANDLE h)
         }
     }
   if (!quit && r_hwnd)
-    PostQuitMessage (msg.wParam);
+    PostQuitMessage ( (int) msg.wParam);
   if (r_hwnd)
     SendMessage (r_hwnd, wm_cancel_asyncsock, WPARAM (h), 0);
   WS_CALL (WSACancelAsyncRequest)(h);

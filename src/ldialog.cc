@@ -490,7 +490,7 @@ Dialog::listbox_init (dlgctrl *c, lisp init)
           long n;
           if (safe_fixnum_value (init, &n) && n >= 0)
             {
-              int nitems = SendDlgItemMessage (d_hwnd, (int) id, LB_GETCOUNT, 0, 0);
+              int nitems = (int) SendDlgItemMessage (d_hwnd, (int) id, LB_GETCOUNT, 0, 0);
               for (int i = 0; i < nitems; i++)
                 if (SendDlgItemMessage (d_hwnd, id, LB_GETITEMDATA, i, 0) == n)
                   {

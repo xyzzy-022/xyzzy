@@ -34,7 +34,7 @@ EnvStrings::set (char **nb, char **&ne, char *b) const
   eq = strchr (eq, '=');
   if (!eq)
     return;
-  int l = eq - b + 1;
+  int l = (int) (eq - b + 1);
   for (; nb < ne; nb++)
     if (!memicmp (b, *nb, l))
       {
@@ -79,7 +79,7 @@ EnvStrings::setup (lisp lenv)
   for (int d = 0; d < 26; d++)
     {
       const char *dir = get_device_dir (d);
-      int x = strlen (dir);
+      int x = (int) strlen (dir);
       if (x > 3)
         {
           l += x + sizeof "=X:=X:";
@@ -107,7 +107,7 @@ EnvStrings::setup (lisp lenv)
   for (int d = 0; d < 26; d++)
     {
       const char *dir = get_device_dir (d);
-      int x = strlen (dir);
+      int x = (int) strlen (dir);
       if (x > 3)
         {
           char *b0 = b;
@@ -338,7 +338,7 @@ public:
   void insert_process_output (void *);
   lisp process_buffer () const {return p_bufp->lbp;}
   void flush_input ();
-  void store_output (const Char *, int);
+  void store_output (const Char *, long long);
   virtual int readin (u_char *, int) = 0;
   int incode_modified_p () const
     {return xprocess_incode (p_proc) != p_last_incode;}
@@ -544,7 +544,7 @@ read_process_output (WPARAM wparam, LPARAM lparam)
 }
 
 void
-Process::store_output (const Char *w, int l)
+Process::store_output (const Char *w, long long l)
 {
   if (!l)
     return;
@@ -586,7 +586,7 @@ class process_output_stream: public Char_output_wstream
 {
   Process &p_proc;
   virtual void swrite (const Char *w, long long l)
-    {p_proc.store_output (w, l);}
+    {p_proc.store_output (w,l);}
 public:
   process_output_stream (Process &proc) : p_proc (proc) {}
 };
@@ -693,7 +693,7 @@ class process_output_byte_stream: public byte_output_stream
 protected:
   virtual u_char *sflush (u_char *b, u_char *be, int)
     {
-      p_proc.send ((char *)b, be - b);
+      p_proc.send ((char *)b, (int)(be - b));
       return b;
     }
 public:
@@ -783,7 +783,7 @@ NormalProcess::readin (u_char *buf, int size)
   while (1)
     {
       DWORD nread;
-      if (!ReadFile (p_in, b, be - b, &nread, 0) || !nread)
+      if (!ReadFile (p_in, b, (DWORD)(be - b), &nread, 0) || !nread)
         break;
       b += nread;
       if (++i >= 10 || b - buf >= size / 2)
@@ -792,7 +792,7 @@ NormalProcess::readin (u_char *buf, int size)
       if (!PeekNamedPipe (p_in, 0, 0, 0, &avail, 0) || !avail)
         break;
     }
-  return b - buf;
+  return (int) (b - buf);
 }
 
 u_int

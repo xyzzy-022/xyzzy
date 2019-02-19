@@ -1695,7 +1695,7 @@ Regexp::record_failure::record_failure ()
 inline u_int
 Regexp::record_failure::hashval (const Char *pat, point_t point, point_t max)
 {
-  return (pointer_t (pat) << 24) + point + (max << 12);
+  return (u_int)((pointer_t (pat) << 24) + point + (max << 12));
 }
 
 inline void

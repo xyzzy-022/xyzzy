@@ -704,7 +704,7 @@ maybe_symbol_string::parse (Char *&xb, int &xl)
           package = xsymbol_value (Vkeyword_package);
         else
           {
-            temporary_string t ((Char *)b, colon - b);
+            temporary_string t ((Char *)b, (int)(colon - b));
             lisp pkg = Ffind_package (t.string ());
             if (pkg != Qnil)
               package = pkg;

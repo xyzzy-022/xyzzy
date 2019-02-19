@@ -303,7 +303,7 @@ sock::sendto (const saddr &to, const void *buf, int len, int flags) const
     {
       if (s_wtimeo.tv_sec >= 0 && !writablep (s_wtimeo))
         throw sock_error ("sock::sendto", WSAETIMEDOUT);
-      int n = WS_CALL (sendto)(s_so, b, min (be - b, 65535), flags,
+      int n = WS_CALL (sendto)(s_so, b, min ((int)(be - b), 65535), flags,
                                to.addr (), to.length ());
       if (n <= 0)
         throw sock_error ("sendto", n ? WS_CALL (WSAGetLastError)() : WSAECONNRESET);

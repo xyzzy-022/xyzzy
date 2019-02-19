@@ -416,7 +416,7 @@ FEwin32_exception (const char* desc, u_int code, PVOID address)
 {
   lisp ldesc = make_string (desc);
   lisp lcode = make_integer (static_cast <u_long> (code));
-  lisp laddress = make_integer (reinterpret_cast <u_long> (address));
+  lisp laddress = make_integer (reinterpret_cast <unsigned long long> (address));
   COND3 (win32_exception, ldesc, lcode, laddress);
 }
 

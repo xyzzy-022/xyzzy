@@ -269,7 +269,7 @@ Fpopup_string (lisp lstring, lisp lpoint, lisp ltimeout)
       popup_text = 0;
     }
 
-  int l = w2sl (lstring) + 1;
+  int l = (int) w2sl (lstring) + 1;
   char *p = (char *)xmalloc (l);
   w2s (p, lstring);
   set_text (p, r);

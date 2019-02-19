@@ -1092,7 +1092,7 @@ replace_match (Window *wp, lisp string, int literal)
         {
           if (*p++ == '\\')
             {
-              bp->insert_chars (wp, p0, p - p0 - 1, 1);
+              bp->insert_chars (wp, p0, (int)(p - p0 - 1), 1);
               if (p == pe)
                 break;
               Char c = *p++;
@@ -1138,7 +1138,7 @@ replace_match (Window *wp, lisp string, int literal)
                 }
             }
         }
-      bp->insert_chars (wp, p0, p - p0, 1);
+      bp->insert_chars (wp, p0, (int)(p - p0), 1);
       case_conversion (fconv, conv_point, wp->w_point, bp);
     }
 }

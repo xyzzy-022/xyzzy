@@ -123,7 +123,7 @@ skip_device_or_host (const Char *p, const Char *pe)
 static Char *
 copy_Chars (Char *b, const Char *p, const Char *pe)
 {
-  int l = pe - p;
+  int l = (int) (pe - p);
   bcopy (p, b, l);
   return b + l;
 }
@@ -266,7 +266,7 @@ parse_namestring (pathbuf_t buf, const Char *name, int nl, const Char *defalt, i
       b = root = copy_Chars (b, path.dev, path.deve);
       if (!abs)
         {
-          int l = path.deve - path.dev;
+          int l = (int) (path.deve - path.dev);
           if (tem.deve - tem.dev == l && !memicmp (path.dev, tem.dev, sizeof *path.dev * l))
             b = copy_Chars (b, tem.trail, tem.traile);
           else
@@ -336,7 +336,7 @@ parse_namestring (pathbuf_t buf, const Char *name, int nl, const Char *defalt, i
           }
     }
 
-  return b - buf;
+  return (int) (b - buf);
 }
 
 lisp
@@ -344,7 +344,7 @@ make_path (const char *s, int append_slash)
 {
   Char *b = (Char *)alloca ((strlen (s) + 1) * sizeof (Char));
   Char *be = s2w (b, s);
-  map_backsl_to_sl (b, be - b);
+  map_backsl_to_sl (b, (int)(be - b));
   if (append_slash && be != b && be[-1] != '/')
     *be++ = '/';
   return make_string (b, be - b);
@@ -758,7 +758,7 @@ Ftruename (lisp pathname)
   map_backsl_to_sl (truename);
 
   Char w[PATH_MAX + 1];
-  int l = s2w (w, truename) - w;
+  int l = (int) (s2w (w, truename) - w);
   if (stringp (pathname) && l == xstring_length (pathname)
       && !bcmp (w, xstring_contents (pathname), l))
     return pathname;
@@ -774,7 +774,7 @@ Fuser_homedir_pathname ()
 int
 match_suffixes (const char *name, lisp ignores)
 {
-  int l = strlen (name);
+  int l = (int) strlen (name);
   for (; consp (ignores); ignores = xcdr (ignores))
     {
       lisp x = xcar (ignores);
@@ -819,11 +819,11 @@ Fpath_equal (lisp lpath1, lisp lpath2)
 static int
 sub_dirp_by_name (const char *dir, const char *parent)
 {
-  int dl = strlen (dir);
+  int dl = (int) strlen (dir);
   const char *de = find_last_slash (dir);
   if (de && !de[1])
     dl--;
-  int pl = strlen (parent);
+  int pl = (int) strlen (parent);
   const char *pe = find_last_slash (parent);
   if (pe && !pe[1])
     pl--;
@@ -908,7 +908,7 @@ Fcompile_file_pathname (lisp pathname)
   const Char *p0 = pathname_name_type (pathname, buf, name, name_e, type, type_e);
   if (name == name_e)
     return Qnil;
-  int l = type_e - p0;
+  int l = (int) (type_e - p0);
   if (p0 != buf)
     bcopy (p0, buf, l);
   Char *b = buf + l;
@@ -920,7 +920,7 @@ Fcompile_file_pathname (lisp pathname)
         *b++ = '.';
       else if (Ffile_system_supports_long_file_name_p (pathname) == Qnil)
         b -= type_e - type;
-      else if (string_equalp (type, type_e - type, "lisp", 4))
+      else if (string_equalp (type, (int)(type_e - type), "lisp", 4))
         b -= type_e - type;
       else
         *b++ = '.';
@@ -950,7 +950,7 @@ Ffind_load_path (lisp filename)
           {
             char path[PATH_MAX * 2 + 1];
             pathname2cstr (x, path);
-            int l = strlen (path);
+            int l = (int) strlen (path);
             if (l && path[l - 1] != SEPCHAR)
               path[l++] = SEPCHAR;
             strcpy (stpcpy (path + l, file), *e);
@@ -1218,7 +1218,7 @@ static void
 rename_short_name (const char *fpath, const char *tname, const char *longname)
 {
   char temppath[PATH_MAX + 1], tempname[PATH_MAX + 1], realpath[PATH_MAX + 1];
-  int l = tname - fpath;
+  int l = (int) (tname - fpath);
   memcpy (temppath, fpath, l);
   temppath[l] = 0;
   map_sl_to_backsl (temppath);
@@ -1815,7 +1815,7 @@ static void
 get_disk_usage (char *path, gdu *du)
 {
   QUIT;
-  int l = strlen (path);
+  int l = (int) strlen (path);
   if (l >= PATH_MAX)
     return;
   char *pe = path + l;
@@ -2347,7 +2347,7 @@ list_server_resources::list_server_resources (lisp lserver, int pair)
 void
 list_server_resources::doit ()
 {
-  int l = strlen (m_server) + 1;
+  int l = (int) strlen (m_server) + 1;
 
   NETRESOURCE r;
   r.dwScope = RESOURCE_GLOBALNET;

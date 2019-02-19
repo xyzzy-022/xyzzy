@@ -1164,12 +1164,12 @@ print_engine::paint_fmt (HDC hdc, const char *fmt, int y)
       width[i] = (b[i + 1] - b[i]) * pe_print_cell.cx;
   else
     for (int i = 0; i < 3; i++)
-      width[i] = get_extent (b[i], b[i + 1] - b[i]);
+      width[i] = get_extent (b[i], (int)(b[i + 1] - b[i]));
   x[0] = pe_area.left;
   x[2] = pe_area.right - width[2];
   x[1] = (x[0] + width[0] + x[2] - width[1]) / 2;
   for (int i = 0; i < 3; i++)
-    paint_string (hdc, x[i], y, b[i], b[i + 1] - b[i]);
+    paint_string (hdc, x[i], y, b[i], (int)(b[i + 1] - b[i]));
   return hline;
 }
 
@@ -1469,7 +1469,7 @@ print_engine::fmt_month (char *b, char *be, int zero, int star, int colon)
   if (star)
     return stpncpy (b, month_full_names[m - 1], be - b);
   if (colon)
-    return stpncpy (b, &month_names[3 * (m - 1)], min (3, be - b));
+    return stpncpy (b, &month_names[3 * (m - 1)], min (3, (int)(be - b)));
   return fmt (b, be, "%d", m);
 }
 
@@ -1493,8 +1493,8 @@ print_engine::fmt_week (char *b, char *be, int star, int colon)
   if (star)
     return stpncpy (b, day_full_names[w], be - b);
   if (colon)
-    return stpncpy (b, &day_names[3 * w], min (3, be - b));
-  return stpncpy (b, &day_japanese_names[2 * w], min (2, be - b));
+    return stpncpy (b, &day_names[3 * w], min (3, (int)(be - b)));
+  return stpncpy (b, &day_japanese_names[2 * w], min (2, (int)(be - b)));
 }
 
 inline char *
@@ -1509,7 +1509,7 @@ print_engine::fmt_hour12 (char *b, char *be, int zero, int star, int colon)
   int h = current_time ().wHour;
   if (star)
     return stpncpy (b, colon ? (h < 12 ? "am" : "pm") : (h < 12 ? "AM" : "PM"),
-                    min (2, be - b));
+                    min (2, (int)(be - b)));
   h %= 12;
   if (colon)
     h++;
