@@ -60,7 +60,7 @@ resolver::post_result (WPARAM wparam, LPARAM lparam)
       r_params.wparam = wparam;
       r_params.lparam = lparam;
       r_params.done = 1;
-      PostThreadMessage (r_thread_id, wm_result_asyncsock, 0, 0);
+      PostThreadMessage ((DWORD) r_thread_id, wm_result_asyncsock, 0, 0);
     }
 }
 

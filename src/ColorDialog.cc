@@ -769,7 +769,7 @@ ChangeColorsDialog::get_result ()
 
   if (IsWindowEnabled (GetDlgItem (ccp_hwnd, IDC_SUBDIR)))
     {
-      i = SendDlgItemMessage (ccp_hwnd, IDC_SUBDIR, BM_GETCHECK, 0, 0);
+      i = (int) SendDlgItemMessage (ccp_hwnd, IDC_SUBDIR, BM_GETCHECK, 0, 0);
       if (i != ccd_subdir)
         {
           ccd_subdir = i;
@@ -777,7 +777,7 @@ ChangeColorsDialog::get_result ()
         }
     }
 
-  i = SendDlgItemMessage (ccp_hwnd, IDC_DEFAULT, BM_GETCHECK, 0, 0);
+  i = (int) SendDlgItemMessage (ccp_hwnd, IDC_DEFAULT, BM_GETCHECK, 0, 0);
   if (i != ccd_default)
     {
       ccd_default = i;

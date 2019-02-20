@@ -450,7 +450,7 @@ Process::insert_process_output (void *p)
     {
       read_data *r = (read_data *)p;
       const Char *data;
-      int size;
+       long long size;
       if (r)
         {
           if (r->done)
@@ -622,7 +622,7 @@ class process_input_stream: public byte_input_stream
                 for (; s < se; s++)
                   if (*s != '\r')
                     *d++ = *s;
-                l = d - p_buf;
+                l = (int) (d - p_buf);
                 break;
               }
 
