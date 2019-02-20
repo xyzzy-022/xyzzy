@@ -682,7 +682,7 @@ preview_page_window::wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   if (msg == WM_NCCREATE)
     {
       p = (preview_page_window *)((CREATESTRUCT *)lparam)->lpCreateParams;
-      SetWindowLong (hwnd, 0, LONG (p));
+      SetWindowLongPtr (hwnd, 0, LONG_PTR (p));
       p->p_hwnd = hwnd;
     }
   else

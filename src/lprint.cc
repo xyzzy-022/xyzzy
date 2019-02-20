@@ -315,7 +315,7 @@ print_circle::setup (lisp object)
             q->f = circle_object::shared | number++;
             q++;
           }
-      rep->used = q - rep->objs;
+      rep->used = (int) (q - rep->objs);
     }
 }
 
@@ -2596,7 +2596,7 @@ Format::exp_format (wStream &stream)
     e = exp_width (f.exp - k + 1);
 
   if (!param_is_given (1))
-    d = f.be - f.b0 - 1;
+    d = (int) (f.be - f.b0 - 1);
   if (k > 0)
     d = max (d, k - 1);
   else if (k < 0)

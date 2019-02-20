@@ -39,7 +39,7 @@ subclass_combo::wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       break;
 
     case WM_DESTROY:
-      SetWindowLong (hwnd, GWLP_WNDPROC, LONG (m_owndproc));
+      SetWindowLongPtr (hwnd, GWLP_WNDPROC, LONG_PTR (m_owndproc));
       break;
     }
   return CallWindowProc (m_owndproc, hwnd, msg, wparam, lparam);
@@ -573,7 +573,7 @@ print_dialog::current_lang () const
   int i = (int) SendDlgItemMessage (m_hwnd, IDC_LANG, CB_GETCURSEL, 0, 0);
   if (i == CB_ERR)
     return -1;
-  i = SendDlgItemMessage (m_hwnd, IDC_LANG, CB_GETITEMDATA, i, 0);
+  i = (int) SendDlgItemMessage (m_hwnd, IDC_LANG, CB_GETITEMDATA, i, 0);
   return i >= 0 && i < FONT_MAX ? i : -1;
 }
 
@@ -728,7 +728,7 @@ print_dialog::find_history (UINT id, const char *s)
   while (1)
     {
       int o = i;
-      i = SendDlgItemMessage (m_hwnd, id, CB_FINDSTRINGEXACT, WPARAM (i), LPARAM (s));
+      i = (int) SendDlgItemMessage (m_hwnd, id, CB_FINDSTRINGEXACT, WPARAM (i), LPARAM (s));
       if (i == CB_ERR || i <= o)
         return -1;
       if (!*s)

@@ -206,7 +206,7 @@ Buffer::bm_execf (Point &point, const Char *pattern, int patlen, const int *BM,
         }
 
       point.p_chunk = cp;
-      point.p_offset = p - cp->c_text;
+      point.p_offset = (int) (p - cp->c_text);
 
       if ((flags & SF_LWORD && !word_bound (point))
           || (flags & SF_LSYMBOL && !symbol_bound (point)))
@@ -288,7 +288,7 @@ Buffer::bm_execb (Point &point, const Char *pattern, int patlen, const int *BM,
         }
 
       point.p_chunk = cp;
-      point.p_offset = p - cp->c_text;
+      point.p_offset = (int) (p - cp->c_text);
 
       if (flags & (SF_RWORD | SF_RSYMBOL))
         {

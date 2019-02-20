@@ -760,7 +760,7 @@ ChangeColorsDialog::get_result ()
 {
   ChangeColorsPageP::get_result ();
 
-  long long i = SendDlgItemMessage (ccp_hwnd, IDC_DIR, BM_GETCHECK, 0, 0);
+  int i = (int) SendDlgItemMessage (ccp_hwnd, IDC_DIR, BM_GETCHECK, 0, 0);
   if (i != ccd_dir)
     {
       ccd_dir = i;

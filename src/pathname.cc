@@ -2110,84 +2110,6 @@ win9x_unlock_logical_volume (HANDLE hvwin32, int drive)
   return 0;
 }
 
-static int
-win9x_unlock_media (HANDLE hvwin32, int drive)
-{
-  DIOC_REGISTERS regs = {0};
-  PARAMBLOCK pb;
-  pb.bOperation = 2;
-  pb.bNumLocks = 0;
-
-  regs.reg_EAX = 0x440d;
-  regs.reg_EBX = drive;
-  regs.reg_ECX = MAKEWORD (0x48, 0x08);
-  regs.reg_EDX = DWORD (&pb);
-
-  DWORD nbytes;
-  if (!DeviceIoControl (hvwin32, VWIN32_DIOC_DOS_IOCTL,
-                        &regs, sizeof regs, &regs, sizeof regs,
-                        &nbytes, 0)
-      || (regs.reg_Flags & X86_CARRY_FLAG
-          && regs.reg_EAX != 0x01 && regs.reg_EAX != 0xb0))
-    return 0;
-
-  for (int i = 0; i < pb.bNumLocks; ++i)
-    {
-      pb.bOperation = 1;
-      regs.reg_EAX = 0x440d;
-      regs.reg_EBX = drive;
-      regs.reg_ECX = MAKEWORD (0x48, 0x08);
-      regs.reg_EDX = DWORD (&pb);
-
-      if (!DeviceIoControl (hvwin32, VWIN32_DIOC_DOS_IOCTL,
-                            &regs, sizeof regs, &regs, sizeof regs,
-                            &nbytes, 0)
-          || regs.reg_Flags & X86_CARRY_FLAG)
-        return 0;
-    }
-  return 1;
-}
-
-static int
-win9x_eject_media (HANDLE hvwin32, int drive)
-{
-  DIOC_REGISTERS regs = {0};
-  regs.reg_EAX = 0x440d;
-  regs.reg_EBX = drive;
-  regs.reg_ECX = MAKEWORD (0x49, 0x08);
-
-  DWORD nbytes;
-  return (DeviceIoControl (hvwin32, VWIN32_DIOC_DOS_IOCTL,
-                           &regs, sizeof regs, &regs, sizeof regs,
-                           &nbytes, 0)
-          && !(regs.reg_Flags & X86_CARRY_FLAG));
-}
-
-static lisp
-eject_media_win9x (int drive)
-{
-  dyn_handle hvwin32 (CreateFile ("\\\\.\\vwin32", 0, 0, 0, 0,
-                                  FILE_FLAG_DELETE_ON_CLOSE, 0));
-  if (!hvwin32.valid ())
-    file_error (GetLastError ());
-
-  drive = char_upcase (drive) - ('A' - 1);
-  int e = 0;
-
-  if (!win9x_lock_logical_volume (hvwin32, drive, 0, 0))
-    e = ERROR_DRIVE_LOCKED;
-  else
-    {
-      if (!win9x_unlock_media (hvwin32, drive))
-        e = ERROR_UNABLE_TO_LOCK_MEDIA;
-      else if (!win9x_eject_media (hvwin32, drive))
-        e = ERROR_UNABLE_TO_UNLOAD_MEDIA;
-      win9x_unlock_logical_volume (hvwin32, drive);
-    }
-  if (e)
-    file_error (e);
-  return Qt;
-}
 
 lisp
 Feject_media (lisp ldrive)
@@ -2209,9 +2131,7 @@ Feject_media (lisp ldrive)
       break;
     }
 
-  return (sysdep.WinNTp ()
-          ? eject_media_winnt (xchar_code (ldrive), type)
-          : eject_media_win9x (xchar_code (ldrive)));
+  return eject_media_winnt (xchar_code (ldrive), type);
 }
 
 class list_net_resources: public worker_thread

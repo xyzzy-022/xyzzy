@@ -683,7 +683,7 @@ Dialog::combobox_command (dlgctrl *c, UINT msg)
     case CBN_SELENDOK:
       {
         lisp kwd = c->keyword ();
-        int selected = (int) SendDlgItemMessage (d_hwnd, c->id (), CB_GETCURSEL, 0, 0) != CB_ERR;
+        int selected = (int) SendDlgItemMessage (d_hwnd, (int) c->id (), CB_GETCURSEL, 0, 0) != CB_ERR;
         if (safe_find_keyword (Knon_null, kwd) != Qnil
             || safe_find_keyword (Kmust_match, kwd) != Qnil)
           enable_windows (c, selected);

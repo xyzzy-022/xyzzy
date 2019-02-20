@@ -1161,7 +1161,7 @@ print_engine::paint_fmt (HDC hdc, const char *fmt, int y)
   b[3] = b[2] + strlen (b[2]);
   if (pe_fixed_pitch)
     for (int i = 0; i < 3; i++)
-      width[i] = (b[i + 1] - b[i]) * pe_print_cell.cx;
+      width[i] = (int) (b[i + 1] - b[i]) * pe_print_cell.cx;
   else
     for (int i = 0; i < 3; i++)
       width[i] = get_extent (b[i], (int)(b[i + 1] - b[i]));

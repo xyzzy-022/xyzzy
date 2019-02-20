@@ -512,7 +512,7 @@ regexp_compile::branch (Char *b)
   if (b - p >= CHAR_LIMIT)
     error (Eregexp_too_long);
   p[0] = BRANCH;
-  p[1] = b - p;
+  p[1] = (int) (b - p);
   r_normal_char = 0;
   return b;
 }
@@ -561,7 +561,7 @@ regexp_compile::closure (Char *b, int min, int max, int shortest)
     error (Eregexp_too_long);
   p[1] = min;
   p[2] = max;
-  p[3] = b - p;
+  p[3] = (int) (b - p);
   r_normal_char = 0;
   return b;
 }
@@ -737,9 +737,9 @@ regexp_compile::compile (const Char *pattern, int size)
             case '(':
               if (r_stackp == r_stackb + MAX_STACK_DEPTH)
                 error (Ere_nesting_too_deep);
-              r_stackp->buf = b - r_buffer;
+              r_stackp->buf = (int) (b - r_buffer);
               r_stackp->remain_branch = r_remain_branch;
-              r_stackp->branch_start = r_branch_start - r_buffer;
+              r_stackp->branch_start = (int) (r_branch_start - r_buffer);
               if (p + 2 <= pe && *p == '?' && p[1] == ':')
                 {
                   r_stackp->reg = MAX_REGS;
@@ -943,7 +943,7 @@ regexp_compile::compile (const Char *pattern, int size)
       *b++ = END_BRANCH;
     }
 
-  r_used = b - r_buffer;
+  r_used = (int) (b - r_buffer);
 
   check_inner_closure (r_buffer, b);
 

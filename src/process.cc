@@ -300,7 +300,7 @@ protected:
   struct read_data
     {
       const Char *data;
-      int size;
+      long long size;
       int done;
     };
 

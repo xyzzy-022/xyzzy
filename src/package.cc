@@ -715,7 +715,7 @@ maybe_symbol_string::parse (Char *&xb, int &xl)
           xb = colon + 2;
         else
           xb = colon + 1;
-        xl = be - xb;
+        xl = (int) (be - xb);
         break;
       }
 }

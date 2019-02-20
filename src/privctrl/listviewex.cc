@@ -124,7 +124,7 @@ paint_text (HDC hdc, char *s, int l, int fmt, const RECT &r,
       fmt = LVCFMT_LEFT;
       if (path_ellipse && abbreviate_string (hdc, s, w, 1))
         {
-          l = strlen (s);
+          l = (int) strlen (s);
           GetTextExtentPoint32 (hdc, s, l, &ext);
         }
       else
@@ -138,7 +138,7 @@ paint_text (HDC hdc, char *s, int l, int fmt, const RECT &r,
               if (ext.cx <= w)
                 break;
             }
-          l = se - s;
+          l = (int) (se - s);
           if (l || ext.cx < w + dots + offset)
             {
               if (!l)
@@ -856,7 +856,7 @@ isearch (HWND hwnd, int cc, int wrap, listview_item_data *data)
       *text = 0;
       lvi.iSubItem = 0;
       lvi.pszText = text;
-      lvi.cchTextMax = data->icc + 2;
+      lvi.cchTextMax = (int) data->icc + 2;
       size_t l = CallWindowProc (ListViewProc, hwnd, LVM_GETITEMTEXT,
                                  cur, LPARAM (&lvi));
       if (lvi.pszText != text)
@@ -1226,7 +1226,7 @@ ListViewExProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
           {
             if (!data->pseudo_enable != !wparam)
               {
-                data->pseudo_enable = wparam;
+                data->pseudo_enable = (int) wparam;
                 InvalidateRect (hwnd, 0, 0);
               }
             return 1;
