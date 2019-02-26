@@ -86,7 +86,7 @@ lbx_keydown (HWND hwnd, int vk)
       break;
 
     case VK_DOWN:
-      if (i < lbx_sendmsg (hwnd, LB_GETCOUNT, 0, 0) - 1)
+      if (i < (unsigned long long) lbx_sendmsg (hwnd, LB_GETCOUNT, 0, 0) - 1)
         lbx_sendmsg (hwnd, LB_SETCARETINDEX, i + 1, 0);
       break;
 

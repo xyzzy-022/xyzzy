@@ -121,7 +121,7 @@ EnvStrings::setup (lisp lenv)
   l = 1;
   for (char **np = nb; np < ne; np++)
     if (**np)
-      l += strlen (*np) + 1;
+      l += (int) (strlen (*np) + 1);
 
   e_env = (char *)xmalloc (l);
   char *p = e_env;
@@ -505,7 +505,7 @@ Process::insert_process_output (void *p)
           p_bufp->set_point (point, xmarker_point (p_marker));
           p_bufp->check_read_only ();
           p_bufp->insert_chars (point, data, size);
-          xmarker_point (p_marker) += size;
+          xmarker_point (p_marker) += (long) size;
           if (goto_tail)
             p_bufp->goto_char (wp->w_point, xmarker_point (p_marker));
           int f = 0;
@@ -893,7 +893,7 @@ NormalProcess::create (lisp command, lisp execdir, const char *env, int show)
     file_error (GetLastError ());
 
   char *cmdline = (char *)alloca (128 + xstring_length (command) * 2 + 1);
-  sprintf (cmdline, "xyzzyenv -s%u %u ", show, HANDLE (event));
+  sprintf (cmdline, "xyzzyenv -s%u %llu ", show, (unsigned long long) HANDLE (event));
   w2s (cmdline + strlen (cmdline), command);
 
   u_int thread_id;
@@ -1516,10 +1516,10 @@ Fshell_execute (lisp lpath, lisp ldir, lisp lparam, lisp keys)
       sei.lpDirectory = dir;
       sei.lpVerb = verb;
       sei.nShow = SW_SHOW;
-      e = (*ex)(&sei) ? 33 : DWORD (sei.hInstApp);
+      e = (*ex)(&sei) ? 33 : DWORD ((unsigned long long) sei.hInstApp);
     }
   else
-    e = DWORD (ShellExecute (get_active_window (), verb ? verb : "open",
+    e = DWORD ((unsigned long long) ShellExecute (get_active_window (), verb ? verb : "open",
                              path, param, dir, SW_SHOWNORMAL));
   if (dir)
     WINFS::SetCurrentDirectory (sysdep.curdir);

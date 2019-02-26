@@ -977,7 +977,7 @@ kbd_queue::get_kbd_layout () const
 
   char b[KL_NAMELENGTH];
   if (GetKeyboardLayoutName (b))
-    return HKL (strtol (b, 0, 16));
+    return HKL (strtoll (b, 0, 16));
   return HKL (MAKELANGID (LANG_JAPANESE, SUBLANG_DEFAULT));
 }
 

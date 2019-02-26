@@ -2679,7 +2679,7 @@ Format::exp_format (wStream &stream)
     stream.add ('+');
   char buf[32];
   char *b = store_uint (buf + sizeof buf, n);
-  e -= buf + sizeof buf - b - 1;
+  e -= (int)(buf + sizeof buf - b - 1);
   for (; e > 0; e--)
     *--b = '0';
   stream.add (b);

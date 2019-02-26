@@ -36,7 +36,7 @@ subclass_parent (HWND hwnd)
   if (GetProp (parent, ATOM2STR (hprop)))
     return 1;
   if (!SetProp (parent, ATOM2STR (hprop),
-                HANDLE (GetWindowLong (parent, GWLP_WNDPROC))))
+                HANDLE (GetWindowLongPtr (parent, GWLP_WNDPROC))))
     return 0;
   return SetWindowLongPtr (parent, GWLP_WNDPROC, LONG_PTR (ParentWndProc));
 }

@@ -172,7 +172,7 @@ Buffer::bm_execf (Point &point, const Char *pattern, int patlen, const int *BM,
             return 0;
           while (pe - p <= delta)
             {
-              delta -= pe - p;
+              delta -= (int) (pe - p);
               cp = cp->c_next;
               p = cp->c_text;
               pe = p + cp->c_used;
@@ -254,7 +254,7 @@ Buffer::bm_execb (Point &point, const Char *pattern, int patlen, const int *BM,
             return 0;
           while (p - cp->c_text < delta)
             {
-              delta -= p - cp->c_text;
+              delta -= (int) (p - cp->c_text);
               cp = cp->c_prev;
               p = pe = cp->c_text + cp->c_used;
             }

@@ -74,7 +74,7 @@ XMessageBox::create_ctl (const char *cls, const char *caption, DWORD style,
 {
   HWND c = CreateWindow (cls, caption, style,
                          r.left, r.top, r.right - r.left, r.bottom - r.top,
-                         hwnd, HMENU (id), hinst, 0);
+                         hwnd, HMENU ((unsigned long long) id), hinst, 0);
   SendMessage (c, WM_SETFONT, WPARAM (hfont), 0);
   return c;
 }

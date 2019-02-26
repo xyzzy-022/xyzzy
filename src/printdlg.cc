@@ -52,7 +52,7 @@ subclass_combo::insert (const char *s)
     m_end = GetWindowTextLength (m_hwnd);
   SendMessage (m_hwnd, EM_SETSEL, m_end, m_end);
   SendMessage (m_hwnd, EM_REPLACESEL, 0, LPARAM (s));
-  m_end += strlen (s);
+  m_end += (int) strlen (s);
 }
 
 static subclass_combo sc_header, sc_footer;
