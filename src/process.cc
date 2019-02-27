@@ -504,7 +504,7 @@ Process::insert_process_output (void *p)
           Point point;
           p_bufp->set_point (point, xmarker_point (p_marker));
           p_bufp->check_read_only ();
-          p_bufp->insert_chars (point, data, size);
+          p_bufp->insert_chars (point, data,(int) size);
           xmarker_point (p_marker) += (long) size;
           if (goto_tail)
             p_bufp->goto_char (wp->w_point, xmarker_point (p_marker));
