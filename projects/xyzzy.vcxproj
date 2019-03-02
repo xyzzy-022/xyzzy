@@ -57,6 +57,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -395,6 +396,7 @@
     <ClInclude Include="..\src\buffer-bar.h" />
     <ClInclude Include="..\src\Buffer.h" />
     <ClInclude Include="..\src\byte-stream.h" />
+    <ClInclude Include="..\src\callFunc.h" />
     <ClInclude Include="..\src\cdecl.h" />
     <ClInclude Include="..\src\ces.h" />
     <ClInclude Include="..\src\char.h" />
@@ -525,6 +527,7 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
   <Target Name="MergeResourceFiles" Inputs="$(SolutionDir)src\xyzzy.rc;$(SolutionDir)src\version.h;$(SolutionDir)src\version-rc.h" Outputs="$(SolutionDir)src\gen\xyzzy.rc">
     <Exec Command="type $(SolutionDir)src\xyzzy.rc $(SolutionDir)src\version-rc.h &gt; $(SolutionDir)src\gen\xyzzy.rc 2&gt; nul" />
@@ -533,6 +536,9 @@
   <ItemGroup>
     <LispFiles Include="$(SolutionDir)lisp\**\*.*" />
     <EtcFiles Include="$(SolutionDir)etc\**\*.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\src\callFunc.asm" />
   </ItemGroup>
   <PropertyGroup>
     <LispOutputFiles>@(LispFiles->'$(TargetDir)lisp\%(RecursiveDir)%(Filename)%(Extension)')</LispOutputFiles>

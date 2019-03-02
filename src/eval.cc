@@ -3,6 +3,7 @@
 #include "lex.h"
 #ifdef DEBUG_GC
 #include "symtable.h"
+#include "callFunc.h"
 #endif
 
 static multiple_value_data default_mvalue = {1};
@@ -498,29 +499,9 @@ funcall_builtin (lisp f, lisp arglist)
 #ifdef DEBUG_GC
   MARK_FUNCALL (f);
 #endif
-  if (nargs == 0)
-      return lfunction_proc_0(xfunction_fn(f))();
-  else if (nargs == 1)
-      return lfunction_proc_1(xfunction_fn(f))(*stack);
-  else if (nargs == 2)
-      return lfunction_proc_2(xfunction_fn(f))(*(stack - 1), *stack);
-  else if (nargs == 3)
-      return lfunction_proc_3(xfunction_fn(f))(*(stack - 2), *(stack - 1), *stack);
-  else if (nargs == 4)
-      return lfunction_proc_4(xfunction_fn(f))(*(stack - 3), *(stack - 2), *(stack - 1), *stack);
-  else if (nargs == 5)
-      return lfunction_proc_5(xfunction_fn(f))(*(stack - 4), *(stack - 3), *(stack - 2), *(stack - 1), *stack);
-  else if (nargs == 6)
-      return lfunction_proc_6(xfunction_fn(f))(*(stack - 5), *(stack - 4), *(stack - 3), *(stack - 2), *(stack - 1), *stack);
-  else if (nargs == 7)
-      return lfunction_proc_7(xfunction_fn(f))(*(stack - 6), *(stack - 5), *(stack - 4), *(stack - 3), *(stack - 2), *(stack - 1), *stack);
-  else if (nargs == 8)
-      return lfunction_proc_8(xfunction_fn(f))(*(stack - 7), *(stack - 6), *(stack - 5), *(stack - 4), *(stack - 3), *(stack - 2), *(stack - 1), *stack);
-  else if (nargs == 9)
-      return lfunction_proc_9(xfunction_fn(f))(*(stack - 8), *(stack - 7), *(stack - 6), *(stack - 5), *(stack - 4), *(stack - 3), *(stack - 2), *(stack - 1), *stack);
 
-  else
-      FEprogram_error(Einvalid_argument,make_integer(nargs));
+  return (lisp)callFunc( (void * (*)()) xfunction_fn(f), (long long *) stack, (long long) nargs);
+
 
 #else
 # error "Not tested"

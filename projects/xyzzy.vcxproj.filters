@@ -841,5 +841,13 @@
     <ClInclude Include="..\src\clipboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\callFunc.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\src\callFunc.asm">
+      <Filter>ソース ファイル</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
