@@ -1,8 +1,11 @@
 .code
 
-callFunc proc 
+callFunc proc frame
   push rbp
+  .pushreg rbp
   mov rbp, rsp
+  .setframe rbp,0
+  .endprolog
   mov r10, rcx
   mov r11, rdx
   mov rax, r8
