@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ed.h"
 #include "except.h"
+#include "callFunc.h"
 
 ldll_module *
 make_dll_module ()
@@ -293,15 +294,15 @@ save_last_error ()
 
 template<typename T>
 static __forceinline T
-call_proc (FARPROC proc)
+call_proc (FARPROC proc, long long * params, int paramCount)
 {
-  T r = (reinterpret_cast <T (__stdcall *)()> (proc))();
+	T r = (T)callFunc( (void * (*)()) proc, params, paramCount);
   save_last_error ();
   return r;
 }
 
-static char *
-push_arg (char *stack, u_char at, lisp a)
+static long long *
+push_arg (long long *stack, u_char at, lisp a)
 {
   switch (at)
     {
@@ -314,30 +315,20 @@ push_arg (char *stack, u_char at, lisp a)
     case CTYPE_INT32:
     case CTYPE_UINT32:
       *(long *)stack = cast_to_long (a);
-      stack += sizeof (long);
+      stack ++ ;
       break;
 
     case CTYPE_INT64:
     case CTYPE_UINT64:
       *(int64_t *)stack = cast_to_int64 (a);
-      stack += sizeof (int64_t);
-      break;
-
-    case CTYPE_FLOAT:
-      *(float *)stack = coerce_to_single_float (a);
-      stack += sizeof (float);
-      break;
-
-    case CTYPE_DOUBLE:
-      *(double *)stack = coerce_to_double_float (a);
-      stack += sizeof (double);
+      stack ++;
       break;
     }
   return stack;
 }
 
-static char *
-push_vaarg (char *stack, lisp vaarg)
+static long long *
+push_vaarg (long long *stack, lisp vaarg)
 {
   u_char t = check_vaarg_type (xcar (vaarg));
   return push_arg (stack, t, Fcadr (vaarg));
@@ -353,7 +344,7 @@ funcall_dll (lisp fn, lisp arglist)
 
 #ifdef _M_X64
   int arg_size = xdll_function_arg_size (fn) + calc_vaarg_size (fn, arglist);
-  char *stack = (char *)alloca (arg_size);
+  long long *stack = (long long *)alloca (arg_size);
   for (const u_char *at = xdll_function_arg_types (fn),
        *ae = at + xdll_function_nargs (fn);
        at < ae; at++, arglist = xcdr (arglist))
@@ -388,34 +379,29 @@ funcall_dll (lisp fn, lisp arglist)
           return Qnil;
 
         case CTYPE_INT8:
-          return make_fixnum (call_proc <char> (proc));
+          return make_fixnum (call_proc <char> (proc, stack, arg_size));
 
         case CTYPE_UINT8:
-          return make_fixnum (call_proc <u_char> (proc));
+          return make_fixnum (call_proc <u_char> (proc, stack, arg_size));
 
         case CTYPE_INT16:
-          return make_fixnum (call_proc <short> (proc));
+          return make_fixnum (call_proc <short> (proc, stack, arg_size));
 
         case CTYPE_UINT16:
-          return make_fixnum (call_proc <u_short> (proc));
+          return make_fixnum (call_proc <u_short> (proc, stack, arg_size));
 
         case CTYPE_INT32:
-          return make_fixnum (call_proc <long> (proc));
+          return make_fixnum (call_proc <long> (proc, stack, arg_size));
 
         case CTYPE_UINT32:
-          return make_integer (call_proc <u_long> (proc));
+          return make_integer (call_proc <u_long> (proc, stack, arg_size));
 
         case CTYPE_INT64:
-          return make_integer (call_proc <int64_t> (proc));
+          return make_integer (call_proc <int64_t> (proc, stack, arg_size));
 
         case CTYPE_UINT64:
-          return make_integer (call_proc <uint64_t> (proc));
+          return make_integer (call_proc <uint64_t> (proc, stack, arg_size));
 
-        case CTYPE_FLOAT:
-          return make_single_float (call_proc <float> (proc));
-
-        case CTYPE_DOUBLE:
-          return make_double_float (call_proc <double> (proc));
         }
     }
   catch (Win32Exception &e)
