@@ -641,7 +641,7 @@ preview_page_window::wndproc (UINT msg, WPARAM wparam, LPARAM lparam)
       return 0;
 
     case WM_KEYDOWN:
-      if (key_down (wparam))
+      if (key_down ((int)wparam))
         return 0;
       break;
 
@@ -682,12 +682,12 @@ preview_page_window::wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   if (msg == WM_NCCREATE)
     {
       p = (preview_page_window *)((CREATESTRUCT *)lparam)->lpCreateParams;
-      SetWindowLong (hwnd, 0, LONG (p));
+      SetWindowLongPtr (hwnd, 0, LONG_PTR (p));
       p->p_hwnd = hwnd;
     }
   else
     {
-      p = (preview_page_window *)GetWindowLong (hwnd, 0);
+      p = (preview_page_window *)GetWindowLongPtr (hwnd, 0);
       if (!p)
         return DefWindowProc (hwnd, msg, wparam, lparam);
     }
@@ -794,7 +794,7 @@ preview_dialog::init_dialog (HWND)
       char b[128];
       LoadString (app.hinst, preview_page_window::ids2scales[i].ids,
                   b, sizeof b);
-      UINT idx = SendDlgItemMessage (p_hwnd, IDC_SCALE, CB_ADDSTRING, 0, LPARAM (b));
+      UINT idx = (UINT) SendDlgItemMessage (p_hwnd, IDC_SCALE, CB_ADDSTRING, 0, LPARAM (b));
       SendDlgItemMessage (p_hwnd, IDC_SCALE, CB_SETITEMDATA,
                           idx, preview_page_window::ids2scales[i].scale);
     }
@@ -853,10 +853,10 @@ preview_dialog::scale_command (int code)
     {
     case CBN_SELCHANGE:
       {
-        int idx = SendDlgItemMessage (p_hwnd, IDC_SCALE, CB_GETCURSEL, 0, 0);
+        int idx = (int) SendDlgItemMessage (p_hwnd, IDC_SCALE, CB_GETCURSEL, 0, 0);
         if (idx == CB_ERR)
           return 0;
-        p_page.set_scale (SendDlgItemMessage (p_hwnd, IDC_SCALE,
+        p_page.set_scale ( (int) SendDlgItemMessage (p_hwnd, IDC_SCALE,
                                               CB_GETITEMDATA, idx, 0), 1);
       }
       return 1;
@@ -869,7 +869,7 @@ preview_dialog::scale_command (int code)
       {
         char buf[128];
         GetDlgItemText (p_hwnd, IDC_SCALE, buf, sizeof buf);
-        int i = SendDlgItemMessage (p_hwnd, IDC_SCALE, CB_FINDSTRINGEXACT,
+        int i = (int) SendDlgItemMessage (p_hwnd, IDC_SCALE, CB_FINDSTRINGEXACT,
                                     WPARAM (-1), LPARAM (buf));
         if (i != CB_ERR)
           return 1;
@@ -940,7 +940,7 @@ preview_dialog::update_scale ()
   set_scale_combo ();
 }
 
-BOOL
+long long
 preview_dialog::wndproc (UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -973,7 +973,7 @@ preview_dialog::wndproc (UINT msg, WPARAM wparam, LPARAM lparam)
       return size (LOWORD (lparam), HIWORD (lparam));
 
     case WM_PRIVATE_UPDATE_PAGE:
-      update_page (wparam, lparam);
+      update_page ((int)wparam, (int)lparam);
       return 0;
 
     case WM_PRIVATE_UPDATE_SCALE:
@@ -985,19 +985,19 @@ preview_dialog::wndproc (UINT msg, WPARAM wparam, LPARAM lparam)
     }
 }
 
-BOOL CALLBACK
+long long CALLBACK
 preview_dialog::wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   preview_dialog *p;
   if (msg == WM_INITDIALOG)
     {
       p = (preview_dialog *)lparam;
-      SetWindowLong (hwnd, DWL_USER, lparam);
+      SetWindowLongPtr (hwnd, DWLP_USER, lparam);
       p->p_hwnd = hwnd;
     }
   else
     {
-      p = (preview_dialog *)GetWindowLong (hwnd, DWL_USER);
+      p = (preview_dialog *)GetWindowLongPtr (hwnd, DWLP_USER);
       if (!p)
         return 0;
     }
@@ -1007,6 +1007,6 @@ preview_dialog::wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 int
 preview_dialog::do_modal (HWND hwnd)
 {
-  return DialogBoxParam (app.hinst, MAKEINTRESOURCE (IDD_PREVIEW),
+  return (int) DialogBoxParam (app.hinst, MAKEINTRESOURCE (IDD_PREVIEW),
                          hwnd, wndproc, LPARAM (this));
 }

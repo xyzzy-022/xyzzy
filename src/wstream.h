@@ -8,16 +8,16 @@ class wStream: public StrBuf
   char buf[2040];
   int col;
   void update_column (Char);
-  void update_column (Char, int);
-  void update_column (const Char *, int);
+  void update_column (Char, long long);
+  void update_column (const Char *, long long);
 public:
   wStream (int = 0);
   void add (int);
   void add (Char);
-  void fill (int, int);
-  void fill (Char, int);
+  void fill (int, long long);
+  void fill (Char, long long);
   void add (const char *);
-  void add (const Char *, int);
+  void add (const Char *, long long);
   void add (wStream &);
   int columns () const;
   void case_conversion (wStream &, int, int);
@@ -46,13 +46,13 @@ wStream::update_column (Char c)
 }
 
 inline void
-wStream::update_column (const Char *s, int size)
+wStream::update_column (const Char *s, long long size)
 {
   col = ::update_column (col, s, size);
 }
 
 inline void
-wStream::update_column (Char c, int size)
+wStream::update_column (Char c, long long size)
 {
   col = ::update_column (col, c, size);
 }
@@ -71,7 +71,7 @@ wStream::add (int c)
 }
 
 inline void
-wStream::fill (Char c, int size)
+wStream::fill (Char c, long long size)
 {
   if (size <= 0)
     return;
@@ -80,13 +80,13 @@ wStream::fill (Char c, int size)
 }
 
 inline void
-wStream::fill (int c, int size)
+wStream::fill (int c, long long size)
 {
   fill (Char (c & 0xff), size);
 }
 
 inline void
-wStream::add (const Char *s, int size)
+wStream::add (const Char *s, long long size)
 {
   if (size <= 0)
     return;

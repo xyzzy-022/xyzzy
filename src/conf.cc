@@ -91,6 +91,12 @@ parse_int (const char *s, int &v)
   return sscanf (s, *s == '#' ? "#%x" : "%d", &v) == 1;
 }
 
+static int
+parse_longlong(const char *s, long long &v)
+{
+    return sscanf(s, *s == '#' ? "#%I64x" : "%I64d", &v) == 1;
+}
+
 int
 read_conf (const char *section, const char *name, int &value)
 {
@@ -100,6 +106,17 @@ read_conf (const char *section, const char *name, int &value)
     return 0;
   return parse_int (buf, value);
 }
+
+int
+read_conf(const char *section, const char *name, long long &value)
+{
+    char buf[32];
+    int l = read_conf(section, name, buf, sizeof buf);
+    if (!l || l >= sizeof buf - 1)
+        return 0;
+    return parse_longlong(buf, value);
+}
+
 
 #if INT_MAX != LONG_MAX
 static int
@@ -210,7 +227,7 @@ read_conf (const char *section, const char *name, WINDOWPLACEMENT &w)
 void
 conf_write_string (const char *section, const char *name, const char *string)
 {
-  int l = strlen (string);
+  long long l = strlen (string);
   char *b = (char *)alloca (l + 3);
   *b = '"';
   memcpy (b + 1, string, l);

@@ -172,7 +172,7 @@ Buffer::bm_execf (Point &point, const Char *pattern, int patlen, const int *BM,
             return 0;
           while (pe - p <= delta)
             {
-              delta -= pe - p;
+              delta -= (int) (pe - p);
               cp = cp->c_next;
               p = cp->c_text;
               pe = p + cp->c_used;
@@ -206,7 +206,7 @@ Buffer::bm_execf (Point &point, const Char *pattern, int patlen, const int *BM,
         }
 
       point.p_chunk = cp;
-      point.p_offset = p - cp->c_text;
+      point.p_offset = (int) (p - cp->c_text);
 
       if ((flags & SF_LWORD && !word_bound (point))
           || (flags & SF_LSYMBOL && !symbol_bound (point)))
@@ -254,7 +254,7 @@ Buffer::bm_execb (Point &point, const Char *pattern, int patlen, const int *BM,
             return 0;
           while (p - cp->c_text < delta)
             {
-              delta -= p - cp->c_text;
+              delta -= (int) (p - cp->c_text);
               cp = cp->c_prev;
               p = pe = cp->c_text + cp->c_used;
             }
@@ -288,7 +288,7 @@ Buffer::bm_execb (Point &point, const Char *pattern, int patlen, const int *BM,
         }
 
       point.p_chunk = cp;
-      point.p_offset = p - cp->c_text;
+      point.p_offset = (int) (p - cp->c_text);
 
       if (flags & (SF_RWORD | SF_RSYMBOL))
         {
@@ -1092,7 +1092,7 @@ replace_match (Window *wp, lisp string, int literal)
         {
           if (*p++ == '\\')
             {
-              bp->insert_chars (wp, p0, p - p0 - 1, 1);
+              bp->insert_chars (wp, p0, (int)(p - p0 - 1), 1);
               if (p == pe)
                 break;
               Char c = *p++;
@@ -1138,7 +1138,7 @@ replace_match (Window *wp, lisp string, int literal)
                 }
             }
         }
-      bp->insert_chars (wp, p0, p - p0, 1);
+      bp->insert_chars (wp, p0, (int)(p - p0), 1);
       case_conversion (fconv, conv_point, wp->w_point, bp);
     }
 }

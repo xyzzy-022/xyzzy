@@ -187,7 +187,7 @@ StatusWindow::text (const char *s)
   SendMessage (sw_hwnd, SB_SETTEXT, 0, LPARAM (s));
   UpdateWindow (sw_hwnd);
   sw_last.textf = 1;
-  return sw_last.l;
+  return (int) sw_last.l;
 }
 
 void
@@ -233,7 +233,7 @@ StatusWindow::newline ()
 void
 StatusWindow::flush ()
 {
-  int l = sw_b - sw_buf;
+  long long l = sw_b - sw_buf;
   if (l && (sw_last.textf || l != sw_last.l
             || memcmp (sw_last.buf, sw_buf, sizeof *sw_buf * l)))
     {
@@ -293,7 +293,7 @@ StatusWindow::set (HWND hwnd)
 int
 StatusWindow::paint (const DRAWITEMSTRUCT *dis)
 {
-  if (dis->itemData != DWORD (&sw_last))
+  if (dis->itemData != unsigned long long (&sw_last))
     return 0;
 
   TEXTMETRIC tm;
@@ -1947,8 +1947,8 @@ lisp
 Fget_window_handle (lisp window)
 {
   if (!window || window == Qnil)
-    return make_fixnum (long (app.toplev));
-  return make_fixnum (long (Window::coerce_to_window (window)->w_hwnd));
+    return make_fixnum (long long (app.toplev));
+  return make_fixnum (long long (Window::coerce_to_window (window)->w_hwnd));
 }
 
 int
@@ -2668,8 +2668,8 @@ static void
 activate_xyzzy_window (HWND hwnd)
 {
   Fbegin_wait_cursor ();
-  DWORD r;
-  int ok = SendMessageTimeout (hwnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, 1000, &r);
+  unsigned long long r;
+  long long ok = SendMessageTimeout (hwnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, 1000, &r);
   Fend_wait_cursor ();
   if (!ok)
     FEsimple_error (Etarget_xyzzy_is_busy);
@@ -3229,7 +3229,7 @@ Fset_window_configuration (lisp lconf)
 void
 ForceSetForegroundWindow (HWND hwnd)
 {
-  DWORD timeout;
+  long long timeout;
   if (sysdep.version () >= Sysdep::WIN98_VERSION
       && SystemParametersInfo (SPI_GETFOREGROUNDLOCKTIMEOUT, 0, &timeout, 0))
     {
@@ -3239,7 +3239,7 @@ ForceSetForegroundWindow (HWND hwnd)
       if (!ok)
         {
           HWND hwnd_fg = GetForegroundWindow ();
-          DWORD r;
+          unsigned long long r;
           if (hwnd_fg && SendMessageTimeout (hwnd_fg, WM_NULL, 0, 0,
                                              SMTO_ABORTIFHUNG | SMTO_BLOCK, 100, &r))
             {

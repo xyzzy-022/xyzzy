@@ -32,7 +32,7 @@ read_bytes (byte_input_stream &is, u_char *buf, int size)
   int c;
   while (b < be && (c = is.get ()) != xstream::eof)
     *b++ = c;
-  return b - buf;
+  return (int)(b - buf);
 }
 
 static void

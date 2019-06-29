@@ -180,10 +180,10 @@ protected:
 
 public:
   void echo_filename ();
-  int forward_line (int);
-  int forward_page (int);
-  int goto_bof ();
-  int goto_eof ();
+  long long forward_line (int);
+  long long forward_page (int);
+  long long goto_bof ();
+  long long goto_eof ();
   int scroll_left ();
   int scroll_right ();
   int set_directory (lisp);
@@ -207,7 +207,7 @@ public:
   int mark_match_files (lisp);
   int calc_directory_size (int);
 
-  int isearch (Char, int);
+  long long isearch (Char, int);
   int search (lisp, lisp, lisp, lisp);
 
   void activate (int);
@@ -251,7 +251,7 @@ class ViewerWindow: public Window
 public:
   ViewerWindow ();
   ~ViewerWindow ();
-  int init (HWND, ViewerBuffer *);
+  HWND init (HWND, ViewerBuffer *);
   void resize (int, int, int, int);
   void update_window ();
   void repaint ();
@@ -330,7 +330,7 @@ public:
   lisp result ();
   Filer (lisp, lisp, lisp, lisp, lisp, lisp, lisp, lisp, int);
   ~Filer ();
-  virtual BOOL WndProc (UINT, WPARAM, LPARAM);
+  virtual long long WndProc (UINT, WPARAM, LPARAM);
   void restore_dir () const;
   int left_window_p (const FilerView *) const;
   int primary_window_p (const FilerView *) const;
@@ -359,7 +359,7 @@ public:
   void quit ();
   lisp get_text ();
   void set_text (lisp);
-  int dual_window_p () const;
+  long long dual_window_p () const;
   int left_window ();
   int right_window ();
   int left_window_p () const;
@@ -443,34 +443,34 @@ FilerView::setdir (lisp d)
   fv_ldir = d;
 }
 
-inline int
+inline long long
 FilerView::forward_line (int n)
 {
-  int x = ListView_ForwardLine (fv_hwnd, n);
+  long long x = ListView_ForwardLine (fv_hwnd, n);
   echo_filename ();
   return x;
 }
 
-inline int
+inline long long
 FilerView::forward_page (int n)
 {
-  int x = ListView_ForwardPage (fv_hwnd, n);
+  long long x = ListView_ForwardPage (fv_hwnd, n);
   echo_filename ();
   return x;
 }
 
-inline int
+inline long long
 FilerView::goto_bof ()
 {
-  int x = ListView_GotoBOF (fv_hwnd);
+  long long x = ListView_GotoBOF (fv_hwnd);
   echo_filename ();
   return x;
 }
 
-inline int
+inline long long
 FilerView::goto_eof ()
 {
-  int x = ListView_GotoEOF (fv_hwnd);
+  long long x = ListView_GotoEOF (fv_hwnd);
   echo_filename ();
   return x;
 }
@@ -501,7 +501,7 @@ FilerView::get_directory () const
   return fv_ldir;
 }
 
-inline int
+inline long long
 FilerView::isearch (Char c, int wrap)
 {
   if (c < ' ')
@@ -595,10 +595,10 @@ Filer::primary_window_p (const FilerView *v) const
   return v == f_pview;
 }
 
-inline int
+inline long long
 Filer::dual_window_p () const
 {
-  return int (f_sview);
+  return long long (f_sview);
 }
 
 inline void

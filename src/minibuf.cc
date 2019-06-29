@@ -19,7 +19,7 @@ load_default (const char *fmt, lisp keys, int number)
 
   char b[32];
   sprintf (b, fmt, number);
-  int l = strlen (b);
+  int l = (int)strlen (b);
   Char w[32];
   a2w (w, b, l);
   temporary_string t (w, l);
@@ -132,7 +132,7 @@ read_minibuffer (const Char *prompt, long prompt_length, lisp def,
       else if (safe_fixnum_value (xsymbol_value (Vprefix_value), &n))
         sprintf (bp->b_prompt_arg, "%d ", n);
     }
-  bp->b_prompt_columns += strlen (bp->b_prompt_arg);
+  bp->b_prompt_columns += (int)strlen (bp->b_prompt_arg);
 
   bp->b_minibufferp = 1;
   bp->b_fold_mode = bp->b_fold_columns = Buffer::FOLD_NONE;
@@ -467,7 +467,7 @@ completion::fix_match_len ()
         ;
     }
 
-  c_match_len = min (c_match_len, p - xstring_contents (c_item));
+  c_match_len = min (c_match_len, (int)(p - xstring_contents (c_item)));
 }
 
 void
@@ -693,7 +693,7 @@ completion::complete_UNC (lisp &directory)
 {
   const Char *p0 = xstring_contents (directory);
   const Char *pe = p0 + xstring_length (directory);
-  int l = pe - p0;
+  int l = (int)(pe - p0);
   if (l < 2 || *p0 != '/' || p0[1] != '/')
     return 0;
   const Char *p;

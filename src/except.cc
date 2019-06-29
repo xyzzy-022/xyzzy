@@ -107,7 +107,7 @@ se_handler (u_int code, EXCEPTION_POINTERS *ep)
 static int
 get_section_name (void *base, void *p, char *buf, int size)
 {
-  DWORD nread;
+  unsigned long long nread;
   IMAGE_DOS_HEADER dos;
   if (!ReadProcessMemory (GetCurrentProcess (),
                           base, &dos, sizeof dos, &nread))
@@ -124,7 +124,7 @@ get_section_name (void *base, void *p, char *buf, int size)
   if (nt.Signature != IMAGE_NT_SIGNATURE)
     return 0;
 
-  DWORD rva = DWORD (p) - DWORD (base);
+  unsigned long long rva = unsigned long long (p) - unsigned long long (base);
 
   IMAGE_SECTION_HEADER *section =
     (IMAGE_SECTION_HEADER *)((char *)base + dos.e_lfanew
@@ -156,14 +156,14 @@ get_module_base_name (HMODULE h, LPSTR buf, DWORD size)
   char *p = jrindex (buf, '\\');
   if (p)
     strcpy (buf, p + 1);
-  int l = strlen (buf);
+  int l = (int) strlen (buf);
   if (l >= 4 && !_stricmp (buf + l - 4, ".dll"))
     buf[l - 4] = 0;
   return 1;
 }
 
 static int
-get_module_name (DWORD addr, MEMORY_BASIC_INFORMATION *bi, char *buf)
+get_module_name (unsigned long long addr, MEMORY_BASIC_INFORMATION *bi, char *buf)
 {
   switch (bi->AllocationProtect & ~(PAGE_GUARD | PAGE_NOCACHE))
     {
@@ -198,16 +198,16 @@ find_module_name (void *addr, char *buf)
 {
   SYSTEM_INFO si;
   GetSystemInfo (&si);
-  addr = (void *)(DWORD (addr) & ~si.dwPageSize);
+  addr = (void *)((unsigned long long) addr & ~(unsigned long long) si.dwPageSize);
 
   MEMORY_BASIC_INFORMATION bi;
   memset (&bi, 0, sizeof bi);
   return (VirtualQuery (addr, &bi, sizeof bi)
-          && get_module_name (DWORD (addr), &bi, buf));
+          && get_module_name ((unsigned long long) addr, &bi, buf));
 }
 
 static void
-print_modules (FILE *fp, DWORD addr, MEMORY_BASIC_INFORMATION *bi)
+print_modules (FILE *fp, unsigned long long addr, MEMORY_BASIC_INFORMATION *bi)
 {
   switch (bi->AllocationProtect & ~(PAGE_GUARD | PAGE_NOCACHE))
     {
@@ -229,22 +229,22 @@ print_modules (FILE *fp, DWORD addr, MEMORY_BASIC_INFORMATION *bi)
   if (!get_module_base_name (HMODULE (bi->AllocationBase), path, MAX_PATH))
     return;
   char *p = path + lstrlen (path);
-  if (get_section_name (bi->AllocationBase, bi->BaseAddress, p + 1, path + sizeof path - p - 1))
+  if (get_section_name (bi->AllocationBase, bi->BaseAddress, p + 1, (int)(path + sizeof path - p - 1)))
     *p = '!';
-  fprintf (fp, "%08x - %08x: %s\n", addr, addr + bi->RegionSize, path);
+  fprintf (fp, "%16llx - %16llx: %s\n", addr, addr + bi->RegionSize, path);
 }
 
 static void
 print_module_allocation (FILE *fp)
 {
-  for (DWORD addr = 0; addr < 0xffffffff;)
+  for (unsigned long long addr = 0; addr < 0xffffffff;)
     {
       MEMORY_BASIC_INFORMATION bi;
       if (VirtualQuery ((void *)addr, &bi, sizeof bi))
         print_modules (fp, addr, &bi);
       else
         bi.RegionSize = 0;
-      DWORD oaddr = addr;
+      unsigned long long oaddr = addr;
       addr += bi.RegionSize ? bi.RegionSize : 64 * 1024;
       if (addr < oaddr)
         break;
@@ -252,28 +252,28 @@ print_module_allocation (FILE *fp)
   putc ('\n', fp);
 }
 
-#ifdef _M_IX86
+#ifdef _M_X64
 static void
-x86_print_registers (FILE *fp, const CONTEXT &c)
+x64_print_registers (FILE *fp, const CONTEXT &c)
 {
   fprintf (fp, "Registers:\n");
-  fprintf (fp, "EAX: %08x  EBX: %08x  ECX: %08x  EDX: %08x  ESI: %08x\n",
-           c.Eax, c.Ebx, c.Ecx, c.Edx, c.Esi);
-  fprintf (fp, "EDI: %08x  ESP: %08x  EBP: %08x  EIP: %08x  EFL: %08x\n",
-           c.Edi, c.Esp, c.Ebp, c.Eip, c.EFlags);
+  fprintf (fp, "RAX: %16llx  RBX: %16llx  RCX: %16llx  RDX: %16llx  RSI: %16llx\n",
+           c.Rax, c.Rbx, c.Rcx, c.Rdx, c.Rsi);
+  fprintf (fp, "RDI: %16llx  RSP: %16llx  RBP: %16llx  RIP: %16llx  EFL: %8lx\n",
+           c.Rdi, c.Rsp, c.Rbp, c.Rip, c.EFlags);
   fprintf (fp, "CS: %04x  DS: %04x  ES: %04x  SS: %04x  FS: %04x  GS: %04x\n\n",
            c.SegCs, c.SegDs, c.SegEs, c.SegSs, c.SegFs, c.SegGs);
 
-  DWORD eip = c.Eip - 16;
+  unsigned long long rip = c.Rip - 16;
   for (int j = 0; j < 2; j++)
     {
-      fprintf (fp, "%08x:", eip);
-      for (int i = 0; i < 16; i++, eip++)
+      fprintf (fp, "%16llx:", rip);
+      for (int i = 0; i < 16; i++, rip++)
         {
-          if (IsBadReadPtr ((void *)eip, 1))
+          if (IsBadReadPtr ((void *)rip, 1))
             fprintf (fp, " ??");
           else
-            fprintf (fp, " %02x", *(u_char *)eip);
+            fprintf (fp, " %02x", *(u_char *)rip);
         }
       putc ('\n', fp);
     }
@@ -281,33 +281,33 @@ x86_print_registers (FILE *fp, const CONTEXT &c)
 }
 
 static void
-x86_stack_dump (FILE *fp, const CONTEXT &c)
+x64_stack_dump (FILE *fp, const CONTEXT &c)
 {
   fprintf (fp, "Stack dump:\n");
-  DWORD esp = c.Esp, ebp = c.Ebp;
+  unsigned long long rsp = c.Rsp, rbp = c.Rbp;
 
   for (int i = 0; i < 64; i++)
     {
-      DWORD buf[16], nread;
-      if (!ReadProcessMemory (GetCurrentProcess (), (void *)esp,
+      unsigned long long buf[16], nread;
+      if (!ReadProcessMemory (GetCurrentProcess (), (void *)rsp,
                               buf, sizeof buf, &nread)
           || nread != sizeof buf)
         break;
       for (int j = 0; j < 16; j += 4)
-        fprintf (fp, "%08x: %08x %08x %08x %08x\n",
-                 esp + j * 4, buf[j], buf[j + 1], buf[j + 2], buf[j + 3]);
+        fprintf (fp, "%16llx: %16llx %16llx %16llx %16llx\n",
+                 rsp + j * 4, buf[j], buf[j + 1], buf[j + 2], buf[j + 3]);
       fprintf (fp, "\n");
-      if (ebp <= esp || ebp & 3)
+      if (rbp <= rsp || rbp & 3)
         break;
-      esp = ebp;
-      if (!ReadProcessMemory (GetCurrentProcess (), (void *)esp,
-                              &ebp, sizeof ebp, &nread))
-        ebp = 0;
+      rsp = rbp;
+      if (!ReadProcessMemory (GetCurrentProcess (), (void *)rsp,
+                              &rbp, sizeof rbp, &nread))
+        rbp = 0;
 //      esp += sizeof ebp;
     }
 }
 
-#endif /* _M_IX86 */
+#endif /* _M_X64 */
 
 static int
 bad_object_p (FILE *fp, lisp object)
@@ -402,7 +402,7 @@ cleanup_exception ()
   const char* desc = get_exception_description (Win32Exception::code);
   char path[PATH_MAX];
   GetModuleFileName (0, path, PATH_MAX);
-  int l = strlen (path);
+  int l = (int) strlen (path);
   if (l >= 4 && !_stricmp (path + l - 4, ".exe"))
     strcpy (path + l - 4, ".BUG");
   else
@@ -433,19 +433,19 @@ cleanup_exception ()
                sysdep.os_ver.szCSDVersion);
 
       fprintf (fp, "%08x: %s\n", Win32Exception::code, desc);
-      fprintf (fp, "at %08x", Win32Exception::r.ExceptionAddress);
+      fprintf (fp, "at %16llx", (unsigned long long) Win32Exception::r.ExceptionAddress);
       if (*module)
         fprintf (fp, " (%s)", module);
       fprintf (fp, "\n\n");
 
-#ifdef _M_IX86
-      x86_print_registers (fp, Win32Exception::c);
-      x86_stack_dump (fp, Win32Exception::c);
+#ifdef _M_X64
+      x64_print_registers (fp, Win32Exception::c);
+      x64_stack_dump (fp, Win32Exception::c);
 #else
 # error "yet"
 #endif
-      fprintf (fp, "Initial stack: %08x  GC: %d\n\n",
-               app.initial_stack, app.in_gc);
+      fprintf (fp, "Initial stack: %16llx  GC: %d\n\n",
+               (unsigned long long) app.initial_stack, app.in_gc);
 
       print_module_allocation (fp);
       lisp_stack_trace (fp);
@@ -457,8 +457,8 @@ cleanup_exception ()
     }
 
   char msg[1024], *p = msg;
-  p += sprintf (p, "致命的な例外(%s)が発生しました。\nat %08x",
-                desc, Win32Exception::r.ExceptionAddress);
+  p += sprintf (p, "致命的な例外(%s)が発生しました。\nat %16llx",
+                desc, (unsigned long long) Win32Exception::r.ExceptionAddress);
   if (*module)
     p += sprintf (p, " (%s)", module);
   *p++ = '\n';

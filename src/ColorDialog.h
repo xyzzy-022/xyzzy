@@ -22,11 +22,11 @@ protected:
       PROP_BG_OFFSET = PROP_FG_OFFSET + NPROPS
     };
 
-  static int prop_fg_p (int x)
+  static int prop_fg_p (long long x)
     {return x >= PROP_FG_OFFSET && x < PROP_FG_OFFSET + NPROPS;}
-  static int prop_bg_p (int x)
+  static int prop_bg_p (long long x)
     {return x >= PROP_BG_OFFSET && x < PROP_BG_OFFSET + NPROPS;}
-  static int misc_p (int x)
+  static int misc_p (long long x)
     {return x >= MISC_OFFSET && x < MISC_OFFSET + NMISCS;}
 
 private:
@@ -52,14 +52,14 @@ protected:
 
   virtual void init_dialog ();
   virtual BOOL do_command (int, int);
-  virtual BOOL do_notify (int, NMHDR *);
-  virtual BOOL draw_item (int, DRAWITEMSTRUCT *);
+  virtual BOOL do_notify (long long, NMHDR *);
+  virtual BOOL draw_item (long long, DRAWITEMSTRUCT *);
   virtual void do_destroy () {}
 
-  virtual void notify_color (int) {}
+  virtual void notify_color (long long) {}
 
-  static void measure_item (HWND, int, MEASUREITEMSTRUCT *);
-  static BOOL CALLBACK ccp_dialog_proc (HWND, UINT, WPARAM, LPARAM);
+  static void measure_item (HWND, long long, MEASUREITEMSTRUCT *);
+  static long long CALLBACK ccp_dialog_proc (HWND, UINT, WPARAM, LPARAM);
 
 public:
   int ccp_modified;
@@ -129,7 +129,7 @@ protected:
 public:
   int ccd_dir;
   int ccd_subdir;
-  int ccd_default;
+  long long ccd_default;
   ChangeColorsDialog ()
        : ChangeColorsPageP (USER_DEFINABLE_COLORS),
          ccd_dir (0), ccd_subdir (0), ccd_default (0)

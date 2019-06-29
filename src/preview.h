@@ -106,8 +106,8 @@ protected:
   void calc_page_rect (RECT &) const;
   void set_scale_combo ();
 
-  BOOL wndproc (UINT, WPARAM, LPARAM);
-  static BOOL CALLBACK wndproc (HWND, UINT, WPARAM, LPARAM);
+  long long wndproc (UINT, WPARAM, LPARAM);
+  static long long CALLBACK wndproc (HWND, UINT, WPARAM, LPARAM);
 
   HWND p_hwnd_sw;
   HWND p_hwnd;

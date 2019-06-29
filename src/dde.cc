@@ -125,7 +125,7 @@ Fdde_execute (lisp lconv, lisp ldata)
 {
   HCONV hconv = check_hconv (lconv);
   ldata = Fstring (ldata);
-  int l = w2sl (ldata) + 1;
+  int l = (int)( w2sl (ldata) ) + 1;
   safe_ptr <char> data (new char [l]);
   w2s (data, ldata);
   CALL_DDE (Dde::execute (hconv, dde_timeout (), data, l));
@@ -140,14 +140,14 @@ Fdde_poke (lisp lconv, lisp litem, lisp ldata)
   char *item = (char *)alloca (xstring_length (litem) * 2 + 1);
   w2s (item, litem);
   ldata = Fstring (ldata);
-  int l = w2sl (ldata) + 1;
+  int l = (int)(w2sl (ldata)) + 1;
   safe_ptr <char> data (new char [l]);
   w2s (data, ldata);
   CALL_DDE (Dde::poke (hconv, dde_timeout (), item, data, l));
   return Qt;
 }
 
-enum dde_reqtype
+enum dde_reqtype : long long
 {
   dr_text,
   dr_binary,
@@ -169,7 +169,7 @@ req_type (lisp type)
     return dr_int16;
   if (type == Kint32)
     return dr_int32;
-  return dde_reqtype (int (FEprogram_error (Edde_undefined_return_type, type)));
+  return dde_reqtype (long long (FEprogram_error (Edde_undefined_return_type, type)));
 }
 
 template <class T>
@@ -247,7 +247,7 @@ topic_list_callback (DdeCallbackInfo *dci)
 
   int nbytes = 0;
   for (DdeTopicList *t = DdeServerTopicList; t->topic; t++)
-    nbytes += strlen (t->topic) + 1;
+    nbytes += (int)(strlen (t->topic)) + 1;
 
   HDDEDATA hdata = DdeCreateDataHandle (Dde::instance (), 0, 0, nbytes,
                                         dci->item, dci->fmt, 0);
@@ -287,7 +287,7 @@ item_list_callback (DdeCallbackInfo *dci)
   int nbytes = 0;
   for (DdeItemList *il = t->items; il->item; il++)
     if (il->item != DDE_EXECUTE_ITEM)
-      nbytes += strlen (il->item) + 1;
+      nbytes += (int)(strlen (il->item)) + 1;
 
   HDDEDATA hdata = DdeCreateDataHandle (Dde::instance (), 0, 0, nbytes,
                                         dci->item, dci->fmt, 0);
@@ -408,7 +408,7 @@ eval_callback (DdeCallbackInfo *dci)
       {
         result = Fwrite_to_string (result, Qnil);
         HDDEDATA hdata = DdeCreateDataHandle (Dde::instance (), 0, 0,
-                                              w2sl (result) + 1,
+                                              (int)(w2sl (result)) + 1,
                                               dci->item, dci->fmt, 0);
         if (!hdata)
           return HDDEDATA (dci->type == XTYP_REQUEST ? DDE_FNOTPROCESSED : 0);

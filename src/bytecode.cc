@@ -200,8 +200,8 @@ public:
   lisp pop ();
   void drop ();
   lisp &top ();
-  void set_stack (int);
-  int stack_depth () const;
+  void set_stack (long long);
+  long long stack_depth () const;
   lisp &local (int);
 
   void xglobal_set (lisp);
@@ -297,13 +297,13 @@ ByteCode::top ()
 }
 
 inline void
-ByteCode::set_stack (int i)
+ByteCode::set_stack (long long i)
 {
   assert (i >= 0 && i < bc_stacke - bc_stackb);
   bc_stackp = bc_stackb + i;
 }
 
-inline int
+inline long long
 ByteCode::stack_depth () const
 {
   return bc_stackp - bc_stackb;
@@ -450,7 +450,7 @@ ByteCode::xfuncall (int nargs)
 void
 ByteCode::xblock (lex_env &olex)
 {
-  int depth = stack_depth ();
+  long long depth = stack_depth ();
   int next_pc = fetch ();
   lisp tag = constant (fetch ());
 
@@ -477,7 +477,7 @@ ByteCode::xblock (lex_env &olex)
 void
 ByteCode::xtagbody (lex_env &olex)
 {
-  int depth = stack_depth ();
+  long long depth = stack_depth ();
   int end_pc = fetch ();
   int ntags = fetch ();
   int frame_pc = bc_pc;
@@ -615,7 +615,7 @@ ByteCode::xunwind_protect (lex_env &lex)
 {
   int protect_pc = fetch ();
   int cleanup_pc = fetch ();
-  int depth = stack_depth ();
+  long long depth = stack_depth ();
 
   try
     {
@@ -651,7 +651,7 @@ ByteCode::xcatch (lex_env &lex)
   lisp tag = pop ();
   protect_gc gcpro (tag);
   int next_pc = fetch ();
-  int depth = stack_depth ();
+  long long depth = stack_depth ();
 
   try
     {

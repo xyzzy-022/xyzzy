@@ -1,5 +1,7 @@
 #ifndef _environ_h_
-# define _environ_h_
+#define _environ_h_
+
+#undef environ
 
 #undef environ // <stdlib.h> ‚Ìƒ}ƒNƒ‚ğE‚·
 
@@ -112,7 +114,7 @@ WriteRegistry::set (const char *key, long val) const
 inline int
 WriteRegistry::set (const char *key, const char *val) const
 {
-  return set (key, REG_SZ, val, strlen (val) + 1);
+  return set (key, REG_SZ, val, (int) strlen (val) + 1);
 }
 
 inline int

@@ -108,6 +108,7 @@ read_conf (const char *section, const char *name, u_long &value)
   return read_conf (section, name, *(int *)&value);
 }
 #endif
+int read_conf(const char *, const char *, long long &);
 int read_conf (const char *, const char *, int *, int);
 int read_conf (const char *, const char *, RECT &);
 int read_conf (const char *, const char *, LOGFONT &);

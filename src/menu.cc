@@ -210,7 +210,7 @@ Fadd_popup_menu (lisp lmenu, lisp lpopup, lisp name)
   check_string (name);
   check_popup_menu (lpopup);
   add_menu (lmenu, lpopup, name, MF_POPUP | MF_STRING,
-            UINT (xwin32_menu_handle (lpopup)));
+            UINT ((unsigned long long)xwin32_menu_handle (lpopup)));
   return lpopup;
 }
 
@@ -320,7 +320,7 @@ Finsert_popup_menu (lisp lmenu, lisp position, lisp lpopup, lisp name)
   if (pos < 0)
     FErange_error (position);
   insert_menu (lmenu, pos, lpopup, name, MF_POPUP | MF_STRING,
-               UINT (xwin32_menu_handle (lpopup)));
+               UINT ((unsigned int &) xwin32_menu_handle (lpopup)));
   return lpopup;
 }
 

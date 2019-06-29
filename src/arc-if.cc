@@ -224,11 +224,11 @@ UnzipInterface::patch_module (void *base) const
   for (; desc->Name; desc++)
     for (IMAGE_THUNK_DATA *thunk = (IMAGE_THUNK_DATA *)P(base, desc->FirstThunk);
          thunk->u1.Function; thunk++)
-      if ((DWORD)thunk->u1.Function == (DWORD)beep)
+      if ((unsigned long long) thunk->u1.Function == (unsigned long long)beep)
         {
           DWORD o;
           VirtualProtect (&thunk->u1.Function, 4, PAGE_READWRITE, &o);
-          *(DWORD *)&thunk->u1.Function = DWORD (fake_MessageBeep);
+          *(unsigned long long *)&thunk->u1.Function = unsigned long long(fake_MessageBeep);
           VirtualProtect (&thunk->u1.Function, 4, o, &o);
           return 1;
         }

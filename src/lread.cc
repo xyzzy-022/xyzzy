@@ -91,7 +91,7 @@ Token::parse_fraction (const Char *p0, int l, int base)
   bignum_rep *r;
   Char *p = ato_bignum_rep (r, p0, l, base);
   lisp num = make_integer (r);
-  l -= p - p0 + 1;
+  l -= (int)(p - p0) + 1;
   return make_ratio (num, make_integer (ato_bignum_rep (p + 1, l, base)));
 }
 
@@ -1969,7 +1969,7 @@ Fread_into (lisp string, lisp stream, lisp eof_error_p, lisp eof_value, lisp max
         break;
       *p = Char (c);
     }
-  xstring_length (string) = p - xstring_contents (string);
+  xstring_length (string) = (int)(p - xstring_contents (string));
   if (!xstring_length (string) && xstring_dimension (string))
     return end_of_file (stream, eof_error_p, eof_value);
   return string;
@@ -2134,7 +2134,7 @@ load_file (lisp filename, lisp realname, lisp if_does_not_exist,
           b += l;
         }
       b = a2w (b, "...\n");
-      app.status_window.puts (buf, b - buf);
+      app.status_window.puts (buf, (int)(b - buf));
       b--;
     }
 
@@ -2163,7 +2163,7 @@ load_file (lisp filename, lisp realname, lisp if_does_not_exist,
   if (verbose)
     {
       b = a2w (b, "done\n");
-      app.status_window.puts (buf, b - buf);
+      app.status_window.puts (buf,(int)( b - buf));
     }
 
   return Qt;

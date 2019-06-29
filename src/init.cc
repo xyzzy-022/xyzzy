@@ -739,7 +739,7 @@ copy_handle (DWORD f, int fd)
                        0, 0, DUPLICATE_SAME_ACCESS))
     {
       _close (fd);
-      _open_osfhandle (long (n), _O_TEXT | (fd ? 0 : _O_RDONLY));
+      _open_osfhandle (long long (n), _O_TEXT | (fd ? 0 : _O_RDONLY));
       SetStdHandle (f, n);
     }
 }

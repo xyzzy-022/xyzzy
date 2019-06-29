@@ -124,7 +124,7 @@ paint_text (HDC hdc, char *s, int l, int fmt, const RECT &r,
       fmt = LVCFMT_LEFT;
       if (path_ellipse && abbreviate_string (hdc, s, w, 1))
         {
-          l = strlen (s);
+          l = (int) strlen (s);
           GetTextExtentPoint32 (hdc, s, l, &ext);
         }
       else
@@ -134,11 +134,11 @@ paint_text (HDC hdc, char *s, int l, int fmt, const RECT &r,
           char *se;
           for (se = CharPrev (s, s + l); se > s; se = CharPrev (s, se))
             {
-              GetTextExtentPoint32 (hdc, s, se - s, &ext);
+              GetTextExtentPoint32 (hdc, s, (int)(se - s), &ext);
               if (ext.cx <= w)
                 break;
             }
-          l = se - s;
+          l = (int) (se - s);
           if (l || ext.cx < w + dots + offset)
             {
               if (!l)
@@ -200,7 +200,7 @@ paint_item_text (HWND hwnd, HDC hdc, int item, int subitem, int fmt,
   lvi.iSubItem = subitem;
   lvi.pszText = s;
   lvi.cchTextMax = 1024;
-  int l = CallWindowProc (ListViewProc, hwnd, LVM_GETITEMTEXT, item, LPARAM (&lvi));
+  int l =(int) CallWindowProc (ListViewProc, hwnd, LVM_GETITEMTEXT, item, LPARAM (&lvi));
   l = min (l, 1024);
   if (s != lvi.pszText)
     memcpy (s, lvi.pszText, l);
@@ -634,7 +634,7 @@ draw_header (HWND hwnd, listview_item_data *data, const DRAWITEMSTRUCT *dis)
   GetTextExtentPoint32 (dis->hDC, "...", 3, &dots);
 
   int on = dis->itemState & ODS_SELECTED ? 1 : 0;
-  int x = paint_text (dis->hDC, b, strlen (b), fmt,
+  int x = paint_text (dis->hDC, b, (DWORD) strlen (b), fmt,
                       r, OFFSET_REST, dots.cx, 0, on, 0);
 
   if (sort_mark)
@@ -696,7 +696,7 @@ send_process_key (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
   lv.lparam = lparam;
 
   data->f_in_notify++;
-  int f = SendMessage (parent, WM_NOTIFY, lv.hdr.idFrom, LPARAM (&lv));
+  int f = (int) SendMessage (parent, WM_NOTIFY, lv.hdr.idFrom, LPARAM (&lv));
   if (--data->f_in_notify || !data->f_deleted)
     return f;
   free_item_data (hwnd);
@@ -856,7 +856,7 @@ isearch (HWND hwnd, int cc, int wrap, listview_item_data *data)
       *text = 0;
       lvi.iSubItem = 0;
       lvi.pszText = text;
-      lvi.cchTextMax = data->icc + 2;
+      lvi.cchTextMax = (int) data->icc + 2;
       size_t l = CallWindowProc (ListViewProc, hwnd, LVM_GETITEMTEXT,
                                  cur, LPARAM (&lvi));
       if (lvi.pszText != text)
@@ -965,13 +965,13 @@ process_keys (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
     case WM_KEYDOWN:
       if (data->style & LVS_PROCESSKEY)
         return send_process_key (hwnd, msg, wparam, lparam, data);
-      process_keydown (hwnd, wparam, data);
+      process_keydown (hwnd, (int) wparam, data);
       return 1;
 
     case WM_CHAR:
       if (data->style & LVS_PROCESSKEY)
         return send_process_key (hwnd, msg, wparam, lparam, data);
-      process_chars (hwnd, wparam, data);
+      process_chars (hwnd, (int) wparam, data);
       return 1;
 
     case WM_SYSCHAR:
@@ -1098,7 +1098,7 @@ ListViewExProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
                     if (GetClassName (h, cls, sizeof cls)
                         && !strcmp (cls, "#32770"))
                       {
-                        DWORD id = SendMessage (h, DM_GETDEFID, 0, 0);
+                        DWORD id = (DWORD) SendMessage (h, DM_GETDEFID, 0, 0);
                         if (HIWORD (id) == DC_HASDEFID)
                           {
                             HWND btn = GetDlgItem (h, LOWORD (id));
@@ -1155,12 +1155,12 @@ ListViewExProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         listview_item_data *data = get_listview_item_data (hwnd);
         if ((data->style & LVS_TYPEMASKEX) >= LVS_EXREPORT
             && data->hwnd_header)
-          return insert_column (hwnd, data, wparam, (LV_COLUMN *)lparam);
+          return insert_column (hwnd, data, (int) wparam, (LV_COLUMN *)lparam);
         break;
       }
 
     case LVM_SETEXSTYLE:
-      return change_style (hwnd, wparam);
+      return change_style (hwnd, (DWORD) wparam);
 
     case LVM_GETEXSTYLE:
       return get_ctl_style (hwnd) & LVS_TYPEMASKEX;
@@ -1195,20 +1195,20 @@ ListViewExProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         if ((data->style & LVS_TYPEMASKEX) >= LVS_EXREPORT
             && data->style & (LVS_EXTENDKBD | LVS_PROCESSKEY))
           {
-            make_visible (hwnd, wparam, lparam);
+            make_visible (hwnd, (int) wparam, (int) lparam);
             return 1;
           }
         break;
       }
 
     case LVM_ISEARCH:
-      return isearch (hwnd, wparam, lparam, get_listview_item_data (hwnd));
+      return isearch (hwnd, (int) wparam, (int) lparam, get_listview_item_data (hwnd));
 
     case LVM_FORWARDLINE:
-      return forward_line (hwnd, wparam);
+      return forward_line (hwnd, (int) wparam);
 
     case LVM_FORWARDPAGE:
-      return forward_page (hwnd, wparam, get_listview_item_data (hwnd));
+      return forward_page (hwnd, (int) wparam, get_listview_item_data (hwnd));
 
     case LVM_GOTOBOF:
       return goto_bof (hwnd);
@@ -1226,7 +1226,7 @@ ListViewExProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
           {
             if (!data->pseudo_enable != !wparam)
               {
-                data->pseudo_enable = wparam;
+                data->pseudo_enable = (int) wparam;
                 InvalidateRect (hwnd, 0, 0);
               }
             return 1;
@@ -1245,7 +1245,7 @@ ListViewExProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     case LVM_SETSORTMARK:
       {
         listview_item_data *data = get_listview_item_data (hwnd);
-        set_header_sort_mark (hwnd, data, wparam, lparam);
+        set_header_sort_mark (hwnd, data, (int) wparam, (int) lparam);
         return 1;
       }
 

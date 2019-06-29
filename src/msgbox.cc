@@ -74,7 +74,7 @@ XMessageBox::create_ctl (const char *cls, const char *caption, DWORD style,
 {
   HWND c = CreateWindow (cls, caption, style,
                          r.left, r.top, r.right - r.left, r.bottom - r.top,
-                         hwnd, HMENU (id), hinst, 0);
+                         hwnd, HMENU ((unsigned long long) id), hinst, 0);
   SendMessage (c, WM_SETFONT, WPARAM (hfont), 0);
   return c;
 }
@@ -244,7 +244,7 @@ XMessageBox::init_dialog ()
   return 0;
 }
 
-BOOL
+long long
 XMessageBox::WndProc (UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -274,27 +274,27 @@ XMessageBox::WndProc (UINT msg, WPARAM wparam, LPARAM lparam)
   return 0;
 }
 
-BOOL CALLBACK
+long long CALLBACK
 XMessageBox::WndProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   XMessageBox *p;
   if (msg == WM_INITDIALOG)
     {
-      SetWindowLong (hwnd, DWL_USER, lparam);
+      SetWindowLongPtr (hwnd, DWLP_USER, lparam);
       p = (XMessageBox *)lparam;
       p->hwnd = hwnd;
       p->WndProc (msg, wparam, lparam);
     }
   else
     {
-      p = (XMessageBox *)GetWindowLong (hwnd, DWL_USER);
+      p = (XMessageBox *)GetWindowLongPtr (hwnd, DWLP_USER);
       if (p)
         p->WndProc (msg, wparam, lparam);
     }
   return 0;
 }
 
-int
+long long
 XMessageBox::doit (HWND hwnd)
 {
   if (!nbuttons)
@@ -390,7 +390,7 @@ MsgBoxEx (HWND hwnd, const char *msg, const char *title,
   if (beep && xsymbol_value (Vvisible_bell) == Qnil)
     ding (icon);
 
-  return mb.doit (hwnd);
+  return (int) mb.doit (hwnd);
 }
 
 int

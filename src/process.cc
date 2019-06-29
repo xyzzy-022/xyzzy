@@ -35,7 +35,7 @@ EnvStrings::set (char **nb, char **&ne, char *b) const
   eq = strchr (eq, '=');
   if (!eq)
     return;
-  int l = eq - b + 1;
+  int l = (int) (eq - b + 1);
   for (; nb < ne; nb++)
     if (!memicmp (b, *nb, l))
       {
@@ -80,7 +80,7 @@ EnvStrings::setup (lisp lenv)
   for (int d = 0; d < 26; d++)
     {
       const char *dir = get_device_dir (d);
-      int x = strlen (dir);
+      int x = (int) strlen (dir);
       if (x > 3)
         {
           l += x + sizeof "=X:=X:";
@@ -108,7 +108,7 @@ EnvStrings::setup (lisp lenv)
   for (int d = 0; d < 26; d++)
     {
       const char *dir = get_device_dir (d);
-      int x = strlen (dir);
+      int x = (int) strlen (dir);
       if (x > 3)
         {
           char *b0 = b;
@@ -122,7 +122,7 @@ EnvStrings::setup (lisp lenv)
   l = 1;
   for (char **np = nb; np < ne; np++)
     if (**np)
-      l += strlen (*np) + 1;
+      l += (int) (strlen (*np) + 1);
 
   e_env = (char *)xmalloc (l);
   char *p = e_env;
@@ -301,7 +301,7 @@ protected:
   struct read_data
     {
       const Char *data;
-      int size;
+      long long size;
       int done;
     };
 
@@ -339,7 +339,7 @@ public:
   void insert_process_output (void *);
   lisp process_buffer () const {return p_bufp->lbp;}
   void flush_input ();
-  void store_output (const Char *, int);
+  void store_output (const Char *, long long);
   virtual int readin (u_char *, int) = 0;
   int incode_modified_p () const
     {return xprocess_incode (p_proc) != p_last_incode;}
@@ -451,7 +451,7 @@ Process::insert_process_output (void *p)
     {
       read_data *r = (read_data *)p;
       const Char *data;
-      int size;
+       long long size;
       if (r)
         {
           if (r->done)
@@ -505,8 +505,8 @@ Process::insert_process_output (void *p)
           Point point;
           p_bufp->set_point (point, xmarker_point (p_marker));
           p_bufp->check_read_only ();
-          p_bufp->insert_chars (point, data, size);
-          xmarker_point (p_marker) += size;
+          p_bufp->insert_chars (point, data,(int) size);
+          xmarker_point (p_marker) += (long) size;
           if (goto_tail)
             p_bufp->goto_char (wp->w_point, xmarker_point (p_marker));
           int f = 0;
@@ -545,7 +545,7 @@ read_process_output (WPARAM wparam, LPARAM lparam)
 }
 
 void
-Process::store_output (const Char *w, int l)
+Process::store_output (const Char *w, long long l)
 {
   if (!l)
     return;
@@ -559,7 +559,7 @@ Process::store_output (const Char *w, int l)
       r.data = w;
       r.size = l;
       r.done = 0;
-      DWORD result;
+      unsigned long long result;
 
       do
         if (SendMessageTimeout (app.toplev, WM_PRIVATE_PROCESS_OUTPUT,
@@ -586,8 +586,8 @@ Process::store_output (const Char *w, int l)
 class process_output_stream: public Char_output_wstream
 {
   Process &p_proc;
-  virtual void swrite (const Char *w, int l)
-    {p_proc.store_output (w, l);}
+  virtual void swrite (const Char *w, long long l)
+    {p_proc.store_output (w,l);}
 public:
   process_output_stream (Process &proc) : p_proc (proc) {}
 };
@@ -623,7 +623,7 @@ class process_input_stream: public byte_input_stream
                 for (; s < se; s++)
                   if (*s != '\r')
                     *d++ = *s;
-                l = d - p_buf;
+                l = (int) (d - p_buf);
                 break;
               }
 
@@ -654,7 +654,7 @@ Process::flush_input ()
 {
   if (p_input_stream)
     {
-      int l;
+      long long l;
       const Char *b;
       p_input_stream->flush (b, l);
       if (l)
@@ -694,7 +694,7 @@ class process_output_byte_stream: public byte_output_stream
 protected:
   virtual u_char *sflush (u_char *b, u_char *be, int)
     {
-      p_proc.send ((char *)b, be - b);
+      p_proc.send ((char *)b, (int)(be - b));
       return b;
     }
 public:
@@ -784,7 +784,7 @@ NormalProcess::readin (u_char *buf, int size)
   while (1)
     {
       DWORD nread;
-      if (!ReadFile (p_in, b, be - b, &nread, 0) || !nread)
+      if (!ReadFile (p_in, b, (DWORD)(be - b), &nread, 0) || !nread)
         break;
       b += nread;
       if (++i >= 10 || b - buf >= size / 2)
@@ -793,7 +793,7 @@ NormalProcess::readin (u_char *buf, int size)
       if (!PeekNamedPipe (p_in, 0, 0, 0, &avail, 0) || !avail)
         break;
     }
-  return b - buf;
+  return (int) (b - buf);
 }
 
 u_int
@@ -894,7 +894,7 @@ NormalProcess::create (lisp command, lisp execdir, const char *env, int show)
     file_error (GetLastError ());
 
   char *cmdline = (char *)alloca (128 + xstring_length (command) * 2 + 1);
-  sprintf (cmdline, "xyzzyenv -s%u %u ", show, HANDLE (event));
+  sprintf (cmdline, "xyzzyenv -s%u %llu ", show, (unsigned long long) HANDLE (event));
   w2s (cmdline + strlen (cmdline), command);
 
   u_int thread_id;
@@ -930,7 +930,8 @@ NormalProcess::create (lisp command, lisp execdir, const char *env, int show)
   int result = CreateProcess (0, cmdline, 0, 0, 1,
                               (CREATE_NEW_PROCESS_GROUP
                                | CREATE_DEFAULT_ERROR_MODE
-                               | NORMAL_PRIORITY_CLASS),
+                               | NORMAL_PRIORITY_CLASS
+                               | CREATE_NO_WINDOW),
                               (void *)env, dir, &si, &pi);
   int error = GetLastError ();
 
@@ -1516,10 +1517,10 @@ Fshell_execute (lisp lpath, lisp ldir, lisp lparam, lisp keys)
       sei.lpDirectory = dir;
       sei.lpVerb = verb;
       sei.nShow = SW_SHOW;
-      e = (*ex)(&sei) ? 33 : DWORD (sei.hInstApp);
+      e = (*ex)(&sei) ? 33 : DWORD ((unsigned long long) sei.hInstApp);
     }
   else
-    e = DWORD (ShellExecute (get_active_window (), verb ? verb : "open",
+    e = DWORD ((unsigned long long) ShellExecute (get_active_window (), verb ? verb : "open",
                              path, param, dir, SW_SHOWNORMAL));
   if (dir)
     WINFS::SetCurrentDirectory (sysdep.curdir);

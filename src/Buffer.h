@@ -628,7 +628,7 @@ struct Buffer
   static Buffer *create_buffer (lisp, lisp, lisp);
   void link_list ();
   void unlink_list () const;
-  static Buffer *find_buffer (const Char *, int, long);
+  static Buffer *find_buffer (const Char *, long long, long);
   static Buffer *find_buffer (lisp, long, int);
   static Buffer *make_internal_buffer (const char *);
   void set_local_variable (lisp, lisp);

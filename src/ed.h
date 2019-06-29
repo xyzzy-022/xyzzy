@@ -294,7 +294,7 @@ public:
 protected:
   struct swbuf
     {
-      int l;
+      long long l;
       int textf;
       ucs2_t buf[TEXT_MAX];
     } sw_last;

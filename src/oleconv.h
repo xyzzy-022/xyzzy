@@ -27,11 +27,11 @@ _i2w_helper (wchar_t *w, const Char *p, int l)
 #define USES_CONVERSION int _convert; _convert
 
 #define A2W(a) \
-  (_convert = (strlen (a) + 1),\
+  (_convert = (int) (strlen (a) + 1),\
    _a2w_helper ((wchar_t *)alloca (_convert * sizeof (wchar_t)), (a), _convert))
 
 #define W2A(w) \
-  (_convert = (wcslen (w) + 1) * 2,\
+  (_convert = ((int) wcslen (w) + 1) * 2,\
    _w2a_helper ((char *)alloca (_convert), (w), _convert))
 
 #define I2W(x) \

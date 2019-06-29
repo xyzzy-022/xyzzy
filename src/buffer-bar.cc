@@ -17,7 +17,7 @@ buffer_bar::buffer_bar (dock_frame &frame)
 Buffer *
 buffer_bar::current () const
 {
-  int i = get_cursel ();
+  long long i = get_cursel ();
   return i >= 0 ? nth (i) : 0;
 }
 
@@ -34,8 +34,8 @@ buffer_bar::set_buffer_name (const Buffer *bp, char *buf, int size)
   return buf;
 }
 
-int
-buffer_bar::insert (const Buffer *bp, int i)
+long long
+buffer_bar::insert (const Buffer *bp, long long i)
 {
   TC_ITEM ti;
   ti.mask = TCIF_TEXT | TCIF_PARAM;
@@ -45,7 +45,7 @@ buffer_bar::insert (const Buffer *bp, int i)
   return insert_item (i, ti);
 }
 
-int
+long long
 buffer_bar::modify (const Buffer *bp, int i)
 {
   TC_ITEM ti;
@@ -213,7 +213,7 @@ buffer_bar::delete_buffer (Buffer *bp)
 {
   set_no_redraw ();
   int current = -1, found = -1;
-  int n = item_count ();
+  long long n = item_count ();
   for (int i = 0; i < n; i++)
     {
       Buffer *p = nth (i);
@@ -234,7 +234,7 @@ buffer_bar::delete_buffer (Buffer *bp)
 Buffer *
 buffer_bar::next_buffer (Buffer *bp, int dir) const
 {
-  int n = item_count ();
+  long long n = item_count ();
   for (int i = 0; i < n; i++)
     if (nth (i) == bp)
       return nth (dir > 0
@@ -252,7 +252,7 @@ buffer_bar::top_buffer () const
 Buffer *
 buffer_bar::bottom_buffer () const
 {
-  int n = item_count ();
+  long long n = item_count ();
   return n > 0 ? nth (n - 1) : 0;
 }
 
@@ -265,7 +265,7 @@ compare_buffer (const void *p1, const void *p2)
 void
 buffer_bar::update_ui ()
 {
-  int n = item_count ();
+  long long n = item_count ();
   if (Buffer::b_buffer_bar_modified_any & Buffer::BUFFER_BAR_CREATED)
     {
       set_no_redraw ();
@@ -400,7 +400,7 @@ buffer_bar::wndproc (UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_TIMER:
       if (wparam == DROP_TIMER_ID)
         {
-          int index = b_drop_index;
+          long long index = b_drop_index;
           KillTimer (b_hwnd, DROP_TIMER_ID);
           b_drop_index = -1;
           if (index >= 0
@@ -442,7 +442,7 @@ buffer_bar::drag_over (int x, int y)
   htinfo.pt.x = x;
   htinfo.pt.y = y;
   ScreenToClient (b_hwnd, &htinfo.pt);
-  int index = hit_test (htinfo);
+  long long index = hit_test (htinfo);
   if (index != b_drop_index)
     {
       KillTimer (b_hwnd, DROP_TIMER_ID);
@@ -469,7 +469,7 @@ buffer_bar::buffer_list () const
   for (Buffer *bp = Buffer::b_blist; bp; bp = bp->b_next)
     bp->b_buffer_bar_modified &= ~Buffer::BUFFER_BAR_MARK;
   lisp r = Qnil;
-  for (int i = 0, n = item_count (); i < n; i++)
+  for (long long i = 0, n = item_count (); i < n; i++)
     {
       Buffer *bp = nth (i);
       if (bp)

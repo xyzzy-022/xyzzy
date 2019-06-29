@@ -157,7 +157,7 @@ eval_xyzzysrv_param (xyzzysrv_param *param)
 int
 read_listen_server (WPARAM wparam, LPARAM lparam)
 {
-  HANDLE hproc = OpenProcess (PROCESS_DUP_HANDLE, 0, wparam);
+  HANDLE hproc = OpenProcess (PROCESS_DUP_HANDLE, 0, (DWORD) wparam);
   if (!hproc)
     return 0;
 

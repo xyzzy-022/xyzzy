@@ -12,12 +12,12 @@ struct fixed_heap_rep
   fixed_heap_rep *next;
 };
 
-u_int alloc_page::ap_page_size;
-u_int alloc_page::ap_block_size;
+u_longlong alloc_page::ap_page_size;
+u_longlong alloc_page::ap_block_size;
 
 #ifdef DEBUG
 static int
-power_of_2_p (u_int size)
+power_of_2_p (unsigned long long size)
 {
   int n;
   for (n = 0; size; size >>= 1)
@@ -27,7 +27,7 @@ power_of_2_p (u_int size)
 }
 #endif
 
-alloc_page::alloc_page (u_int size)
+alloc_page::alloc_page (unsigned long long size)
      : ap_rep (0)
 {
   assert (size);
@@ -80,7 +80,7 @@ alloc_page::alloc ()
       for (u_int i = 0; i < ap_units_per_block; i++)
         if (!(ap_rep->commit & (1 << i)))
           {
-            void *base = (void *)((u_int (ap_rep) & ~(ap_block_size - 1))
+            void *base = (void *)((u_longlong (ap_rep) & ~(ap_block_size - 1))
                                   + i * ap_unit_size);
             void *p = VirtualAlloc (base, ap_unit_size,
                                     MEM_COMMIT, PAGE_READWRITE);
@@ -125,14 +125,14 @@ alloc_page::free (void *p)
       pointer_t base = pointer_t (p);
       assert (!(base & (ap_unit_size - 1)));
 
-      u_long mask = ~(ap_block_size - 1);
+      unsigned long long mask = ~(ap_block_size - 1);
       base &= mask;
 
       alloc_page_rep *r, *prev = 0;
       for (r = ap_rep; r; prev = r, r = r->next)
         if ((pointer_t (r) & mask) == base)
           {
-            u_long d = (pointer_t (p) - base) / ap_unit_size;
+            u_longlong d = (pointer_t (p) - base) / ap_unit_size;
             assert (r->commit & (1 << d));
             r->commit &= ~(1 << d);
             VirtualFree (p, ap_unit_size, MEM_DECOMMIT);
@@ -213,7 +213,7 @@ fixed_heap::free (void *p)
   pointer_t base = pointer_t (p);
   assert (!(base & (fh_heap_size - 1)));
 
-  u_long mask = ~(fh_ap.ap_page_size - 1);
+  unsigned long long mask = ~(fh_ap.ap_page_size - 1);
   base &= mask;
 
   u_int count = 1;

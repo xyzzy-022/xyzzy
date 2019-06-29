@@ -12,8 +12,8 @@ public:
   const char *remote;
 
 private:
-  static BOOL CALLBACK netpass_dlgproc (HWND, UINT, WPARAM, LPARAM);
-  BOOL dlgproc (UINT, WPARAM, LPARAM);
+  static long long CALLBACK netpass_dlgproc (HWND, UINT, WPARAM, LPARAM);
+  long long dlgproc (UINT, WPARAM, LPARAM);
   void do_command (int, int);
   void init_dialog ();
 
@@ -52,7 +52,7 @@ NetPassDlg::init_dialog ()
   SetDlgItemText (hwnd, IDC_SHARE_NAME, remote);
 }
 
-BOOL
+long long
 NetPassDlg::dlgproc (UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
@@ -70,19 +70,19 @@ NetPassDlg::dlgproc (UINT msg, WPARAM wparam, LPARAM lparam)
     }
 }
 
-BOOL CALLBACK
+long long CALLBACK
 NetPassDlg::netpass_dlgproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   NetPassDlg *p;
   if (msg == WM_INITDIALOG)
     {
       p = (NetPassDlg *)lparam;
-      SetWindowLong (hwnd, DWL_USER, lparam);
+      SetWindowLongPtr (hwnd, DWLP_USER, lparam);
       p->hwnd = hwnd;
     }
   else
     {
-      p = (NetPassDlg *)GetWindowLong (hwnd, DWL_USER);
+      p = (NetPassDlg *)GetWindowLongPtr (hwnd, DWLP_USER);
       if (!p)
         return 0;
     }
@@ -184,7 +184,7 @@ askpass1 (const char *path, int noshare_ok)
   const char *root = skip_share (path, noshare_ok);
   if (!root)
     return 0;
-  int l = root - path;
+  int l = (int) (root - path);
   char *remote = (char *)alloca (l + 1);
   memcpy (remote, path, l);
   remote[l] = 0;
@@ -279,45 +279,6 @@ WINFS::FindNextFile (HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData)
               && *lpFindFileData->cFileName));
 }
 
-static BOOL WINAPI
-GetDiskFreeSpaceFAT32 (LPCSTR lpRootPathName, LPDWORD lpSectorsPerCluster,
-                       LPDWORD lpBytesPerSector, LPDWORD lpNumberOfFreeClusters,
-                       LPDWORD lpTotalNumberOfClusters)
-{
-  char buf[PATH_MAX + 1];
-  if (!lpRootPathName)
-    {
-      if (!GetCurrentDirectory (sizeof buf, buf))
-        return 0;
-      lpRootPathName = root_path_name (buf, buf);
-    }
-
-  dyn_handle hvwin32 (CreateFile ("\\\\.\\vwin32", 0, 0, 0, 0,
-                                  FILE_FLAG_DELETE_ON_CLOSE, 0));
-  if (!hvwin32.valid ())
-    return 0;
-
-  ExtGetDskFreSpcStruc dfs = {0};
-  DIOC_REGISTERS regs = {0};
-  regs.reg_EAX = 0x7303;
-  regs.reg_ECX = sizeof dfs;
-  regs.reg_EDX = DWORD (lpRootPathName);
-  regs.reg_EDI = DWORD (&dfs);
-
-  DWORD nbytes;
-  if (!DeviceIoControl (hvwin32, VWIN32_DIOC_DOS_DRIVEINFO,
-                        &regs, sizeof regs, &regs, sizeof regs,
-                        &nbytes, 0)
-      || regs.reg_Flags & X86_CARRY_FLAG)
-    return 0;
-
-  *lpSectorsPerCluster = dfs.SectorsPerCluster;
-  *lpBytesPerSector = dfs.BytesPerSector;
-  *lpNumberOfFreeClusters = dfs.AvailableClusters;
-  *lpTotalNumberOfClusters = dfs.TotalClusters;
-
-  return 1;
-}
 
 BOOL WINAPI
 WINFS::GetDiskFreeSpace (LPCSTR lpRootPathName, LPDWORD lpSectorsPerCluster,
@@ -346,11 +307,6 @@ WINFS::GetDiskFreeSpace (LPCSTR lpRootPathName, LPDWORD lpSectorsPerCluster,
 
   if (GetDiskFreeSpaceEx)
     {
-      if (!sysdep.WinNTp ()
-          && GetDiskFreeSpaceFAT32 (lpRootPathName, lpSectorsPerCluster,
-                                    lpBytesPerSector, lpNumberOfFreeClusters,
-                                    lpTotalNumberOfClusters))
-        return 1;
 
       uint64_t FreeBytesAvailableToCaller;
       uint64_t TotalNumberOfBytes;

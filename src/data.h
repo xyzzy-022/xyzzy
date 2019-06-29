@@ -5,13 +5,14 @@
 # include "cdecl.h"
 # include "alloc.h"
 
-# define LDATA_PAGE_SIZE 1024
+# define LDATA_PAGE_SIZE 1024LL
 # define LDATA_PAGE_MASK (LDATA_PAGE_SIZE - 1)
 # define LDATA_MIN_SIZE 4
 # define LDATA_RADIX 2
 
 # define LDATA_MAX_OBJECTS_PER_LONG \
   ((LDATA_PAGE_SIZE / LDATA_MIN_SIZE + BITS_PER_LONG - 1) / BITS_PER_LONG)
+
 
 struct ldata_rep
 {
@@ -52,8 +53,9 @@ class ldata: public ldataP
 {
   static int l_nuses;
   static int l_nfrees;
-  static ldataP l_ld;
+
 public:
+  static ldataP l_ld;
   static T *lalloc ();
   static void sweep ();
   static void unuse (T *);
@@ -73,17 +75,17 @@ public:
 };
 
 # define LDATASIZE_NOBJS(SIZE) \
-  ((LDATA_PAGE_SIZE - offsetof (ldata_rep, dr_data)) / (SIZE))
+  ((LDATA_PAGE_SIZE - offsetof (ldata_rep, dr_data)) / SIZE)
 
 # define LDATA_NOBJS(T) (LDATASIZE_NOBJS (sizeof (T)))
 
 struct ldata_free_rep
 {
-  ldata_free_rep *lf_next;
+  ldata_free_rep *lf_next = 0;
 };
 
 inline void
-bitset (u_long *p, int i)
+bitset (u_long *p, long long i)
 {
   p[i / (sizeof *p * CHAR_BIT)] |= 1 << i % (sizeof *p * CHAR_BIT);
 }
@@ -95,7 +97,7 @@ bitisset (const u_long *p, int i)
 }
 
 inline void
-bitclr (u_long *p, int i)
+bitclr (u_long *p, long long i)
 {
   p[i / (sizeof *p * CHAR_BIT)] &= ~(1 << i % (sizeof *p * CHAR_BIT));
 }

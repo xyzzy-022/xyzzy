@@ -17,7 +17,7 @@ substitute_key (HWND hwnd, WPARAM &wparam, LPARAM lparam)
   BYTE state[256];
   WORD key[2] = {0};
   GetKeyboardState (state);
-  if (ToAscii (wparam, lparam, state, key, 0) == 1)
+  if (ToAscii ((UINT)wparam, (UINT)lparam, state, key, 0) == 1)
     {
       int c = stdctl_operation (key[0]);
       if (c >= 0)
@@ -28,11 +28,11 @@ substitute_key (HWND hwnd, WPARAM &wparam, LPARAM lparam)
 static int
 call_callback (HWND hwnd)
 {
-  int n = CallWindowProc (org_wndproc, hwnd, LB_GETCURSEL, 0, 0);
+  int n = (int) CallWindowProc (org_wndproc, hwnd, LB_GETCURSEL, 0, 0);
   if (n < 0)
     return 0;
 
-  int l = CallWindowProc (org_wndproc, hwnd, LB_GETTEXTLEN, n, 0);
+  int l = (int) CallWindowProc (org_wndproc, hwnd, LB_GETTEXTLEN, n, 0);
   if (l < 0)
     return 0;
 
@@ -171,7 +171,7 @@ Fpopup_list (lisp list, lisp callback, lisp lpoint)
     {
       lisp s = xcar (p);
       char b[1024];
-      int l = w2s (b, b + sizeof b, xstring_contents (s), xstring_length (s)) - b;
+      int l = (int) (w2s (b, b + sizeof b, xstring_contents (s), xstring_length (s)) - b);
       SendMessage (hwnd_popup, LB_ADDSTRING, 0, LPARAM (b));
       SIZE ext;
       GetTextExtentPoint32 (hdc, b, l, &ext);

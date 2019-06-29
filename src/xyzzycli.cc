@@ -25,7 +25,7 @@ ForceSetForegroundWindow (HWND hwnd)
     {
       SystemParametersInfo (SPI_SETFOREGROUNDLOCKTIMEOUT, 0, 0, 0);
       SetForegroundWindow (hwnd);
-      SystemParametersInfo (SPI_SETFOREGROUNDLOCKTIMEOUT, 0, (void *)timeout, 0);
+      SystemParametersInfo (SPI_SETFOREGROUNDLOCKTIMEOUT, 0, &timeout, 0);
     }
   else
     SetForegroundWindow (hwnd);
@@ -298,7 +298,7 @@ xmain (int argc, char **argv, const char *xyzzy, int multi_instance)
 
   ForceSetForegroundWindow (ls.hwnd);
 
-  int r = SendMessage (ls.hwnd, RegisterWindowMessage (xyzzysrv_name),
+  __int64 r = SendMessage (ls.hwnd, RegisterWindowMessage (xyzzysrv_name),
                        GetCurrentProcessId (), LPARAM (sv.handle ()));
   if (!r)
     return error (IDS_READ_FAILED);

@@ -38,13 +38,13 @@ class byte_output_wstream: public byte_output_stream
 protected:
   byte_output_wstream () : byte_output_stream (s_buf, s_buf + sizeof s_buf) {}
   virtual u_char *sflush (u_char *, u_char *, int);
-  virtual void swrite (const Char *, int) = 0;
+  virtual void swrite (const Char *, long long) = 0;
 };
 
 class byte_output_string_stream: public byte_output_wstream, public StrBuf
 {
   char s_buf[2040];
-  virtual void swrite (const Char *b, int l) {add (b, l);}
+  virtual void swrite (const Char *b, long long l) {add (b, l);}
 public:
   byte_output_string_stream () : StrBuf (s_buf, sizeof s_buf) {}
 };
@@ -52,7 +52,7 @@ public:
 class byte_output_streams_stream: public byte_output_wstream
 {
   lisp s_stream;
-  virtual void swrite (const Char *b, int l)
+  virtual void swrite (const Char *b, long long l)
     {write_stream (s_stream, b, l);}
 public:
   byte_output_streams_stream (lisp stream) : s_stream (stream) {}
@@ -84,13 +84,13 @@ protected:
   Char_output_wstream () : Char_output_stream (s_buf, s_buf + numberof (s_buf)) {}
   virtual Char *sflush (Char *b, Char *e, int)
     {if (b != e) swrite (b, e - b); return b;}
-  virtual void swrite (const Char *, int) = 0;
+  virtual void swrite (const Char *, long long) = 0;
 };
 
 class Char_output_string_stream: public Char_output_wstream, public StrBuf
 {
   char s_buf[2040];
-  virtual void swrite (const Char *b, int l) {add (b, l);}
+  virtual void swrite (const Char *b, long long l) {add (b, l);}
 public:
   Char_output_string_stream () : StrBuf (s_buf, sizeof s_buf) {}
 };
@@ -98,7 +98,7 @@ public:
 class Char_output_streams_stream: public Char_output_wstream
 {
   lisp s_stream;
-  virtual void swrite (const Char *b, int l)
+  virtual void swrite (const Char *b, long long l)
     {write_stream (s_stream, b, l);}
 public:
   Char_output_streams_stream (lisp stream) : s_stream (stream) {}

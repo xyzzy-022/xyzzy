@@ -8,6 +8,13 @@ class llong_int: public lisp_object
 {
 public:
   long value;
+  long padding;
+};
+
+class llonglong_int : public lisp_object
+{
+public:
+    long long value;
 };
 
 # define long_int_p(X) typep ((X), Tlong_int)
@@ -33,26 +40,35 @@ make_long_int (long x)
   return p;
 }
 
+inline llonglong_int *
+make_long_long_int(long long x)
+{
+    llonglong_int *p = ldata <llonglong_int, Tlong_int>::lalloc();
+    p->value = x;
+    return p;
+}
+
+
 # define LSHORT_INT_MAX (long ((1L << (BITS_PER_LONG - LSHORT_INT_SHIFT - 1)) - 1))
 # define LSHORT_INT_MIN (-long (1L << (BITS_PER_LONG - LSHORT_INT_SHIFT - 1)))
 
 inline int
 short_int_p (lisp x)
 {
-  return (u_long (x) & SHORT_INT_TEST_BITS) == Lshort_int;
+  return (int)(u_longlong (x) & SHORT_INT_TEST_BITS) == Lshort_int;
 }
 
 inline lisp
 make_short_int (long x)
 {
-  return lisp ((u_long (x) << LSHORT_INT_SHIFT) | Lshort_int);
+  return lisp ((unsigned long long (x) << LSHORT_INT_SHIFT) | Lshort_int);
 }
 
 inline long
 xshort_int_value (lisp x)
 {
   assert (short_int_p (x));
-  return long (x) >> LSHORT_INT_SHIFT;
+  return (long) (long long (x) >> LSHORT_INT_SHIFT);
 }
 
 # include "bignum.h"
@@ -167,11 +183,16 @@ u_long unsigned_long_value (lisp);
 
 /*GENERIC_FUNCTION:INTEGER*/
 inline lisp
-make_fixnum (long x)
+make_fixnum (long long x)
 {
-  if (x >= LSHORT_INT_MIN && x <= LSHORT_INT_MAX)
-    return make_short_int (x);
-  return make_long_int (x);
+    if (x >= LSHORT_INT_MIN && x <= LSHORT_INT_MAX)
+        return make_short_int((long)x);
+    else if (x >= MINLONG && x <= MAXLONG)
+        return make_long_int((long)x);
+    else
+        return make_long_long_int(x);
+
+
 }
 
 /* floating point */
@@ -180,6 +201,7 @@ class lsingle_float: public lisp_object
 {
 public:
   float value;
+  long padding;
 };
 
 class ldouble_float: public lisp_object

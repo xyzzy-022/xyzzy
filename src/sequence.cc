@@ -367,14 +367,14 @@ copy_into_vector (lisp vector, lisp sequences)
           break;
 
         case SEQ_VECTOR:
-          l = min (ve - v, xvector_length (seq));
+          l = min ((int)(ve - v), xvector_length (seq));
           bcopy (xvector_contents (seq), v, l);
           v += l;
           break;
 
         case SEQ_STRING:
           {
-            l = min (ve - v, xstring_length (seq));
+            l = min ((int)(ve - v), xstring_length (seq));
             for (const Char *s = xstring_contents (seq), *se = s + l;
                  s < se; s++)
               *v++ = make_char (*s);
@@ -423,7 +423,7 @@ copy_into_string (lisp string, lisp sequences)
 
         case SEQ_VECTOR:
           {
-            l = min (se - s, xvector_length (seq));
+            l = min ((int)(se - s), xvector_length (seq));
             for (lisp *v = xvector_contents (seq), *ve = v + l; v < ve; v++)
               {
                 check_char (*v);
@@ -433,7 +433,7 @@ copy_into_string (lisp string, lisp sequences)
           }
 
         case SEQ_STRING:
-          l = min (se - s, xstring_length (seq));
+          l = min ((int)(se - s), xstring_length (seq));
           bcopy (xstring_contents (seq), s, l);
           s += l;
           break;
