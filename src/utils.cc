@@ -138,8 +138,8 @@ find_last_slash (const char *p)
   return (char *)save;
 }
 
-long
-log2 (u_long x)
+
+long mylog2(long x)
 {
   long l;
   for (l = 0; x; x >>= 1, l++)
