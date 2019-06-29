@@ -178,7 +178,7 @@ Buffer::linenum_point (Point &pbuf, long goal)
           for (const Char *p = cp->c_text, *pe = p + cp->c_used; p < pe;)
             if (*p++ == '\n' && ++linenum == goal)
               {
-                pbuf.p_offset = p - cp->c_text;
+                pbuf.p_offset = (int) (p - cp->c_text);
                 pbuf.p_point = point + pbuf.p_offset;
                 if (pbuf.p_offset == cp->c_used && cp->c_next)
                   {
@@ -234,7 +234,7 @@ Buffer::linenum_point (Point &pbuf, long goal)
                        p--)
                     ;
                 }
-              pbuf.p_offset = p - cp->c_text;
+              pbuf.p_offset = (int)(p - cp->c_text);
               pbuf.p_point = point + pbuf.p_offset;
               if (pbuf.p_offset == cp->c_used && cp->c_next)
                 {
@@ -263,7 +263,7 @@ Buffer::go_bol (Point &point) const
                p >= p0; p--)
             if (*p == '\n')
               {
-                int n = p - p0 + 1;
+                int n = (int)(p - p0 + 1);
                 point.p_point -= point.p_offset - n;
                 if (n == cp->c_used && cp->c_next)
                   {
@@ -306,7 +306,7 @@ Buffer::go_eol (Point &point) const
                p < pe; p++)
             if (*p == '\n')
               {
-                int n = p - cp->c_text;
+                int n = (int)(p - cp->c_text);
                 point.p_point += n - point.p_offset;
                 point.p_offset = n;
                 point.p_chunk = cp;
@@ -356,7 +356,7 @@ Buffer::line_backward (Point &point, long req) const
                     l++;
                     if (!--nlines)
                       {
-                        n = p - cp->c_text;
+                        n = (int)(p - cp->c_text);
                         point.p_point -= point.p_offset - n;
                         point.p_offset = n;
                         point.p_chunk = cp;
@@ -424,7 +424,7 @@ Buffer::line_forward (Point &point, long req) const
                     l++;
                     if (!--nlines)
                       {
-                        n = p - cp->c_text;
+                        n = (int)(p - cp->c_text);
                         point.p_point += n - point.p_offset;
                         if (n == cp->c_used && cp->c_next)
                           {
@@ -1142,7 +1142,7 @@ Buffer::parse_fold_line (Point &point, long fold_columns,
     }
   else
     {
-      point.p_offset = f.p - f.cp->c_text - 1;
+      point.p_offset = (int)(f.p - f.cp->c_text - 1);
       point.p_chunk = f.cp;
     }
   return 1;
@@ -1218,7 +1218,7 @@ Buffer::parse_fold_line (Point &point, long max_width, const glyph_width &gw,
     }
   else
     {
-      point.p_offset = f.p - f.cp->c_text - 1;
+      point.p_offset = (int)(f.p - f.cp->c_text - 1);
       point.p_chunk = f.cp;
     }
   return 1;

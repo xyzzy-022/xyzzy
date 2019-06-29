@@ -115,12 +115,12 @@ ArchiverP::sepmap (char *s, int f, int t)
 }
 
 int
-ArchiverP::match_suffix (const char *path, int l,
+ArchiverP::match_suffix (const char *path, long long l,
                          const char *const *list) const
 {
   for (; *list; list++)
     {
-      int x = strlen (*list);
+      long long x = strlen (*list);
       if (l >= x && !_memicmp (*list, path + l - x, x))
         return 1;
     }
@@ -139,7 +139,7 @@ NotifyWndProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         {
 #ifdef __XYZZY__
 # ifdef DEBUG
-          printf ("%d: %s %s %d/%d\n", wparam, i->szSourceFileName,
+          printf ("%I64d: %s %s %d/%d\n", wparam, i->szSourceFileName,
                   i->szDestFileName, i->dwWriteSize, i->dwFileSize);
 # endif
           char buf[1024];
@@ -278,7 +278,7 @@ ArchiverP::extract (HWND hwnd, const char *data) const
 
 int
 ArchiverP::extract_noresp (HWND hwnd, const char *cmd,
-                           int cmdl, const char *path) const
+                           long long cmdl, const char *path) const
 {
   stdio_file fp (fopen (path, "rb"));
   if (!fp)
@@ -300,7 +300,7 @@ ArchiverP::extract (HWND hwnd, const char *path, const char *destdir,
                     const char *dir_opt, const char *opt,
                     const char *respopt, const char *respfile) const
 {
-  int len = (strlen (path) + strlen (destdir)
+  unsigned long long len = (strlen (path) + strlen (destdir)
              + strlen (dir_opt) + strlen (opt)
              + strlen (respfile) + 128);
   if (respopt)
@@ -338,7 +338,7 @@ int
 ArchiverP::create (HWND hwnd, const char *path, const char *respfile,
                    const char *respopt, const char *opt) const
 {
-  int len = strlen (path) + strlen (respfile)  + strlen (opt) + 128;
+  unsigned long long len = strlen (path) + strlen (respfile)  + strlen (opt) + 128;
   if (respopt)
     len += strlen (respopt);
   char *b0 = (char *)alloca (len);
@@ -428,7 +428,7 @@ Tar::extract (HWND hwnd, const char *path,
         char *backsl = jrindex (dest, '\\');
         if (backsl)
           dest = backsl + 1;
-        int l = strlen (dest);
+        unsigned long long l = strlen (dest);
         if (l > 2 && (!_stricmp (dest + l - 2, ".Z")
                       || !_stricmp (dest + l - 2, "_Z")))
           dest[l - 2] = 0;
@@ -461,7 +461,7 @@ Tar::extract (HWND hwnd, const char *path,
 int
 Tar::create (HWND hwnd, const char *path, const char *respfile) const
 {
-  int l = strlen (path);
+  unsigned long long l = strlen (path);
 #define EQ(EXT) (sizeof (EXT) - 1 <= l \
                  && !_memicmp (path + l - (sizeof (EXT) - 1), (EXT), \
                                sizeof (EXT) - 1))
@@ -774,7 +774,7 @@ Archiver::Archiver ()
 const ArchiverP *
 Archiver::get_creator (const char *path) const
 {
-  int l = strlen (path);
+  unsigned long long l = strlen (path);
   for (int i = 0; i < NARCS; i++)
     if (arcs[i]->match_csuffix (path, l))
       return arcs[i];
@@ -805,7 +805,7 @@ Archiver::get_extractor (const char *path) const
   if (!check_file_size (path))
     return 0;
 
-  int l = strlen (path);
+  unsigned long long l = strlen (path);
   for (int i = 0; i < NARCS; i++)
     if (arcs[i]->match_esuffix (path, l) && arcs[i]->check_archive (path))
       return arcs[i];
@@ -818,7 +818,7 @@ Archiver::get_remover (const char *path) const
   if (!check_file_size (path))
     return 0;
 
-  int l = strlen (path);
+  unsigned long long l = strlen (path);
   for (int i = 0; i < NARCS; i++)
     if (arcs[i]->match_rsuffix (path, l) && arcs[i]->check_archive (path))
       return arcs[i];
@@ -843,7 +843,7 @@ Archiver::create (HWND hwnd, const char *path, const char *respfile) const
 int
 Archiver::create_sfx (HWND hwnd, const char *path, const char *opt) const
 {
-  int l = strlen (path);
+  unsigned long long l = strlen (path);
   for (int i = 0; i < NARCS; i++)
     if (arcs[i]->match_csuffix (path, l))
       return arcs[i]->create_sfx (hwnd, path, opt);

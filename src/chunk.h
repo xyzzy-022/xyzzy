@@ -6,7 +6,7 @@ class lchunk: public lisp_object
 {
 public:
   lisp type;       // chunkのタイプ
-  int size;        // サイズ
+  long long size;        // サイズ
   void *data;      // データ
   lisp owner;  // 領域を確保したオブジェクト(自分自身/他のchunk/nil)
 
@@ -28,7 +28,7 @@ xchunk_type (lisp x)
   return ((lchunk *)x)->type;
 }
 
-inline int &
+inline long long &
 xchunk_size (lisp x)
 {
   assert (chunkp (x));

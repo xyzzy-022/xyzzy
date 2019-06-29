@@ -83,7 +83,7 @@ typedef struct guess_dfa_rec
 static lisp
 get_utf8_encoding (char *sig, size_t siglen)
 {
-  return (utf8_signature_p (sig, siglen)
+  return (utf8_signature_p (sig, (int) siglen)
           ? Vencoding_default_utf8
           : Vencoding_default_utf8n);
 }

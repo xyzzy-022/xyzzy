@@ -48,6 +48,13 @@ chunk_ptr (char *address, lisp lsize)
 lisp
 Fsi_make_chunk (lisp type, lisp lsize, lisp src_chunk, lisp loffset)
 {
+
+  if (loffset)
+  {
+    //Want to kill loffset parameter
+    FEprogram_error(Einvalid_argument);
+  }
+
   int size = fixnum_value (lsize);
   if (size < 0)
     FErange_error (lsize);
@@ -65,8 +72,12 @@ Fsi_make_chunk (lisp type, lisp lsize, lisp src_chunk, lisp loffset)
         }
       else
         {
+          //loffset does not work already
+          if (unsigned_long_value(loffset) != 0)
+              FEprogram_error(Einvalid_argument);
+
           xchunk_data (chunk) =
-            chunk_ptr ((char *)unsigned_long_value (loffset), lsize);
+            chunk_ptr ((char *) 0, lsize);
           xchunk_owner (chunk) = Qnil;
         }
     }
@@ -86,7 +97,7 @@ lisp
 Fsi_make_string_chunk (lisp string)
 {
   check_string (string);
-  int l = w2sl (xstring_contents (string), xstring_length (string));
+  long long l = w2sl (xstring_contents (string), xstring_length (string));
   lisp chunk = make_chunk ();
   xchunk_type (chunk) = Qnil;
   xchunk_size (chunk) = l + 1;
@@ -107,7 +118,7 @@ lisp
 Fsi_chunk_data (lisp chunk)
 {
   check_chunk (chunk);
-  return make_fixnum (long (xchunk_data (chunk)));
+  return make_fixnum (long long (xchunk_data (chunk)));
 }
 
 lisp
@@ -134,7 +145,7 @@ Fsi_chunk_owner (lisp chunk)
 lisp
 Fsi_address_of (lisp object)
 {
-  return make_fixnum (long (object));
+  return make_fixnum (long long (object));
 }
 
 static char *
@@ -155,7 +166,7 @@ fill_chunk (lisp chunk, int byte, lisp loffset, lisp lsize)
 {
   char *p = calc_chunk_ptr (chunk, loffset);
   char *pe = (char *)xchunk_data (chunk) + xchunk_size (chunk);
-  int size;
+  long long size;
   if (!lsize || lsize == Qnil)
     size = pe - p;
   else
@@ -187,7 +198,7 @@ Fsi_copy_chunk (lisp fchunk, lisp tchunk, lisp lsize, lisp foffset, lisp toffset
   char *t = calc_chunk_ptr (tchunk, toffset);
   char *fe = (char *)xchunk_data (fchunk) + xchunk_size (fchunk);
   char *te = (char *)xchunk_data (tchunk) + xchunk_size (tchunk);
-  int size;
+  long long size;
   if (!lsize || lsize == Qnil)
     size = min (fe - f, te - t);
   else
@@ -341,57 +352,18 @@ unpack_string_chunk (lisp chunk, lisp loffset, lisp lsize, lisp lzero_term)
     }
 }
 
-lisp
-unpack_string_pointer (lisp laddress, lisp lsize, lisp lzero_term)
-{
-  char *p = reinterpret_cast <char*> (unsigned_long_value (laddress));
-
-  int zero_term = !lzero_term || lzero_term != Qnil;
-  if (!lsize || lsize == Qnil)
-    {
-      if (!zero_term)
-        FErange_error (lsize);
-      try
-        {
-          size_t l = s2wl (p);
-          lisp string = make_string (l);
-          s2w (xstring_contents (string), p);
-          return string;
-        }
-      catch (Win32Exception &e)
-        {
-          e.throw_lisp_error ();
-          throw;
-        }
-    }
-  else
-    {
-      char *pe = p + fixnum_value (lsize);
-      if (pe < p)
-        FErange_error (lsize);
-      try
-        {
-          size_t l = s2wl (p, pe, zero_term);
-          lisp string = make_string (l);
-          s2w (xstring_contents (string), p, pe, zero_term);
-          return string;
-        }
-      catch (Win32Exception &e)
-        {
-          e.throw_lisp_error ();
-          throw;
-        }
-    }
-}
 
 // si:unpack-string chunk offset &optional size (zero_term t)
 lisp
 Fsi_unpack_string (lisp chunk, lisp loffset, lisp lsize, lisp lzero_term)
 {
-  if (chunk == Qnil)
-    return unpack_string_pointer (loffset, lsize, lzero_term);
-  else
-    return unpack_string_chunk (chunk, loffset, lsize, lzero_term);
+  if (chunk == Qnil) {
+    //Want to kill this case.
+    FEprogram_error(Einvalid_argument);
+  }
+
+  return unpack_string_chunk (chunk, loffset, lsize, lzero_term);
+
 }
 
 int64_t

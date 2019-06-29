@@ -216,45 +216,45 @@ protected:
 public:
   tool_bar (dock_frame &, lisp);
   ~tool_bar ();
-  int create (HWND, DWORD, UINT);
-  int set_bitmap_size (int cx, int cy)
+  int create (HWND, DWORD, unsigned long long);
+  long long set_bitmap_size (int cx, int cy)
     {
       t_bitmap_size.cx = cx;
       t_bitmap_size.cy = cy;
       return sendmsg (TB_SETBITMAPSIZE, 0, MAKELONG (cx, cy));
     }
-  int set_button_size (int cx, int cy)
+  long long set_button_size (int cx, int cy)
     {
       t_button_size.cx = cx;
       t_button_size.cy = cy;
       return sendmsg (TB_SETBUTTONSIZE, 0, MAKELONG (cx, cy));
     }
-  int add_bitmap (const TBADDBITMAP &tbab, int n)
+  long long add_bitmap (const TBADDBITMAP &tbab, int n)
     {return sendmsg (TB_ADDBITMAP, n, LPARAM (&tbab));}
-  int button_count () const
+  long long button_count () const
     {return sendmsg (TB_BUTTONCOUNT, 0, 0);}
-  int add_buttons (int n, const TBBUTTON *b)
+  long long add_buttons (int n, const TBBUTTON *b)
     {return sendmsg (TB_ADDBUTTONS, n, LPARAM (b));}
   HWND get_tooltips () const
     {return HWND (sendmsg (TB_GETTOOLTIPS, 0, 0));}
-  int get_button (int i, TBBUTTON &b) const
+  long long get_button (int i, TBBUTTON &b) const
     {return sendmsg (TB_GETBUTTON, i, LPARAM (&b));}
-  int insert_button (int i, const TBBUTTON &b)
+  long long insert_button (int i, const TBBUTTON &b)
     {return sendmsg (TB_INSERTBUTTON, i, LPARAM (&b));}
-  int delete_button (int i)
+  long long delete_button (int i)
     {return sendmsg (TB_DELETEBUTTON, i, 0);}
   void set_button (int, const TBBUTTON &, int = 0);
-  int item_rect (int i, RECT &r)
+  long long item_rect (int i, RECT &r)
     {return sendmsg (TB_GETITEMRECT, i, LPARAM (&r));}
-  int get_state (int id)
+  long long get_state (long long id)
     {return sendmsg (TB_GETSTATE, id, 0);}
-  int set_state (int id, int state)
+  long long set_state (long long id, long long state)
     {return sendmsg (TB_SETSTATE, id, MAKELONG (state, 0));}
-  int enable_button (int id, int f)
+  long long enable_button (int id, int f)
     {return sendmsg (TB_ENABLEBUTTON, id, MAKELONG (f ? 1 : 0, 0));}
-  int check_button (int id, int f)
+  long long check_button (int id, int f)
     {return sendmsg (TB_CHECKBUTTON, id, MAKELONG (f ? 1 : 0, 0));}
-  int press_button (int id, int f)
+  long long press_button (int id, int f)
     {return sendmsg (TB_PRESSBUTTON, id, MAKELONG (f ? 1 : 0, 0));}
   virtual void calc_client_size (SIZE &, int) const;
   int load_bitmap (const char *);
@@ -281,7 +281,7 @@ protected:
       HDC hdc;
       int state;
       RECT r;
-      DWORD data;
+      unsigned long long data;
     };
   virtual LRESULT wndproc (UINT, WPARAM, LPARAM);
   int nc_calc_size (RECT &) const;
@@ -289,7 +289,7 @@ protected:
   void erase_bkgnd (HDC);
   int inverse_p () const {return style () & TCS_BOTTOM;}
   virtual void dock_edge ();
-  void draw_item (const draw_item_struct &, char *, int,
+  void draw_item (const draw_item_struct &, char *, long long,
                   COLORREF, COLORREF) const;
   virtual void draw_item (const draw_item_struct &) {}
   virtual void update_ui ();
@@ -312,7 +312,7 @@ private:
 public:
   tab_bar (dock_frame &, lisp);
   ~tab_bar () {}
-  int create (HWND hwnd_parent, DWORD style, UINT id)
+  int create (HWND hwnd_parent, DWORD style, unsigned long long id)
     {
       return dock_bar::create (0, WC_TABCONTROL, "",
                                style, 0, 0, 0, 0, hwnd_parent,
@@ -323,33 +323,33 @@ public:
   void calc_tab_height ();
   void set_font (HFONT hf)
     {sendmsg (WM_SETFONT, WPARAM (hf), 0);}
-  int insert_item (int i, const TC_ITEM &ti)
+  long long insert_item (long long i, const TC_ITEM &ti)
     {return sendmsg (TCM_INSERTITEM, i, LPARAM (&ti));}
-  int delete_item (int i)
+  long long delete_item (int i)
     {return sendmsg (TCM_DELETEITEM, i, 0);}
-  int set_item (int i, const TC_ITEM &ti)
+  long long set_item (int i, const TC_ITEM &ti)
     {return sendmsg (TCM_SETITEM, i, LPARAM (&ti));}
-  int get_item (int i, TC_ITEM &ti) const
+  long long get_item (int i, TC_ITEM &ti) const
     {return sendmsg (TCM_GETITEM, i, LPARAM (&ti));}
   void set_padding (int cx, int cy) const
     {sendmsg (TCM_SETPADDING, 0, MAKELONG (cx, cy));}
   void adjust_rect (int f, RECT &r) const
     {sendmsg (TCM_ADJUSTRECT, f, LPARAM (&r));}
-  int item_count () const
+  long long item_count () const
     {return sendmsg (TCM_GETITEMCOUNT, 0, 0);}
-  int set_cursel (int i)
+  long long set_cursel (int i)
     {return sendmsg (TCM_SETCURSEL, i, 0);}
-  int get_cursel () const
+  long long get_cursel () const
     {return sendmsg (TCM_GETCURSEL, 0, 0);}
   HWND get_tooltips () const
     {return (HWND)sendmsg (TCM_GETTOOLTIPS, 0, 0);}
-  int get_item_rect (int i, RECT &r) const
+  long long get_item_rect (int i, RECT &r) const
     {return sendmsg (TCM_GETITEMRECT, i, LPARAM (&r));}
-  int set_item_size (int cx, int cy)
+  long long set_item_size (int cx, int cy)
     {return sendmsg (TCM_SETITEMSIZE, 0, MAKELPARAM (cx, cy));}
-  int hit_test (TC_HITTESTINFO &info)
+  long long hit_test (TC_HITTESTINFO &info)
     {return sendmsg (TCM_HITTEST, 0, LPARAM (&info));}
-  DWORD nth (int) const;
+  unsigned long long nth (long long) const;
   virtual int focus () const
     {
       if (style () & TCS_FOCUSNEVER)

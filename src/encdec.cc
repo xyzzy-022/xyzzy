@@ -182,7 +182,7 @@ public:
   md5 () : hash_method (64, 16) {}
   virtual void init () {MD5Init (&m_ctx);}
   virtual void update (const u_char *data, size_t size)
-    {MD5Update (&m_ctx, data, size);}
+    {MD5Update (&m_ctx, data, (int) size);}
   virtual void final (u_char *digest)
     {MD5Final (digest, &m_ctx);}
 };
@@ -195,7 +195,7 @@ public:
   sha1 () : hash_method (64, 20) {}
   virtual void init () {SHA1Init (&m_ctx);}
   virtual void update (const u_char *data, size_t size)
-    {SHA1Update (&m_ctx, data, size);}
+    {SHA1Update (&m_ctx, data, (int) size);}
   virtual void final (u_char *digest)
     {SHA1Final (digest, &m_ctx);}
 };
@@ -301,7 +301,7 @@ hash_method::hmac (lisp lkey, lisp input, lisp keys)
 {
   char *key;
   check_string (lkey);
-  int key_len = w2sl (lkey);
+  int key_len = (int) w2sl (lkey);
   if (key_len <= block_size ())
     {
       key = (char *)alloca (key_len + 1);

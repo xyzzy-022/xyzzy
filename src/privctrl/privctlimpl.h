@@ -20,7 +20,7 @@ EXTERN ATOM hownerdraw;
 
 EXTERN int Win4p;
 
-int subclass_parent (HWND);
+long long subclass_parent (HWND);
 
 int init_listview_class ();
 int init_url_class ();

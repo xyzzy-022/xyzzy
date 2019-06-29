@@ -128,7 +128,7 @@ Buffer::read_chunk (ReadFileContext &rfc, xread_stream &sin)
       break;
     }
 done:
-  cp->c_used = p - cp->c_text;
+  cp->c_used = (short)(p - cp->c_text);
   cp->c_nlines = nlines;
   rfc.r_nchars += cp->c_used;
   rfc.r_nlines += nlines;
@@ -277,7 +277,7 @@ Buffer::read_file_contents (ReadFileContext &rfc, const char *filename,
   if (read_size >= 0)
     be = min (be, bb + read_size);
 
-  xinput_strstream str (bb, be - bb);
+  xinput_strstream str (bb, (int)(be - bb));
 
   WIN32_FIND_DATA fd;
   if (WINFS::get_file_data (filename, fd))
@@ -427,8 +427,8 @@ Fverify_visited_file_modtime (lisp buffer)
 static int
 pathname_equal (const char *path1, const char *path2)
 {
-  int l1 = strlen (path1);
-  int l2 = strlen (path2);
+  int l1 = (int) strlen (path1);
+  int l2 = (int) strlen (path2);
   if (l1 == l2)
     return !_memicmp (path1, path2, l1);
   if (l1 == l2 + 1)
@@ -494,7 +494,7 @@ fatfs_append_suffix (char *name, int c)
   if (!dot)
     return;
   dot++;
-  int l = strlen (dot);
+  int l = (int) strlen (dot);
   if (l >= 3)
     {
       if (SJISP (*(u_char *)dot))
@@ -644,7 +644,7 @@ Buffer::make_auto_save_file_name (char *name)
       if (!sl)
         return 0;
       sl++;
-      int l = sl - orgname;
+      int l = (int)(sl - orgname);
       memcpy (name, orgname, l);
       name[l] = '#';
       strcpy (name + l + 1, sl);
@@ -728,7 +728,7 @@ Buffer::make_backup_file_name (char *backup, const char *xoriginal)
           fatfs_basename (name);
         }
 
-      int namelen = strlen (name);
+      int namelen = (int) strlen (name);
 
 #define MAXVERSIONS 1000
 #define MAXVERCHARS 3
@@ -944,7 +944,7 @@ Buffer::write_region (xwrite_stream &sout, xwrite_buffer &xbuf, int &error)
               int c = sout.get ();
               if (c == xwrite_stream::eof)
                 {
-                  xbuf.write (buf, b - buf);
+                  xbuf.write (buf, (DWORD)(b - buf));
                   xbuf.close ();
                   return sout.nlines ();
                 }
@@ -1060,9 +1060,9 @@ make_backup_file (const char *filename, char *backup, int &result)
               char tem[PATH_MAX + 1];
               if (!period)
                 period = name + strlen (name);
-              int l = period - backup;
+              int l = (int)(period - backup);
               if (period - name >= 8)
-                l = name - backup + (check_kanji2 (name, 7) ? 6 : 7);
+                l = (int)(name - backup + (check_kanji2 (name, 7) ? 6 : 7));
               memcpy (tem, backup, l);
               memset (tem + l, '~', 7);
               l += 7;

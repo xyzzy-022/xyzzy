@@ -34,7 +34,7 @@ struct bignum_rep
   u_short br_len;
 #else
   int br_space;
-  int br_len;
+  long long br_len;
 #endif
   enum {NEGATIVE = 0, POSITIVE = 1};
   char br_sign;
@@ -43,7 +43,7 @@ struct bignum_rep
 
   bignum_rep *normalize ();
   void copy (const bignum_rep *);
-  void clear_from (int = 0);
+  void clear_from (long long = 0);
 
   int constp () const;
   long log2 () const;
@@ -63,7 +63,7 @@ struct bignum_rep
   int64_t coerce_to_int64 () const;
   int is_long () const;
   int is_ulong () const;
-  int fmtwidth (u_long) const;
+  long long fmtwidth(u_long) const;
   char *to_ascii (char *, int, int, int, const char *) const;
 };
 
@@ -89,7 +89,7 @@ extern bignum_rep bignum_rep_one;
 extern bignum_rep bignum_rep_minus_one;
 
 #define BIGNUM_ALLOCATE_MAX (64 * 1024)
-extern long bignum_allocated_bytes;
+extern long long bignum_allocated_bytes;
 
 inline int
 bignum_rep::constp () const
@@ -168,14 +168,14 @@ br_delete (bignum_rep *r)
 {
   if (r && r->br_allocated)
     {
-      bignum_allocated_bytes -= min (BIGNUM_ALLOCATE_MAX, r->br_len);
+      bignum_allocated_bytes -= min ((long long)BIGNUM_ALLOCATE_MAX, r->br_len);
       delete [] (char *)r;
     }
 }
 
-bignum_rep *br_new (int);
-int br_ucompare (const bignum_rep *, const bignum_rep *);
-int br_compare (const bignum_rep *, const bignum_rep *);
+bignum_rep *br_new (long long);
+long long br_ucompare (const bignum_rep *, const bignum_rep *);
+long long br_compare (const bignum_rep *, const bignum_rep *);
 bignum_rep *br_copy (bignum_rep *, const bignum_rep *, int);
 bignum_rep *br_copy (bignum_rep *, u_long);
 bignum_rep *br_copy (bignum_rep *, long);
@@ -200,7 +200,7 @@ abs (bignum_rep *r)
   return r->plusp () ? r : negate (r, r);
 }
 
-bignum_rep *add (bignum_rep *, const bignum_rep *, const bignum_rep *, int);
+bignum_rep *add (bignum_rep *, const bignum_rep *, const bignum_rep *, long long);
 bignum_rep *multiply (bignum_rep *, const bignum_rep *, const bignum_rep *);
 bignum_rep *divide (bignum_rep *, const bignum_rep *, const bignum_rep *);
 int remainder (const bignum_rep *, u_short);

@@ -360,7 +360,7 @@ pane::move_splitter (const POINT &pos)
     {
       if (!GetMessage (&msg, 0, 0, 0))
         {
-          PostQuitMessage (msg.wParam);
+          PostQuitMessage ((int)msg.wParam);
           break;
         }
       if (GetCapture () != hwnd)
@@ -535,5 +535,5 @@ Fsi_plugin_arg ()
       (FARPROC)xpiSetPanePos,
       0,
     };
-  return make_fixnum (long (procs));
+  return make_fixnum (long long (procs));
 }

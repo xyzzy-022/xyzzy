@@ -339,7 +339,7 @@ FontSet::create (const FontSetParam &param)
   SIZE ex[FONT_MAX][2];
   HDC hdc = GetDC (0);
 
-  fs_line_spacing = max (0, min (param.fs_line_spacing, 30));
+  fs_line_spacing = max (0, min(param.fs_line_spacing, 30));
   fs_use_backsl = param.fs_use_backsl;
   fs_recommend_size = param.fs_recommend_size;
   fs_size_pixel = param.fs_size_pixel;

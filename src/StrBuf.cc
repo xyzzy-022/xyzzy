@@ -7,7 +7,7 @@ StrBuf::length () const
 {
   if (!sb_chunk)
     return 0;
-  int l = sb_chunk_size - (sb_limit - sb_next);
+  int l = sb_chunk_size - (int)(sb_limit - sb_next);
   for (strbuf_chunk *p = sb_chunk->cdr; p; p = p->cdr)
     l += sb_chunk_size;
   return l;
@@ -32,7 +32,7 @@ StrBuf::copy (Char *b)
   assert (sb_finished);
   for (const strbuf_chunk *cp = sb_chunk; cp; cp = cp->cdr)
     {
-      int size = cp->used - cp->contents;
+      int size = (int)(cp->used - cp->contents);
       bcopy (cp->contents, b, size);
       b += size;
     }
@@ -83,12 +83,12 @@ StrBuf::alloc ()
 }
 
 void
-StrBuf::fill (Char c, int size)
+StrBuf::fill (Char c, long long size)
 {
   assert (!sb_finished);
   if (!size)
     return;
-  int rest = sb_limit - sb_next;
+  int rest = (int)(sb_limit - sb_next);
   if (size <= rest)
     {
       for (int i = 0; i < size; i++)
@@ -104,19 +104,19 @@ StrBuf::fill (Char c, int size)
           if (!size)
             break;
           alloc ();
-          rest = min (size, sb_chunk_size);
+          rest = min ((int)size, sb_chunk_size);
         }
       sb_next += rest;
     }
 }
 
 void
-StrBuf::add (const Char *s, int size)
+StrBuf::add (const Char *s, long long size)
 {
   assert (!sb_finished);
   if (!size)
     return;
-  int rest = sb_limit - sb_next;
+  int rest = (int)(sb_limit - sb_next);
   if (size <= rest)
     {
       bcopy (s, sb_next, size);
@@ -132,7 +132,7 @@ StrBuf::add (const Char *s, int size)
           if (!size)
             break;
           alloc ();
-          rest = min (size, sb_chunk_size);
+          rest = min ((int)size, sb_chunk_size);
         }
       sb_next += rest;
     }
@@ -144,7 +144,7 @@ StrBuf::add (const char *s)
   assert (!sb_finished);
   if (!*s)
     return;
-  int rest = sb_limit - sb_next;
+  int rest = (int)(sb_limit - sb_next);
   if (rest)
     {
       sb_next = s2w (sb_next, rest, &s);
@@ -219,7 +219,7 @@ StrBuf::make_substring (int start, int end)
   xstring_length (string) = l;
   for (const strbuf_chunk *cp = sb_chunk; cp; cp = cp->cdr)
     {
-      int size = cp->used - cp->contents;
+      int size = (int)(cp->used - cp->contents);
       if (size <= start)
         start -= size;
       else

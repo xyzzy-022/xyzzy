@@ -41,8 +41,8 @@ protected:
   int get_copies ();
   int recommend_size ();
   void check_proportional_font () const;
-  BOOL wndproc (UINT, WPARAM, LPARAM);
-  static BOOL CALLBACK wndproc (HWND, UINT, WPARAM, LPARAM);
+  long long wndproc (UINT, WPARAM, LPARAM);
+  static long long CALLBACK wndproc (HWND, UINT, WPARAM, LPARAM);
   void init_history (UINT, const char *);
   int history_command (UINT, UINT, UINT, UINT);
   void move_btn_focus (UINT, UINT);

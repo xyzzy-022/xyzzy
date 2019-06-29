@@ -85,8 +85,8 @@ int string_equalp (lisp, int, lisp, int, int);
 lisp parse_integer (lisp, int, int &, int, int);
 
 int update_column (int, Char);
-int update_column (int, const Char *, int);
-int update_column (int, Char, int);
+int update_column (int, const Char *, long long);
+int update_column (int, Char, long long);
 size_t s2wl (const char *);
 Char *s2w (Char *, size_t, const char **);
 Char *s2w (Char *, const char *);

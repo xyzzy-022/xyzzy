@@ -29,9 +29,9 @@ set_appid (IShellLink *sl, lisp lappid)
   char *b = (char *)alloca (xstring_length (lappid) * 2 + 1);
   w2s (b, lappid);
 
-  int l = (strlen (b) + 1);
+  long long l = (strlen (b) + 1);
   wchar_t *w = (wchar_t *)alloca (l * sizeof (wchar_t));
-  MultiByteToWideChar (CP_ACP, 0, b, -1, w, l);
+  MultiByteToWideChar (CP_ACP, 0, b, -1, w, (int)l);
 
   safe_com <IPropertyStore> store;
   ole_error (sl->QueryInterface (IID_PPV_ARGS(&store)));
@@ -89,9 +89,9 @@ Fcreate_shortcut (lisp lobject, lisp llink, lisp keys)
       ole_error (SHGetDesktopFolder (&sf));
 
       map_sl_to_backsl (path);
-      int l = (strlen (path) + 1);
+      long long l = (strlen (path) + 1);
       wchar_t *w = (wchar_t *)alloca (l * sizeof (wchar_t));
-      MultiByteToWideChar (CP_ACP, 0, path, -1, w, l);
+      MultiByteToWideChar (CP_ACP, 0, path, -1, w, (int)l);
 
       ULONG ul;
       safe_idl idl (ialloc);
@@ -119,9 +119,9 @@ Fcreate_shortcut (lisp lobject, lisp llink, lisp keys)
   ole_error (sl->QueryInterface (IID_IPersistFile, (void **)&pf));
 
   pathname2cstr (llink, path);
-  int l = (strlen (path) + 1);
+  long long l = (strlen (path) + 1);
   wchar_t *w = (wchar_t *)alloca (l * sizeof (wchar_t));
-  MultiByteToWideChar (CP_ACP, 0, path, -1, w, l);
+  MultiByteToWideChar (CP_ACP, 0, path, -1, w, (int)l);
   ole_error (pf->Save (w, 1));
 
   return Qt;
@@ -192,9 +192,9 @@ Fresolve_shortcut (lisp lshortcut)
   char shortcut[PATH_MAX + 1];
   pathname2cstr (lshortcut, shortcut);
   map_sl_to_backsl (shortcut);
-  int l = (strlen (shortcut) + 1);
+  long long l = (strlen (shortcut) + 1);
   wchar_t *w = (wchar_t *)alloca (l * sizeof (wchar_t));
-  MultiByteToWideChar (CP_ACP, 0, shortcut, -1, w, l);
+  MultiByteToWideChar (CP_ACP, 0, shortcut, -1, w, (int)l);
 
   safe_com <IShellLink> sl;
   ole_error (CoCreateInstance (CLSID_ShellLink, 0, CLSCTX_INPROC_SERVER,
@@ -239,14 +239,14 @@ Fole_drop_files (lisp lpath, lisp lclsid, lisp ldir, lisp lfiles)
   char dir[PATH_MAX + 1];
   pathname2cstr (ldir, dir);
   map_sl_to_backsl (dir);
-  int maxl = strlen (dir);
+  long long maxl = strlen (dir);
 
   lisp f = lfiles;
   int nfiles;
   for (nfiles = 0; consp (f); f = xcdr (f), nfiles++)
     {
       check_string (xcar (f));
-      maxl = max (maxl, xstring_length (xcar (f)));
+      maxl = max (maxl, (long long) xstring_length (xcar (f)));
     }
 
   if (!nfiles)
@@ -264,7 +264,7 @@ Fole_drop_files (lisp lpath, lisp lclsid, lisp ldir, lisp lfiles)
 
   maxl++;
   wchar_t *wbuf = (wchar_t *)alloca (sizeof *wbuf * maxl);
-  MultiByteToWideChar (CP_ACP, 0, dir, -1, wbuf, maxl);
+  MultiByteToWideChar (CP_ACP, 0, dir, -1, wbuf, (int) maxl);
 
   ULONG eaten;
   safe_idl dir_idl (ialloc);

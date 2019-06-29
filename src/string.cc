@@ -18,7 +18,7 @@ update_column (int column, Char c)
 }
 
 int
-update_column (int column, const Char *s, int size)
+update_column (int column, const Char *s, long long size)
 {
   for (const Char *se = s + size; s < se; s++)
     column = update_column (column, *s);
@@ -26,7 +26,7 @@ update_column (int column, const Char *s, int size)
 }
 
 int
-update_column (int column, Char c, int size)
+update_column (int column, Char c, long long size)
 {
   if (size)
     {
@@ -35,9 +35,9 @@ update_column (int column, Char c, int size)
       else if (c == '\t')
         column = ((column + app.default_tab_columns) / app.default_tab_columns
                   * app.default_tab_columns
-                  + (size - 1) * app.default_tab_columns);
+                  + ((int)size - 1) * app.default_tab_columns);
       else
-        column += char_width (c) * size;
+        column += char_width (c) * (int)size;
     }
   return column;
 }
@@ -302,7 +302,7 @@ make_string (const char *string)
   lisp p = make_simple_string ();
   size_t size = s2wl (string);
   xstring_contents (p) = s2w (string, size);
-  xstring_length (p) = size;
+  xstring_length (p) = (int) size;
   return p;
 }
 
@@ -312,7 +312,7 @@ make_string (const char *string, size_t size)
   lisp p = make_simple_string ();
   Char *b = (Char *)xmalloc (size * sizeof (Char));
   xstring_contents (p) = b;
-  xstring_length (p) = size;
+  xstring_length (p) = (int) size;
   s2w (b, size, &string);
   return p;
 }
@@ -322,7 +322,7 @@ make_string_simple (const char *string, size_t size)
 {
   lisp p = make_simple_string ();
   xstring_contents (p) = a2w (string, size);
-  xstring_length (p) = size;
+  xstring_length (p) = (int) size;
   return p;
 }
 
@@ -331,7 +331,7 @@ make_string (const Char *string, size_t size)
 {
   lisp p = make_simple_string ();
   xstring_contents (p) = (Char *)xmemdup (string, size * sizeof (Char));
-  xstring_length (p) = size;
+  xstring_length (p) = (int) size;
   return p;
 }
 
@@ -348,7 +348,7 @@ make_string (Char c, size_t size)
   lisp p = make_simple_string ();
   Char *d = (Char *)xmalloc (size * sizeof (Char));
   xstring_contents (p) = d;
-  xstring_length (p) = size;
+  xstring_length (p) = (int) size;
   bfill (d, int (size), c);
   return p;
 }
@@ -373,7 +373,7 @@ make_string (size_t size)
 {
   lisp p = make_simple_string ();
   xstring_contents (p) = (Char *)xmalloc (size * sizeof (Char));
-  xstring_length (p) = size;
+  xstring_length (p) = (int) size;
   return p;
 }
 
@@ -557,17 +557,17 @@ string_compare (lisp string1, lisp string2, lisp keys, int &l)
     {
       if (p == pe)
         {
-          l = p - p0;
+          l = (int)(p - p0);
           return q == qe ? 0 : -1;
         }
       if (q == qe)
         {
-          l = p - p0;
+          l = (int)(p - p0);
           return 1;
         }
       if (*p != *q)
         {
-          l = p - p0;
+          l = (int)(p - p0);
           return *p - *q;
         }
       p++;
@@ -584,19 +584,19 @@ string_comparep (lisp string1, lisp string2, lisp keys, int &l)
     {
       if (p == pe)
         {
-          l = p - p0;
+          l = (int)(p - p0);
           return q == qe ? 0 : -1;
         }
       if (q == qe)
         {
-          l = p - p0;
+          l = (int)(p - p0);
           return 1;
         }
       Char c1 = char_upcase (*p);
       Char c2 = char_upcase (*q);
       if (c1 != c2)
         {
-          l = p - p0;
+          l = (int)(p - p0);
           return c1 - c2;
         }
       p++;
@@ -617,7 +617,7 @@ Fstring_equalp (lisp x, lisp y, lisp keys)
 {
   const Char *p, *pe, *q, *qe;
   string_compare1 (x, y, keys, p, pe, q, qe);
-  return boole (string_equalp (p, pe - p, q, qe - q));
+  return boole (string_equalp (p, (int)(pe - p), q, (int)(qe - q)));
 }
 
 lisp
@@ -751,7 +751,7 @@ static inline int
 left_trim (lisp string, lisp bag)
 {
   assert (stringp (string));
-  return (left_trim (xstring_contents (string), xstring_length (string), bag)
+  return (int)(left_trim (xstring_contents (string), xstring_length (string), bag)
           - xstring_contents (string));
 }
 
@@ -759,7 +759,7 @@ static inline int
 right_trim (lisp string, lisp bag)
 {
   assert (stringp (string));
-  return (right_trim (xstring_contents (string), xstring_length (string), bag)
+  return (int)(right_trim (xstring_contents (string), xstring_length (string), bag)
           - xstring_contents (string));
 }
 
@@ -875,8 +875,8 @@ trim (const Char *&p0, const Char *&pe, lisp bag)
 {
   if (p0 != pe)
     {
-      p0 = left_trim (p0, pe - p0, bag);
-      pe = right_trim (p0, pe - p0, bag);
+      p0 = left_trim (p0, (int)(pe - p0), bag);
+      pe = right_trim (p0, (int)(pe - p0), bag);
     }
 }
 
@@ -994,8 +994,8 @@ parse_integer (lisp string, int start, int &end, int radix, int junk_allowed)
     return Qnil;
 
   bignum_rep *rep;
-  p = ato_bignum_rep (rep, p, pe - p, radix);
-  end = p - xstring_contents (string);
+  p = ato_bignum_rep (rep, p, (int)(pe - p), radix);
+  end = (int)(p - xstring_contents (string));
   return p == pe ? make_integer (rep) : Qnil;
 }
 
@@ -1029,7 +1029,7 @@ int WINAPI
 abbreviate_string (HDC hdc, char *buf, int maxpxl, int is_pathname)
 {
   SIZE sz;
-  int l = strlen (buf);
+  int l = (int)strlen (buf);
   GetTextExtentPoint32 (hdc, buf, l, &sz);
   if (sz.cx <= maxpxl)
     return 0;
@@ -1047,7 +1047,7 @@ abbreviate_string (HDC hdc, char *buf, int maxpxl, int is_pathname)
       rb = find_last_slash (buf);
       if (rb)
         {
-          GetTextExtentPoint32 (hdc, rb, re - rb, &sz);
+          GetTextExtentPoint32 (hdc, rb, (int)(re - rb), &sz);
           if (sz.cx > maxpxl)
             {
               rb++;
@@ -1064,7 +1064,7 @@ abbreviate_string (HDC hdc, char *buf, int maxpxl, int is_pathname)
               if (sl)
                 sl = find_slash (sl + 1);
               if (sl && sl < rb)
-                dev = sl - lb + 1;
+                dev = (int)(sl - lb + 1);
             }
           if (dev)
             {
@@ -1083,7 +1083,7 @@ abbreviate_string (HDC hdc, char *buf, int maxpxl, int is_pathname)
               *rb = c;
               if (!slash)
                 break;
-              GetTextExtentPoint32 (hdc, slash, rb - slash, &sz);
+              GetTextExtentPoint32 (hdc, slash, (int)(rb - slash), &sz);
               if (sz.cx + pxl > maxpxl)
                 break;
               rb = slash;
@@ -1096,7 +1096,7 @@ abbreviate_string (HDC hdc, char *buf, int maxpxl, int is_pathname)
         trim_tail:
           for (; re > rb; re = CharPrev (rb, re))
             {
-              GetTextExtentPoint32 (hdc, rb, re - rb, &sz);
+              GetTextExtentPoint32 (hdc, rb, (int)(re - rb), &sz);
               if (sz.cx <= maxpxl)
                 {
                   if (re - rb + 3 > l)
@@ -1113,13 +1113,13 @@ abbreviate_string (HDC hdc, char *buf, int maxpxl, int is_pathname)
       maxpxl /= 2;
       for (lb = buf, le = buf + l / 2; le > lb; le = CharPrev (lb, le))
         {
-          GetTextExtentPoint32 (hdc, lb, le - lb, &sz);
+          GetTextExtentPoint32 (hdc, lb,(int)(le - lb), &sz);
           if (sz.cx <= maxpxl)
             break;
         }
       for (rb = buf + l / 2, re = buf + l; rb < re; rb = CharNext (rb))
         {
-          GetTextExtentPoint32 (hdc, rb, re - rb, &sz);
+          GetTextExtentPoint32 (hdc, rb, (int)(re - rb), &sz);
           if (sz.cx <= maxpxl)
             break;
         }

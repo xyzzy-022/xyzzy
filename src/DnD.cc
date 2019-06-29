@@ -566,7 +566,7 @@ filer_drop_target::check_self (const char *path, char *base, char *target)
 int
 filer_drop_target::check_self (const wchar_t *w, char *base, char *target)
 {
-  int l = wcslen (w) * 2 + 1;
+  int l = (int) wcslen (w) * 2 + 1;
   char *p = (char *)alloca (l);
   WideCharToMultiByte (CP_OEMCP, 0, w, -1, p, l, 0, 0);
   return check_self (p, base, target);
@@ -643,7 +643,7 @@ lisp
 filer_drop_target::make_drop_file (const wchar_t *w, const char *base_path,
                                    char *target, int link)
 {
-  int l = wcslen (w) * 2 + 1;
+  int l = (int)wcslen (w) * 2 + 1;
   char *p = (char *)alloca (l);
   WideCharToMultiByte (CP_OEMCP, 0, w, -1, p, l, 0, 0);
   return make_drop_file (p, base_path, target, link);
@@ -684,7 +684,7 @@ filer_drop_target::process_drop (IDataObject *data_obj, const POINTL &pt,
   else
     {
       const wchar_t *w = (wchar_t *)((char *)df + df->pFiles);
-      int l = wcslen (w) * 2 + 1;
+      int l = (int)wcslen (w) * 2 + 1;
       base_path = (char *)alloca (l);
       WideCharToMultiByte (CP_OEMCP, 0, w, -1, base_path, l, 0, 0);
     }

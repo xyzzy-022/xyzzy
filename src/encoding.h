@@ -54,9 +54,9 @@ public:
 
   int total_length ()
     {
-      int l = s_be - s_bp;
+      int l = (int)(s_be - s_bp);
       while (refill () != eof)
-        l += s_be - s_bp + 1;
+        l += (int)(s_be - s_bp) + 1;
       s_bp = s_be;
       return l;
     }
@@ -66,7 +66,7 @@ public:
       T *const be = b + size - 1;
       while (b < be)
         {
-          int l = min (s_be - s_bp, be - b);
+          int l = min ((int)(s_be - s_bp),(int) (be - b) );
           memcpy (b, s_bp, sizeof *b * l);
           b += l;
           if (b == be)
@@ -79,7 +79,7 @@ public:
       *b = 0;
     }
 
-  int rest_chars () const {return s_be - s_bp;}
+  int rest_chars () const {return (int)(s_be - s_bp);}
   void begin_direct_input (const T *&b, const T *&e) {b = s_bp, e = s_be;}
   void end_direct_input (const T *p) {s_bp = p;}
 };
@@ -148,8 +148,8 @@ public:
   xtemp_buffer () : b_be (b_buf + SZ - PAD) {}
   void begin () {b_bb = b_bp = b_buf;}
   void put (T c) {*b_bp++ = c;}
-  int room () const {return b_be - b_bp;}
-  int length () const {return b_bp - b_bb;}
+  int room () const {return (int)(b_be - b_bp);}
+  long long length () const {return b_bp - b_bb;}
   const T *base () const {return b_buf;}
   const T *head () const {return b_bb;}
   const T *tail () const {return b_bp;}
@@ -165,7 +165,7 @@ protected:
   virtual int refill ();
   virtual void refill_internal () = 0;
 public:
-  void flush (const Char *&b, int &l)
+  void flush (const Char *&b, long long &l)
     {
       b = head ();
       l = length ();

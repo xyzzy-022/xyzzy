@@ -14,6 +14,7 @@ class lbase_vector: public lisp_object
 {
 public:
   int length;          // contents‚ÉŠÜ‚Ü‚ê‚é—v‘f‚ÌŒÂ”
+  int padding;
   void *contents;      // —v‘f‚Ì”z—ñ
 
   ~lbase_vector ()

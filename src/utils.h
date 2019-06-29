@@ -10,7 +10,7 @@ void xfree (void *);
 char *xstrdup (const char *);
 void *xmemdup (const void *, size_t);
 char *stpcpy (char *, const char *);
-char *stpncpy (char *, const char *, int);
+char *stpncpy (char *, const char *, long long);
 long log2 (u_long);
 
 # define NF_BAD 0

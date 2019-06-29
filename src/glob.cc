@@ -30,7 +30,7 @@ file_masks::build_masks (lisp lmasks)
       check_string (x);
       if (xstring_length (x))
         {
-          nbytes += w2sl (x) + 1;
+          nbytes += (int) w2sl (x) + 1;
           nfiles++;
         }
     }
@@ -64,7 +64,7 @@ file_masks::set_text (HWND hwnd) const
     {
       int nbytes = 16;
       for (char **p = fm_masks; *p; p++)
-        nbytes += strlen (*p) + 1;
+        nbytes += (int) strlen (*p) + 1;
 
       char *b0 = (char *)alloca (nbytes);
       char *b = stpcpy (b0, "Mask:");
@@ -283,7 +283,7 @@ int
 pathname_match_p (const char *pat, const char *str)
 {
   int nodot = 0;
-  int l = strlen (pat);
+  int l = (int) strlen (pat);
   if (l > 1 && pat[l - 1] == '.' && !check_kanji2 (pat, l - 1))
     nodot = 1;
   return pathname_match_p1 (pat, str, nodot);
@@ -306,7 +306,7 @@ directory (char *path, const char *pat, char *name, file_masks &masks, int flags
   if (max_depth && depth >= max_depth)
     return result;
 
-  int l = strlen (path);
+  int l = (int) strlen (path);
   if (l >= PATH_MAX)
     return result;
 

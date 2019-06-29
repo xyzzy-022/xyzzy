@@ -24,7 +24,7 @@ class user_tool_bar: public tool_bar
   static int set_item (tool_item &, lisp);
 
   virtual int need_text (TOOLTIPTEXT &);
-  int index_from_id (int) const;
+  int index_from_id (long long) const;
 
 public:
   user_tool_bar (dock_frame &, lisp);
@@ -69,7 +69,7 @@ user_tool_bar::gc_mark (void (*f)(lisp))
 }
 
 int
-user_tool_bar::index_from_id (int id) const
+user_tool_bar::index_from_id (long long id) const
 {
   for (int i = 0; i < u_nitems; i++)
     if (u_item[i].ti_id == id)
@@ -152,8 +152,8 @@ user_tool_bar::update_ui ()
               set_button (i, tb);
           }
 #else
-        int ostate = get_state (u_item[i].ti_id);
-        int state = ostate;
+        long long ostate = get_state (u_item[i].ti_id);
+        long long state = ostate;
         if (flags & MF_GRAYED)
           state &= ~TBSTATE_ENABLED;
         else

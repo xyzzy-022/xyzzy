@@ -52,7 +52,7 @@ dopaint (HWND hwnd, HDC hdc)
       if (!s[i])
         break;
       SIZE sz;
-      l = strlen (s[i]);
+      l = (int) strlen (s[i]);
       SetTextColor (hdc, i == 1 ? hl : bg);
       GetTextExtentPoint32 (hdc, s[i], l, &sz);
       r.right = min (r.left + sz.cx, xmax);

@@ -15,6 +15,7 @@ DECLARE_LARRAY (lstring_array, Tstring_array)
 DECLARE_LDATA (lcons, Tcons)     // ã§óLîzóÒÇÃGCÇ≈ïsìsçáÇ™Ç†ÇÈÇΩÇﬂarrayÇÊÇËå„ÇÎ
 DECLARE_LDATA (lsymbol, Tsymbol)
 DECLARE_LDATA (llong_int, Tlong_int)
+DECLARE_LDATA (llonglong_int, Tlonglong_int)
 DECLARE_LDATA (lbignum, Tbignum)
 DECLARE_LDATA (lfraction, Tfraction)
 DECLARE_LDATA (lsingle_float, Tsingle_float)

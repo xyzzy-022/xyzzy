@@ -23,7 +23,7 @@ protected:
   static int CALLBACK enum_font_size_proc (ENUMLOGFONT *, NEWTEXTMETRIC *, int, LPARAM);
   void add_lang (HWND);
   void add_font_name (HWND, HDC);
-  void add_font_size (HWND, int);
+  void add_font_size (HWND, long long);
   void change_font_size (HWND, int);
   void notify_lang (HWND, int);
   void notify_font_name (HWND, int);

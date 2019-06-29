@@ -4,14 +4,14 @@
 class dlgctrl: public lisp_object
 {
 public:
-  int id () const;
+  long long id () const;
   lisp symid () const;
   lisp wclass () const;
   DWORD style () const;
   lisp keyword () const;
 };
 
-inline int
+inline long long
 dlgctrl::id () const
 {
   return xshort_int_value (xcar (lisp (this)));

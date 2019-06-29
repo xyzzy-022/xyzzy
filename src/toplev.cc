@@ -20,7 +20,7 @@ mouse_wheel g_wheel;
 static u_int __stdcall
 quit_thread_entry (void *p)
 {
-  DWORD parent = (DWORD)p;
+  unsigned long long parent = (unsigned long long)p;
 
 #define HK_BREAK 1
 #define HK_QUIT 2
@@ -130,7 +130,7 @@ quit_thread_entry (void *p)
 int
 start_quit_thread ()
 {
-  u_long h = _beginthreadex (0, 0, quit_thread_entry, (void *)GetCurrentThreadId (),
+  unsigned long long h = _beginthreadex (0, 0, quit_thread_entry, GetCurrentThread (),
                              0, &app.quit_thread_id);
   if (h == -1)
     return 0;
@@ -754,7 +754,7 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_KEYUP:
     case WM_SYSKEYUP:
       app.last_vkeycode = -1;
-      app.active_frame.fnkey->unset_vkey (wparam);
+      app.active_frame.fnkey->unset_vkey ((int)wparam);
       break;
 
     case WM_SYSKEYDOWN:
@@ -763,12 +763,12 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
           || wparam == VK_F10)
 #endif
         {
-          app.active_frame.fnkey->set_vkey (wparam);
+          app.active_frame.fnkey->set_vkey ((int)wparam);
           if (int (wparam) == app.last_vkeycode)
             app.kbd_repeat_count++;
           else
             {
-              app.last_vkeycode = wparam;
+              app.last_vkeycode = (int) wparam;
               app.kbd_repeat_count = 1;
             }
           cc = decode_syskeys (wparam, lparam);
@@ -795,12 +795,12 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       break;
 
     case WM_KEYDOWN:
-      app.active_frame.fnkey->set_vkey (wparam);
+      app.active_frame.fnkey->set_vkey ((int)wparam);
       if (int (wparam) == app.last_vkeycode)
         app.kbd_repeat_count++;
       else
         {
-          app.last_vkeycode = wparam;
+          app.last_vkeycode = (int)wparam;
           app.kbd_repeat_count = 1;
         }
       cc = decode_keys (wparam, lparam);
@@ -860,7 +860,7 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_IME_CHAR:
       if (xsymbol_value (Vno_input_language_change_notification) != Qnil)
         app.kbdq.init_kbd_encoding ();
-      app.kbdq.putw (wparam);
+      app.kbdq.putw ((int)wparam);
       return 0;
 
     case WM_IME_COMPOSITION:
@@ -883,7 +883,7 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_PRIVATE_DELAYED_ACTIVATE:
       {
         save_cursor_depth cursor_depth;
-        app.kbdq.activate (wparam);
+        app.kbdq.activate ((int)wparam);
         return 0;
       }
 
@@ -913,7 +913,7 @@ toplevel_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_ACTIVATEAPP:
     case WM_PRIVATE_ACTIVATEAPP:
-      app.toplevel_is_active = wparam;
+      app.toplevel_is_active = (int)wparam;
       PostThreadMessage (app.quit_thread_id, msg, wparam, lparam);
       return 0;
 
@@ -1147,13 +1147,13 @@ frame_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 static inline void
 set_window (HWND hwnd, Window *wp)
 {
-  SetWindowLong (hwnd, 0, LONG (wp));
+  SetWindowLongPtr (hwnd, 0, (LONG_PTR) wp);
 }
 
 static inline Window *
 get_window (HWND hwnd)
 {
-  return (Window *)GetWindowLong (hwnd, 0);
+  return (Window *)GetWindowLongPtr (hwnd, 0);
 }
 
 static int

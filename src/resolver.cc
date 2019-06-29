@@ -60,7 +60,7 @@ resolver::post_result (WPARAM wparam, LPARAM lparam)
       r_params.wparam = wparam;
       r_params.lparam = lparam;
       r_params.done = 1;
-      PostThreadMessage (r_thread_id, wm_result_asyncsock, 0, 0);
+      PostThreadMessage ((DWORD) r_thread_id, wm_result_asyncsock, 0, 0);
     }
 }
 
@@ -119,10 +119,10 @@ resolver::wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     {
       d = (resolver *)((CREATESTRUCT *)lparam)->lpCreateParams;
       d->r_hwnd = hwnd;
-      SetWindowLong (hwnd, 0, LPARAM (d));
+      SetWindowLongPtr (hwnd, 0, LPARAM (d));
     }
   else
-    d = (resolver *)GetWindowLong (hwnd, 0);
+    d = (resolver *)GetWindowLongPtr (hwnd, 0);
 
   LRESULT r = (d ? d->wndproc (msg, wparam, lparam)
                : DefWindowProc (hwnd, msg, wparam, lparam));
@@ -174,7 +174,7 @@ resolver::wait (HANDLE h)
         }
     }
   if (!quit && r_hwnd)
-    PostQuitMessage (msg.wParam);
+    PostQuitMessage ( (int) msg.wParam);
   if (r_hwnd)
     SendMessage (r_hwnd, wm_cancel_asyncsock, WPARAM (h), 0);
   WS_CALL (WSACancelAsyncRequest)(h);

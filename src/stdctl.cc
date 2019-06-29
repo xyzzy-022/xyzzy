@@ -56,7 +56,7 @@ stdctl_default (HWND hwnd)
   HWND hwnd_parent = GetParent (hwnd);
   if (hwnd_parent)
     {
-      DWORD id = SendMessage (hwnd_parent, DM_GETDEFID, 0, 0);
+      unsigned long long id = SendMessage (hwnd_parent, DM_GETDEFID, 0, 0);
       if (HIWORD (id) == DC_HASDEFID)
         {
           HWND hwnd_btn = GetDlgItem (hwnd_parent, LOWORD (id));
@@ -77,7 +77,7 @@ lbx_keydown (HWND hwnd, int vk)
       || GetKeyState (VK_SHIFT) < 0)
     return 0;
 
-  int i = lbx_sendmsg (hwnd, LB_GETCARETINDEX, 0, 0);
+  unsigned long long i = lbx_sendmsg (hwnd, LB_GETCARETINDEX, 0, 0);
   switch (vk)
     {
     case VK_UP:
@@ -86,7 +86,7 @@ lbx_keydown (HWND hwnd, int vk)
       break;
 
     case VK_DOWN:
-      if (i < lbx_sendmsg (hwnd, LB_GETCOUNT, 0, 0) - 1)
+      if (i < (unsigned long long) lbx_sendmsg (hwnd, LB_GETCOUNT, 0, 0) - 1)
         lbx_sendmsg (hwnd, LB_SETCARETINDEX, i + 1, 0);
       break;
 
@@ -127,12 +127,12 @@ lbx_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   switch (msg)
     {
     case WM_KEYDOWN:
-      if (lbx_keydown (hwnd, wparam))
+      if (lbx_keydown (hwnd, (int) wparam))
         return 0;
       break;
 
     case WM_CHAR:
-      if (lbx_char (hwnd, wparam))
+      if (lbx_char (hwnd, (int) wparam))
         return 0;
       break;
     }
@@ -158,7 +158,7 @@ cbx_char (HWND hwnd, int ch)
 static LRESULT CALLBACK
 cbx_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-  if (msg == WM_CHAR && cbx_char (hwnd, wparam))
+  if (msg == WM_CHAR && cbx_char (hwnd, (int)wparam))
     return 0;
   return cbx_sendmsg (hwnd, msg, wparam, lparam);
 }
@@ -190,7 +190,7 @@ edt_char (HWND hwnd, int ch)
 static LRESULT CALLBACK
 edt_wndproc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-  if (msg == WM_CHAR && edt_char (hwnd, wparam))
+  if (msg == WM_CHAR && edt_char (hwnd, (int) wparam))
     return 0;
   return CallWindowProc (org_edt_wndproc, hwnd, msg, wparam, lparam);
 }

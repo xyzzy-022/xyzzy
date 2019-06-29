@@ -15,7 +15,7 @@ protected:
 
   HWND r_hwnd;
   HANDLE r_hsock;
-  DWORD r_thread_id;
+  unsigned long long r_thread_id;
   int r_timeout;
   params r_params;
   char r_buf[MAXGETHOSTSTRUCT];

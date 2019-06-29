@@ -76,12 +76,13 @@ ldataP::free (ldata_rep *p)
 inline void
 ldataP::morecore (int type, int size)
 {
+  assert(size >= sizeof(long long));
   ldata_rep *p = alloc (type);
   char *d = p->dr_data;
   ld_freep = (ldata_free_rep *)d;
   for (char *de = d + size * (LDATASIZE_NOBJS (size) - 1); d < de; d += size)
     ((ldata_free_rep *)d)->lf_next = (ldata_free_rep *)(d + size);
-  ((ldata_free_rep *)d)->lf_next = 0;
+  ((ldata_free_rep *)d)->lf_next = NULL;
 }
 
 char *
@@ -1410,10 +1411,24 @@ dump_object (FILE *fp, const llong_int *d, int n,
 }
 
 static inline void
+dump_object(FILE *fp, const llonglong_int *d, int n,
+    const u_long used[LDATA_MAX_OBJECTS_PER_LONG])
+{
+    dump_simple(fp, d, n, used);
+}
+
+static inline void
 rdump_object (FILE *fp, llong_int *d, int n,
               const u_long used[LDATA_MAX_OBJECTS_PER_LONG])
 {
   rdump_simple (fp, d, n, used);
+}
+
+static inline void
+rdump_object(FILE *fp, llonglong_int *d, int n,
+    const u_long used[LDATA_MAX_OBJECTS_PER_LONG])
+{
+    rdump_simple(fp, d, n, used);
 }
 
 static void

@@ -19,7 +19,7 @@ ParentWndProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
       {
         OWNERDRAWPROC proc = get_owner_draw_proc (((DRAWITEMSTRUCT *)lparam)->hwndItem);
         if (proc)
-          return proc (wparam, (DRAWITEMSTRUCT *)lparam);
+          return proc ((UINT)wparam, (DRAWITEMSTRUCT *)lparam);
         break;
       }
     }
@@ -27,7 +27,7 @@ ParentWndProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
                          hwnd, msg, wparam, lparam);
 }
 
-int
+long long
 subclass_parent (HWND hwnd)
 {
   HWND parent = GetParent (hwnd);
@@ -36,9 +36,9 @@ subclass_parent (HWND hwnd)
   if (GetProp (parent, ATOM2STR (hprop)))
     return 1;
   if (!SetProp (parent, ATOM2STR (hprop),
-                HANDLE (GetWindowLong (parent, GWL_WNDPROC))))
+                HANDLE (GetWindowLongPtr (parent, GWLP_WNDPROC))))
     return 0;
-  return SetWindowLong (parent, GWL_WNDPROC, LONG (ParentWndProc));
+  return SetWindowLongPtr (parent, GWLP_WNDPROC, LONG_PTR (ParentWndProc));
 }
 
 item_data *

@@ -137,3 +137,6 @@ Desktop.ini
 
 # unlha files
 src/etc/unlha/UNLHA32.LIB
+
+#.vs
+.vs

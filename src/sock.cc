@@ -50,7 +50,7 @@ init_winsock_functions ()
 }
 
 #ifdef __XYZZY__
-static int WINAPI
+static long long WINAPI
 blocking_hook ()
 {
   Fdo_events ();
@@ -289,7 +289,7 @@ sock::send (const void *buf, int len, int flags) const
     {
       if (s_wtimeo.tv_sec >= 0 && !writablep (s_wtimeo))
         throw sock_error ("sock::send", WSAETIMEDOUT);
-      int n = WS_CALL (send)(s_so, b, min (be - b, 65535), flags);
+      int n = WS_CALL (send)(s_so, b, min ((int)(be - b), 65535), flags);
       if (n <= 0)
         throw sock_error ("send", n ? WS_CALL (WSAGetLastError)() : WSAECONNRESET);
       b += n;
@@ -303,7 +303,7 @@ sock::sendto (const saddr &to, const void *buf, int len, int flags) const
     {
       if (s_wtimeo.tv_sec >= 0 && !writablep (s_wtimeo))
         throw sock_error ("sock::sendto", WSAETIMEDOUT);
-      int n = WS_CALL (sendto)(s_so, b, min (be - b, 65535), flags,
+      int n = WS_CALL (sendto)(s_so, b, min ((int)(be - b), 65535), flags,
                                to.addr (), to.length ());
       if (n <= 0)
         throw sock_error ("sendto", n ? WS_CALL (WSAGetLastError)() : WSAECONNRESET);
@@ -445,7 +445,7 @@ void
 sock::sflush ()
 {
   if (s_wbuf.b_ptr > s_wbuf.b_base)
-    send (s_wbuf.b_base, s_wbuf.b_ptr - s_wbuf.b_base);
+    send (s_wbuf.b_base, (int)(s_wbuf.b_ptr - s_wbuf.b_base));
   s_wbuf.b_ptr = s_wbuf.b_base;
   s_wbuf.b_cnt = 0;
 }
@@ -497,7 +497,7 @@ sock::sgets (char *buf, size_t size)
         break;
     }
   *b = 0;
-  return b - buf;
+  return (int) (b - buf);
 }
 
 void
