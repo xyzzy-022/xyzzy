@@ -747,7 +747,7 @@ copy_handle (DWORD f, int fd)
 static void
 pre_allocate_stack1 ()
 {
-  alloca (1024 * 1024);
+  //alloca (1024 * 1024);
 }
 
 static int
@@ -825,7 +825,7 @@ init_app (HINSTANCE hinst, int passed_cmdshow, int &ole_initialized)
 
   POINT point;
   SIZE size;
-  int cmdshow = environ::load_geometry (passed_cmdshow, &point, &size);
+  int cmdshow = myenviron::load_geometry (passed_cmdshow, &point, &size);
   int restore_maximized = 0;
   if (sw_minimized_p (passed_cmdshow))
     {
@@ -837,11 +837,11 @@ init_app (HINSTANCE hinst, int passed_cmdshow, int &ole_initialized)
 
   int show_normal = !sw_minimized_p (cmdshow) && !sw_maximized_p (cmdshow);
 
-  xsymbol_value (Vsave_window_size) = boole (environ::save_window_size);
-  xsymbol_value (Vsave_window_snap_size) = boole (environ::save_window_snap_size);
-  xsymbol_value (Vsave_window_position) = boole (environ::save_window_position);
-  xsymbol_value (Vrestore_window_size) = boole (environ::restore_window_size);
-  xsymbol_value (Vrestore_window_position) = boole (environ::restore_window_position);
+  xsymbol_value (Vsave_window_size) = boole (myenviron::save_window_size);
+  xsymbol_value (Vsave_window_snap_size) = boole (myenviron::save_window_snap_size);
+  xsymbol_value (Vsave_window_position) = boole (myenviron::save_window_position);
+  xsymbol_value (Vrestore_window_size) = boole (myenviron::restore_window_size);
+  xsymbol_value (Vrestore_window_position) = boole (myenviron::restore_window_position);
 
   ole_initialized = SUCCEEDED (OleInitialize (0));
 
@@ -923,7 +923,7 @@ init_app (HINSTANCE hinst, int passed_cmdshow, int &ole_initialized)
   return 1;
 }
 
-int PASCAL
+int WINAPI
 WinMain (HINSTANCE hinst, HINSTANCE, LPSTR, int cmdshow)
 {
   int ole_initialized = 0;

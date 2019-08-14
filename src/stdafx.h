@@ -1,14 +1,22 @@
-// stdafx.h : •W€‚ÌƒVƒXƒeƒ€ ƒCƒ“ƒNƒ‹[ƒh ƒtƒ@ƒCƒ‹‚ÌƒCƒ“ƒNƒ‹[ƒh ƒtƒ@ƒCƒ‹A‚Ü‚½‚Í
-// QÆ‰ñ”‚ª‘½‚­A‚©‚Â‚ ‚Ü‚è•ÏX‚³‚ê‚È‚¢AƒvƒƒWƒFƒNƒgê—p‚ÌƒCƒ“ƒNƒ‹[ƒh ƒtƒ@ƒCƒ‹
-// ‚ğ‹Lq‚µ‚Ü‚·B
+ï»¿// -*- coding:utf-8-with-signature -*-
+// stdafx.h : æ¨™æº–ã®ã‚·ã‚¹ãƒ†ãƒ  ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ãƒ•ã‚¡ã‚¤ãƒ«ã€ã¾ãŸã¯
+// å‚ç…§å›æ•°ãŒå¤šãã€ã‹ã¤ã‚ã¾ã‚Šå¤‰æ›´ã•ã‚Œãªã„ã€ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆå°‚ç”¨ã®ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ãƒ•ã‚¡ã‚¤ãƒ«
+// ã‚’è¨˜è¿°ã—ã¾ã™ã€‚
 //
 
 #pragma once
+
+#define STRICT 1
+#define WIN32_LEAN_AND_MEAN 1
 
 #include "targetver.h"
 
 #include <windows.h>
 
+#include <ShellApi.h> // HDROP
+#include <Wincrypt.h> // HCRYPTPROV
+#include <commdlg.h> // PRINTDLG
+#include <cderr.h>
 #include <commctrl.h>
 #include <ctype.h>
 #include <ddeml.h>
@@ -44,7 +52,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
-#include <windows.h>
 #include <winioctl.h>
 #include <winreg.h>
 #include <winsock.h>

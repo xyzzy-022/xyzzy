@@ -14,6 +14,7 @@
     <ProjectGuid>{0267AF5C-C0AC-43FF-87F9-F1C181012AB4}</ProjectGuid>
     <RootNamespace>xyzzy</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -21,14 +22,14 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <GenerateDebugInformation>true</GenerateDebugInformation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <GenerateDebugInformation>true</GenerateDebugInformation>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -87,6 +88,9 @@
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <DataExecutionPrevention>true</DataExecutionPrevention>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>$(ProjectDir)xyzzy.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -128,6 +132,9 @@
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>$(ProjectDir)xyzzy.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\alloc.cc" />
@@ -420,6 +427,9 @@
   <ItemGroup>
     <LispFiles Include="$(SolutionDir)lisp\**\*.*" />
     <EtcFiles Include="$(SolutionDir)etc\**\*.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="xyzzy.manifest" />
   </ItemGroup>
   <PropertyGroup>
     <LispOutputFiles>@(LispFiles->'$(TargetDir)lisp\%(RecursiveDir)%(Filename)%(Extension)')</LispOutputFiles>

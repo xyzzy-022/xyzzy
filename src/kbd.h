@@ -128,8 +128,13 @@ public:
   void init_kbd_encoding (LANGID);
   int kbd_mblead_p (int) const;
   static const class FontObject &kbd_encoding_font ();
+
+#pragma warning( push )
+#pragma warning( disable:4302 ) // pointer to WORD
   LANGID get_kbd_langid () const
     {return LANGID (get_kbd_layout ());}
+#pragma warning( pop )
+
   HKL get_kbd_layout () const;
   int ime_property () const {return ime_prop;}
   int unicode_kbd_p () const {return unicode_kbd;}
