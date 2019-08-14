@@ -1,4 +1,4 @@
-# xyzzy
+﻿# xyzzy
 
 xyzzy は[亀井哲弥氏](http://www.jsdlab.co.jp/~kamei/) が開発した、Common Lisp っぽい言語で拡張可能な
 Emacs っぽいテキストエディタのようなものです。
@@ -85,7 +85,7 @@ https://github.com/xyzzy はすでにアカウントが取られていたので 
         * <http://msdn.microsoft.com/ja-jp/library/ms177227.aspx>
   * push または Pull Request する前に以下を確認
     * `build.bat` と `build.bat Debug` が警告なしでビルドできること
-    * `run-tests-all.bat` がパスすること
+    * `run-tests.bat` がパスすること
   * .gitconfig に以下を設定しておく
 
     ```ini

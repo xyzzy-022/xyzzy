@@ -1,3 +1,5 @@
+
+#define STRICT 1
 #include <windows.h>
 #include <malloc.h>
 #include "xyzzycli.h"

@@ -782,14 +782,14 @@ Fget_system_directory ()
   return xsymbol_value (Qsystem_dir);
 }
 
-int environ::save_window_size = 1;
-int environ::save_window_snap_size = 0;
-int environ::save_window_position = 1;
-int environ::restore_window_size;
-int environ::restore_window_position;
+int myenviron::save_window_size = 1;
+int myenviron::save_window_snap_size = 0;
+int myenviron::save_window_position = 1;
+int myenviron::restore_window_size;
+int myenviron::restore_window_position;
 
 int
-environ::load_geometry (int cmdshow, POINT *point, SIZE *size)
+myenviron::load_geometry (int cmdshow, POINT *point, SIZE *size)
 {
   read_conf (cfgMisc, cfgSaveWindowSize, save_window_size);
   read_conf (cfgMisc, cfgSaveWindowSnapSize, save_window_snap_size);
@@ -824,13 +824,13 @@ environ::load_geometry (int cmdshow, POINT *point, SIZE *size)
       && w.rcNormalPosition.left < w.rcNormalPosition.right
       && w.rcNormalPosition.top < w.rcNormalPosition.bottom)
     {
-      if (environ::restore_window_size)
+      if (myenviron::restore_window_size)
         {
           cmdshow = w.showCmd;
           size->cx = w.rcNormalPosition.right - w.rcNormalPosition.left;
           size->cy = w.rcNormalPosition.bottom - w.rcNormalPosition.top;
         }
-      if (environ::restore_window_position)
+      if (myenviron::restore_window_position)
         {
           RECT r;
           int min_visible = (GetSystemMetrics(SM_CYSIZEFRAME)
@@ -856,7 +856,7 @@ environ::load_geometry (int cmdshow, POINT *point, SIZE *size)
 }
 
 void
-environ::save_geometry ()
+myenviron::save_geometry ()
 {
   save_window_size = xsymbol_value (Vsave_window_size) != Qnil;
   save_window_snap_size = xsymbol_value (Vsave_window_snap_size) != Qnil;

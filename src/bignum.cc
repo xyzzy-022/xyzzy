@@ -931,7 +931,8 @@ round (bignum_rep *&q, bignum_rep *&r,
 inline long
 bignum_rep::log2 () const
 {
-  return static_cast <long> (br_len ? (br_len - 1) * BR_SHIFT + ::log2 (br_data[br_len - 1]) : 0);
+  return static_cast<long> (
+      br_len ? (br_len - 1) * BR_SHIFT + ilog2(br_data[br_len - 1]) : 0);
 }
 
 long
@@ -949,7 +950,7 @@ bignum_rep::howlong () const
       if (i < 0)
         x--;
     }
-  return static_cast <long> ((br_len - 1) * BR_SHIFT + ::log2 (x));
+  return static_cast <long> ((br_len - 1) * BR_SHIFT + ilog2(x));
 }
 
 static bignum_rep *
@@ -1336,7 +1337,7 @@ logcount (const bignum_rep *x)
 int
 bignum_rep::fmtwidth (u_long base) const
 {
-  return (br_len + 1) * BR_SHIFT / (::log2 (base) - 1) + 16;
+  return (br_len + 1) * BR_SHIFT / (ilog2(base) - 1) + 16;
 }
 
 char *
@@ -1390,7 +1391,7 @@ ato_bignum_rep (bignum_rep *&br, const Char *p, int pl, int radix)
 {
   static bignum_rep_long brl (0);
   const Char *pe = p + pl;
-  int width = static_cast <int> (pl * log2 (radix) / BR_SHIFT + 1);
+  int width = static_cast <int> (pl * ilog2(radix) / BR_SHIFT + 1);
   bignum_rep *rep;
   if (width <= SHORT_PER_LONG)
     {
